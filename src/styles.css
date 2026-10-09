@@ -612,9 +612,14 @@ button, .opt, .jp-word.linked, .dialogue, .msgbox { cursor: url(../public/assets
   .touch { bottom: calc(14px + env(safe-area-inset-bottom, 0px)); padding-left: calc(16px + env(safe-area-inset-left, 0px)); padding-right: calc(16px + env(safe-area-inset-right, 0px)); }
 }
 
-/* portrait phones: story images fill more of the screen (crops the sides a little) */
+/* portrait phones: wide story images pan slowly from left to right instead of being cropped */
+.cg-pan {
+  width: 100%; height: 52vh; flex: none; background-size: auto 100%; background-repeat: no-repeat;
+  image-rendering: pixelated; animation: cg-pan 14s ease-in-out infinite alternate;
+}
+@keyframes cg-pan { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
 @media (orientation: portrait) {
-  .cg-img { width: 100%; height: 62vh; object-fit: cover; }
+  .cg-img.cg-portrait { width: 100%; height: auto; max-height: 62vh; object-fit: contain; }
   .cg-scene { justify-content: flex-start; padding-top: env(safe-area-inset-top, 0px); }
 }
 .ref-list { max-height: 60vh; overflow-y: auto; }

@@ -178,7 +178,7 @@ function CgScene({ step, onNext }: { step: Extract<Step, { cg: string }>; onNext
   }, []);
   return (
     <div className="cg-scene" ref={ref} onClick={() => (sfx('blip'), onNext())}>
-      <img className="cg-img" src={`assets/${step.cg}.webp`} alt="" />
+      <CgImage name={step.cg} />
       {step.say && (
         <div className="cg-caption" onClick={(e) => e.stopPropagation()}>
           <div className="dlg-text" onClick={() => onNext()}>
@@ -195,6 +195,26 @@ function CgScene({ step, onNext }: { step: Extract<Step, { cg: string }>; onNext
       )}
     </div>
   );
+}
+
+/** story pictures that also exist as portrait versions (assets/<name>_p.webp) for phones held upright */
+const PORTRAIT_CG = new Set<string>([]);
+
+/**
+ * Wide story pictures on a portrait phone: show the portrait version if there is one,
+ * otherwise slowly pan across the full picture instead of cutting its sides off.
+ */
+function CgImage({ name }: { name: string }) {
+  const [portrait, setPortrait] = useState(() => window.matchMedia('(orientation: portrait)').matches);
+  useEffect(() => {
+    const mq = window.matchMedia('(orientation: portrait)');
+    const on = () => setPortrait(mq.matches);
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, []);
+  if (portrait && PORTRAIT_CG.has(name)) return <img className="cg-img cg-portrait" src={`assets/${name}_p.webp`} alt="" />;
+  if (portrait) return <div className="cg-pan" style={{ backgroundImage: `url(assets/${name}.webp)` }} role="img" />;
+  return <img className="cg-img" src={`assets/${name}.webp`} alt="" />;
 }
 
 function SayBox({ step, onNext }: { step: Extract<Step, { say: string }>; onNext: () => void }) {
