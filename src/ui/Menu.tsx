@@ -1,4 +1,4 @@
-import { useRef, useState, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { store, DEFAULT_SETTINGS } from '../core/store';
 import { QUESTS } from '../content/quests';
 import { AFFINITY_INFO, ITEMS, MOVES, SPECIES } from '../content/creatures';
@@ -11,7 +11,8 @@ import { readiness } from '../core/readiness';
 import { queueInfo } from '../core/learning';
 import { mastery } from '../core/srs';
 import { SECTIONS, type Section } from '../core/exam';
-import { exportToJson, importFromJson, downloadText, makeEnvelope } from '../core/save';
+import { exportToJson, makeEnvelope } from '../core/save';
+import { ExportBox, ImportBox } from './Backup';
 import { saveNow, saveStatus } from '../core/persistence';
 import { setSfx, hasJapaneseVoice, ttsAvailable } from '../core/audio';
 import { ItemDetail, MASTERY_LABEL } from './Cards';
@@ -421,7 +422,7 @@ function JlptTab({ actions }: { actions: MenuActions }) {
 function SettingsTab({ actions }: { actions: MenuActions }) {
   const [, setV] = useState(0);
   const [msg, setMsg] = useState('');
-  const fileRef = useRef<HTMLInputElement>(null);
+  const [panel, setPanel] = useState<'export' | 'import' | null>(null);
   const st = store.s.settings;
   const set = <K extends keyof Settings>(k: K, v: Settings[K]) => {
     store.update((s) => {
@@ -486,40 +487,29 @@ function SettingsTab({ actions }: { actions: MenuActions }) {
       {saveStatus.state === 'error' && <p className="warn">Last save failed: {saveStatus.error}</p>}
       <div className="row wrap">
         <button className="btn" onClick={async () => { await saveNow(); setMsg('Saved.'); }}>Save now</button>
-        <button
-          className="btn"
-          onClick={() => {
-            const d = new Date();
-            downloadText(`kotodama-save-${d.toISOString().slice(0, 10)}.json`, exportToJson(makeEnvelope(store.s)));
-            setMsg('Backup exported.');
-          }}
-        >
-          Export backup
-        </button>
-        <button className="btn" onClick={() => fileRef.current?.click()}>Import backup</button>
-        <input
-          ref={fileRef}
-          type="file"
-          accept="application/json,.json"
-          hidden
-          onChange={async (e) => {
-            const f = e.target.files?.[0];
-            e.target.value = '';
-            if (!f) return;
-            try {
-              const env = importFromJson(await f.text());
-              if (!confirm(`Replace the current game with the backup of ${env.playerName} (Lv.${env.summary.level}, saved ${new Date(env.savedAt).toLocaleString()})? The current save is kept as a backup slot.`)) return;
-              await saveNow();
-              store.set(env.state, 'import');
-              await saveNow();
-              location.reload();
-            } catch (err) {
-              setMsg(`Import failed: ${(err as Error).message}`);
-            }
-          }}
-        />
+        <button className="btn" onClick={() => setPanel(panel === 'export' ? null : 'export')}>Export backup</button>
+        <button className="btn" onClick={() => setPanel(panel === 'import' ? null : 'import')}>Import backup</button>
         <button className="btn ghost" onClick={async () => { await saveNow(); actions.toTitle(); }}>Save & return to title</button>
       </div>
+      {panel === 'export' && (
+        <ExportBox
+          text={exportToJson(makeEnvelope(store.s))}
+          filename={`kotodama-save-${new Date().toISOString().slice(0, 10)}.json`}
+          onClose={() => setPanel(null)}
+        />
+      )}
+      {panel === 'import' && (
+        <ImportBox
+          hasSave
+          onClose={() => setPanel(null)}
+          onImport={async (env) => {
+            await saveNow();
+            store.set(env.state, 'import');
+            await saveNow();
+            location.reload();
+          }}
+        />
+      )}
       {msg && <p className="note">{msg}</p>}
       <h3>操作 Controls</h3>
       <p className="note">Move: arrow keys / WASD · Talk / examine: Space, Enter, Z · Menu: Esc or M · On touch screens use the on-screen pad.</p>

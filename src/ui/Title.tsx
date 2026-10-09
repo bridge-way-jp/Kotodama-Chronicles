@@ -1,6 +1,7 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import type { LoadResult } from '../core/save';
-import { exportToJson, downloadText, importFromJson } from '../core/save';
+import { exportToJson } from '../core/save';
+import { ExportBox, ImportBox } from './Backup';
 
 function fmtPlay(ms: number) {
   const h = Math.floor(ms / 3600000);
@@ -22,8 +23,7 @@ export function Title({
   const [mode, setMode] = useState<'menu' | 'name' | 'confirm'>('menu');
   const [name, setName] = useState('マリア');
   const [confirmText, setConfirmText] = useState('');
-  const [err, setErr] = useState('');
-  const fileRef = useRef<HTMLInputElement>(null);
+  const [box, setBox] = useState<'import' | 'raw' | 'current' | null>(null);
   const hasSave = load.kind === 'ok';
 
   return (
@@ -47,8 +47,8 @@ export function Title({
                 <b>Your save could not be loaded:</b> {load.message}
                 <br />
                 It has <b>not</b> been overwritten.{' '}
-                <button className="btn small" onClick={() => downloadText('kotodama-save-raw.json', exportToJson(load.raw))}>
-                  Download raw save data
+                <button className="btn small" onClick={() => setBox('raw')}>
+                  Show raw save data
                 </button>
               </div>
             )}
@@ -65,29 +65,13 @@ export function Title({
             <button className={`btn big ${hasSave ? '' : 'primary'}`} autoFocus={!hasSave} onClick={() => setMode(hasSave || load.kind === 'error' ? 'confirm' : 'name')}>
               ✦ はじめから New game
             </button>
-            <button className="btn" onClick={() => fileRef.current?.click()}>
+            <button className="btn" onClick={() => setBox(box === 'import' ? null : 'import')}>
               ⤓ Import backup
             </button>
-            <input
-              ref={fileRef}
-              type="file"
-              accept="application/json,.json"
-              hidden
-              onChange={async (e) => {
-                const f = e.target.files?.[0];
-                e.target.value = '';
-                if (!f) return;
-                try {
-                  const text = await f.text();
-                  const env = importFromJson(text);
-                  if (hasSave && !confirm(`Replace your current save with the backup of ${env.playerName} (Lv.${env.summary.level})? The current save is kept in the backup slot.`)) return;
-                  await onImport(text);
-                } catch (x) {
-                  setErr((x as Error).message);
-                }
-              }}
-            />
-            {err && <div className="warn">{err}</div>}
+            {box === 'import' && <ImportBox hasSave={hasSave} onClose={() => setBox(null)} onImport={(_env, text) => onImport(text)} />}
+            {box === 'raw' && load.kind === 'error' && (
+              <ExportBox text={exportToJson(load.raw)} filename="kotodama-save-raw.json" onClose={() => setBox(null)} />
+            )}
             <p className="note">
               Progress is saved automatically in this browser. Clearing site data erases it — export a backup from Settings now and then.
             </p>
@@ -100,10 +84,13 @@ export function Title({
               {hasSave ? ` (${load.env.playerName}, Lv.${load.env.summary.level})` : ''}. The old save is moved to a recovery slot, but you
               should export it first if you want to keep it.
             </div>
-            {hasSave && (
-              <button className="btn" onClick={() => downloadText('kotodama-save-backup.json', exportToJson(load.env))}>
+            {hasSave && box !== 'current' && (
+              <button className="btn" onClick={() => setBox('current')}>
                 Export current save first
               </button>
+            )}
+            {hasSave && box === 'current' && (
+              <ExportBox text={exportToJson(load.env)} filename="kotodama-save-backup.json" onClose={() => setBox(null)} />
             )}
             <label>
               Type <b>NEW</b> to confirm:
