@@ -6,87 +6,104 @@ Reihenfolge = Wichtigkeit.
 
 ---
 
-## 0. Innenräume richtig von oben (Bahnhof + alle Räume)
+## 0. Innenräume: Mix aus gemaltem Raum und Einzelmöbeln
 
-**Das Problem:** Die Möbel auf den bisherigen Blättern sind fast alle **gerade von vorne** gemalt, der Boden aber **schräg von oben**.
-Darum wirken Bänke, Drehkreuze und Automaten wie Pappaufsteller. Außerdem gibt es jedes Sitzmöbel nur in einer Richtung,
-also können sich Stühle nicht gegenüberstehen und Bänke nicht seitlich stehen.
-Der Bahnhof hat zusätzlich unten die Holzwand der Wohnung und keine eigenen Wände.
+**Warum ein Mix:** Die alten, komplett gemalten Räume (`art/reference/old_*.png`) sehen schöner aus.
+Sie haben warmes Licht, man sieht die Seitenwände von oben und alles ist im gleichen Winkel gemalt.
+Ihr Nachteil war die Kollision: Man konnte manchmal über Wände und Möbel laufen.
+Die Einzelmöbel von den neuen Blättern sind dagegen genau, aber von vorne gemalt und wirken flach.
 
-**Die Lösung:** Neue Möbel-Blätter, auf denen **jedes Teil im gleichen Blickwinkel** wie der Boden gemalt ist
-(man sieht immer die **Oberseite** und die Vorderseite). Sitzmöbel gibt es dann in **allen 4 Richtungen**.
-Dazu kommt pro Raum ein **Gesamtbild als Vorlage**, nach dem ich den Raum aufbaue.
+**So kombinieren wir beides, pro Raum zwei Bilder:**
 
-### 0a. Regel-Block (zusätzlich zum STIL-BLOCK in jeden Innenraum-Prompt kopieren)
+1. **Raumbild:** Wände, Boden, Teppiche und **alles, was an einer Wand steht**, als ein Bild gemalt wie früher
+   (Regale an der Rückwand, Theke, Küche, Kühlschränke, Fenster, Uhren …). **Die Raummitte bleibt leerer Boden.**
+2. **Möbel-Blatt:** Nur die **frei stehenden Möbel** für die Mitte (Tische mit Stühlen, Bänke, Regalreihen, Sofas),
+   im **gleichen Stil und Winkel wie das Raumbild**. Die setze ich einzeln ein. Dann stimmt die Kollision
+   und man kann hinter ihnen vorbeilaufen.
 
-```
-INTERIOR RULES — all furniture uses the SAME 3/4 top-down camera as the floor tiles (camera looking down ~60°):
-you always see the TOP surface of every object (seat cushions, table tops, counter tops, machine roofs) plus a narrower front face. Never a flat straight-on front view.
-Furniture stands on the floor grid: its footprint is a whole number of tiles (1×1, 2×1, 3×1, 2×2 …), its top may stick up into the tile above, like the shelves in the attached sheets.
-Every SEAT (chair, stool, bench, sofa, waiting-room seat row) is drawn in 4 orientations side by side: facing down (towards viewer), facing up (back visible), facing left, facing right.
-Tables are drawn on their own, without chairs, so chairs can be placed around them.
-Wall-mounted things (clocks, posters, boards, signs, windows, timetables) are drawn flat on a piece of wall, separately from floor furniture.
-Same scale as the characters in the attached character sheet: a chair seat is at knee height of a character, a counter at hip height, a door is 1.5 characters tall.
-```
+**Referenzbilder bei jedem Prompt mitgeben:** Blatt 0, das passende alte Raumbild aus `art/reference/`
+und bei den Möbel-Blättern zusätzlich das fertige Raumbild aus Schritt 1.
 
-### 0b. Bahnhof-Wartesaal: Wände, Boden und Möbel
+### Welche Innenräume gebraucht werden
 
-```
-[STYLE LOCK]
-[INTERIOR RULES]
-Interior tile and furniture sheet for a small rural Japanese train station waiting room (Hinomori Station), matching the attached Hinomori sheets.
-Room shell pieces:
-- floor: light grey stone tiles, and the same floor with the yellow tactile paving strip (straight, corner, end)
-- back wall, 2 tiles tall: white plaster upper part, grey tiled lower part; a variant with a large window showing the platform and a stopped train outside; a variant with the ticket window (glass, small counter, staff visible behind it) built into the wall; a variant with the exit to the platform (opening with the ticket gates in it)
-- left and right side walls seen from above as thin grey wall edges, 1 tile wide, with corner pieces; bottom wall seen from above (thin edge) with a 1-tile and a 2-tile door gap and a sliding glass entrance door
-Furniture (3/4 top-down, see INTERIOR RULES):
-- a row of 3 connected plastic waiting seats (blue) in 4 orientations; a 2-seat wooden bench in 4 orientations
-- a row of 3 automatic ticket gates seen from above (you see their tops and the walkway between them)
-- 2 ticket machines side by side against the wall, a coin locker block 2×1, a red drink vending machine, a ticket-office counter 3×1
-- a waiting-room kerosene stove 1×1 with a kettle on top, a small round table, a magazine rack, a 3-bin trash station, a potted plant, a flower box
-Wall items: departure board with two screens, round station clock, regional route map, two travel posters, "lost and found" sign plate (no readable text).
-At least 16 px magenta gap between all pieces, no labels. Pure magenta #FF00FF background.
-```
+| # | Raum | Größe (Kacheln) | Eingang | Status |
+| --- | --- | --- | --- | --- |
+| 1 | Bahnhof-Wartesaal | 15 × 11 | 1 breit | gibt es, soll schöner werden (am dringendsten) |
+| 2 | Bibliothek | 14 × 12 | 2 breit | gibt es, soll schöner werden |
+| 3 | Café ことのは | 13 × 12 | 1 breit | gibt es, soll schöner werden |
+| 4 | Konbini | 15 × 12 | 1 breit | gibt es, soll schöner werden |
+| 5 | Wohnung der Heldin | 12 × 12 | 2 breit | gibt es, soll schöner werden |
+| 6 | Ramen-Laden まんぷく | 12 × 10 | 1 breit | **neu** (ist im Moment „heute geschlossen“) |
+| 7 | Labor von Dr. Kirishima | 14 × 11 | 1 breit | **neu** (Tür ist im Moment abgeschlossen) |
 
-### 0c. Sitzmöbel und Tische für die anderen Räume (alle 4 Richtungen)
+Räume 6 und 7 sind optional. Das Gebäude steht schon im Ort, und ich würde dazu eine kleine Szene schreiben.
+
+### 0a. Raumbild (für jeden Raum gleich, nur die Platzhalter ersetzen)
 
 ```
 [STYLE LOCK]
-[INTERIOR RULES]
-Seating and table sheet for the Hinomori interiors, matching the attached café, library, apartment and konbini sheets.
-Each seat in 4 orientations (down, up, left, right) in one row:
-- café: wooden chair with red cushion, wooden chair with green cushion, bar stool, red booth sofa (2-seat), green sofa (3-seat), green armchair
-- library: wooden chair with blue seat, reading armchair (green)
-- apartment: floor cushion (zabuton) blue, red and pink, desk chair (pink office chair)
-- konbini: eat-in counter stool
-Tables alone, seen from above: small round café table, square café table for 2, long library reading table with green desk lamps (3×1), low apartment table, café booth table 1×2, konbini eat-in counter 3×1 along a window.
-At least 16 px magenta gap, no labels. Pure magenta #FF00FF background.
+Painted interior room for a top-down 16-bit RPG, in the same look as the attached reference room: warm lamp light, wooden beams,
+3/4 top-down view (camera looking down ~60°), side walls visible from above, every object shows its top surface. Never a straight-on front view.
+EXACT LAYOUT on a tile grid — {W} × {H} tiles, 1 tile = 64 px, image exactly {W*64} × {H*64} px:
+- top 2 tile rows: the back wall (windows, clocks, pictures, boards, things hanging on the wall)
+- leftmost and rightmost tile column: the side walls seen from above (wooden beam + narrow strip of wall)
+- bottom tile row: thin wall edge seen from above, with the entrance gap ({DOOR} tiles wide) in the middle and a door mat just inside
+- furniture that stands AGAINST A WALL is painted into the room and is at most 1 tile deep (shelves, counters, kitchen, fridges, machines)
+- the MIDDLE of the room ({MIDDLE}) is EMPTY floor, with rugs only. Free-standing furniture is added separately later.
+No characters, no text, no grid lines. Everything outside the room is pure magenta #FF00FF.
+Room: {ROOM}
 ```
 
-### 0d. Raum-Vorlagen (so soll jeder Raum fertig aussehen)
-
-Ein Bild pro Raum. Ich nutze es als Bauplan und setze den Raum dann aus den Einzelteilen zusammen.
-Die Raumgröße bitte genau so angeben, wie sie im Spiel ist.
+### 0b. Möbel-Blatt (für jeden Raum gleich, nur die Liste ersetzen)
 
 ```
 [STYLE LOCK]
-[INTERIOR RULES]
-A finished top-down RPG room mock-up, as seen in-game, using exactly the furniture from the attached sheets.
-Room size: {W} tiles wide × {H} tiles tall including walls. Top 2 rows: back wall. Left and right: thin side wall edges. Bottom row: thin wall edge with the entrance gap in the middle.
-Leave clear walking paths at least 1 tile wide from the entrance to every interactive object. Characters are not drawn.
-Room: {ROOM DESCRIPTION}
-No text, no grid lines. Fill the area outside the room with pure magenta #FF00FF.
+Free-standing furniture for the attached room picture: same painting style, colours, light and 3/4 top-down angle (top surfaces visible, never a straight-on front view).
+Same scale as the room and the attached characters. Footprints are whole tiles (1 tile = 64 px); tall pieces may stick up into the tile above.
+Every seat is drawn in the orientations listed. Each piece separately, at least 24 px magenta gap, no shadows on the floor, no labels.
+Pure magenta #FF00FF background.
+Pieces: {PIECES}
 ```
 
-Einsetzen für **{W} × {H}** und **{ROOM DESCRIPTION}**:
+### Einsetzen pro Raum
 
-| Raum | Größe | Beschreibung |
-| --- | --- | --- |
-| Bahnhof | 15 × 11 | Small rural station waiting room: ticket window and ticket machines on the back wall, ticket gates to the platform at the top right, departure board and clock above them, two rows of seats facing each other in the middle, kerosene stove between them, lockers and vending machine on the side walls, trash bins and plants by the entrance. |
-| Bibliothek | 14 × 12 | Quiet old town library: tall bookshelves along the back wall, grandfather clock, lending desk with a librarian's chair near the right, two long reading tables with chairs on both sides, a reading corner with two armchairs and a rug, magazine rack, returned-books cart. |
-| Café | 13 × 12 | Cosy retro café: bar counter with stools along the top left, cake display, kitchen shelves behind the counter, two tables for 2 with chairs facing each other, a booth with two sofas facing each other, a green sofa corner, bookshelf, plants, a small menu board by the entrance. |
-| Konbini | 15 × 12 | Japanese convenience store: drink fridges along the back wall, bento and onigiri shelves, two aisles of shelves, register counter with hot snacks on the right, coffee machine, ice cream freezer, magazine rack by the window, ATM, trash bins by the door. |
-| Wohnung | 12 × 12 | Small one-room apartment of a student: bed with nightstand top left, desk with laptop and pink chair, bookshelf, wardrobe, TV on a low board, kotatsu with cushions around it, small kitchen and fridge at the bottom left, shoe rack by the door, plants. |
+**1. Bahnhof-Wartesaal**: {W}=15, {H}=11, Bild 960 × 704 px, {DOOR}=1, {MIDDLE}=tile columns 2–12, rows 4–8
+
+- {ROOM}: `Small rural Japanese train station waiting room (Hinomori Station), light grey stone floor with a yellow tactile strip from the entrance. Back wall: ticket window with a small counter and staff area behind glass on the left, two ticket machines, a big departure board and a round clock in the middle, a wide window to the platform with a stopped two-car train outside. Top right corner: three automatic ticket gates in an opening to the platform. Left wall: coin lockers, regional route map. Right wall: red drink vending machine, travel posters, a small notice board. Bottom: trash bins and a plant next to the entrance.`
+- {PIECES}: `a row of 3 connected blue waiting seats facing DOWN and the same facing UP (2×1 each); a 2-seat wooden bench facing down, up, left and right; an old kerosene stove with a kettle (1×1); a low wooden side table (1×1); a potted plant (1×1); a standing sign with the timetable (1×1)`
+
+**2. Bibliothek**: 14 × 12, Bild 896 × 768 px, {DOOR}=2, {MIDDLE}=columns 2–11, rows 4–9
+
+- {ROOM}: `Quiet old town library with warm wooden floor. Back wall: tall bookshelves with a ladder, a grandfather clock, two windows, a notice board with flyers. Left and right walls: lower bookshelves, a magazine rack, a globe on a stand. A big patterned rug in the middle.`
+- {PIECES}: `long reading table with two green desk lamps (3×1, seen from above); wooden library chair facing up, down, left and right; lending desk with a computer and book stacks (2×1) with the librarian's chair behind it; reading corner set: round table (1×1) and green armchair facing left and right; returned-books cart (1×1); standing display of recommended books (1×1)`
+
+**3. Café ことのは**: 13 × 12, Bild 832 × 768 px, {DOOR}=1, {MIDDLE}=columns 2–11, rows 5–9
+
+- {ROOM}: `Cosy retro Japanese café (kissaten), dark wooden floor, warm pendant lamps. Back wall: shelves with cups, jars and coffee beans, an espresso machine. In tile row 3: a long bar counter from the left wall to the middle with a cake display, leaving a 1-tile walkway behind it for the owner. Right side of the back wall: cupboard, fridge, grandfather clock. Left wall: bookshelf with plants. Window with curtains, framed pictures.`
+- {PIECES}: `bar stool facing up (1×1); square wooden table for two (1×1); wooden chair with red cushion facing left and right; booth: small table (1×1) and red booth sofa facing down and up (1×1); green 3-seat sofa facing up (2×1) with a low coffee table (2×1); chalkboard menu stand (1×1); large potted plant; small blossom tree in a pot`
+
+**4. Konbini**: 15 × 12, Bild 960 × 768 px, {DOOR}=1, {MIDDLE}=columns 1–9, rows 4–9
+
+- {ROOM}: `Bright Japanese convenience store, light tiled floor. Back wall: a row of glass drink fridges, bento and onigiri chilled shelf, coffee machine. Right side: the register counter running top to bottom in tile column 11, with a 1-tile walkway behind it for the clerk, hot snack case and oden pot on the counter. Bottom wall: glass front with a magazine rack below the window, ATM and copy machine. Next to the entrance: trash bins and a stack of shopping baskets. Posters with prices (no readable text).`
+- {PIECES}: `double-sided shop shelf seen from above, full of snacks (2×1) — 4 variants (snacks, cup noodles, drinks, daily goods); low ice cream freezer chest (2×1); end-cap display with a special offer (1×1); stack of shopping baskets (1×1)`
+
+**5. Wohnung**: 12 × 12, Bild 768 × 768 px, {DOOR}=2, {MIDDLE}=columns 2–9, rows 4–8
+
+- {ROOM}: `Small cosy one-room apartment of a female student, light wooden floor. Back wall: window with curtains, desk with laptop and a pink office chair, bookshelf, wardrobe, a sakura scroll and a clock. Left wall: single bed with purple blanket and a nightstand at the top, small kitchen and a fridge at the bottom. Right wall: TV on a low board, floor lamp. By the entrance: shoe rack, mirror, small step (genkan).`
+- {PIECES}: `kotatsu with a floral quilt (2×2) seen from above; floor cushion (zabuton) in blue, red and pink (1×1); laundry basket (1×1); potted plant big and small (1×1); bean bag (1×1); small aquarium on a stand (1×1)`
+
+**6. Ramen-Laden まんぷく (neu)**: 12 × 10, Bild 768 × 640 px, {DOOR}=1, {MIDDLE}=columns 2–9, rows 5–7
+
+- {ROOM}: `Small traditional ramen shop, dark wooden interior, warm light, steam. Back wall: open kitchen with big soup pots on gas burners, noodle boiler, shelves with bowls, wooden menu tags hanging on the wall, a noren curtain to the back room. In tile row 3: a wooden counter across the room with a 1-tile walkway behind it for the chef. Left wall: water dispenser and cups. By the entrance: meal-ticket vending machine.`
+- {PIECES}: `round counter stool facing up (1×1); small wooden table for 4 (2×1); wooden stool (1×1); stack of bowls (1×1); a beckoning-cat figurine on a small shelf (1×1)`
+
+**7. Labor von Dr. Kirishima (neu)**: 14 × 11, Bild 896 × 704 px, {DOOR}=1, {MIDDLE}=columns 2–11, rows 4–8
+
+- {ROOM}: `Small cluttered research lab of a scientist who studies Kotodama (creatures born from words). Grey floor, white walls. Back wall: whiteboard covered in kanji and diagrams, shelves full of folders and old books, a window with blinds. Left wall: computer desk with two monitors and an office chair. Right wall: cabinet with glass jars holding tiny glowing lights, a coat rack with a white lab coat. Cardboard boxes by the entrance.`
+- {PIECES}: `large central worktable with papers, a microscope and a softly glowing stone (3×2); office chair facing up, down, left and right; lab cart with glassware (1×1); stack of boxes (1×1); potted plant (1×1); a small sofa with a blanket (2×1) facing down`
+
+**Reihenfolge:** Bahnhof → Bibliothek → Café → Konbini → Wohnung, danach optional Ramen und Labor.
+Pro Raum zuerst das Raumbild, dann das Möbel-Blatt (das fertige Raumbild als Referenz mitgeben).
 
 ---
 
