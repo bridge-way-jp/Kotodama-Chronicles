@@ -13,6 +13,7 @@ export const DEFAULT_SETTINGS: Settings = {
   newPerDay: 8,
   ttsRate: 1,
   sfx: true,
+  musicVolume: 0.5,
 };
 
 export function todayKey(now = Date.now()): string {

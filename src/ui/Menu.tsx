@@ -14,7 +14,7 @@ import { SECTIONS, type Section } from '../core/exam';
 import { exportToJson, makeEnvelope } from '../core/save';
 import { ExportBox, ImportBox } from './Backup';
 import { saveNow, saveStatus } from '../core/persistence';
-import { setSfx, hasJapaneseVoice, ttsAvailable } from '../core/audio';
+import { setSfx, setMusicVolume, hasJapaneseVoice, ttsAvailable } from '../core/audio';
 import { ItemDetail, MASTERY_LABEL } from './Cards';
 import type { Settings } from '../core/types';
 
@@ -473,6 +473,21 @@ function SettingsTab({ actions }: { actions: MenuActions }) {
         <select value={st.ttsRate} onChange={(e) => set('ttsRate', Number(e.target.value))}>
           {[0.7, 0.85, 1, 1.15].map((n) => <option key={n} value={n}>{n}×</option>)}
         </select>
+      </label>
+      <label>
+        Music volume
+        <input
+          id="music-volume"
+          type="range"
+          min={0}
+          max={1}
+          step={0.05}
+          value={st.musicVolume ?? 0.5}
+          onChange={(e) => {
+            set('musicVolume', Number(e.target.value));
+            setMusicVolume(Number(e.target.value));
+          }}
+        />
       </label>
       <label>
         Sound effects <input type="checkbox" checked={st.sfx} onChange={(e) => set('sfx', e.target.checked)} />

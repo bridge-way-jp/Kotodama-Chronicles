@@ -6,7 +6,7 @@ import { bus } from '../core/events';
 import { store } from '../core/store';
 import { pickRule, type Step } from '../core/script';
 import { healTeam, runAction, type ActionHooks } from '../core/game';
-import { setSfx, sfx, stopSpeech } from '../core/audio';
+import { MAP_MUSIC, duckMusic, playMusic, setMusicVolume, setSfx, sfx, stopMusic, stopSpeech } from '../core/audio';
 import { SCRIPTS } from '../content/scripts';
 import { saveNow } from '../core/persistence';
 import type { BattleSetup } from '../core/battle';
@@ -74,6 +74,12 @@ export function GameView({ onExit }: { onExit: () => void }) {
     },
   };
 
+  // battles get a quieter mix so the Japanese questions stay in focus
+  const inBattle = overlays.some((o) => o.kind === 'battle' || o.kind === 'exam');
+  useEffect(() => {
+    duckMusic(inBattle ? 0.45 : 1);
+  }, [inBattle]);
+
   // lock world input while any overlay is open
   useEffect(() => {
     input.locked = overlays.length > 0;
@@ -82,6 +88,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
 
   useEffect(() => {
     setSfx(store.s.settings.sfx);
+    setMusicVolume(store.s.settings.musicVolume ?? 0.5);
     if (!gameRef.current && hostRef.current) gameRef.current = createGame(hostRef.current);
     const offs = [
       bus.on('interact', ({ id }) => {
@@ -96,11 +103,13 @@ export function GameView({ onExit }: { onExit: () => void }) {
       bus.on('message', ({ text, en }) => push({ kind: 'script', steps: [{ say: text, en }] })),
       bus.on('encounter', (p) => push({ kind: 'battle', setup: { species: p.species, level: p.level, recruitable: true, bg: p.bg } })),
       bus.on('open-menu', () => push({ kind: 'menu' })),
+      bus.on('map-entered', ({ id }) => playMusic(MAP_MUSIC[id] ?? 'town')),
     ];
     if (!store.s.flags.intro_done) push({ kind: 'script', steps: INTRO });
     return () => {
       offs.forEach((o) => o());
       stopSpeech();
+      stopMusic();
       gameRef.current?.destroy(true);
       gameRef.current = null;
     };

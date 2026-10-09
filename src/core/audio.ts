@@ -44,6 +44,13 @@ if (ttsAvailable()) {
 /** Speaks lines sequentially. Resolves when finished (or immediately if TTS unavailable). */
 export function speak(lines: { text: string; voice?: 'f' | 'm' }[], rate = 1): Promise<void> {
   if (!ttsAvailable()) return Promise.resolve();
+  // keep spoken Japanese clearly audible over the music
+  const prevDuck = duck;
+  duckMusic(Math.min(prevDuck, 0.2));
+  return speakInner(lines, rate).finally(() => duckMusic(prevDuck));
+}
+
+function speakInner(lines: { text: string; voice?: 'f' | 'm' }[], rate: number): Promise<void> {
   speechSynthesis.cancel();
   return new Promise((resolve) => {
     let i = 0;
@@ -102,4 +109,105 @@ export function sfx(kind: 'blip' | 'ok' | 'bad' | 'hit' | 'level' | 'open') {
   } catch {
     /* audio not available */
   }
+}
+
+// ------------------------------------------------------------------ music
+/**
+ * Background music. Each map names a track; tracks that don't exist yet fall
+ * back to the town theme. Files live in public/audio/<key>.mp3.
+ * Browsers only allow audio after a user interaction, so a blocked start is
+ * retried on the next key press or tap.
+ */
+export const TRACKS: Record<string, string> = {
+  town: 'audio/town.mp3',
+};
+
+export const MAP_MUSIC: Record<string, string> = {
+  town: 'town', apartment: 'home', cafe: 'cafe', konbini: 'town', library: 'home', station: 'town', forest: 'forest',
+};
+
+let music: HTMLAudioElement | null = null;
+let musicSrc = '';
+let musicVolume = 0.5;
+let duck = 1;
+let fadeTimer: ReturnType<typeof setInterval> | null = null;
+
+function target() {
+  return musicVolume * duck;
+}
+
+function fadeTo(el: HTMLAudioElement, to: number, ms: number, done?: () => void) {
+  const from = el.volume;
+  const start = performance.now();
+  const t = setInterval(() => {
+    const k = Math.min(1, (performance.now() - start) / ms);
+    el.volume = Math.max(0, Math.min(1, from + (to - from) * k));
+    if (k >= 1) {
+      clearInterval(t);
+      done?.();
+    }
+  }, 40);
+  return t;
+}
+
+let pendingRetry = false;
+function tryPlay(el: HTMLAudioElement) {
+  el.play().catch(() => {
+    if (pendingRetry) return;
+    pendingRetry = true;
+    const retry = () => {
+      pendingRetry = false;
+      window.removeEventListener('keydown', retry);
+      window.removeEventListener('pointerdown', retry);
+      if (music === el) el.play().catch(() => undefined);
+    };
+    window.addEventListener('keydown', retry);
+    window.addEventListener('pointerdown', retry);
+  });
+}
+
+export function playMusic(key: string) {
+  const src = TRACKS[key] ?? TRACKS.town;
+  if (!src || src === musicSrc) return;
+  const old = music;
+  if (old) fadeTo(old, 0, 800, () => old.pause());
+  musicSrc = src;
+  const el = new Audio(src);
+  el.loop = true;
+  el.volume = 0;
+  music = el;
+  tryPlay(el);
+  if (fadeTimer) clearInterval(fadeTimer);
+  fadeTimer = fadeTo(el, target(), 1200);
+}
+
+export function stopMusic() {
+  if (music) {
+    const el = music;
+    fadeTo(el, 0, 600, () => el.pause());
+  }
+  music = null;
+  musicSrc = '';
+}
+
+export function setMusicVolume(v: number) {
+  musicVolume = v;
+  if (music) music.volume = target();
+}
+
+/** lower the music (e.g. during battles or listening exercises); 1 = normal */
+export function duckMusic(factor: number) {
+  duck = factor;
+  if (music) {
+    if (fadeTimer) clearInterval(fadeTimer);
+    fadeTimer = fadeTo(music, target(), 500);
+  }
+}
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (!music) return;
+    if (document.visibilityState === 'hidden') music.pause();
+    else tryPlay(music);
+  });
 }

@@ -62,6 +62,7 @@ export interface Settings {
   newPerDay: number;
   ttsRate: number;
   sfx: boolean;
+  musicVolume: number;
 }
 
 export interface SkillStat {
