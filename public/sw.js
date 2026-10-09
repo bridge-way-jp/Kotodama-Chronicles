@@ -2,6 +2,7 @@
  * is cached so it runs without a connection. Pages are network-first so updates arrive
  * as soon as you are online; everything else is cache-first. */
 const PREFIX = 'kotodama-';
+const BUILD = '__BUILD__'; // replaced at build time (vite.config.ts), so every release installs fresh
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -11,7 +12,7 @@ self.addEventListener('install', (event) => {
       const cache = await caches.open(PREFIX + version);
       // add in small batches so one slow file doesn't fail everything
       for (let i = 0; i < files.length; i += 20) {
-        await Promise.all(files.slice(i, i + 20).map((f) => cache.add(f).catch(() => undefined)));
+        await Promise.all(files.slice(i, i + 20).map((f) => cache.add(new Request(f, { cache: 'reload' })).catch(() => undefined)));
       }
       await cache.add('./').catch(() => undefined);
       self.skipWaiting();

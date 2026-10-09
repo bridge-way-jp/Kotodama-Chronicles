@@ -10,8 +10,14 @@ if (new URLSearchParams(location.search).has('debug')) (window as any).__kc = { 
 
 // installable app + offline play (only on a real https site, not inside embedded previews)
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost') && window.self === window.top) {
+  // a new release took over: reload once so images with unchanged names are fetched fresh
+  // (progress is autosaved; skipped on the very first install)
+  const hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (hadController) location.reload();
+  });
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => undefined);
+    navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).catch(() => undefined);
   });
 }
 

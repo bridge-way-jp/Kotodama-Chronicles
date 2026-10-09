@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { readdirSync, statSync, writeFileSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 /** writes dist/precache.json: every built file, used by public/sw.js for offline play */
@@ -20,7 +20,11 @@ function precacheList() {
       };
       walk(root);
       const list = files.filter((f) => f !== 'sw.js' && f !== 'precache.json');
-      writeFileSync(join(root, 'precache.json'), JSON.stringify({ version: Date.now().toString(36), files: list }));
+      const version = Date.now().toString(36);
+      writeFileSync(join(root, 'precache.json'), JSON.stringify({ version, files: list }));
+      // stamp the build into sw.js: a changed service worker is what makes browsers install the update
+      const sw = join(root, 'sw.js');
+      writeFileSync(sw, readFileSync(sw, 'utf8').replace('__BUILD__', version));
     },
   };
 }
