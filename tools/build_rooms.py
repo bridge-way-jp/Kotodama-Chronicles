@@ -104,6 +104,7 @@ def fit(img, w, h):
 # ------------------------------------------------------------------ room definitions
 # furniture: (id, sheet, index, x, y, w, h, script)  footprint in tiles; script None = decoration (not solid)
 # optional 9th field: dict(counter=True) marks the footprint as counter tiles (talk across),
+#   tw=1.5 scales the piece to that width in tiles (for sheets drawn at another scale),
 #   depink=True removes magenta showing through see-through parts,
 #   split=0.45 cuts the sprite: the top part (back shelves) is drawn behind people standing behind it
 
@@ -136,50 +137,59 @@ ROOMS = {
             ('baskets', 'konbini', 26, 5, 10, 1, 1, 'konbini_baskets'),
         ],
     ),
+    # painted as one picture (art/sheets/room_cafe_v2.webp); free-standing furniture from hm_cafe_furniture.webp
     'cafe': dict(
-        size=(13, 12), door=[6], floor=('tiles', 1), wall=('tiles', 17),
-        wall_items=[('cafe', 75, 10.5, 0.2), ('cafe', 29, 7.5, 0.35)],
-        rugs=[('cafe', 21, 9.0, 7.0), ('tiles', 68, 6.5, 10.5)],
+        size=(13, 12), painted='room_cafe_v2.webp', crop=(11, 7, 1293, 1181),
+        grid=['W' * 13] * 4 + ['W' + 'c' * 9 + 'WWW', 'W' + 'c' * 9 + 'fWW', 'WW' + 'f' * 9 + 'WW']
+        + ['WW' + 'f' * 10 + 'W'] * 2 + ['WW' + 'f' * 9 + 'WW'] * 2 + ['W' * 6 + 'D' + 'W' * 6],
+        spots=[
+            ('counter', 1, 4, 9, 2, 'cafe_counter'),
+            ('fridge', 10, 4, 1, 1, 'cafe_shelf'),
+            ('cupboard', 11, 4, 1, 2, 'cafe_shelf'),
+            ('clock', 11, 6, 1, 1, 'cafe_clock'),
+            ('books', 1, 6, 1, 5, 'cafe_books'),
+            ('plant', 11, 9, 1, 2, 'plant'),
+        ],
         furniture=[
-            ('bar', 'cafe', 0, 0, 3, 7, 1, 'cafe_counter', dict(counter=True, split=0.42)),
-            ('cupboard', 'cafe', 5, 8, 2, 2, 1, 'cafe_shelf'),
-            ('fridge', 'cafe', 4, 10, 2, 1, 1, 'cafe_shelf'),
-            ('clock', 'cafe', 31, 11, 2, 1, 1, 'cafe_clock'),
-            ('plant', 'cafe', 16, 12, 2, 1, 1, 'plant'),
-            ('table', 'cafe', 7, 1, 6, 2, 1, 'cafe_table'),
-            ('table2', 'cafe', 7, 3, 8, 2, 1, 'cafe_table'),
-            ('booth_l', 'cafe', 12, 8, 6, 1, 1, 'cafe_table'),
-            ('booth_t', 'cafe', 13, 9, 6, 1, 1, 'cafe_table'),
-            ('booth_r', 'cafe', 14, 10, 6, 1, 1, 'cafe_table'),
-            ('sofa', 'cafe', 19, 9, 9, 2, 1, 'cafe_sofa'),
-            ('books', 'cafe', 22, 0, 8, 1, 1, 'cafe_books'),
-            ('sign', 'cafe', 48, 4, 10, 1, 1, 'cafe_menu'),
-            ('plant2', 'cafe', 53, 0, 10, 1, 1, 'plant'),
-            ('plant3', 'cafe', 17, 12, 10, 1, 1, 'plant'),
+            ('stool1', 'cafe_furniture', 3, 2, 6, 1, 1, 'cafe_counter', dict(tw=0.6)),
+            ('stool2', 'cafe_furniture', 3, 4, 6, 1, 1, 'cafe_counter', dict(tw=0.6)),
+            ('stool3', 'cafe_furniture', 3, 6, 6, 1, 1, 'cafe_counter', dict(tw=0.6)),
+            ('table', 'cafe_furniture', 0, 3, 8, 1, 1, 'cafe_table', dict(tw=1.0)),
+            ('chair1', 'cafe_furniture', 2, 2, 8, 1, 1, 'cafe_table', dict(tw=0.62)),
+            ('chair2', 'cafe_furniture', 1, 4, 8, 1, 1, 'cafe_table', dict(tw=0.62)),
+            ('table2', 'cafe_furniture', 0, 3, 10, 1, 1, 'cafe_table', dict(tw=1.0)),
+            ('chair3', 'cafe_furniture', 2, 2, 10, 1, 1, 'cafe_table', dict(tw=0.62)),
+            ('chair4', 'cafe_furniture', 1, 4, 10, 1, 1, 'cafe_table', dict(tw=0.62)),
+            ('booth_t', 'cafe_furniture', 5, 8, 7, 2, 1, 'cafe_sofa', dict(tw=1.6)),
+            ('booth_table', 'cafe_furniture', 4, 8, 8, 2, 1, 'cafe_table', dict(tw=1.3)),
+            ('booth_b', 'cafe_furniture', 6, 8, 9, 2, 1, 'cafe_sofa', dict(tw=1.6)),
+            ('sign', 'cafe_furniture', 8, 7, 10, 1, 1, 'cafe_menu', dict(tw=0.8)),
         ],
     ),
+    # painted as one picture (art/sheets/room_apartment_v2.webp); free-standing furniture from hm_apartment_furniture.webp
     'apartment': dict(
-        size=(12, 12), door=[5, 6], floor=('tiles', 0), wall=('tiles', 15),
-        wall_items=[('apartment', 21, 3.5, 0.15), ('apartment', 5, 8.5, 0.2), ('apartment', 26, 11.0, 0.1)],
-        rugs=[('apartment', 39, 8.5, 6.9), ('tiles', 68, 6.0, 10.5)],
+        size=(12, 12), painted='room_apartment_v2.webp', crop=(47, 44, 1208, 1176),
+        grid=['W' * 12] * 2 + ['WWWfWWWWWWWW'] * 2 + ['WWWffWWWWWWW', 'WWWfffffffWW', 'W' + 'f' * 9 + 'WW', 'WWWfffffffWW',
+              'WWWWffffffWW', 'WWWWfffffWWW', 'W' + 'f' * 7 + 'WWWW', 'WWWWWDDWWWWW'],
+        spots=[
+            ('bed', 1, 2, 2, 4, 'bed'),
+            ('desk', 4, 2, 4, 2, 'desk'),
+            ('chair', 5, 4, 1, 1, 'desk'),
+            ('shelf', 8, 2, 1, 3, 'shelf'),
+            ('wardrobe', 9, 2, 2, 3, 'wardrobe'),
+            ('lamp', 10, 5, 1, 1, 'floorlamp'),
+            ('tv', 10, 6, 1, 3, 'tv'),
+            ('plant', 10, 9, 1, 2, 'plant'),
+            ('mirror', 9, 9, 1, 2, 'mirror_room'),
+            ('shoes', 8, 10, 1, 1, 'shoes'),
+            ('kitchen', 1, 7, 2, 3, 'kitchen'),
+            ('fridge', 3, 8, 1, 2, 'fridge'),
+        ],
         furniture=[
-            ('bed', 'apartment', 0, 0, 2, 2, 3, 'bed'),
-            ('nightstand', 'apartment', 6, 2, 2, 1, 1, 'nightstand'),
-            ('desk', 'apartment', 7, 5, 2, 3, 1, 'desk'),
-            ('shelf', 'apartment', 2, 8, 2, 1, 1, 'shelf'),
-            ('wardrobe', 'apartment', 3, 9, 2, 2, 1, 'wardrobe'),
-            ('plant', 'apartment', 16, 11, 2, 1, 1, 'plant'),
-            ('tv', 'apartment', 13, 8, 4, 2, 1, 'tv'),
-            ('kotatsu', 'apartment', 14, 7, 6, 3, 2, 'kotatsu'),
-            ('cushion_b', 'apartment', 18, 6, 7, 1, 1, None),
-            ('cushion_r', 'apartment', 19, 10, 7, 1, 1, None),
-            ('lamp', 'apartment', 31, 11, 5, 1, 1, 'floorlamp'),
-            ('mirror', 'apartment', 30, 0, 8, 1, 1, 'mirror_room'),
-            ('kitchen', 'apartment', 17, 0, 10, 3, 1, 'kitchen'),
-            ('fridge', 'apartment', 11, 3, 10, 1, 1, 'fridge'),
-            ('shoes', 'apartment', 24, 8, 10, 1, 1, 'shoes'),
-            ('laundry', 'apartment', 28, 0, 6, 1, 1, 'laundry'),
-            ('plant2', 'apartment', 27, 11, 10, 1, 1, 'plant'),
+            ('kotatsu', 'apartment_furniture', 0, 6, 6, 2, 2, 'kotatsu', dict(tw=2.2)),
+            ('cushion_b', 'apartment_furniture', 1, 5, 7, 1, 1, None, dict(tw=0.8)),
+            ('cushion_r', 'apartment_furniture', 2, 8, 7, 1, 1, None, dict(tw=0.8)),
+            ('laundry', 'apartment_furniture', 6, 3, 5, 1, 1, 'laundry', dict(tw=0.8)),
         ],
     ),
     'library': dict(
@@ -241,7 +251,7 @@ def painted_shell(rid, r):
     """A room painted as one picture (art/sheets/<src>): crop the room, scale it to W x H tiles."""
     W, H = r['size']
     a = load(r['painted'])
-    a[magenta_mask(a)] = (34, 26, 20)  # outside the room: the dark game background
+    a[strict_bg(a)] = (34, 26, 20)  # outside the room: the dark game background (purple furniture survives)
     src = Image.fromarray(a.clip(0, 255).astype(np.uint8), 'RGB')
     src.crop(r['crop']).resize((W * T, H * T), Image.LANCZOS).save(os.path.join(OUT, f'room2_{rid}.png'))
     grid = [list(row) for row in r['grid']]
@@ -254,7 +264,12 @@ def place(rid, r, grid):
     objects = []
     for oid, sh, idx, x, y, w, h, script, *extra in r['furniture']:
         opt = extra[0] if extra else {}
-        p = piece(sh, idx, depink=opt.get('depink', False))
+        if opt.get('tw'):
+            # sheets drawn at another scale: fit the piece to a width in tiles
+            p = piece(sh, idx, scale=1, depink=opt.get('depink', False))
+            p = resize_px(p, max(8, round(p.height * opt['tw'] * T / p.width)))
+        else:
+            p = piece(sh, idx, depink=opt.get('depink', False))
         key = f'fu_{rid}_{oid}'
         if opt.get('split'):
             # back part drawn behind people standing behind the counter

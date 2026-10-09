@@ -214,82 +214,69 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
     "tiles": [
       "WWWWWWWWWWWWW",
       "WWWWWWWWWWWWW",
-      "fffffffffffff",
-      "cccccccffffff",
-      "fffffffffffff",
-      "fffffffffffff",
-      "fffffffffffff",
-      "fffffffffffff",
-      "fffffffffffff",
-      "fffffffffffff",
-      "fffffffffffff",
+      "WWWWWWWWWWWWW",
+      "WWWWWWWWWWWWW",
+      "WcccccccccWWW",
+      "WcccccccccfWW",
+      "WWfffffffffWW",
+      "WWffffffffffW",
+      "WWffffffffffW",
+      "WWfffffffffWW",
+      "WWfffffffffWW",
       "WWWWWWDWWWWWW"
     ],
     "objects": [
       {
-        "id": "cafe_bar_back",
-        "sprite": "fu_cafe_bar_back",
-        "x": 0,
-        "y": 0,
-        "w": 0,
-        "h": 0,
-        "solid": false,
-        "at": [
-          112,
-          89
-        ]
-      },
-      {
-        "id": "cafe_bar",
-        "sprite": "fu_cafe_bar",
-        "x": 0,
-        "y": 3,
-        "w": 7,
+        "id": "cafe_stool1",
+        "sprite": "fu_cafe_stool1",
+        "x": 2,
+        "y": 6,
+        "w": 1,
         "h": 1,
         "script": "cafe_counter"
       },
       {
-        "id": "cafe_cupboard",
-        "sprite": "fu_cafe_cupboard",
-        "x": 8,
-        "y": 2,
-        "w": 2,
-        "h": 1,
-        "script": "cafe_shelf"
-      },
-      {
-        "id": "cafe_fridge",
-        "sprite": "fu_cafe_fridge",
-        "x": 10,
-        "y": 2,
+        "id": "cafe_stool2",
+        "sprite": "fu_cafe_stool2",
+        "x": 4,
+        "y": 6,
         "w": 1,
         "h": 1,
-        "script": "cafe_shelf"
+        "script": "cafe_counter"
       },
       {
-        "id": "cafe_clock",
-        "sprite": "fu_cafe_clock",
-        "x": 11,
-        "y": 2,
+        "id": "cafe_stool3",
+        "sprite": "fu_cafe_stool3",
+        "x": 6,
+        "y": 6,
         "w": 1,
         "h": 1,
-        "script": "cafe_clock"
-      },
-      {
-        "id": "cafe_plant",
-        "sprite": "fu_cafe_plant",
-        "x": 12,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "plant"
+        "script": "cafe_counter"
       },
       {
         "id": "cafe_table",
         "sprite": "fu_cafe_table",
-        "x": 1,
-        "y": 6,
-        "w": 2,
+        "x": 3,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "cafe_table"
+      },
+      {
+        "id": "cafe_chair1",
+        "sprite": "fu_cafe_chair1",
+        "x": 2,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "cafe_table"
+      },
+      {
+        "id": "cafe_chair2",
+        "sprite": "fu_cafe_chair2",
+        "x": 4,
+        "y": 8,
+        "w": 1,
         "h": 1,
         "script": "cafe_table"
       },
@@ -297,16 +284,25 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
         "id": "cafe_table2",
         "sprite": "fu_cafe_table2",
         "x": 3,
-        "y": 8,
-        "w": 2,
+        "y": 10,
+        "w": 1,
         "h": 1,
         "script": "cafe_table"
       },
       {
-        "id": "cafe_booth_l",
-        "sprite": "fu_cafe_booth_l",
-        "x": 8,
-        "y": 6,
+        "id": "cafe_chair3",
+        "sprite": "fu_cafe_chair3",
+        "x": 2,
+        "y": 10,
+        "w": 1,
+        "h": 1,
+        "script": "cafe_table"
+      },
+      {
+        "id": "cafe_chair4",
+        "sprite": "fu_cafe_chair4",
+        "x": 4,
+        "y": 10,
         "w": 1,
         "h": 1,
         "script": "cafe_table"
@@ -314,64 +310,85 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
       {
         "id": "cafe_booth_t",
         "sprite": "fu_cafe_booth_t",
-        "x": 9,
-        "y": 6,
-        "w": 1,
+        "x": 8,
+        "y": 7,
+        "w": 2,
+        "h": 1,
+        "script": "cafe_sofa"
+      },
+      {
+        "id": "cafe_booth_table",
+        "sprite": "fu_cafe_booth_table",
+        "x": 8,
+        "y": 8,
+        "w": 2,
         "h": 1,
         "script": "cafe_table"
       },
       {
-        "id": "cafe_booth_r",
-        "sprite": "fu_cafe_booth_r",
-        "x": 10,
-        "y": 6,
-        "w": 1,
-        "h": 1,
-        "script": "cafe_table"
-      },
-      {
-        "id": "cafe_sofa",
-        "sprite": "fu_cafe_sofa",
-        "x": 9,
+        "id": "cafe_booth_b",
+        "sprite": "fu_cafe_booth_b",
+        "x": 8,
         "y": 9,
         "w": 2,
         "h": 1,
         "script": "cafe_sofa"
       },
       {
-        "id": "cafe_books",
-        "sprite": "fu_cafe_books",
-        "x": 0,
-        "y": 8,
-        "w": 1,
-        "h": 1,
-        "script": "cafe_books"
-      },
-      {
         "id": "cafe_sign",
         "sprite": "fu_cafe_sign",
-        "x": 4,
+        "x": 7,
         "y": 10,
         "w": 1,
         "h": 1,
         "script": "cafe_menu"
       },
       {
-        "id": "cafe_plant2",
-        "sprite": "fu_cafe_plant2",
-        "x": 0,
-        "y": 10,
-        "w": 1,
-        "h": 1,
-        "script": "plant"
+        "id": "cafe_counter",
+        "x": 1,
+        "y": 4,
+        "w": 9,
+        "h": 2,
+        "script": "cafe_counter"
       },
       {
-        "id": "cafe_plant3",
-        "sprite": "fu_cafe_plant3",
-        "x": 12,
-        "y": 10,
+        "id": "cafe_fridge",
+        "x": 10,
+        "y": 4,
         "w": 1,
         "h": 1,
+        "script": "cafe_shelf"
+      },
+      {
+        "id": "cafe_cupboard",
+        "x": 11,
+        "y": 4,
+        "w": 1,
+        "h": 2,
+        "script": "cafe_shelf"
+      },
+      {
+        "id": "cafe_clock",
+        "x": 11,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "script": "cafe_clock"
+      },
+      {
+        "id": "cafe_books",
+        "x": 1,
+        "y": 6,
+        "w": 1,
+        "h": 5,
+        "script": "cafe_books"
+      },
+      {
+        "id": "cafe_plant",
+        "x": 11,
+        "y": 9,
+        "w": 1,
+        "h": 2,
         "script": "plant"
       }
     ],
@@ -381,94 +398,31 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
     "tiles": [
       "WWWWWWWWWWWW",
       "WWWWWWWWWWWW",
-      "ffffffffffff",
-      "ffffffffffff",
-      "ffffffffffff",
-      "ffffffffffff",
-      "ffffffffffff",
-      "ffffffffffff",
-      "ffffffffffff",
-      "ffffffffffff",
-      "ffffffffffff",
+      "WWWfWWWWWWWW",
+      "WWWfWWWWWWWW",
+      "WWWffWWWWWWW",
+      "WWWfffffffWW",
+      "WfffffffffWW",
+      "WWWfffffffWW",
+      "WWWWffffffWW",
+      "WWWWfffffWWW",
+      "WfffffffWWWW",
       "WWWWWDDWWWWW"
     ],
     "objects": [
       {
-        "id": "apartment_bed",
-        "sprite": "fu_apartment_bed",
-        "x": 0,
-        "y": 2,
-        "w": 2,
-        "h": 3,
-        "script": "bed"
-      },
-      {
-        "id": "apartment_nightstand",
-        "sprite": "fu_apartment_nightstand",
-        "x": 2,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "nightstand"
-      },
-      {
-        "id": "apartment_desk",
-        "sprite": "fu_apartment_desk",
-        "x": 5,
-        "y": 2,
-        "w": 3,
-        "h": 1,
-        "script": "desk"
-      },
-      {
-        "id": "apartment_shelf",
-        "sprite": "fu_apartment_shelf",
-        "x": 8,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "shelf"
-      },
-      {
-        "id": "apartment_wardrobe",
-        "sprite": "fu_apartment_wardrobe",
-        "x": 9,
-        "y": 2,
-        "w": 2,
-        "h": 1,
-        "script": "wardrobe"
-      },
-      {
-        "id": "apartment_plant",
-        "sprite": "fu_apartment_plant",
-        "x": 11,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "plant"
-      },
-      {
-        "id": "apartment_tv",
-        "sprite": "fu_apartment_tv",
-        "x": 8,
-        "y": 4,
-        "w": 2,
-        "h": 1,
-        "script": "tv"
-      },
-      {
         "id": "apartment_kotatsu",
         "sprite": "fu_apartment_kotatsu",
-        "x": 7,
+        "x": 6,
         "y": 6,
-        "w": 3,
+        "w": 2,
         "h": 2,
         "script": "kotatsu"
       },
       {
         "id": "apartment_cushion_b",
         "sprite": "fu_apartment_cushion_b",
-        "x": 6,
+        "x": 5,
         "y": 7,
         "w": 1,
         "h": 1,
@@ -477,51 +431,95 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
       {
         "id": "apartment_cushion_r",
         "sprite": "fu_apartment_cushion_r",
-        "x": 10,
+        "x": 8,
         "y": 7,
         "w": 1,
         "h": 1,
         "solid": false
       },
       {
+        "id": "apartment_laundry",
+        "sprite": "fu_apartment_laundry",
+        "x": 3,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "laundry"
+      },
+      {
+        "id": "apartment_bed",
+        "x": 1,
+        "y": 2,
+        "w": 2,
+        "h": 4,
+        "script": "bed"
+      },
+      {
+        "id": "apartment_desk",
+        "x": 4,
+        "y": 2,
+        "w": 4,
+        "h": 2,
+        "script": "desk"
+      },
+      {
+        "id": "apartment_chair",
+        "x": 5,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "desk"
+      },
+      {
+        "id": "apartment_shelf",
+        "x": 8,
+        "y": 2,
+        "w": 1,
+        "h": 3,
+        "script": "shelf"
+      },
+      {
+        "id": "apartment_wardrobe",
+        "x": 9,
+        "y": 2,
+        "w": 2,
+        "h": 3,
+        "script": "wardrobe"
+      },
+      {
         "id": "apartment_lamp",
-        "sprite": "fu_apartment_lamp",
-        "x": 11,
+        "x": 10,
         "y": 5,
         "w": 1,
         "h": 1,
         "script": "floorlamp"
       },
       {
-        "id": "apartment_mirror",
-        "sprite": "fu_apartment_mirror",
-        "x": 0,
-        "y": 8,
+        "id": "apartment_tv",
+        "x": 10,
+        "y": 6,
         "w": 1,
-        "h": 1,
+        "h": 3,
+        "script": "tv"
+      },
+      {
+        "id": "apartment_plant",
+        "x": 10,
+        "y": 9,
+        "w": 1,
+        "h": 2,
+        "script": "plant"
+      },
+      {
+        "id": "apartment_mirror",
+        "x": 9,
+        "y": 9,
+        "w": 1,
+        "h": 2,
         "script": "mirror_room"
       },
       {
-        "id": "apartment_kitchen",
-        "sprite": "fu_apartment_kitchen",
-        "x": 0,
-        "y": 10,
-        "w": 3,
-        "h": 1,
-        "script": "kitchen"
-      },
-      {
-        "id": "apartment_fridge",
-        "sprite": "fu_apartment_fridge",
-        "x": 3,
-        "y": 10,
-        "w": 1,
-        "h": 1,
-        "script": "fridge"
-      },
-      {
         "id": "apartment_shoes",
-        "sprite": "fu_apartment_shoes",
         "x": 8,
         "y": 10,
         "w": 1,
@@ -529,22 +527,20 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
         "script": "shoes"
       },
       {
-        "id": "apartment_laundry",
-        "sprite": "fu_apartment_laundry",
-        "x": 0,
-        "y": 6,
-        "w": 1,
-        "h": 1,
-        "script": "laundry"
+        "id": "apartment_kitchen",
+        "x": 1,
+        "y": 7,
+        "w": 2,
+        "h": 3,
+        "script": "kitchen"
       },
       {
-        "id": "apartment_plant2",
-        "sprite": "fu_apartment_plant2",
-        "x": 11,
-        "y": 10,
+        "id": "apartment_fridge",
+        "x": 3,
+        "y": 8,
         "w": 1,
-        "h": 1,
-        "script": "plant"
+        "h": 2,
+        "script": "fridge"
       }
     ],
     "image": "room2_apartment"
