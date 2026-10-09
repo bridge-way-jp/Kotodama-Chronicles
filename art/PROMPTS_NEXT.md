@@ -6,6 +6,90 @@ Reihenfolge = Wichtigkeit.
 
 ---
 
+## 0. Innenräume richtig von oben (Bahnhof + alle Räume)
+
+**Das Problem:** Die Möbel auf den bisherigen Blättern sind fast alle **gerade von vorne** gemalt, der Boden aber **schräg von oben**.
+Darum wirken Bänke, Drehkreuze und Automaten wie Pappaufsteller. Außerdem gibt es jedes Sitzmöbel nur in einer Richtung,
+also können sich Stühle nicht gegenüberstehen und Bänke nicht seitlich stehen.
+Der Bahnhof hat zusätzlich unten die Holzwand der Wohnung und keine eigenen Wände.
+
+**Die Lösung:** Neue Möbel-Blätter, auf denen **jedes Teil im gleichen Blickwinkel** wie der Boden gemalt ist
+(man sieht immer die **Oberseite** und die Vorderseite). Sitzmöbel gibt es dann in **allen 4 Richtungen**.
+Dazu kommt pro Raum ein **Gesamtbild als Vorlage**, nach dem ich den Raum aufbaue.
+
+### 0a. Regel-Block (zusätzlich zum STIL-BLOCK in jeden Innenraum-Prompt kopieren)
+
+```
+INTERIOR RULES — all furniture uses the SAME 3/4 top-down camera as the floor tiles (camera looking down ~60°):
+you always see the TOP surface of every object (seat cushions, table tops, counter tops, machine roofs) plus a narrower front face. Never a flat straight-on front view.
+Furniture stands on the floor grid: its footprint is a whole number of tiles (1×1, 2×1, 3×1, 2×2 …), its top may stick up into the tile above, like the shelves in the attached sheets.
+Every SEAT (chair, stool, bench, sofa, waiting-room seat row) is drawn in 4 orientations side by side: facing down (towards viewer), facing up (back visible), facing left, facing right.
+Tables are drawn on their own, without chairs, so chairs can be placed around them.
+Wall-mounted things (clocks, posters, boards, signs, windows, timetables) are drawn flat on a piece of wall, separately from floor furniture.
+Same scale as the characters in the attached character sheet: a chair seat is at knee height of a character, a counter at hip height, a door is 1.5 characters tall.
+```
+
+### 0b. Bahnhof-Wartesaal: Wände, Boden und Möbel
+
+```
+[STYLE LOCK]
+[INTERIOR RULES]
+Interior tile and furniture sheet for a small rural Japanese train station waiting room (Hinomori Station), matching the attached Hinomori sheets.
+Room shell pieces:
+- floor: light grey stone tiles, and the same floor with the yellow tactile paving strip (straight, corner, end)
+- back wall, 2 tiles tall: white plaster upper part, grey tiled lower part; a variant with a large window showing the platform and a stopped train outside; a variant with the ticket window (glass, small counter, staff visible behind it) built into the wall; a variant with the exit to the platform (opening with the ticket gates in it)
+- left and right side walls seen from above as thin grey wall edges, 1 tile wide, with corner pieces; bottom wall seen from above (thin edge) with a 1-tile and a 2-tile door gap and a sliding glass entrance door
+Furniture (3/4 top-down, see INTERIOR RULES):
+- a row of 3 connected plastic waiting seats (blue) in 4 orientations; a 2-seat wooden bench in 4 orientations
+- a row of 3 automatic ticket gates seen from above (you see their tops and the walkway between them)
+- 2 ticket machines side by side against the wall, a coin locker block 2×1, a red drink vending machine, a ticket-office counter 3×1
+- a waiting-room kerosene stove 1×1 with a kettle on top, a small round table, a magazine rack, a 3-bin trash station, a potted plant, a flower box
+Wall items: departure board with two screens, round station clock, regional route map, two travel posters, "lost and found" sign plate (no readable text).
+At least 16 px magenta gap between all pieces, no labels. Pure magenta #FF00FF background.
+```
+
+### 0c. Sitzmöbel und Tische für die anderen Räume (alle 4 Richtungen)
+
+```
+[STYLE LOCK]
+[INTERIOR RULES]
+Seating and table sheet for the Hinomori interiors, matching the attached café, library, apartment and konbini sheets.
+Each seat in 4 orientations (down, up, left, right) in one row:
+- café: wooden chair with red cushion, wooden chair with green cushion, bar stool, red booth sofa (2-seat), green sofa (3-seat), green armchair
+- library: wooden chair with blue seat, reading armchair (green)
+- apartment: floor cushion (zabuton) blue, red and pink, desk chair (pink office chair)
+- konbini: eat-in counter stool
+Tables alone, seen from above: small round café table, square café table for 2, long library reading table with green desk lamps (3×1), low apartment table, café booth table 1×2, konbini eat-in counter 3×1 along a window.
+At least 16 px magenta gap, no labels. Pure magenta #FF00FF background.
+```
+
+### 0d. Raum-Vorlagen (so soll jeder Raum fertig aussehen)
+
+Ein Bild pro Raum. Ich nutze es als Bauplan und setze den Raum dann aus den Einzelteilen zusammen.
+Die Raumgröße bitte genau so angeben, wie sie im Spiel ist.
+
+```
+[STYLE LOCK]
+[INTERIOR RULES]
+A finished top-down RPG room mock-up, as seen in-game, using exactly the furniture from the attached sheets.
+Room size: {W} tiles wide × {H} tiles tall including walls. Top 2 rows: back wall. Left and right: thin side wall edges. Bottom row: thin wall edge with the entrance gap in the middle.
+Leave clear walking paths at least 1 tile wide from the entrance to every interactive object. Characters are not drawn.
+Room: {ROOM DESCRIPTION}
+No text, no grid lines. Fill the area outside the room with pure magenta #FF00FF.
+```
+
+Einsetzen für **{W} × {H}** und **{ROOM DESCRIPTION}**:
+
+| Raum | Größe | Beschreibung |
+| --- | --- | --- |
+| Bahnhof | 15 × 11 | Small rural station waiting room: ticket window and ticket machines on the back wall, ticket gates to the platform at the top right, departure board and clock above them, two rows of seats facing each other in the middle, kerosene stove between them, lockers and vending machine on the side walls, trash bins and plants by the entrance. |
+| Bibliothek | 14 × 12 | Quiet old town library: tall bookshelves along the back wall, grandfather clock, lending desk with a librarian's chair near the right, two long reading tables with chairs on both sides, a reading corner with two armchairs and a rug, magazine rack, returned-books cart. |
+| Café | 13 × 12 | Cosy retro café: bar counter with stools along the top left, cake display, kitchen shelves behind the counter, two tables for 2 with chairs facing each other, a booth with two sofas facing each other, a green sofa corner, bookshelf, plants, a small menu board by the entrance. |
+| Konbini | 15 × 12 | Japanese convenience store: drink fridges along the back wall, bento and onigiri shelves, two aisles of shelves, register counter with hot snacks on the right, coffee machine, ice cream freezer, magazine rack by the window, ATM, trash bins by the door. |
+| Wohnung | 12 × 12 | Small one-room apartment of a student: bed with nightstand top left, desk with laptop and pink chair, bookshelf, wardrobe, TV on a low board, kotatsu with cushions around it, small kitchen and fridge at the bottom left, shoe rack by the door, plants. |
+
+---
+
 ## 1. Porträts für die Dialoge (passend zu den neuen Figuren)
 
 Die Gesprächsbilder sind noch die alten und passen nicht mehr zu den Figuren im Spiel.
