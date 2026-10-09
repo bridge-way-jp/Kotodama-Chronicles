@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Step } from '../core/script';
-import { check } from '../core/script';
+import { check, type Mood } from '../core/script';
 import { store } from '../core/store';
 import { runAction, type ActionHooks } from '../core/game';
 import { encounter, recordAnswer, recordComprehension, type Exercise } from '../core/learning';
@@ -63,6 +63,8 @@ export function ScriptRunner({ steps, onEnd, hooks }: { steps: Step[]; onEnd: ()
   }, [stack]);
 
   if (!step) return null;
+
+  if ('cg' in step) return <CgScene key={stackKey(stack)} step={step} onNext={() => advance()} />;
 
   if ('say' in step) return <SayBox key={stackKey(stack)} step={step} onNext={() => advance()} />;
 
@@ -149,6 +151,52 @@ function stackKey(stack: Frame[]) {
   return stack.map((f) => f.i).join('.') + ':' + stack.length;
 }
 
+/** Picks a portrait expression from the line when the script does not specify one. */
+export function inferMood(text: string): Mood {
+  if (/まさか|えっ|！？|あれ[、…？]|なんで|本当[？！]/.test(text)) return 'surprised';
+  if (/困って|すみません|申し訳|忘れて|気をつけ|危な|おかしい|ぼんやり|寂し|……。$/.test(text)) return 'worried';
+  if (/ありがとう|助かり|よかった|さすが|完璧|うれし|ようこそ|いらっしゃ|！$|ね。$|よ。$/.test(text)) return 'happy';
+  return 'neutral';
+}
+
+/** Full-screen story illustration with an optional caption. */
+function CgScene({ step, onNext }: { step: Extract<Step, { cg: string }>; onNext: () => void }) {
+  const [showEn, setShowEn] = useState(store.state?.settings.translation === 'always');
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (step.say) backlog.push({ who: '', text: step.say, en: step.en });
+    const onKey = (e: KeyboardEvent) => {
+      if (!['Enter', 'Space', 'KeyZ'].includes(e.code)) return;
+      if (!ref.current || ref.current.getClientRects().length === 0) return;
+      if (document.querySelector('.gloss-backdrop')) return;
+      e.preventDefault();
+      onNext();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return (
+    <div className="cg-scene" ref={ref} onClick={() => (sfx('blip'), onNext())}>
+      <img className="cg-img" src={`assets/${step.cg}.webp`} alt="" />
+      {step.say && (
+        <div className="cg-caption" onClick={(e) => e.stopPropagation()}>
+          <div className="dlg-text" onClick={() => onNext()}>
+            <Jp text={step.say} />
+          </div>
+          {showEn && step.en && <div className="dlg-en">{withName(step.en)}</div>}
+          <div className="dlg-tools">
+            {step.en && store.state?.settings.translation !== 'never' && (
+              <button className="en-btn" onClick={() => setShowEn(!showEn)}>EN</button>
+            )}
+            <span className="next-arrow blink" onClick={() => onNext()}>▼</span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function SayBox({ step, onNext }: { step: Extract<Step, { say: string }>; onNext: () => void }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const npc = step.who ? NPCS[step.who] : undefined;
@@ -175,7 +223,8 @@ function SayBox({ step, onNext }: { step: Extract<Step, { say: string }>; onNext
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const portrait = npc ? npc.portrait ?? (npc.sprite.startsWith('k_') ? npc.sprite : `${npc.sprite}${['boy', 'hero'].includes(npc.sprite) ? '_down' : ''}`) : null;
+  const base = npc ? npc.portrait ?? npc.sprite : null;
+  const portrait = base?.startsWith('portrait_') ? `${base}_${step.mood ?? inferMood(step.say)}` : base;
 
   return (
     <div className="dialogue-wrap" ref={wrapRef} onClick={() => (sfx('blip'), onNext())}>

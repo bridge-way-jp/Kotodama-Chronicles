@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { existsSync } from 'node:fs';
 import { createInitialState } from '../src/core/store';
 import { completeObjective, startQuest, runAction, addCreature, giveCreatureXp } from '../src/core/game';
 import { buildReviewSession, encounter, recordAnswer, exerciseFor, battleExercise, queueInfo } from '../src/core/learning';
@@ -41,7 +42,8 @@ describe('quests & scripts', () => {
         if ('reading' in st) expect(READINGS[st.reading], st.reading).toBeTruthy();
         if ('listening' in st) expect(LISTENING[st.listening], st.listening).toBeTruthy();
         if ('battle' in st) expect(SPECIES[st.battle.species]).toBeTruthy();
-        if ('say' in st && st.who) expect(NPCS[st.who], st.who).toBeTruthy();
+        if ('say' in st && 'who' in st && st.who) expect(NPCS[st.who], st.who).toBeTruthy();
+        if ('cg' in st) expect(existsSync(`public/assets/${st.cg}.webp`), st.cg).toBe(true);
         if ('do' in st)
           for (const a of st.do) {
             if ('objective' in a) {

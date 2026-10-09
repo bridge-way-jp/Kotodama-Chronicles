@@ -231,6 +231,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         say('kaede', 'いらっしゃいませ。……あら、あなたが@nameさんね？ 喫茶ことのはの{楓|かえで}です。', 'Welcome… Oh, you must be @name? I’m Kaede, of Café Kotonoha.'),
         say('kaede', '今朝、お店の前にこの手紙が置いてあったの。{宛先|あてさき|v:atesaki}にはあなたの名前。でも、{差出人|さしだしにん|v:sashidashinin}の名前がどこにもないのよ。', 'This letter was left in front of the shop this morning. Your name is on it as the addressee — but there’s no sender name anywhere.'),
         { do: [{ objective: 'mq3.kaede' }, { give: 'mystery_letter' }, { learn: ['v:atesaki', 'v:sashidashinin'] }] },
+        { cg: 'cg_letter', say: '白い封筒には、赤いろうで「K」と押してある。', en: 'The white envelope is sealed with red wax stamped “K”.' },
         say('kaede', 'どうぞ、ここで読んでみて。コーヒーでも飲みながらね。', 'Go ahead and read it here, over a cup of coffee.'),
         { reading: 'r_mystery_letter' },
         say('kaede', '「K」……？', '“K”…?'),
@@ -434,7 +435,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         n('古い{掲示板|けいじばん|v:keijiban}だ。紙はほとんど色あせて、文字が読めない。', 'An old bulletin board. The paper has faded almost completely; you can’t read it.'),
         n('……{耳を澄ます|みみをすます|v:mimiwosumasu}と、どこからか小さな声が聞こえる。', '…If you listen carefully, you can hear a small voice from somewhere.'),
         { listening: 'l_kotodama_call' },
-        n('掲示板の文字がふわりと光り、小さな青いきつねが現れた！', 'The writing on the board glows softly, and a small blue fox appears!'),
+        { cg: 'cg_board', say: '掲示板の文字がふわりと光り、小さな青いきつねが現れた！', en: 'The writing on the board glows softly, and a small blue fox appears!' },
         { do: [{ seen: 'yukitsune' }] },
         say('yukitsune', '……ここ、どこ？ だれも、わたしのこと覚えてないの……？', '…Where am I? Doesn’t anyone remember me…?'),
         talkQuiz('yukitsune', 0),
@@ -516,7 +517,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         say('kirishima', '計画の中心にいた研究者のイニシャルは……「K」だ。', 'The initial of the lead researcher of the project was… “K”.'),
         say('kirishima', '君に届いた手紙。もしかすると、計画はまだ終わっていないのかもしれない。', 'The letter you received… perhaps the project isn’t over yet.'),
         { do: [{ take: 'kakera' }, { objective: 'mq5.report' }, { rel: 'kirishima', points: 3, memory: 'archive_project' }, { learn: ['g:wokikkakeni', 'v:kakera'] }] },
-        n('― 第一章「日野森の夏」完 ―', '— End of Chapter 1: “Summer in Hinomori” —'),
+        { cg: 'cg_ending', say: '夕暮れの研究所。欠片の光は、まだ消えていなかった。\n― 第一章「日野森の夏」完 ―', en: 'Dusk at the research facility. The fragment’s light had not gone out yet.\n— End of Chapter 1: “Summer in Hinomori” —' },
         n('Chapter 1 complete! Hinomori stays open: keep befriending Kotodama in Midori Forest, finish side quests, and use your desk to review and track your N2 readiness. Chapter 2 is in development.'),
       ],
     },
@@ -533,7 +534,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       steps: [
         n('古い祠だ。石碑に何か{刻|きざ|v:kizamu}まれている……。', 'An old shrine. Something is carved into the stone…'),
         { reading: 'r_forest_stone' },
-        n('石碑が光った！ 祠の影から、黒い猫のような言霊が飛び出してきた！', 'The stone glows! A black, cat-like Kotodama leaps out of the shrine’s shadow!'),
+        { cg: 'cg_shrine', say: '石碑が光った！ 祠の影から、黒い猫のような言霊が飛び出してきた！', en: 'The stone glows! A black, cat-like Kotodama leaps out of the shrine’s shadow!' },
         {
           battle: { species: 'kurone', level: 6, boss: true, bg: 'bg_forest' },
           win: [

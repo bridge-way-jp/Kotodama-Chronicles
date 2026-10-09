@@ -115,10 +115,15 @@ in `content/maps.ts`, and the engine picks it up. `tests/game.test.ts` checks th
 NPC placement is valid.
 
 ### Art
-Characters, creatures, buildings, props and icons are cut from the concept sheet in `art/` by
-`python3 tools/extract_sprites.py` (requires Pillow + NumPy). Ground tiles and furniture are painted procedurally in
-`src/game/textures.ts`. Any texture can be replaced by dropping a PNG with the same key into `public/assets/`
-(e.g. 4-direction walk cycles for the hero) without touching game logic.
+- `art/concept-sheet.webp` → buildings, props, front-facing creatures and icons, cut by `python3 tools/extract_sprites.py`.
+- `art/sheets/*.webp` (flat magenta background) → cut by `python3 tools/extract_sheets.py` (Pillow, NumPy, SciPy):
+  player walk cycle (`hero_<dir>_<frame>`), 8 NPCs in four directions (`npc_<id>_<dir>`), dialogue portraits with
+  four expressions (`portrait_<id>_<neutral|happy|surprised|worried>`), creature back views for battles (`back_<sprite>`)
+  and five story illustrations (`cg_*`, shown by `{ cg: ... }` script steps).
+- Ground tiles and furniture are painted procedurally in `src/game/textures.ts`.
+- Any texture can be replaced by dropping a PNG with the same key into `public/assets/` without touching game logic.
+- `art/sheets/asset-pack.webp` and `overview.webp` are reference sheets (painted checkerboard background) for upcoming
+  content: starter lines, more creatures, interiors, items.
 
 ## Status
 
@@ -128,6 +133,5 @@ turn-based battles with recruitment, items and shop, relationships with remember
 diagnostic, section practice, timed mock exam, autosave and backups, touch controls.
 
 **Not yet:** chapters 2+ and further regions (city, mountain village, coast, university district), interiors for the
-library/konbini/station, train travel, apartment decoration, seasonal events, walk-cycle animations and dedicated NPC
-sprites, recorded native audio, kanji stroke-order data, broader N2 coverage (the full N2 scope is several thousand
+library/konbini/station, train travel, apartment decoration, seasonal events, walking NPCs, recorded native audio, kanji stroke-order data, broader N2 coverage (the full N2 scope is several thousand
 words), FSRS, cloud saves.

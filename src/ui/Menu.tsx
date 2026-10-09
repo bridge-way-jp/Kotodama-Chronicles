@@ -84,7 +84,7 @@ function StatusTab() {
   return (
     <div className="tab-content">
       <div className="status-head">
-        <img className="px portrait-lg" src="assets/portrait_hero.png" alt="" />
+        <img className="px portrait-lg" src="assets/portrait_hero_happy.png" alt="" />
         <div>
           <h2>{s.playerName}</h2>
           <div>Lv. {s.level} · ¥{s.money} · Day {s.day} ({s.timeOfDay === 'morning' ? '朝' : '夜'})</div>

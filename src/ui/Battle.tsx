@@ -239,7 +239,18 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
         <div className="arena-shade" />
         <InfoBox c={enemy} max={enemyMax} />
         <img className={`px enemy-sprite ${shake === 'enemy' ? 'shake' : ''} ${enemy.hp <= 0 ? 'fade' : ''}`} src={`assets/${esp.sprite}.png`} alt={esp.name} />
-        <img className={`px my-sprite ${shake === 'me' ? 'shake' : ''}`} src={`assets/${SPECIES[me.speciesId].sprite}.png`} alt="" />
+        <img
+          key={me.speciesId}
+          className={`px my-sprite back ${shake === 'me' ? 'shake' : ''}`}
+          src={`assets/back_${SPECIES[me.speciesId].sprite}.png`}
+          alt=""
+          onError={(e) => {
+            // no back view drawn yet: fall back to the mirrored front sprite
+            const img = e.currentTarget;
+            img.classList.remove('back');
+            img.src = `assets/${SPECIES[me.speciesId].sprite}.png`;
+          }}
+        />
         <InfoBox c={me} max={maxHp(me)} mine />
       </div>
       <div className="battle-ui">

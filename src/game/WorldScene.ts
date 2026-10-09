@@ -9,9 +9,13 @@ import type { Dir } from '../core/types';
 import { ANIMATED, TILE, buildProps, buildTileset } from './textures';
 import { input } from './input';
 
+const DIR_NAMES = ['down', 'left', 'right', 'up'];
+const NPC_SHEETS = ['mori', 'kaede', 'haruto', 'aoi', 'sato', 'kirishima', 'station_staff', 'customer'];
+
 export const ASSET_KEYS = [
-  'hero_down', 'hero_side', 'hero_side_flip', 'hero_up', 'boy_down', 'boy_side', 'boy_side_flip', 'boy_up',
-  'kimono_m', 'kimono_f',
+  // player walk cycle: hero_<dir>_<frame>, frames 0/2 standing, 1/3 stepping
+  ...DIR_NAMES.flatMap((d) => [0, 1, 2, 3].map((f) => `hero_${d}_${f}`)),
+  ...NPC_SHEETS.flatMap((n) => DIR_NAMES.map((d) => `npc_${n}_${d}`)),
   'k_fox_blue', 'k_fox_pink', 'k_sprout', 'k_bird_blue', 'k_fox_orange', 'k_puff', 'k_fox_black', 'k_fox_winged',
   'k_sprout2', 'k_blob_pink', 'k_bird_white', 'k_cat_black',
   'b_inn', 'b_house_blue', 'b_house_trad', 'b_konbini', 'b_shop_red', 'b_bridge',
@@ -48,6 +52,7 @@ export class WorldScene extends Phaser.Scene {
   tint?: Phaser.GameObjects.Rectangle;
   unsub: (() => void)[] = [];
   lastStepEncounter = 0;
+  stepCount = 0;
 
   constructor() {
     super('world');
@@ -157,7 +162,9 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
-  textureFor(base: string, dir: Dir): string {
+  textureFor(base: string, dir: Dir, frame = 0): string {
+    for (const k of [`${base}_${dir}_${frame}`, `${base}_${dir}_0`, `${base}_${dir}`]) if (this.textures.exists(k)) return k;
+    // legacy single-view sprites: side view mirrored for left
     const variant = dir === 'left' ? `${base}_side_flip` : dir === 'right' ? `${base}_side` : `${base}_${dir}`;
     if (this.textures.exists(variant)) return variant;
     if (this.textures.exists(`${base}_down`)) return `${base}_down`;
@@ -272,6 +279,8 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     this.moving = true;
+    this.stepCount++;
+    const stepFrame = this.stepCount % 2 ? 1 : 3;
     this.px = tx;
     this.py = ty;
     const startY = this.player.y;
@@ -285,14 +294,14 @@ export class WorldScene extends Phaser.Scene {
         const t = tw.getValue() ?? 0;
         const x = Phaser.Math.Linear(this.player.x, endX, t);
         const y = Phaser.Math.Linear(startY, endY, t);
-        const bob = Math.sin(t * Math.PI) * 2;
-        this.player.setPosition(x, y - bob);
-        this.player.setScale(1, 1 - Math.sin(t * Math.PI) * 0.04);
+        // alternate left/right step frames between tiles, stand at the end
+        const frame = t < 0.75 ? stepFrame : 0;
+        this.player.setTexture(this.textureFor('hero', dir, frame));
+        this.player.setPosition(x, y);
         this.shadow.setPosition(x, y + 4);
         this.player.setDepth(y);
       },
       onComplete: () => {
-        this.player.setScale(1);
         this.placePlayer();
         this.moving = false;
         store.update((s) => {

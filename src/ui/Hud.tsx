@@ -21,7 +21,7 @@ export function Hud({ onMenu }: { onMenu: (tab?: any) => void }) {
     <>
       <div className="hud-top">
         <div className="hud-box player-box">
-          <img className="px" src="assets/portrait_hero.png" alt="" />
+          <img className="px" src="assets/portrait_hero_neutral.png" alt="" />
           <div>
             <div>
               <b>{s.playerName}</b> Lv.{s.level}

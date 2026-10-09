@@ -38,8 +38,11 @@ export type Action =
   | { open: 'review' | 'dashboard' | 'diagnostic' | 'shop' | 'menu' }
   | { chapter: number };
 
+export type Mood = 'neutral' | 'happy' | 'surprised' | 'worried';
+
 export type Step =
-  | { say: string; who?: string; en?: string }
+  | { say: string; who?: string; en?: string; mood?: Mood }
+  | { cg: string; say?: string; en?: string }
   | { choice: { text: string; en?: string; then?: Step[] }[] }
   | { reading: string; then?: Step[] }
   | { listening: string; then?: Step[] }

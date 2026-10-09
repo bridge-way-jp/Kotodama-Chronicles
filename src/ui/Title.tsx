@@ -28,10 +28,10 @@ export function Title({
 
   return (
     <div className="title-screen">
+      <div className="title-bg" style={{ backgroundImage: 'url(assets/cg_arrival.webp)' }} />
       <div className="title-art">
-        <img className="px t-sprite s1" src="assets/hero_up.png" alt="" />
-        <img className="px t-sprite s2" src="assets/k_fox_blue.png" alt="" />
-        <img className="px t-tree" src="assets/p_sakura.png" alt="" />
+        <img className="px t-sprite s1" src="assets/hero_up_0.png" alt="" />
+        <img className="px t-sprite s2" src="assets/back_k_fox_blue.png" alt="" />
       </div>
       <div className="title-logo">
         <h1>Kotodama Chronicles</h1>
