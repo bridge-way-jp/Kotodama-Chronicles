@@ -68,6 +68,14 @@ export function planCell(tiles: string[], x: number, y: number, img: Img): CellP
   const W = tiles[0].length;
 
   // ---------------- cliffs and stairs
+  if (ch === 'b') {
+    const n = tiles[y - 1]?.[x] === 'b';
+    const s = tiles[y + 1]?.[x] === 'b';
+    const key = n && !s ? 'tile_bridge_s' : s && !n ? 'tile_bridge_n' : 'tile_bridge';
+    const src = img(key);
+    if (!src) return null;
+    return { key, animated: false, draw: (ctx, dx, dy, size) => ctx.drawImage(src, dx, dy, size, size) };
+  }
   if (ch === 'K' || ch === 'H') {
     let key = 'cliff_stairs';
     if (ch === 'K') {

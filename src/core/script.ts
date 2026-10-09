@@ -14,6 +14,7 @@ export type Cond =
       hasTeam?: boolean;
       item?: string;
       time?: 'morning' | 'evening';
+      money?: number; // at least this much
     }
   | { all: Cond[] }
   | { any: Cond[] }
@@ -82,6 +83,7 @@ export function check(s: GameState, c: Cond | undefined): boolean {
   if (c.hasTeam !== undefined && c.hasTeam !== s.team.length > 0) return false;
   if (c.item && !(s.inventory[c.item] > 0)) return false;
   if (c.time && s.timeOfDay !== c.time) return false;
+  if (c.money !== undefined && s.money < c.money) return false;
   return true;
 }
 

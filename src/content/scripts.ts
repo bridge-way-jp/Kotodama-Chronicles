@@ -629,4 +629,66 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       ],
     },
   ],
+  // ================================================================ street furniture
+  vending: [
+    {
+      steps: [
+        n('{自動販売機|じどうはんばいき}だ。「つめた～い」と「あたたか～い」の飲み物が並んでいる。', 'A vending machine with “cold” and “hot” drinks.'),
+        {
+          choice: [
+            {
+              text: '日野森緑茶を買う（¥150）', en: 'Buy Hinomori green tea (¥150)',
+              then: [
+                {
+                  if: { money: 150 },
+                  then: [
+                    { do: [{ money: -150 }, { give: 'greentea' }] },
+                    n('ガコン！ お茶が出てきた。……コンビニでは{品切れ|しなぎれ|v:shinagire}なのに、ここにはあった。', 'Clunk! A bottle drops out. …Sold out at the konbini, but here it is.'),
+                  ],
+                  else: [n('お金が足りない……。', 'Not enough money…')],
+                },
+              ],
+            },
+            { text: 'やめる', en: 'Leave' },
+          ],
+        },
+      ],
+    },
+  ],
+  postbox: [{ steps: [n('赤いポストだ。「{収集|しゅうしゅう|v:shuushuu}時刻　平日 10:00・15:00」と書いてある。', 'A red post box: “Collection times — weekdays 10:00 and 15:00.”'), { do: [{ learn: ['v:shuushuu'] }] }] }],
+  bench: [{ steps: [n('ベンチだ。少し座って、町の音に{耳を澄ませた|みみをすませた|v:mimiwosumasu}。', 'A bench. You sit for a moment and listen to the sounds of the town.')] }],
+  bicycle: [{ steps: [n('森さんの自転車だ。かごに「{駐輪禁止|ちゅうりんきんし}」の張り紙が……あれ、ここは森さんの家の前だから大丈夫なのかな。', 'Ms. Mori’s bicycle. There’s a “No bicycle parking” sticker in the basket… but it’s in front of her own house, so it’s probably fine.')] }],
+  pole: [{ steps: [n('電柱だ。「この先　日野森駅　300m」と書いた{看板|かんばん}が付いている。', 'A utility pole with a sign: “Hinomori Station 300 m ahead.”')] }],
+  stone_lantern: [{ steps: [n('{石灯籠|いしどうろう}だ。{苔|こけ}が生えていて、ずいぶん古そうだ。', 'A stone lantern, covered in moss. It looks very old.')] }],
+  torii: [{ steps: [n('{鳥居|とりい}だ。ここから先は神様の{領域|りょういき}だと言われている。', 'A torii gate. Beyond it is said to be the realm of the gods.')] }],
+  town_hokora: [
+    {
+      steps: [
+        n('道ばたの小さな{祠|ほこら}だ。お{供|そな}えの花が新しい。', 'A tiny roadside shrine. The offering flowers are fresh.'),
+        n('「言葉を大切に」と、かすれた文字で書いてある。', 'In faded letters: “Treasure your words.”'),
+      ],
+    },
+  ],
+  garbage: [
+    {
+      steps: [
+        n('ゴミ{集積所|しゅうせきじょ}だ。{掲示板|けいじばん|v:keijiban}にルールが書いてある。', 'The garbage collection point. The rules are on a notice board.'),
+        n('「燃えるゴミ：月・木　／　{資源|しげん}ゴミ：水　※きちんと{分別|ぶんべつ|v:bunbetsu}してください」', '“Burnable: Mon & Thu / Recyclables: Wed — please sort properly.”'),
+        { do: [{ learn: ['v:bunbetsu', 'v:keijiban'] }] },
+      ],
+    },
+  ],
+  planter: [{ steps: [n('{花壇|かだん}にきれいな花が咲いている。町の人が手入れしているようだ。', 'Pretty flowers in a planter. The townspeople seem to look after them.')] }],
+  mirror: [{ steps: [n('カーブミラーだ。自分の顔が少しゆがんで映っている。', 'A traffic mirror. Your reflection looks a little warped.')] }],
+  nosign: [
+    {
+      steps: [
+        n('「{進入禁止|しんにゅうきんし}」の標識だ。研究所の前の道は、車が入れないらしい。', 'A “No entry” sign. Cars can’t use the road in front of the facility.'),
+        n('（「{立入禁止|たちいりきんし|v:tachiirikinshi}」は人が入ってはいけない場所。「進入禁止」は車などが入ってはいけない道。）', '(立入禁止 = people may not enter. 進入禁止 = vehicles may not enter.)'),
+        { do: [{ learn: ['v:tachiirikinshi'] }] },
+      ],
+    },
+  ],
+  trash: [{ steps: [n('駅のゴミ箱だ。「カン・ビン」「ペットボトル」「その他」に分かれている。', 'The station bins: “cans & bottles”, “PET bottles”, “other”.')] }],
+  barrel: [{ steps: [n('ラーメン屋の裏の{雨水|あまみず}をためる{樽|たる}だ。', 'A rain barrel behind the ramen shop.')] }],
 };

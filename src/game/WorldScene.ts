@@ -14,6 +14,16 @@ import { AUTOTILE_KEYS, isForestWall, planCell } from './autotile';
 import { input } from './input';
 
 const DIR_NAMES = ['down', 'left', 'right', 'up'];
+/** map chars drawn as fence pieces (all blocking) */
+const FENCE_CHARS: Record<string, string> = { '#': 'wood', Z: 'stone', Y: 'hedge', J: 'bamboo' };
+const DETAIL_KEYS = [
+  'g_flower_red', 'g_flower_yellow', 'g_flower_white', 'g_tuft', 'g_pebbles', 'g_mushrooms', 'g_leaves', 'g_stump',
+  'g_lily', 'g_lily_flower', 'g_reeds', 'g_butterfly_0', 'g_butterfly_1',
+  ...['wood', 'stone', 'hedge', 'bamboo'].flatMap((k) => ['h', 'v', 'corner', 'end', 'h2', 'v2', 'corner2', 'end2'].map((p) => `f_${k}_${p}`)),
+  'tp_vending', 'tp_postbox', 'tp_bench', 'tp_bicycle', 'tp_pole', 'tp_lantern', 'tp_hokora', 'tp_garbage', 'tp_pot_tree',
+  'tp_pot_flower', 'tp_planter_y', 'tp_planter_p', 'tp_mirror', 'tp_sign', 'tp_trash', 'tp_barrel', 'tp_torii',
+  'tile_bridge_n', 'tile_bridge_s',
+];
 const NPC_SHEETS = ['mori', 'kaede', 'haruto', 'aoi', 'sato', 'kirishima', 'station_staff', 'customer'];
 
 export const ASSET_KEYS = [
@@ -30,6 +40,7 @@ export const ASSET_KEYS = [
   'room_konbini', 'room_library', 'room_station', 'room_apartment', 'room_cafe', 'em_alert', 'b_station', 'b_lab', 'b_apartment2', 'b_konbini2', 'b_ramen2', 'b_library2', 'p_hokora',
   ...new Set(Object.values(TILE_IMAGES).flat().filter((k): k is string => !!k)),
   ...AUTOTILE_KEYS,
+  ...DETAIL_KEYS,
   'n_tree_round', 'n_tree_cedar', 'n_tree_sakura', 'n_bush', 'n_bush_flowers', 'n_rock', 'n_fence', 'n_fence_post', 'n_lantern',
 ];
 
@@ -171,7 +182,10 @@ export class WorldScene extends Phaser.Scene {
     this.layer = tm.createLayer(0, ts, 0, 0)!;
     this.layer.setScale(TILE / TEX);
     this.layer.setDepth(-10);
-    if (!this.map.interior) this.placeScenery();
+    if (!this.map.interior) {
+      this.placeScenery();
+      this.spawnButterflies();
+    }
     if (this.map.image && this.textures.exists(this.map.image)) {
       // pre-drawn room: the tile layer only provides collision
       this.layer.setVisible(false);
@@ -251,15 +265,75 @@ export class WorldScene extends Phaser.Scene {
           const key = forest ? (r < 0.5 ? 'n_tree_cedar' : 'n_tree_round') : r < 0.12 ? 'n_tree_sakura' : 'n_tree_round';
           if (!this.textures.exists(key)) continue;
           this.add.image(px + Math.round((r - 0.5) * 8), py + 2, key).setOrigin(0.5, 1).setDepth(py);
-        } else if (ch === ',' && this.textures.exists('n_bush_flowers')) {
-          this.add.image(px + Math.round((r - 0.5) * 10), py - 6, 'n_bush_flowers').setOrigin(0.5, 1).setScale(0.55).setDepth(-5);
-        } else if (ch === '#' && this.textures.exists('n_fence')) {
-          this.add.image(px, py - 4, 'n_fence').setOrigin(0.5, 1).setDepth(py - 4);
-        } else if (forest && ch === '.' && r > 0.93) {
-          const key = r > 0.98 ? 'n_rock' : r > 0.955 ? 'n_bush_flowers' : 'n_bush';
-          if (this.textures.exists(key)) this.add.image(px, py - 2, key).setOrigin(0.5, 1).setDepth(py - 2).setScale(0.8);
+        } else if (ch === ',') {
+          const key = ['g_flower_red', 'g_flower_yellow', 'g_flower_white'][Math.floor(r * 3)];
+          if (this.textures.exists(key)) this.add.image(px, py - 4, key).setOrigin(0.5, 1).setDepth(-5);
+        } else if (FENCE_CHARS[ch]) {
+          this.placeFence(rows, x, y, FENCE_CHARS[ch]);
+        } else if (ch === '~') {
+          // lily pads only on open water (not along the shore)
+          const open = [[-1, 0], [1, 0], [0, -1], [0, 1]].every(([dx, dy]) => rows[y + dy]?.[x + dx] === '~');
+          if (open && r > 0.55) this.add.image(px + (r - 0.75) * 30, py - 8, r > 0.85 ? 'g_lily_flower' : 'g_lily').setOrigin(0.5, 1).setDepth(-5);
+        } else if (ch === '.' && !this.objectAt(x, y)) {
+          const nearWater = [[-1, 0], [1, 0], [0, -1], [0, 1]].some(([dx, dy]) => rows[y + dy]?.[x + dx] === '~');
+          let key: string | null = null;
+          if (nearWater && r > 0.8) key = 'g_reeds';
+          else if (forest && r > 0.9) key = r > 0.985 ? 'g_stump' : r > 0.97 ? 'g_mushrooms' : r > 0.955 ? 'n_rock' : r > 0.935 ? 'g_leaves' : 'g_tuft';
+          else if (!forest && r > 0.95) key = r > 0.985 ? 'g_pebbles' : r > 0.97 ? 'g_flower_white' : 'g_tuft';
+          if (key && this.textures.exists(key)) {
+            const solid = key === 'g_stump';
+            this.add.image(px + (solid ? 0 : (r - 0.5) * 12), py - 2, key).setOrigin(0.5, 1).setDepth(solid ? py - 2 : -5);
+          }
         }
       }
+    }
+  }
+
+  /** fence / wall / hedge pieces chosen from the neighbouring cells of the same kind */
+  placeFence(rows: string[], x: number, y: number, kind: string) {
+    const ch = rows[y][x];
+    const same = (dx: number, dy: number) => rows[y + dy]?.[x + dx] === ch;
+    const l = same(-1, 0);
+    const r = same(1, 0);
+    const u = same(0, -1);
+    const d = same(0, 1);
+    const alt = (x + y) % 2 ? '2' : '';
+    let part = 'h' + alt;
+    let flip = false;
+    if ((l || r) && (u || d)) {
+      part = 'corner';
+      flip = l && !r;
+    } else if (u || d) part = 'v' + alt;
+    else if (l && !r) part = 'end';
+    else if (r && !l) {
+      part = 'end';
+      flip = true;
+    }
+    const key = `f_${kind}_${part}`;
+    if (!this.textures.exists(key)) return;
+    const py = y * TILE + TILE;
+    this.add.image(x * TILE + TILE / 2, py, key).setOrigin(0.5, 1).setFlipX(flip).setDepth(py - 4);
+  }
+
+  /** a few butterflies drifting over outdoor maps */
+  spawnButterflies() {
+    if (this.map.interior || !this.textures.exists('g_butterfly_0')) return;
+    const W = this.map.tiles[0].length * TILE;
+    const H = this.map.tiles.length * TILE;
+    for (let i = 0; i < 4; i++) {
+      const b = this.add.image(Phaser.Math.Between(64, W - 64), Phaser.Math.Between(64, H - 64), 'g_butterfly_0').setDepth(100000).setScale(0.7);
+      let f = 0;
+      this.time.addEvent({ delay: 160, loop: true, callback: () => b.setTexture(`g_butterfly_${(f = 1 - f)}`) });
+      const fly = () =>
+        this.tweens.add({
+          targets: b,
+          x: Phaser.Math.Clamp(b.x + Phaser.Math.Between(-140, 140), 32, W - 32),
+          y: Phaser.Math.Clamp(b.y + Phaser.Math.Between(-100, 100), 32, H - 32),
+          duration: Phaser.Math.Between(2500, 4500),
+          ease: 'Sine.easeInOut',
+          onComplete: fly,
+        });
+      fly();
     }
   }
 

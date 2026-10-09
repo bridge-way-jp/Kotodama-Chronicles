@@ -10,7 +10,7 @@ import type { Dir } from '../core/types';
  *   W  interior wall  f  wooden floor  m  tatami / rug  c  counter  D  doormat
  *   K  cliff (blocking, autotiled ends)  H  stone stairs up a cliff
  */
-export const BLOCKING = new Set(['T', '~', '#', 'r', 'X', 'W', 'c', 'S', 'K']);
+export const BLOCKING = new Set(['T', '~', '#', 'r', 'X', 'W', 'c', 'S', 'K', 'Z', 'Y', 'J']);
 
 export interface MapObject {
   id: string;
@@ -69,8 +69,8 @@ export interface MapDef {
 const TOWN = [
   'TTTTTTTTTTTTTTTTTTTT::TTTTTTTTTTT~~TTTTTTTTT',
   'TTT.................::........TTT~~T......TT',
-  'TT..................::.........TT~~........T',
-  'T...................::..,........~~........T',
+  'TT..................::.........TT~~.ZZZZZZZT',
+  'T.JJJJJJ............::..,........~~........T',
   'T...................::.,.........~~........T',
   'T..............,....::......,....~~........T',
   'T.............,.....::...........~~........T',
@@ -81,7 +81,7 @@ const TOWN = [
   'T================================bbxxxxxxxxT',
   'T================================bbxxxxxxxxT',
   'T...................::...........~~xxxxxxxxT',
-  'T...................::...........~~.......TT',
+  'T...................::...........~~..YYYYYTT',
   'T...................::..~~~~.....~~......TTT',
   'T...................::..~~~~.....~~..,....TT',
   'T...................::..~~~~,....~~.....,..T',
@@ -92,7 +92,7 @@ const TOWN = [
   'T...PPPPPPPPPPPPPPPPPPPPPPPPPPP..~~........T',
   'Trrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr~~........T',
   'Trrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr~~........T',
-  'TT..............................T~~........T',
+  'TT##############################T~~........T',
   'TTT..""""""""..................TT~~.......TT',
   'TTTT."""""""".................TTT~~TT.....TT',
   'T................................~~........T',
@@ -245,6 +245,30 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'forest_sign', sprite: 'p_sign_small', x: 22, y: 2, w: 1, h: 1 },
       { id: 'lab', sprite: 'b_lab', x: 36, y: 5, w: 7, h: 5, script: 'lab_door' },
       { id: 'lab_sign', sprite: 'p_board', x: 36, y: 10, w: 1, h: 1 },
+      // street furniture
+      { id: 'vending', sprite: 'tp_vending', x: 14, y: 9, w: 1, h: 1 },
+      { id: 'postbox', sprite: 'tp_postbox', x: 22, y: 19, w: 1, h: 1 },
+      { id: 'bench_station', sprite: 'tp_bench', x: 5, y: 21, w: 2, h: 1, script: 'bench' },
+      { id: 'bench_pond', sprite: 'tp_bench', x: 29, y: 17, w: 2, h: 1, script: 'bench' },
+      { id: 'bicycle', sprite: 'tp_bicycle', x: 6, y: 15, w: 2, h: 1 },
+      { id: 'pole1', sprite: 'tp_pole', x: 2, y: 9, w: 1, h: 1, script: 'pole' },
+      { id: 'pole2', sprite: 'tp_pole', x: 31, y: 9, w: 1, h: 1, script: 'pole' },
+      { id: 'pole3', sprite: 'tp_pole', x: 14, y: 13, w: 1, h: 1, script: 'pole' },
+      { id: 'lantern1', sprite: 'tp_lantern', x: 2, y: 5, w: 1, h: 1, script: 'stone_lantern' },
+      { id: 'lantern2', sprite: 'tp_lantern', x: 7, y: 5, w: 1, h: 1, script: 'stone_lantern' },
+      { id: 'torii', sprite: 'tp_torii', x: 3, y: 7, w: 3, h: 1, solid: false },
+      { id: 'torii_l', x: 3, y: 7, w: 1, h: 1, script: 'torii' },
+      { id: 'torii_r', x: 5, y: 7, w: 1, h: 1, script: 'torii' },
+      { id: 'town_hokora', sprite: 'tp_hokora', x: 41, y: 20, w: 1, h: 1 },
+      { id: 'garbage', sprite: 'tp_garbage', x: 1, y: 15, w: 2, h: 1 },
+      { id: 'pot1', sprite: 'tp_pot_tree', x: 22, y: 9, w: 1, h: 1, script: 'plant' },
+      { id: 'pot2', sprite: 'tp_pot_flower', x: 29, y: 9, w: 1, h: 1, script: 'plant' },
+      { id: 'planter1', sprite: 'tp_planter_y', x: 12, y: 13, w: 1, h: 1, script: 'planter' },
+      { id: 'planter2', sprite: 'tp_planter_p', x: 18, y: 13, w: 1, h: 1, script: 'planter' },
+      { id: 'mirror', sprite: 'tp_mirror', x: 19, y: 13, w: 1, h: 1 },
+      { id: 'nosign', sprite: 'tp_sign', x: 35, y: 14, w: 1, h: 1 },
+      { id: 'trash', sprite: 'tp_trash', x: 14, y: 21, w: 1, h: 1 },
+      { id: 'barrel', sprite: 'tp_barrel', x: 18, y: 16, w: 1, h: 1 },
       { id: 'station_building', sprite: 'b_station', x: 25, y: 18, w: 5, h: 2, label: { text: '日野森駅', x: 0.5, y: 0.54 } },
     ],
     npcs: [

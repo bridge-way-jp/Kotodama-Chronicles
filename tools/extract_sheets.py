@@ -685,7 +685,110 @@ def autotiles():
     pixelize(path[3]).save(os.path.join(OUT, 'tile_dirt.png'))
 
 
+# ------------------------------------------------------------------ props drawn on a grass / water background
+def strip_background(crop, mode='grass'):
+    """Remove the grass (or water) the prop was painted on: flood-fill from the border over
+    pixels similar to the border colour or clearly grass-like; stops at dark outlines."""
+    a = np.array(crop.convert('RGB')).astype(np.int32)
+    h, w = a.shape[:2]
+    border = np.concatenate([a[0], a[-1], a[:, 0], a[:, -1]])
+    med = np.median(border, 0)
+    r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    close = np.sqrt(((a - med) ** 2).sum(-1)) < 70
+    grassy_px = (g > r + 25) & (g > b + 30) & (g > 110)
+    watery = (b > r + 60) & (b > 150)
+    magenta = (r > 170) & (b > 150) & (g < 140)
+    if med[2] > med[1] + 20:  # painted on water: only remove water
+        candidate = watery | close
+    elif mode == 'hedge':  # green object on green: only the exact background colour
+        candidate = np.sqrt(((a - med) ** 2).sum(-1)) < 42
+    else:
+        candidate = close | grassy_px
+    candidate = candidate | magenta
+    lab, _ = ndimage.label(candidate)
+    edge = set(np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]]))) - {0}
+    bg = np.isin(lab, list(edge))
+    if mode == 'nowater':
+        bg |= watery | ((b > r + 30) & (b > g - 10) & (b > 120))
+    if mode == 'nogreen':
+        bg |= grassy_px | ((g > r + 15) & (g > b + 15))
+    fg = keep_main(ndimage.binary_opening(~bg & ~magenta, iterations=1), frac=0.04)
+    rgba = np.zeros((h, w, 4), np.uint8)
+    rgba[..., :3] = a
+    rgba[..., 3] = np.where(fg, 255, 0)
+    return Image.fromarray(rgba, 'RGBA')
+
+
+def sheet_cells(sheet, tol=70):
+    a = load(sheet)
+    fg = ndimage.binary_opening(~magenta_mask(a), iterations=2)
+    rows = rows_of(components(fg, min_area=3000, dilate=1), tol=tol, by_center=True)
+    img = Image.open(os.path.join(SHEETS, sheet)).convert('RGB')
+    return img, [b for r in rows for b in r]
+
+
+def save_prop(img, box, name, tiles_wide, cell_px, mode='grass'):
+    """cell_px: how many source pixels make one 32px world tile (from the sheet's tile size)."""
+    x0, y0, x1, y1 = box
+    p = trim(strip_background(img.crop((x0 + 3, y0 + 3, x1 - 3, y1 - 3)), mode))
+    scale = 32 / cell_px
+    p = p.resize((max(1, round(p.width * scale)), max(1, round(p.height * scale))), Image.BOX)
+    arr = np.array(p)
+    arr[..., 3] = np.where(arr[..., 3] > 110, 255, 0)
+    Image.fromarray(arr).save(os.path.join(OUT, name + '.png'))
+
+
+GROUND = ['g_flower_red', 'g_flower_yellow', 'g_flower_white', 'g_tuft', 'g_pebbles', 'g_mushrooms', 'g_leaves',
+          'g_stump', 'g_lily', 'g_lily_flower', 'g_reeds', 'g_bush', 'g_puddle', 'g_butterfly_0', 'g_butterfly_1']
+FENCE_KINDS = ['wood', 'stone', 'hedge', 'bamboo']
+FENCE_PARTS = ['h', 'v', 'corner', 'end', 'h2', 'v2', 'corner2', 'end2']
+PROPS = {0: 'tp_vending', 2: 'tp_postbox', 4: 'tp_bench', 5: 'tp_bicycle', 7: 'tp_pole', 8: 'tp_lantern',
+         10: 'tp_hokora', 11: 'tp_garbage', 14: 'tp_pot_tree', 15: 'tp_pot_flower', 16: 'tp_planter_y', 17: 'tp_planter_p',
+         18: 'tp_mirror', 19: 'tp_sign', 20: 'tp_trash', 22: 'tp_barrel'}
+
+
+def town_details():
+    img, boxes = sheet_cells('ground-deco.webp')
+    assert len(boxes) == 15
+    cell = boxes[0][2] - boxes[0][0]
+    for name, b in zip(GROUND, boxes):
+        save_prop(img, b, name, 1, cell, 'nowater' if name == 'g_reeds' else 'grass')
+    img, boxes = sheet_cells('fences.webp')
+    assert len(boxes) == 32
+    cell = boxes[0][3] - boxes[0][1]  # tile height
+    for i, b in enumerate(boxes):
+        save_prop(img, b, f'f_{FENCE_KINDS[i // 8]}_{FENCE_PARTS[i % 8]}', 1, cell, 'hedge' if i // 8 == 2 else 'grass')
+    img, boxes = sheet_cells('town-props.webp')
+    assert len(boxes) == 23
+    cell = boxes[2][2] - boxes[2][0]  # post box is about one tile wide
+    for i, name in PROPS.items():
+        save_prop(img, boxes[i], name, 1, cell, 'nogreen' if name in ('tp_pole', 'tp_sign', 'tp_mirror') else 'grass')
+    # torii: top beam + two pillar halves, composed at their sheet positions
+    t, l, r = boxes[6], boxes[12], boxes[13]
+    x0, y0, x1, y1 = min(t[0], l[0]), t[1], max(t[2], r[2]), max(l[3], r[3])
+    canvas = Image.new('RGBA', (x1 - x0, y1 - y0), (0, 0, 0, 0))
+    for bx in (t, l, r):
+        canvas.alpha_composite(strip_background(img.crop((bx[0] + 3, bx[1] + 3, bx[2] - 3, bx[3] - 3))), (bx[0] + 3 - x0, bx[1] + 3 - y0))
+    canvas = trim(canvas)
+    canvas = canvas.resize((round(canvas.width * 32 / cell), round(canvas.height * 32 / cell)), Image.BOX)
+    arr = np.array(canvas)
+    arr[..., 3] = np.where(arr[..., 3] > 110, 255, 0)
+    Image.fromarray(arr).save(os.path.join(OUT, 'tp_torii.png'))
+    # bridge over the river: deck with water above (north half) / below (south half)
+    img, boxes = sheet_cells('dock-sand.webp')
+    deck = img.crop((boxes[7][0] + 3, boxes[7][1] + 3, boxes[7][2] - 3, boxes[7][3] - 3)).resize((32, 32), Image.BOX)
+    n = Image.new('RGB', (32, 32))
+    n.paste(deck.crop((0, 0, 32, 16)), (0, 0))
+    n.paste(deck.crop((0, 9, 32, 25)), (0, 16))
+    s_ = Image.new('RGB', (32, 32))
+    s_.paste(deck.crop((0, 9, 32, 25)), (0, 0))
+    s_.paste(deck.crop((0, 16, 32, 32)), (0, 16))
+    for name, im in (('tile_bridge_n', n), ('tile_bridge_s', s_), ('tile_bridge', deck)):
+        im.resize((AT_PX, AT_PX), Image.NEAREST).save(os.path.join(OUT, name + '.png'))
+
+
 if __name__ == '__main__':
+    town_details()
     autotiles()
     townsfolk()
     deco()

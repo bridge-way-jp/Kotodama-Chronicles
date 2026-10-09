@@ -146,6 +146,15 @@ const painters: Record<string, Painter> = {
     for (let x = 0; x < 16; x++) p.px(x, 0, C.concrete2);
     for (let y = 0; y < 16; y++) p.px(0, y, C.concrete2);
   },
+  Z: (p) => {
+    painters['.'](p, 0);
+  },
+  Y: (p) => {
+    painters['.'](p, 0);
+  },
+  J: (p) => {
+    painters['.'](p, 0);
+  },
   K: (p) => {
     painters[':'](p, 0);
   },
@@ -204,6 +213,9 @@ export const TILE_IMAGES: Record<string, [string, string?]> = {
   X: ['tile_concrete'],
   T: ['tile_grass'], // trees are drawn as sprites on top
   '#': ['tile_grass'], // fences are drawn as sprites on top
+  Z: ['tile_grass'],
+  Y: ['tile_grass'],
+  J: ['tile_grass'],
   S: ['tile_dirt'],
 };
 
