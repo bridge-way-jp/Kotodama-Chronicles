@@ -129,3 +129,66 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+# ---------------------------------------------------------------- grid-only sheets (no preview figure)
+# hm_characters2.webp / hm_animals.webp: blocks of 4 x 3 frames (down / left / up), nothing else.
+GRID_SHEETS = {
+    'hm_characters2.webp': dict(height=HEIGHT, blocks=[
+        ('npc', 'kirishima'), ('npc', 'customer'), ('folk', 'schoolgirl'),
+        ('folk', 'salaryman'), ('folk', 'delivery'), ('folk', 'grandma')]),
+    'hm_animals.webp': dict(height=24, gap=120, blocks=[('folk', 'cat'), ('folk', 'dog'), ('folk', 'sparrow')]),
+}
+
+
+def split3(v):
+    """Two cut points near 1/3 and 2/3 of v where the row sum is smallest."""
+    n = len(v)
+    cuts = []
+    for t in (n / 3, 2 * n / 3):
+        lo, hi = int(t - n / 8), int(t + n / 8)
+        cuts.append(lo + int(np.argmin(v[lo:hi])))
+    return [(0, cuts[0]), (cuts[0], cuts[1]), (cuts[1], n)]
+
+
+def grid_sheet(name, height, blocks, gap=30):
+    a = load(name)
+    fg = ndimage.binary_opening(~magenta_mask(a))
+    cols = runs(fg.sum(0), 10)
+    assert len(cols) % 4 == 0, (name, cols)
+    groups = [cols[i:i + 4] for i in range(0, len(cols), 4)]
+    out = []
+    for gx in groups:
+        x0, x1 = gx[0][0], gx[-1][1]
+        bands = runs(fg[:, x0:x1].sum(1), 15)
+        # merge touching frame rows back into blocks: a block is ~3 frame heights tall
+        merged = []
+        for b in bands:
+            if merged and b[0] - merged[-1][1] < gap:
+                merged[-1] = (merged[-1][0], b[1])
+            else:
+                merged.append(b)
+        for y0, y1 in merged:
+            rows = split3(fg[y0:y1, x0:x1].sum(1))
+            out.append([(cx0, y0 + ry0, cx1, y0 + ry1) for ry0, ry1 in rows for cx0, cx1 in gx])
+    # order: block rows top to bottom, then left to right
+    out.sort(key=lambda bl: (bl[0][1] // 200, bl[0][0]))
+    assert len(out) == len(blocks), (name, len(out))
+    for (kind, who), bl in zip(blocks, out):
+        imgs = [cut(a, fg, b) for b in bl]
+        tallest = max(i.height for i in imgs)
+        scaled = [resize_px(i, max(6, round(i.height * height / tallest))) for i in imgs]
+        f = {d: scaled[k * 4:(k + 1) * 4] for k, d in enumerate(DIRS)}
+        f['right'] = [i.transpose(Image.FLIP_LEFT_RIGHT) for i in f['left']]
+        for d, fr in f.items():
+            if kind == 'npc':
+                fr[0].save(os.path.join(OUT, f'npc_{who}_{d}.png'))
+            else:
+                for i, img in enumerate(fr):
+                    img.save(os.path.join(OUT, f'folk_{who}_{d}_{i}.png'))
+    print(name, ', '.join(w for _, w in blocks))
+
+
+if __name__ == '__main__':
+    for n, cfg in GRID_SHEETS.items():
+        grid_sheet(n, **cfg)

@@ -33,7 +33,7 @@ export const FOLK: Record<string, FolkDef> = {
     ],
   },
   delivery: {
-    id: 'delivery', sprite: 'delivery', frames: 3, name: '配達員',
+    id: 'delivery', sprite: 'delivery', frames: 4, name: '配達員',
     lines: [
       { jp: 'お荷物のお届けです！ ……あれ、宛先の住所はどこだったっけ。', en: 'Delivery! …Huh, where was the address again?' },
       { jp: '再配達のご依頼は、お電話かネットでお願いします。', en: 'Please request redelivery by phone or online.' },
@@ -86,6 +86,20 @@ export const FOLK: Record<string, FolkDef> = {
     lines: [
       { jp: '図書館で調べものをするつもりが、つい寝てしまって……。', en: 'I meant to do research at the library, but I dozed off…' },
       { jp: 'レポートの締め切りに間に合うかどうか、微妙なところだ。', en: 'Whether I’ll make the report deadline is a close call.' },
+    ],
+  },
+  grandma: {
+    id: 'grandma', sprite: 'grandma', frames: 4, name: 'おばあさん',
+    lines: [
+      { jp: 'あら、見かけない顔ね。日野森へようこそ。', en: 'Oh, a new face. Welcome to Hinomori.' },
+      { jp: '駅前のお団子屋さん、昔はいつも行列ができていたのよ。', en: 'The dumpling shop by the station used to always have a queue.' },
+    ],
+  },
+  sparrow: {
+    id: 'sparrow', sprite: 'sparrow', frames: 4, name: 'スズメ',
+    lines: [
+      { jp: 'チュンチュン。（パンくずを探している）', en: 'Tweet tweet. (It is looking for bread crumbs.)' },
+      { jp: '……。（ぴょんと跳ねて、少し離れた）', en: '… (It hopped a little further away.)' },
     ],
   },
 };

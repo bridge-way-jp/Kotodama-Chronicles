@@ -121,6 +121,8 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'gardener', x: 11, y: 17, r: 2 },
       { id: 'kid', x: 16, y: 12, r: 5 },
       { id: 'student', x: 8, y: 11, r: 4 },
+      { id: 'grandma', x: 22, y: 16, r: 3 },
+      { id: 'sparrow', x: 38, y: 18, r: 3 },
     ], bg: 'bg_town_sunset.webp',
     objects: [
       { id: 'shrine', sprite: 'bx_shrine', x: 3, y: 4, w: 4, h: 2, interactAt: [{ x: 4, y: 5 }, { x: 5, y: 5 }] },
