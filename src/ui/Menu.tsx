@@ -16,6 +16,7 @@ import { mastery } from '../core/srs';
 import { SECTIONS, type Section } from '../core/exam';
 import { exportToJson, makeEnvelope } from '../core/save';
 import { ExportBox, ImportBox } from './Backup';
+import { CloudSettings } from './CloudPanel';
 import { saveNow, saveStatus } from '../core/persistence';
 import { setSfx, setMusicVolume, hasJapaneseVoice, ttsAvailable } from '../core/audio';
 import { ItemDetail, MASTERY_LABEL } from './Cards';
@@ -596,6 +597,8 @@ function SettingsTab({ actions }: { actions: MenuActions }) {
         />
       )}
       {msg && <p className="note">{msg}</p>}
+      <h3>☁ クラウド Cloud</h3>
+      <CloudSettings />
       <h3>操作 Controls</h3>
       <p className="note">Move: arrow keys / WASD · Talk / examine: Space, Enter, Z · Menu: Esc or M · On touch screens use the on-screen pad.</p>
     </div>

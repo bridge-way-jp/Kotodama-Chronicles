@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { LoadResult } from '../core/save';
 import { exportToJson } from '../core/save';
 import { ExportBox, ImportBox } from './Backup';
+import { CloudLogin, useCloud } from './CloudPanel';
 
 function fmtPlay(ms: number) {
   const h = Math.floor(ms / 3600000);
@@ -14,8 +15,10 @@ export function Title({
   onContinue,
   onNew,
   onImport,
+  onContinueCloud,
 }: {
   load: LoadResult;
+  onContinueCloud: () => void;
   onContinue: () => void;
   onNew: (name: string) => void;
   onImport: (text: string) => Promise<void>;
@@ -24,7 +27,12 @@ export function Title({
   const [name, setName] = useState('マリア');
   const [confirmText, setConfirmText] = useState('');
   const [box, setBox] = useState<'import' | 'raw' | 'current' | null>(null);
-  const hasSave = load.kind === 'ok';
+  const c = useCloud();
+  const remote = c.user ? c.remote : null;
+  const hasSave = load.kind === 'ok' || !!remote;
+  const local = load.kind === 'ok' ? load.env : null;
+  const cloudNewer = !!remote && (!local || remote.savedAt > local.savedAt + 1000);
+  const current = local ?? remote;
 
   return (
     <div className="title-screen">
@@ -52,13 +60,23 @@ export function Title({
                 </button>
               </div>
             )}
-            {hasSave && (
-              <button className="btn primary big" autoFocus onClick={onContinue}>
+            {remote && cloudNewer && (
+              <button className="btn primary big" autoFocus onClick={onContinueCloud}>
+                ☁ つづきから Continue (cloud)
+                <small>
+                  {remote.playerName} · Lv.{remote.summary.level} · Day {remote.summary.day} · {fmtPlay(remote.summary.playMs)} · saved{' '}
+                  {new Date(remote.savedAt).toLocaleString()}
+                </small>
+              </button>
+            )}
+            {local && load.kind === 'ok' && (
+              <button className={`btn big ${cloudNewer ? '' : 'primary'}`} autoFocus={!cloudNewer} onClick={onContinue}>
                 ▶ つづきから Continue
                 <small>
                   {load.env.playerName} · Lv.{load.env.summary.level} · Day {load.env.summary.day} · {fmtPlay(load.env.summary.playMs)} · saved{' '}
                   {new Date(load.env.savedAt).toLocaleString()}
                   {load.fromBackup && ' (restored from backup slot)'}
+                  {cloudNewer && ' · dieses Gerät (älter als die Cloud – überschreibt sie, die Cloud behält eine Sicherung)'}
                 </small>
               </button>
             )}
@@ -72,6 +90,7 @@ export function Title({
             {box === 'raw' && load.kind === 'error' && (
               <ExportBox text={exportToJson(load.raw)} filename="kotodama-save-raw.json" onClose={() => setBox(null)} />
             )}
+            <CloudLogin />
             <p className="note">
               Progress is saved automatically in this browser. Clearing site data erases it — export a backup from Settings now and then.
             </p>
@@ -81,7 +100,7 @@ export function Title({
           <>
             <div className="warn">
               Starting a new game replaces your current save
-              {hasSave ? ` (${load.env.playerName}, Lv.${load.env.summary.level})` : ''}. The old save is moved to a recovery slot, but you
+              {current ? ` (${current.playerName}, Lv.${current.summary.level})` : ''}{remote ? ' – also in the cloud' : ''}. The old save is moved to a recovery slot, but you
               should export it first if you want to keep it.
             </div>
             {hasSave && box !== 'current' && (
@@ -90,7 +109,7 @@ export function Title({
               </button>
             )}
             {hasSave && box === 'current' && (
-              <ExportBox text={exportToJson(load.env)} filename="kotodama-save-backup.json" onClose={() => setBox(null)} />
+              <ExportBox text={exportToJson(current)} filename="kotodama-save-backup.json" onClose={() => setBox(null)} />
             )}
             <label>
               Type <b>NEW</b> to confirm:

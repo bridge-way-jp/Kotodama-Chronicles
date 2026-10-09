@@ -624,3 +624,5 @@ button, .opt, .jp-word.linked, .dialogue, .msgbox { cursor: url(../public/assets
 .ref-group ul { margin: 4px 0; padding-left: 18px; }
 .exam-tip { background: #fff6dc; border: 1px solid #ead9b8; border-radius: 6px; padding: 6px 8px; }
 .exam-types summary { cursor: pointer; font-weight: bold; margin: 10px 0; }
+.cloud-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.cloud-settings .warn .row { margin-top: 6px; }

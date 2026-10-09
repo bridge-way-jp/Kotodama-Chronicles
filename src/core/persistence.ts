@@ -1,6 +1,7 @@
 import { SaveManager, idbBackend } from './save';
 import { store } from './store';
 import { bus } from './events';
+import { flushPush, schedulePush } from './cloud';
 
 /**
  * Autosave policy:
@@ -35,7 +36,7 @@ export async function saveNow(): Promise<void> {
   bus.emit('save-status');
   saving = (async () => {
     try {
-      await saves.save(store.s);
+      schedulePush(await saves.save(store.s));
       saveStatus.last = Date.now();
       saveStatus.state = 'idle';
       saveStatus.error = '';
@@ -76,9 +77,9 @@ export function startAutosave(): () => void {
     lastTick = now;
   }, 15000);
   const onHide = () => {
-    if (document.visibilityState === 'hidden') void saveNow();
+    if (document.visibilityState === 'hidden') void saveNow().then(flushPush);
   };
-  const onPageHide = () => void saveNow();
+  const onPageHide = () => void saveNow().then(flushPush);
   document.addEventListener('visibilitychange', onHide);
   window.addEventListener('pagehide', onPageHide);
   return () => {

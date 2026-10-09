@@ -1,0 +1,11 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Every player can only read and write their own save documents.
+    match /users/{uid}/saves/{doc} {
+      allow read, write: if request.auth != null && request.auth.uid == uid
+        // phase 1 (private): only listed accounts — delete this line when the game is published
+        && request.auth.token.email in ['DEINE-GOOGLE-EMAIL@gmail.com'];
+    }
+  }
+}
