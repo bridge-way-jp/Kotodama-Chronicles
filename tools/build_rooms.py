@@ -109,32 +109,29 @@ def fit(img, w, h):
 #   split=0.45 cuts the sprite: the top part (back shelves) is drawn behind people standing behind it
 
 ROOMS = {
+    # painted as one picture (art/sheets/room_konbini_v2.webp); shelves from hm_konbini_furniture.webp
     'konbini': dict(
-        size=(15, 12), door=[7], floor=('tiles', 7), wall=('tiles', 18),
-        wall_items=[('konbini', 53, 7.5, 0.25), ('konbini', 55, 9.0, 0.6)],
-        rugs=[('tiles', 67, 7.5, 10.5)],
+        size=(15, 12), painted='room_konbini_v2.webp', crop=(15, 47, 1387, 1055),
+        grid=['W' * 15] * 4 + ['WW' + 'f' * 9 + 'cc' + 'f' + 'W'] * 5 + ['WW' + 'f' * 10 + 'WWW']
+        + ['W' * 6 + 'fff' + 'W' * 6, 'W' * 6 + 'DDD' + 'W' * 6],
+        spots=[
+            ('fridges', 2, 3, 3, 1, 'konbini_fridge'),
+            ('bento', 5, 3, 3, 1, 'konbini_bento'),
+            ('coffee', 10, 3, 1, 1, 'konbini_coffee'),
+            ('rack', 1, 4, 1, 4, 'konbini_magazines'),
+            ('plant', 1, 8, 1, 1, 'plant'),
+            ('magazines', 1, 10, 5, 1, 'konbini_magazines'),
+            ('baskets', 9, 10, 1, 1, 'konbini_baskets'),
+            ('bins', 10, 10, 2, 1, 'konbini_trash'),
+            ('atm', 12, 9, 2, 1, 'konbini_atm'),
+        ],
         furniture=[
-            ('fridge1', 'konbini', 0, 0, 2, 1, 1, 'konbini_fridge'),
-            ('fridge2', 'konbini', 1, 1, 2, 1, 1, 'konbini_fridge'),
-            ('fridge3', 'konbini', 2, 2, 2, 1, 1, 'konbini_fridge'),
-            ('fridge4', 'konbini', 3, 3, 2, 1, 1, 'konbini_fridge'),
-            ('bento1', 'konbini', 4, 4, 2, 2, 1, 'konbini_bento'),
-            ('bento2', 'konbini', 5, 6, 2, 2, 1, 'konbini_bento'),
-            ('coffee', 'konbini', 9, 10, 2, 2, 1, 'konbini_coffee'),
-            ('hotsnack', 'konbini', 6, 12, 2, 1, 1, 'konbini_counter'),
-            ('bakery', 'konbini', 7, 13, 2, 2, 1, 'konbini_counter'),
-            ('counter', 'konbini', 22, 10, 4, 5, 1, 'konbini_counter', dict(counter=True)),
-            ('shelf1', 'konbini', 12, 1, 5, 3, 1, 'konbini_shelf'),
-            ('shelf2', 'konbini', 17, 5, 5, 2, 1, 'konbini_shelf'),
-            ('shelf3', 'konbini', 11, 1, 8, 2, 1, 'konbini_shelf'),
-            ('shelf4', 'konbini', 13, 3, 8, 1, 1, 'konbini_shelf'),
-            ('shelf5', 'konbini', 14, 5, 8, 1, 1, 'konbini_shelf'),
-            ('shelf6', 'konbini', 16, 6, 8, 1, 1, 'konbini_shelf'),
-            ('ice', 'konbini', 33, 8, 7, 2, 1, 'konbini_ice'),
-            ('magazines', 'konbini', 15, 14, 7, 1, 1, 'konbini_magazines'),
-            ('atm', 'konbini', 19, 14, 9, 1, 1, 'konbini_atm'),
-            ('bins', 'konbini', 40, 11, 10, 2, 1, 'konbini_trash'),
-            ('baskets', 'konbini', 26, 5, 10, 1, 1, 'konbini_baskets'),
+            ('shelf1', 'konbini_furniture', 0, 3, 5, 3, 1, 'konbini_shelf', dict(tw=3.0)),
+            ('shelf2', 'konbini_furniture', 1, 7, 5, 3, 1, 'konbini_shelf', dict(tw=3.0)),
+            ('shelf3', 'konbini_furniture', 2, 3, 7, 3, 1, 'konbini_shelf', dict(tw=3.0)),
+            ('shelf4', 'konbini_furniture', 3, 7, 7, 3, 1, 'konbini_shelf', dict(tw=3.0)),
+            ('ice', 'konbini_furniture', 4, 2, 8, 2, 1, 'konbini_ice', dict(tw=1.9)),
+            ('endcap', 'konbini_furniture', 5, 9, 8, 1, 1, 'konbini_shelf', dict(tw=0.95)),
         ],
     ),
     # painted as one picture (art/sheets/room_cafe_v2.webp); free-standing furniture from hm_cafe_furniture.webp
@@ -217,6 +214,29 @@ ROOMS = {
             ('plant2', 'libstation', 27, 13, 10, 1, 1, 'plant'),
         ],
     ),
+    # painted as one picture (art/sheets/room_lab_v2.webp); furniture from hm_lab_furniture.webp
+    'lab': dict(
+        size=(14, 11), painted='room_lab_v2.webp', crop=(40, 41, 1374, 1028),
+        grid=['W' * 14] * 4 + ['WWWW' + 'f' * 8 + 'WW'] + ['WWW' + 'f' * 9 + 'WW'] * 4
+        + ['WWW' + 'f' * 8 + 'WWW', 'W' * 6 + 'DD' + 'W' * 6],
+        spots=[
+            ('computer', 1, 4, 2, 3, 'lab_computer'),
+            ('whiteboard', 4, 3, 3, 1, 'lab_whiteboard'),
+            ('desk', 7, 3, 3, 1, 'lab_papers'),
+            ('books', 10, 3, 2, 1, 'lab_books'),
+            ('jars', 12, 4, 1, 3, 'lab_jars'),
+            ('coat', 12, 7, 1, 1, 'lab_coat'),
+            ('globe', 1, 7, 2, 2, 'lab_globe'),
+            ('boxes', 11, 9, 2, 1, 'lab_boxes'),
+        ],
+        furniture=[
+            ('table', 'lab_furniture', 0, 5, 6, 3, 2, 'lab_table', dict(tw=3.2)),
+            ('chair', 'lab_furniture', 1, 6, 8, 1, 1, 'lab_table', dict(tw=0.85)),
+            ('chair2', 'lab_furniture', 4, 8, 6, 1, 1, 'lab_table', dict(tw=0.8)),
+            ('sofa', 'lab_furniture', 8, 4, 4, 2, 1, 'lab_sofa', dict(tw=2.0)),
+            ('cart', 'lab_furniture', 5, 10, 7, 1, 1, 'lab_cart', dict(tw=0.9)),
+        ],
+    ),
     # painted as one picture (art/sheets/room_station_v2.webp); only free-standing furniture is separate
     'station': dict(
         size=(22, 15), painted='room_station_v2.webp', crop=(17, 48, 1447, 1001),
@@ -236,12 +256,15 @@ ROOMS = {
             ('bin1', 8, 13, 1, 1, 'station_trash'),
             ('bin2', 13, 13, 1, 1, 'station_trash'),
         ],
-        # placeholders until the free-standing station furniture sheet exists
         furniture=[
-            ('bench1', 'libstation', 36, 4, 8, 2, 1, 'station_bench'),
-            ('bench2', 'libstation', 36, 4, 10, 2, 1, 'station_bench'),
-            ('bench3', 'libstation', 36, 15, 8, 2, 1, 'station_bench'),
-            ('bench4', 'libstation', 36, 15, 10, 2, 1, 'station_bench'),
+            ('seats1', 'station_furniture', 0, 3, 8, 3, 1, 'station_bench', dict(tw=2.7)),
+            ('stove', 'station_furniture', 6, 4, 9, 1, 1, 'station_stove', dict(tw=0.8)),
+            ('seats2', 'station_furniture', 1, 3, 10, 3, 1, 'station_bench', dict(tw=2.7)),
+            ('bench1', 'station_furniture', 2, 15, 8, 2, 1, 'station_bench', dict(tw=1.9)),
+            ('table', 'station_furniture', 9, 15, 9, 1, 1, 'station_bench', dict(tw=0.8)),
+            ('bench2', 'station_furniture', 3, 15, 10, 2, 1, 'station_bench', dict(tw=1.9)),
+            ('board', 'station_furniture', 8, 13, 6, 1, 1, 'station_timetable', dict(tw=1.0)),
+            ('plant3', 'station_furniture', 7, 19, 6, 1, 1, 'plant', dict(tw=0.8)),
         ],
     ),
 }

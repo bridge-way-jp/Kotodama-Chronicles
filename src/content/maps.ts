@@ -209,6 +209,11 @@ export const MAPS: Record<string, MapDef> = {
       { x: 26, y: 9, to: { map: 'cafe', x: 6, y: 10, facing: 'up' } },
       { x: 17, y: 9, to: { map: 'konbini', x: 7, y: 10, facing: 'up' } },
       { x: 12, y: 9, to: { map: 'library', x: 6, y: 10, facing: 'up' } },
+      {
+        x: 39, y: 9, to: { map: 'lab', x: 6, y: 9, facing: 'up' },
+        when: { questDone: 'mq4' },
+        locked: 'ドアには鍵がかかっている。中は暗くて、何も見えない。',
+      },
       { x: 27, y: 19, to: { map: 'station', x: 10, y: 13, facing: 'up' } },
       {
         x: 20, y: 0, to: { map: 'forest', x: 14, y: 23, facing: 'up' },
@@ -275,10 +280,17 @@ export const MAPS: Record<string, MapDef> = {
     id: 'konbini', name: 'Convenience store', nameJa: 'コンビニ ひのもり店', tiles: ROOMS_GEN.konbini.tiles, interior: true, image: ROOMS_GEN.konbini.image,
     objects: ROOMS_GEN.konbini.objects,
     npcs: [
-      { id: 'haruto', x: 12, y: 3, facing: 'down' },
+      { id: 'haruto', x: 13, y: 6, facing: 'left' },
       { id: 'customer', x: 7, y: 6, facing: 'left', when: { notObj: 'mq2.customer' } },
     ],
-    warps: [{ x: 7, y: 11, to: { map: 'town', x: 17, y: 10, facing: 'down' } }],
+    warps: [6, 7, 8].map((x) => ({ x, y: 11, to: { map: 'town', x: 17, y: 10, facing: 'down' as const } })),
+  },
+
+  lab: {
+    id: 'lab', name: 'Kirishima Lab', nameJa: '霧島研究室', tiles: ROOMS_GEN.lab.tiles, interior: true, image: ROOMS_GEN.lab.image,
+    objects: ROOMS_GEN.lab.objects,
+    npcs: [{ id: 'kirishima', x: 9, y: 5, facing: 'down', when: { questDone: 'mq4' } }],
+    warps: [6, 7].map((x) => ({ x, y: 10, to: { map: 'town', x: 39, y: 10, facing: 'down' as const } })),
   },
 
   library: {

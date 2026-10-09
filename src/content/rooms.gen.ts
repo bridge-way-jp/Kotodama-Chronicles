@@ -6,112 +6,22 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
     "tiles": [
       "WWWWWWWWWWWWWWW",
       "WWWWWWWWWWWWWWW",
-      "fffffffffffffff",
-      "fffffffffffffff",
-      "ffffffffffccccc",
-      "fffffffffffffff",
-      "fffffffffffffff",
-      "fffffffffffffff",
-      "fffffffffffffff",
-      "fffffffffffffff",
-      "fffffffffffffff",
-      "WWWWWWWDWWWWWWW"
+      "WWWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWWW",
+      "WWfffffffffccfW",
+      "WWfffffffffccfW",
+      "WWfffffffffccfW",
+      "WWfffffffffccfW",
+      "WWfffffffffccfW",
+      "WWffffffffffWWW",
+      "WWWWWWfffWWWWWW",
+      "WWWWWWDDDWWWWWW"
     ],
     "objects": [
       {
-        "id": "konbini_fridge1",
-        "sprite": "fu_konbini_fridge1",
-        "x": 0,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "konbini_fridge"
-      },
-      {
-        "id": "konbini_fridge2",
-        "sprite": "fu_konbini_fridge2",
-        "x": 1,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "konbini_fridge"
-      },
-      {
-        "id": "konbini_fridge3",
-        "sprite": "fu_konbini_fridge3",
-        "x": 2,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "konbini_fridge"
-      },
-      {
-        "id": "konbini_fridge4",
-        "sprite": "fu_konbini_fridge4",
-        "x": 3,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "konbini_fridge"
-      },
-      {
-        "id": "konbini_bento1",
-        "sprite": "fu_konbini_bento1",
-        "x": 4,
-        "y": 2,
-        "w": 2,
-        "h": 1,
-        "script": "konbini_bento"
-      },
-      {
-        "id": "konbini_bento2",
-        "sprite": "fu_konbini_bento2",
-        "x": 6,
-        "y": 2,
-        "w": 2,
-        "h": 1,
-        "script": "konbini_bento"
-      },
-      {
-        "id": "konbini_coffee",
-        "sprite": "fu_konbini_coffee",
-        "x": 10,
-        "y": 2,
-        "w": 2,
-        "h": 1,
-        "script": "konbini_coffee"
-      },
-      {
-        "id": "konbini_hotsnack",
-        "sprite": "fu_konbini_hotsnack",
-        "x": 12,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "konbini_counter"
-      },
-      {
-        "id": "konbini_bakery",
-        "sprite": "fu_konbini_bakery",
-        "x": 13,
-        "y": 2,
-        "w": 2,
-        "h": 1,
-        "script": "konbini_counter"
-      },
-      {
-        "id": "konbini_counter",
-        "sprite": "fu_konbini_counter",
-        "x": 10,
-        "y": 4,
-        "w": 5,
-        "h": 1,
-        "script": "konbini_counter"
-      },
-      {
         "id": "konbini_shelf1",
         "sprite": "fu_konbini_shelf1",
-        "x": 1,
+        "x": 3,
         "y": 5,
         "w": 3,
         "h": 1,
@@ -120,92 +30,119 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
       {
         "id": "konbini_shelf2",
         "sprite": "fu_konbini_shelf2",
-        "x": 5,
+        "x": 7,
         "y": 5,
-        "w": 2,
+        "w": 3,
         "h": 1,
         "script": "konbini_shelf"
       },
       {
         "id": "konbini_shelf3",
         "sprite": "fu_konbini_shelf3",
-        "x": 1,
-        "y": 8,
-        "w": 2,
+        "x": 3,
+        "y": 7,
+        "w": 3,
         "h": 1,
         "script": "konbini_shelf"
       },
       {
         "id": "konbini_shelf4",
         "sprite": "fu_konbini_shelf4",
-        "x": 3,
-        "y": 8,
-        "w": 1,
-        "h": 1,
-        "script": "konbini_shelf"
-      },
-      {
-        "id": "konbini_shelf5",
-        "sprite": "fu_konbini_shelf5",
-        "x": 5,
-        "y": 8,
-        "w": 1,
-        "h": 1,
-        "script": "konbini_shelf"
-      },
-      {
-        "id": "konbini_shelf6",
-        "sprite": "fu_konbini_shelf6",
-        "x": 6,
-        "y": 8,
-        "w": 1,
+        "x": 7,
+        "y": 7,
+        "w": 3,
         "h": 1,
         "script": "konbini_shelf"
       },
       {
         "id": "konbini_ice",
         "sprite": "fu_konbini_ice",
-        "x": 8,
-        "y": 7,
+        "x": 2,
+        "y": 8,
         "w": 2,
         "h": 1,
         "script": "konbini_ice"
       },
       {
-        "id": "konbini_magazines",
-        "sprite": "fu_konbini_magazines",
-        "x": 14,
-        "y": 7,
+        "id": "konbini_endcap",
+        "sprite": "fu_konbini_endcap",
+        "x": 9,
+        "y": 8,
         "w": 1,
+        "h": 1,
+        "script": "konbini_shelf"
+      },
+      {
+        "id": "konbini_fridges",
+        "x": 2,
+        "y": 3,
+        "w": 3,
+        "h": 1,
+        "script": "konbini_fridge"
+      },
+      {
+        "id": "konbini_bento",
+        "x": 5,
+        "y": 3,
+        "w": 3,
+        "h": 1,
+        "script": "konbini_bento"
+      },
+      {
+        "id": "konbini_coffee",
+        "x": 10,
+        "y": 3,
+        "w": 1,
+        "h": 1,
+        "script": "konbini_coffee"
+      },
+      {
+        "id": "konbini_rack",
+        "x": 1,
+        "y": 4,
+        "w": 1,
+        "h": 4,
+        "script": "konbini_magazines"
+      },
+      {
+        "id": "konbini_plant",
+        "x": 1,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "plant"
+      },
+      {
+        "id": "konbini_magazines",
+        "x": 1,
+        "y": 10,
+        "w": 5,
         "h": 1,
         "script": "konbini_magazines"
       },
       {
-        "id": "konbini_atm",
-        "sprite": "fu_konbini_atm",
-        "x": 14,
-        "y": 9,
+        "id": "konbini_baskets",
+        "x": 9,
+        "y": 10,
         "w": 1,
         "h": 1,
-        "script": "konbini_atm"
+        "script": "konbini_baskets"
       },
       {
         "id": "konbini_bins",
-        "sprite": "fu_konbini_bins",
-        "x": 11,
+        "x": 10,
         "y": 10,
         "w": 2,
         "h": 1,
         "script": "konbini_trash"
       },
       {
-        "id": "konbini_baskets",
-        "sprite": "fu_konbini_baskets",
-        "x": 5,
-        "y": 10,
-        "w": 1,
+        "id": "konbini_atm",
+        "x": 12,
+        "y": 9,
+        "w": 2,
         "h": 1,
-        "script": "konbini_baskets"
+        "script": "konbini_atm"
       }
     ],
     "image": "room2_konbini"
@@ -726,6 +663,133 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
     ],
     "image": "room2_library"
   },
+  "lab": {
+    "tiles": [
+      "WWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWW",
+      "WWWWffffffffWW",
+      "WWWfffffffffWW",
+      "WWWfffffffffWW",
+      "WWWfffffffffWW",
+      "WWWfffffffffWW",
+      "WWWffffffffWWW",
+      "WWWWWWDDWWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "lab_table",
+        "sprite": "fu_lab_table",
+        "x": 5,
+        "y": 6,
+        "w": 3,
+        "h": 2,
+        "script": "lab_table"
+      },
+      {
+        "id": "lab_chair",
+        "sprite": "fu_lab_chair",
+        "x": 6,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "lab_table"
+      },
+      {
+        "id": "lab_chair2",
+        "sprite": "fu_lab_chair2",
+        "x": 8,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "script": "lab_table"
+      },
+      {
+        "id": "lab_sofa",
+        "sprite": "fu_lab_sofa",
+        "x": 4,
+        "y": 4,
+        "w": 2,
+        "h": 1,
+        "script": "lab_sofa"
+      },
+      {
+        "id": "lab_cart",
+        "sprite": "fu_lab_cart",
+        "x": 10,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "lab_cart"
+      },
+      {
+        "id": "lab_computer",
+        "x": 1,
+        "y": 4,
+        "w": 2,
+        "h": 3,
+        "script": "lab_computer"
+      },
+      {
+        "id": "lab_whiteboard",
+        "x": 4,
+        "y": 3,
+        "w": 3,
+        "h": 1,
+        "script": "lab_whiteboard"
+      },
+      {
+        "id": "lab_desk",
+        "x": 7,
+        "y": 3,
+        "w": 3,
+        "h": 1,
+        "script": "lab_papers"
+      },
+      {
+        "id": "lab_books",
+        "x": 10,
+        "y": 3,
+        "w": 2,
+        "h": 1,
+        "script": "lab_books"
+      },
+      {
+        "id": "lab_jars",
+        "x": 12,
+        "y": 4,
+        "w": 1,
+        "h": 3,
+        "script": "lab_jars"
+      },
+      {
+        "id": "lab_coat",
+        "x": 12,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "lab_coat"
+      },
+      {
+        "id": "lab_globe",
+        "x": 1,
+        "y": 7,
+        "w": 2,
+        "h": 2,
+        "script": "lab_globe"
+      },
+      {
+        "id": "lab_boxes",
+        "x": 11,
+        "y": 9,
+        "w": 2,
+        "h": 1,
+        "script": "lab_boxes"
+      }
+    ],
+    "image": "room2_lab"
+  },
   "station": {
     "tiles": [
       "WWWWWWWWWWWWWWWWWWWWWW",
@@ -746,40 +810,76 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
     ],
     "objects": [
       {
+        "id": "station_seats1",
+        "sprite": "fu_station_seats1",
+        "x": 3,
+        "y": 8,
+        "w": 3,
+        "h": 1,
+        "script": "station_bench"
+      },
+      {
+        "id": "station_stove",
+        "sprite": "fu_station_stove",
+        "x": 4,
+        "y": 9,
+        "w": 1,
+        "h": 1,
+        "script": "station_stove"
+      },
+      {
+        "id": "station_seats2",
+        "sprite": "fu_station_seats2",
+        "x": 3,
+        "y": 10,
+        "w": 3,
+        "h": 1,
+        "script": "station_bench"
+      },
+      {
         "id": "station_bench1",
         "sprite": "fu_station_bench1",
-        "x": 4,
+        "x": 15,
         "y": 8,
         "w": 2,
+        "h": 1,
+        "script": "station_bench"
+      },
+      {
+        "id": "station_table",
+        "sprite": "fu_station_table",
+        "x": 15,
+        "y": 9,
+        "w": 1,
         "h": 1,
         "script": "station_bench"
       },
       {
         "id": "station_bench2",
         "sprite": "fu_station_bench2",
-        "x": 4,
+        "x": 15,
         "y": 10,
         "w": 2,
         "h": 1,
         "script": "station_bench"
       },
       {
-        "id": "station_bench3",
-        "sprite": "fu_station_bench3",
-        "x": 15,
-        "y": 8,
-        "w": 2,
+        "id": "station_board",
+        "sprite": "fu_station_board",
+        "x": 13,
+        "y": 6,
+        "w": 1,
         "h": 1,
-        "script": "station_bench"
+        "script": "station_timetable"
       },
       {
-        "id": "station_bench4",
-        "sprite": "fu_station_bench4",
-        "x": 15,
-        "y": 10,
-        "w": 2,
+        "id": "station_plant3",
+        "sprite": "fu_station_plant3",
+        "x": 19,
+        "y": 6,
+        "w": 1,
         "h": 1,
-        "script": "station_bench"
+        "script": "plant"
       },
       {
         "id": "station_map",
