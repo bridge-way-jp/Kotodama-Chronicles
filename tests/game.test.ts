@@ -151,7 +151,7 @@ describe('creatures', () => {
     const s = createInitialState('T');
     const c = addCreature(s, 'kotori', 6);
     const msgs = giveCreatureXp(s, c, 500);
-    expect(c.speciesId).toBe('shirahane');
+    expect(c.speciesId).toBe('haneuta');
     expect(msgs.some((m) => m.includes('evolved'))).toBe(true);
   });
 

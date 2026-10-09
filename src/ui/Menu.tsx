@@ -22,7 +22,7 @@ export type MenuTab = 'status' | 'quests' | 'kotodama' | 'bag' | 'notebook' | 'j
 const TABS: { id: MenuTab; ja: string; en: string; icon: string }[] = [
   { id: 'quests', ja: 'クエスト', en: 'Quests', icon: 'i_scroll' },
   { id: 'kotodama', ja: 'コトダマ', en: 'Kotodama', icon: 'i_orb_pink' },
-  { id: 'notebook', ja: 'ノート', en: 'Notebook', icon: 'i_book' },
+  { id: 'notebook', ja: 'ノート', en: 'Notebook', icon: 'i_notebook' },
   { id: 'jlpt', ja: 'JLPT N2', en: 'Readiness', icon: 'i_star' },
   { id: 'bag', ja: 'もちもの', en: 'Bag', icon: 'i_backpack' },
   { id: 'status', ja: 'ステータス', en: 'Status', icon: 'i_heart' },

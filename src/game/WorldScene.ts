@@ -21,6 +21,7 @@ export const ASSET_KEYS = [
   'b_inn', 'b_house_blue', 'b_house_trad', 'b_konbini', 'b_shop_red', 'b_bridge',
   'p_sakura', 'p_shrine', 'p_pond', 'p_garden', 'p_lamp', 'p_signpost', 'p_board', 'p_board2', 'p_mailbox',
   'p_sign_nihon', 'p_banner', 'p_sign_small',
+  'room_konbini', 'room_library', 'room_station',
 ];
 
 const DIRS: Record<Dir, [number, number]> = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
@@ -129,6 +130,11 @@ export class WorldScene extends Phaser.Scene {
     const ts = tm.addTilesetImage('tiles', 'tiles', TILE, TILE, 0, 0)!;
     this.layer = tm.createLayer(0, ts, 0, 0)!;
     this.layer.setDepth(-10);
+    if (this.map.image && this.textures.exists(this.map.image)) {
+      // pre-drawn room: the tile layer only provides collision
+      this.layer.setVisible(false);
+      this.add.image(0, 0, this.map.image).setOrigin(0).setDepth(-9);
+    }
 
     for (const def of this.map.objects) {
       const entry: { def: MapObject; img?: Phaser.GameObjects.Image } = { def };

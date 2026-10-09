@@ -85,11 +85,12 @@ def crop_sprite(a, fg, box, height):
     return resize_px(trim(img), height)
 
 
-def rows_of(boxes, tol=60):
-    boxes = sorted(boxes, key=lambda b: b[1])
+def rows_of(boxes, tol=60, by_center=False):
+    key = (lambda b: (b[1] + b[3]) / 2) if by_center else (lambda b: b[1])
+    boxes = sorted(boxes, key=key)
     rows = []
     for b in boxes:
-        if rows and abs(rows[-1][0][1] - b[1]) < tol:
+        if rows and abs(key(rows[-1][0]) - key(b)) < tol:
             rows[-1].append(b)
         else:
             rows.append([b])
@@ -234,7 +235,55 @@ def story():
         img.crop((x0 + 2, y0 + 2, x1 - 2, y1 - 2)).save(os.path.join(OUT, name + '.webp'), quality=88)
 
 
+ITEM_ICONS = ['i_onigiri', 'i_greentea', 'i_cake', 'i_shiori', 'i_omamori', 'i_kakera', 'i_letter_k', 'i_notebook']
+
+
+def items():
+    a = load('items.webp')
+    fg = ndimage.binary_opening(~magenta_mask(a))
+    boxes = sorted(components(fg, min_area=3000), key=lambda b: b[0])
+    assert len(boxes) == 8, len(boxes)
+    for name, b in zip(ITEM_ICONS, boxes):
+        save(crop_sprite(a, fg, b, 48), name)
+
+
+# creature-lines.webp: 3 rows (fire fox, bird, leaf), each: stage1 front/back, stage2 front/back, stage3 front/back
+LINES = ['fire', 'bird', 'leaf']
+STAGE_H = [56, 64, 76]
+
+
+def creature_lines():
+    a = load('creature-lines.webp')
+    fg = ndimage.binary_opening(~magenta_mask(a))
+    rows = rows_of(components(fg, min_area=3000, dilate=2), tol=120, by_center=True)
+    assert [len(r) for r in rows] == [6, 6, 6], [len(r) for r in rows]
+    for line, row in zip(LINES, rows):
+        for i, b in enumerate(row):
+            stage = i // 2 + 1
+            prefix = '' if i % 2 == 0 else 'back_'
+            save(crop_sprite(a, fg, b, STAGE_H[stage - 1]), f'{prefix}k_{line}{stage}')
+
+
+# interiors.webp: konbini, library, station waiting room -> map backgrounds (tile = 32px)
+INTERIORS = [('room_konbini', 21, 15), ('room_library', 22, 15), ('room_station', 23, 14)]
+
+
+def interiors():
+    a = load('interiors.webp')
+    fg = ndimage.binary_opening(~magenta_mask(a))
+    boxes = sorted(components(fg, min_area=50000), key=lambda b: (b[1] // 300, b[0]))
+    assert len(boxes) == 3, len(boxes)
+    for (name, tw, th), (x0, y0, x1, y1) in zip(INTERIORS, boxes):
+        img = to_rgba(a[y0:y1, x0:x1], fg[y0:y1, x0:x1]).resize((tw * 32, th * 32), Image.LANCZOS)
+        arr = np.array(img)
+        arr[:, :, 3] = np.where(arr[:, :, 3] > 128, 255, 0)
+        Image.fromarray(arr).save(os.path.join(OUT, name + '.png'))
+
+
 if __name__ == '__main__':
+    items()
+    creature_lines()
+    interiors()
     os.makedirs(OUT, exist_ok=True)
     hero()
     npcs()

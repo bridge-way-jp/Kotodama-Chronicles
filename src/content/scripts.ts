@@ -156,7 +156,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   forest_sign: [{ steps: [n('「この先 みどりの森。{足跡|あしあと|v:ashiato}の少ない道に注意。」', '“Midori Forest ahead. Beware of paths with few footprints.”'), { do: [{ learn: ['v:ashiato'] }] }] }],
   library: [
     {
-      steps: [n('日野森図書館。入口に「本日{休館日|きゅうかんび}」と書かれている。前にいる人に話しかけてみよう。', 'Hinomori Library. The sign says “Closed today”. Maybe talk to the person in front.')],
+      steps: [n('日野森図書館。木の扉の向こうから、古い本のにおいがする。', 'Hinomori Library. The smell of old books drifts through the wooden door.')],
     },
   ],
   konbini: [{ steps: [n('コンビニ「ひのもり店」。24時間営業だ。', 'Convenience store “Hinomori branch”. Open 24 hours.')] }],
@@ -330,7 +330,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   sato: [
     {
       when: { questNotStarted: 'mq2' },
-      steps: [say('sato', 'おや、新しい顔だね。図書館は今日は休みだよ。', 'Oh, a new face. The library is closed today.')],
+      steps: [say('sato', 'おや、新しい顔だね。ゆっくり本を見ていきなさい。', 'Oh, a new face. Take your time looking at the books.')],
     },
     {
       when: { questNotStarted: 'sq_sato' },
@@ -488,6 +488,24 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         { teach: 'g:kanenai' },
         say('kirishima', '森には野生の言霊もいる。君の日本語の力が、その子の力になるはずだ。北の道のバリケードは外しておこう。', 'There are wild Kotodama in the forest. Your Japanese will become that creature’s strength. I’ll remove the barricade on the northern path.'),
         { do: [{ objective: 'mq5.kirishima' }, { flag: 'forest_open' }, { rel: 'kirishima', points: 2 }, { learn: ['v:kenkyuujo', 'v:genshou', 'v:chousa', 'g:nichigainai', 'g:kanenai'] }] },
+        say('kirishima', 'それから……研究所で保護している言霊が三匹いる。一匹で森へ行くのは{頼もしい|たのもしい|v:tanomoshii}とは言えない。どの子か、一緒に連れていってくれないか。', 'Also… I am looking after three Kotodama here. Going into the forest with just one isn’t exactly reassuring. Would you take one of them with you?'),
+        {
+          choice: [
+            {
+              text: 'ホムラ（炎）', en: 'Homura — Fire fox. Strong against Nature. Evolves at Lv.7 and Lv.14.',
+              then: [{ do: [{ recruit: 'homura', level: 5 }, { flag: 'partner_chosen' }] }, say('kirishima', 'ホムラか。気が強いが、仲間思いの子だ。よろしく頼むよ。', 'Homura. Hot-headed, but loyal to its friends. Take good care of it.')],
+            },
+            {
+              text: 'コトリ（風）', en: 'Kotori — Wind bird. Listening moves. Evolves at Lv.7 and Lv.14.',
+              then: [{ do: [{ recruit: 'kotori', level: 5 }, { flag: 'partner_chosen' }] }, say('kirishima', 'コトリか。おしゃべりだが、耳がとてもいい。聴解の力になるはずだ。', 'Kotori. Chatty, but with excellent ears. It will help your listening.')],
+            },
+            {
+              text: 'メブキ（自然）', en: 'Mebuki — Nature sprout. Grammar moves. Evolves at Lv.7 and Lv.14.',
+              then: [{ do: [{ recruit: 'mebuki', level: 5 }, { flag: 'partner_chosen' }] }, say('kirishima', 'メブキか。ゆっくりだが、根はしっかりしている。文法の力を伸ばしてくれるだろう。', 'Mebuki. Slow, but firmly rooted. It will strengthen your grammar.')],
+            },
+          ],
+        },
+        { do: [{ learn: ['v:tanomoshii'] }] },
       ],
     },
     {
@@ -548,4 +566,48 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     },
     { steps: [n('古い祠。石碑には「言葉を呼ぶ者よ、恐れることなかれ」と刻まれている。', 'The old shrine. The stone reads “You who call the words — do not be afraid.”')] },
   ],
+
+  // ================================================================ interiors
+  station_building: [{ steps: [n('日野森駅。小さいが、町の人にとって大切な駅だ。', 'Hinomori Station. Small, but important to the townspeople.')] }],
+  konbini_fridge: [
+    {
+      steps: [
+        n('冷蔵庫に飲み物がずらりと並んでいる。「日野森緑茶」の棚だけ、空っぽだ。', 'Drinks line the fridges. Only the “Hinomori Green Tea” shelf is empty.'),
+        n('値札：「{品切れ|しなぎれ|v:shinagire}中。お{取り寄せ|とりよせ|v:toriyoseru}できます」', 'Price tag: “Out of stock. Can be ordered in.”'),
+        { do: [{ learn: ['v:shinagire', 'v:toriyoseru'] }] },
+      ],
+    },
+  ],
+  konbini_shelf: [
+    {
+      steps: [
+        n('お菓子やパンが並んでいる。{賞味期限|しょうみきげん|v:shoumikigen}が近いパンには、割引シールが{貼|は}ってある。', 'Snacks and bread. Bread near its best-before date has discount stickers.'),
+        { do: [{ learn: ['v:shoumikigen'] }] },
+      ],
+    },
+  ],
+  konbini_counter: [{ steps: [n('レジの横に、肉まんとおでんのケースがある。いいにおいだ。', 'Next to the register are cases of steamed buns and oden. Smells good.')] }],
+  library_shelf: [
+    {
+      steps: [
+        n('本棚には、町の歴史の本がたくさんある。『日野森の言葉と{記憶|きおく|v:kioku}』という古い本が目に入った。', 'Many books on local history. An old book catches your eye: “Words and Memory of Hinomori”.'),
+        n('最後のページに、手書きで「K」というサインがある……。', 'On the last page is a handwritten signature: “K”…'),
+        { do: [{ learn: ['v:kioku'] }, { flag: 'library_k_book' }] },
+      ],
+    },
+  ],
+  library_clock: [{ steps: [n('古い柱時計だ。こち、こち、と静かに時を{刻|きざ|v:kizamu}んでいる。', 'An old grandfather clock, quietly ticking away the time.'), { do: [{ learn: ['v:kizamu'] }] }] }],
+  library_table: [{ steps: [n('読書用の机だ。誰かが読みかけの本を置いたままにしている。', 'A reading table. Someone left a book open here.')] }],
+  station_timetable: [
+    {
+      steps: [
+        n('大きな時刻表だ。「みどり線　{上|のぼ}り・{下|くだ}り」', 'A large timetable: “Midori Line — inbound / outbound”.'),
+        n('張り紙：「現在、みどり線は運転を{見合わせて|みあわせて|v:miawase}おります。{再開|さいかい|v:saikai}の時期は未定です。」', 'Notice: “Service on the Midori Line is currently suspended. The date of resumption is undecided.”'),
+        { do: [{ learn: ['v:miawase', 'v:saikai'] }] },
+      ],
+    },
+  ],
+  station_ticket: [{ steps: [n('切符の{券売機|けんばいき}だ。画面に「ただいま発売を停止しております」と表示されている。', 'A ticket machine. The screen says “Ticket sales are currently suspended.”')] }],
+  station_map: [{ steps: [n('この地方の地図だ。日野森の先に、大きな街や山の村、海の町が描かれている。いつか行ってみたい。', 'A map of the region. Beyond Hinomori are a big city, a mountain village and a coastal town. Someday…')] }],
+  station_stove: [{ steps: [n('古いだるまストーブだ。冬にはここで、みんな電車を待つのだろう。', 'An old pot-belly stove. In winter, people must wait for trains here.')] }],
 };

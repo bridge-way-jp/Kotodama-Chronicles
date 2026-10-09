@@ -264,6 +264,30 @@ export function buildProps(): Record<string, HTMLCanvasElement> {
       r(9, 11, 4, 2, '#6b3e1e');
       r(18, 9, 7, 5, '#f4d7e0');
     }),
+    gen_station: (() => {
+      // small wooden station building with a 日野森駅 sign
+      const c = canvasOf(3, 3, (r) => {
+        r(2, 14, 44, 30, '#8a5a34'); // walls
+        for (let x = 2; x < 46; x += 4) r(x, 14, 1, 30, '#744a29');
+        r(0, 6, 48, 9, '#2f4a7a'); // roof
+        r(0, 6, 48, 2, '#46669e');
+        r(4, 2, 40, 5, '#263d66');
+        r(18, 30, 12, 14, '#3a2414'); // door
+        r(19, 31, 10, 13, '#5a3a22');
+        r(6, 22, 9, 7, '#f6e3a5'); // windows
+        r(33, 22, 9, 7, '#f6e3a5');
+        r(10, 22, 1, 7, '#744a29');
+        r(37, 22, 1, 7, '#744a29');
+        r(12, 15, 24, 6, '#f4efe3'); // sign board
+      });
+      const ctx = c.getContext('2d')!;
+      ctx.fillStyle = '#1f2633';
+      ctx.font = 'bold 10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('日野森駅', c.width / 2, 36);
+      return c;
+    })(),
     gen_shadow: canvasOf(1, 1, (r) => {
       r(3, 12, 10, 3, 'rgba(0,0,0,0.22)');
     }),
