@@ -1,0 +1,191 @@
+import type { Affinity, ItemDef, Move, Species } from '../core/types';
+
+export const AFFINITY_INFO: Record<Affinity, { ja: string; en: string; icon: string; color: string }> = {
+  nature: { ja: '自然', en: 'Nature', icon: 'e_nature', color: '#5fae4a' },
+  water: { ja: '水', en: 'Water', icon: 'e_water', color: '#3f8fd8' },
+  fire: { ja: '炎', en: 'Fire', icon: 'e_fire', color: '#e5762e' },
+  lightning: { ja: '雷', en: 'Lightning', icon: 'e_lightning', color: '#e4b92b' },
+  wind: { ja: '風', en: 'Wind', icon: 'e_wind', color: '#4aa3b5' },
+  memory: { ja: '記憶', en: 'Memory', icon: 'e_memory', color: '#e886a8' },
+  knowledge: { ja: '知識', en: 'Knowledge', icon: 'e_knowledge', color: '#7b7f8c' },
+  emotion: { ja: '感情', en: 'Emotion', icon: 'e_emotion', color: '#d84a5b' },
+};
+
+/** attacker -> defenders it is strong against */
+const STRONG: Record<Affinity, Affinity[]> = {
+  water: ['fire'],
+  fire: ['nature'],
+  nature: ['water'],
+  lightning: ['water', 'wind'],
+  wind: ['nature'],
+  memory: ['emotion'],
+  emotion: ['knowledge'],
+  knowledge: ['memory', 'lightning'],
+};
+
+export function affinityMultiplier(att: Affinity, def: Affinity): number {
+  if (STRONG[att].includes(def)) return 1.5;
+  if (STRONG[def].includes(att)) return 0.75;
+  return 1;
+}
+
+export const MOVES: Record<string, Move> = {
+  memory_echo: { id: 'memory_echo', name: 'きおくのこだま', nameEn: 'Memory Echo', power: 16, area: 'vocab', affinity: 'memory' },
+  word_spark: { id: 'word_spark', name: 'ことばの火花', nameEn: 'Word Spark', power: 14, area: 'kanji', affinity: 'lightning' },
+  leaf_whisper: { id: 'leaf_whisper', name: 'このはささやき', nameEn: 'Leaf Whisper', power: 15, area: 'vocab', affinity: 'nature' },
+  root_grammar: { id: 'root_grammar', name: 'ぶんぽうの根', nameEn: 'Grammar Roots', power: 18, area: 'grammar', affinity: 'nature' },
+  gust_call: { id: 'gust_call', name: 'よびかぜ', nameEn: 'Calling Gust', power: 15, area: 'listening', affinity: 'wind' },
+  flame_phrase: { id: 'flame_phrase', name: 'ほのおの句', nameEn: 'Flame Phrase', power: 17, area: 'grammar', affinity: 'fire' },
+  soft_heart: { id: 'soft_heart', name: 'やさしいことば', nameEn: 'Gentle Words', power: 14, area: 'vocab', affinity: 'emotion' },
+  ripple_read: { id: 'ripple_read', name: 'よみのさざなみ', nameEn: 'Reading Ripple', power: 15, area: 'kanji', affinity: 'water' },
+  sky_verse: { id: 'sky_verse', name: 'そらのうた', nameEn: 'Sky Verse', power: 20, area: 'listening', affinity: 'wind' },
+  shadow_kanji: { id: 'shadow_kanji', name: 'かげの漢字', nameEn: 'Shadow Kanji', power: 18, area: 'kanji', affinity: 'knowledge' },
+  bloom_bond: { id: 'bloom_bond', name: 'はなのきずな', nameEn: 'Blossom Bond', power: 16, area: 'grammar', affinity: 'memory' },
+};
+
+const talk = (line: string, en: string, options: string[], why: string) => ({ line, en, options, answer: 0, why });
+
+export const SPECIES: Record<string, Species> = {
+  yukitsune: {
+    id: 'yukitsune', name: 'ユキツネ', nameEn: 'Yukitsune', sprite: 'k_fox_blue', affinity: 'memory', baseHp: 30, baseAtk: 10,
+    desc: '忘れられた言葉から生まれた子ぎつね。{記憶|きおく}の{欠片|かけら}を集めるのが好き。',
+    descEn: 'A fox kit born from forgotten words. It loves collecting fragments of memory.',
+    personality: 'curious, a little shy',
+    moves: ['memory_echo', 'word_spark'],
+    evolvesTo: { species: 'soragitsune', level: 9 },
+    ability: { id: 'reveal_reading', name: 'よみとき', desc: 'Reveals the reading of the key word in a question.' },
+    talk: [
+      talk('……ここ、どこ？　だれも、わたしのこと覚えてないの……？', '…Where am I? Doesn’t anyone remember me…?',
+        ['大丈夫。わたしが覚えておくよ。', 'うるさいなあ、あっちへ行って。', 'ここは駅だから、切符を買ってね。'],
+        'It is lonely and afraid of being forgotten — a reassuring answer fits.'),
+    ],
+  },
+  soragitsune: {
+    id: 'soragitsune', name: 'ソラギツネ', nameEn: 'Soragitsune', sprite: 'k_fox_winged', affinity: 'wind', baseHp: 42, baseAtk: 14,
+    desc: '取り戻した言葉の力で、空を{駆|か}けるようになった姿。',
+    descEn: 'Its form after regaining the power of words — it can now run across the sky.',
+    personality: 'brave, loyal',
+    moves: ['sky_verse', 'memory_echo'],
+    ability: { id: 'reveal_reading', name: 'よみとき', desc: 'Reveals the reading of the key word in a question.' },
+    talk: [],
+  },
+  kotori: {
+    id: 'kotori', name: 'コトリ', nameEn: 'Kotori', sprite: 'k_bird_blue', affinity: 'wind', baseHp: 24, baseAtk: 9,
+    desc: '人のうわさ話から生まれる小鳥。聞いた言葉を何でもまねする。',
+    descEn: 'A little bird born from gossip. It imitates any words it hears.',
+    personality: 'chatty',
+    moves: ['gust_call', 'soft_heart'],
+    evolvesTo: { species: 'shirahane', level: 7 },
+    ability: { id: 'replay', name: 'こだま', desc: 'Replays listening audio at slower speed.' },
+    talk: [
+      talk('ねえねえ、聞いた？　森の奥で、だれかが言葉を集めてるんだって！', 'Hey hey, did you hear? Someone is collecting words deep in the forest!',
+        ['えっ、本当？　もっと詳しく聞かせて。', 'わたしは森に行ったことがない。', '静かにしないと怒るよ。'],
+        'It is sharing gossip — showing interest (“tell me more”) is the natural response.'),
+      talk('ぼく、うたうのが好きなわけじゃないよ。言葉をわすれたくないだけ。', "It's not that I like singing. I just don't want to forget words.",
+        ['そうなんだ。言葉を大切にしてるんだね。', 'じゃあ、うたが大好きなんだね。', 'わすれてもいいと思うよ。'],
+        'わけじゃない corrects the assumption: it doesn’t love singing, it wants to keep words.'),
+    ],
+  },
+  shirahane: {
+    id: 'shirahane', name: 'シラハネ', nameEn: 'Shirahane', sprite: 'k_bird_white', affinity: 'wind', baseHp: 36, baseAtk: 13,
+    desc: '遠くの声まで聞き取る白い鳥。ささやきさえ{逃|のが}さない。',
+    descEn: 'A white bird that hears voices from far away. Not even a whisper escapes it.',
+    personality: 'calm, attentive',
+    moves: ['sky_verse', 'soft_heart'],
+    ability: { id: 'replay', name: 'こだま', desc: 'Replays listening audio at slower speed.' },
+    talk: [],
+  },
+  mebuki: {
+    id: 'mebuki', name: 'メブキ', nameEn: 'Mebuki', sprite: 'k_sprout', affinity: 'nature', baseHp: 28, baseAtk: 9,
+    desc: '新しく覚えた言葉が{芽|め}を出した姿。水と{褒|ほ}め言葉が好き。',
+    descEn: 'A newly learned word that has sprouted. It likes water and compliments.',
+    personality: 'gentle, sleepy',
+    moves: ['leaf_whisper', 'root_grammar'],
+    evolvesTo: { species: 'morime', level: 7 },
+    ability: { id: 'eliminate', name: 'えだわけ', desc: 'Removes one wrong answer.' },
+    talk: [
+      talk('のど、かわいた……。でも、えんりょしてるわけじゃないよ。', "I'm thirsty… but it's not that I'm holding back.",
+        ['じゃあ、お水をどうぞ。遠慮しないでね。', 'のどがかわいていないんだね。', '遠慮するのはよくないから、帰って。'],
+        'It is thirsty; offering water and “don’t hold back” (遠慮しないで) is kind and natural.'),
+      talk('ぼく、ゆっくり大きくなるんだ。急がせないでね。', "I grow slowly. Please don't rush me.",
+        ['うん、あなたのペースでいいよ。', '早く大きくなってね。', 'ゆっくりするのはだめだよ。'],
+        'It asks not to be rushed — respecting its pace is the fitting reply.'),
+    ],
+  },
+  morime: {
+    id: 'morime', name: 'モリメ', nameEn: 'Morime', sprite: 'k_sprout2', affinity: 'nature', baseHp: 38, baseAtk: 12,
+    desc: '{根|ね}を張った言葉はもう忘れられない。森を守る小さな番人。',
+    descEn: 'A word that has put down roots can no longer be forgotten. A small guardian of the forest.',
+    personality: 'steady',
+    moves: ['root_grammar', 'leaf_whisper'],
+    ability: { id: 'eliminate', name: 'えだわけ', desc: 'Removes one wrong answer.' },
+    talk: [],
+  },
+  homura: {
+    id: 'homura', name: 'ホムラ', nameEn: 'Homura', sprite: 'k_fox_orange', affinity: 'fire', baseHp: 30, baseAtk: 11,
+    desc: '強い気持ちをこめた言葉から生まれる。{怒|おこ}りっぽいが、{根|ね}はやさしい。',
+    descEn: 'Born from words spoken with strong feelings. Quick-tempered but kind at heart.',
+    personality: 'hot-headed',
+    moves: ['flame_phrase', 'word_spark'],
+    ability: { id: 'highlight', name: 'ひかりの筆', desc: 'Highlights the grammar structure in a question.' },
+    talk: [
+      talk('ふん！　どうせお前も、オレのことなんかすぐ忘れるに違いない！', "Hmph! I bet you'll forget about me soon, too!",
+        ['忘れないよ。約束する。', 'うん、たぶん忘れると思う。', '違いないって、どういう意味？'],
+        'It expects to be forgotten (に違いない = it’s convinced). A sincere promise addresses its fear.'),
+    ],
+  },
+  fuwari: {
+    id: 'fuwari', name: 'フワリ', nameEn: 'Fuwari', sprite: 'k_puff', affinity: 'emotion', baseHp: 26, baseAtk: 8,
+    desc: 'ほっとした時のため息から生まれる。さわるととても{柔|やわ}らかい。',
+    descEn: 'Born from sighs of relief. Very soft to the touch.',
+    personality: 'relaxed',
+    moves: ['soft_heart', 'gust_call'],
+    ability: { id: 'translate', name: 'ほんやく', desc: 'Shows the English meaning of the question sentence.' },
+    talk: [
+      talk('ふわぁ……毎日いそがしいと、ひと休みしたくなるものだよね。', '*yawn*… When every day is busy, you just want to take a break, right?',
+        ['うん、たまには休むのも大事だよね。', 'いそがしいのは楽しいから休まない。', '昨日は休んだものだ。'],
+        'ものだ here expresses a general feeling (“that’s just how it is”) — agreeing is natural.'),
+    ],
+  },
+  sakurako: {
+    id: 'sakurako', name: 'サクラコ', nameEn: 'Sakurako', sprite: 'k_fox_pink', affinity: 'memory', baseHp: 28, baseAtk: 10,
+    desc: '春の思い出から生まれた。桜の季節になると、よく神社に{姿|すがた}を見せる。',
+    descEn: 'Born from spring memories. It often appears at the shrine in cherry-blossom season.',
+    personality: 'nostalgic',
+    moves: ['bloom_bond', 'soft_heart'],
+    ability: { id: 'translate', name: 'ほんやく', desc: 'Shows the English meaning of the question sentence.' },
+    talk: [
+      talk('昔はここで、子どもたちがよくお花見をしたものよ。懐かしいわ。', 'Long ago, children used to have flower-viewing parties here. How nostalgic.',
+        ['そうなんだ。素敵な思い出だね。', '昨日、お花見をしたんだね。', 'お花見は禁止です。'],
+        'た-form + ものだ = nostalgic past habit, not a single event yesterday.'),
+    ],
+  },
+  kurone: {
+    id: 'kurone', name: 'クロネ', nameEn: 'Kurone', sprite: 'k_cat_black', affinity: 'lightning', baseHp: 44, baseAtk: 12,
+    desc: '消えかけた言葉の{影|かげ}をまとう黒猫。なぜか研究所の{方角|ほうがく}をじっと見ている。',
+    descEn: 'A black cat cloaked in the shadows of fading words. For some reason it keeps staring towards the research facility.',
+    personality: 'aloof, mysterious',
+    moves: ['shadow_kanji', 'word_spark'],
+    ability: { id: 'highlight', name: 'ひかりの筆', desc: 'Highlights the grammar structure in a question.' },
+    talk: [],
+  },
+};
+
+export const ENCOUNTERS: Record<string, { species: string; min: number; max: number; weight: number }[]> = {
+  forest: [
+    { species: 'kotori', min: 2, max: 4, weight: 4 },
+    { species: 'mebuki', min: 2, max: 4, weight: 4 },
+    { species: 'homura', min: 3, max: 5, weight: 2 },
+    { species: 'fuwari', min: 3, max: 5, weight: 2 },
+  ],
+};
+
+export const ITEMS: Record<string, ItemDef> = {
+  onigiri: { id: 'onigiri', name: 'おにぎり', nameEn: 'Rice ball', desc: 'Restores 20 HP to a Kotodama.', icon: 'i_leaf', kind: 'heal', heal: 20, price: 150 },
+  greentea: { id: 'greentea', name: '日野森緑茶', nameEn: 'Hinomori green tea', desc: 'Restores 40 HP to a Kotodama.', icon: 'i_orb_blue', kind: 'heal', heal: 40, price: 300 },
+  shiori: { id: 'shiori', name: 'ことのはの栞', nameEn: 'Kotonoha bookmark', desc: 'Use during a question to reveal a hint (removes two wrong answers).', icon: 'i_tome', kind: 'hint', price: 400 },
+  omamori: { id: 'omamori', name: 'お守り', nameEn: 'Shrine charm', desc: 'A charm from Hinomori Shrine. Your Kotodama gain 10% more XP while you carry it.', icon: 'i_sakura', kind: 'key' },
+  kakera: { id: 'kakera', name: '言葉の欠片', nameEn: 'Word fragment', desc: 'A glowing fragment found at the forest shrine. The researcher wants to see it.', icon: 'i_star', kind: 'key' },
+  mystery_letter: { id: 'mystery_letter', name: '差出人のない手紙', nameEn: 'Unsigned letter', desc: 'A letter signed only “K”.', icon: 'i_letter', kind: 'key' },
+  cake: { id: 'cake', name: '手作りケーキ', nameEn: 'Homemade cake', desc: 'Kaede’s cake. A nice gift. Restores 30 HP.', icon: 'i_heart', kind: 'heal', heal: 30, price: 350 },
+};
