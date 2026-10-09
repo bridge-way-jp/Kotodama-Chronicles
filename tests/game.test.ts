@@ -163,3 +163,50 @@ describe('creatures', () => {
     expect(s.dex.yukitsune).toBe('caught');
   });
 });
+
+describe('room reachability', () => {
+  it('from every entrance you can reach the exit and stand next to every NPC', () => {
+    for (const m of Object.values(MAPS)) {
+      const H = m.tiles.length;
+      const W = m.tiles[0].length;
+      const solid = (x: number, y: number) => {
+        if (x < 0 || y < 0 || x >= W || y >= H) return true;
+        if (BLOCKING.has(m.tiles[y][x])) return true;
+        if (m.npcs.some((n) => n.x === x && n.y === y)) return true;
+        return m.objects.some((o) => o.solid !== false && (o.w ?? 1) > 0 && x >= o.x && x < o.x + (o.w ?? 1) && y >= o.y && y < o.y + (o.h ?? 1));
+      };
+      // every place you arrive on this map from elsewhere
+      const entries = Object.values(MAPS).flatMap((src) => src.warps.filter((w) => w.to.map === m.id).map((w) => w.to));
+      for (const e of entries) {
+        expect(solid(e.x, e.y), `${m.id}: entrance ${e.x},${e.y} is blocked`).toBe(false);
+        const seen = new Set([`${e.x},${e.y}`]);
+        const q = [[e.x, e.y]];
+        while (q.length) {
+          const [x, y] = q.shift()!;
+          for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+            const nx = x + dx;
+            const ny = y + dy;
+            const k = `${nx},${ny}`;
+            if (seen.has(k) || solid(nx, ny)) continue;
+            seen.add(k);
+            q.push([nx, ny]);
+          }
+        }
+        const near = (x: number, y: number) => [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => seen.has(`${x + dx},${y + dy}`));
+        // talking across a counter (up to two counter tiles) also counts
+        const viaCounter = (x: number, y: number) =>
+          [[0, 1], [0, -1], [1, 0], [-1, 0]].some(([dx, dy]) => {
+            for (let i = 1; i <= 3; i++) {
+              const cx = x + dx * i;
+              const cy = y + dy * i;
+              if (seen.has(`${cx},${cy}`)) return i > 1;
+              if (m.tiles[cy]?.[cx] !== 'c') return false;
+            }
+            return false;
+          });
+        for (const w of m.warps) expect(near(w.x, w.y), `${m.id}: exit ${w.x},${w.y} unreachable from ${e.x},${e.y}`).toBe(true);
+        for (const n of m.npcs) expect(near(n.x, n.y) || viaCounter(n.x, n.y), `${m.id}: ${n.id} unreachable`).toBe(true);
+      }
+    }
+  });
+});
