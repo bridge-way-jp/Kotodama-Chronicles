@@ -29,7 +29,7 @@ HEIGHT = 46  # tallest walk frame in game px (the old hero was 46, NPCs 44)
 # block number on the sheet (row-major, 0-14) -> what it becomes
 HERO = 0
 NPC_BLOCKS = {'haruto': 1, 'aoi': 2, 'kaede': 4, 'sato': 5, 'mori': 6, 'station_staff': 7}
-FOLK_BLOCKS = {'grandpa': 13, 'miko': 11, 'chef': 10, 'gardener': 14, 'kid': 12, 'student': 3}
+FOLK_BLOCKS = {'miko': 11, 'chef': 10, 'gardener': 14, 'kid': 12, 'student': 3}
 DIRS = ['down', 'left', 'up']
 
 
@@ -136,7 +136,7 @@ if __name__ == '__main__':
 GRID_SHEETS = {
     'hm_characters2.webp': dict(height=HEIGHT, blocks=[
         ('npc', 'kirishima'), ('npc', 'customer'), ('folk', 'schoolgirl'),
-        ('folk', 'salaryman'), ('folk', 'delivery'), ('folk', 'grandma')]),
+        ('folk', 'salaryman'), ('folk', 'delivery'), None]),
     'hm_animals.webp': dict(height=24, gap=120, blocks=[('folk', 'cat'), ('folk', 'dog'), ('folk', 'sparrow')]),
 }
 
@@ -174,7 +174,10 @@ def grid_sheet(name, height, blocks, gap=30):
     # order: block rows top to bottom, then left to right
     out.sort(key=lambda bl: (bl[0][1] // 200, bl[0][0]))
     assert len(out) == len(blocks), (name, len(out))
-    for (kind, who), bl in zip(blocks, out):
+    for spec, bl in zip(blocks, out):
+        if spec is None:  # not used (too close to an existing character)
+            continue
+        kind, who = spec
         imgs = [cut(a, fg, b) for b in bl]
         tallest = max(i.height for i in imgs)
         scaled = [resize_px(i, max(6, round(i.height * height / tallest))) for i in imgs]
@@ -186,7 +189,7 @@ def grid_sheet(name, height, blocks, gap=30):
             else:
                 for i, img in enumerate(fr):
                     img.save(os.path.join(OUT, f'folk_{who}_{d}_{i}.png'))
-    print(name, ', '.join(w for _, w in blocks))
+    print(name, ', '.join(b[1] for b in blocks if b))
 
 
 if __name__ == '__main__':

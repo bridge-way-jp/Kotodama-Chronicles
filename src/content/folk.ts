@@ -24,14 +24,6 @@ export const FOLK: Record<string, FolkDef> = {
       { jp: 'お疲れさまです。今日もいい天気ですね。', en: 'Good work today. Nice weather again, isn’t it?' },
     ],
   },
-  grandpa: {
-    id: 'grandpa', sprite: 'grandpa', frames: 4, name: 'おじいさん',
-    lines: [
-      { jp: '若いころは、毎朝この川沿いを走ったものじゃ。', en: 'When I was young, I used to run along this river every morning.' },
-      { jp: 'この町も、ずいぶん変わったのう。', en: 'This town has really changed.' },
-      { jp: '言葉というのは、使わんと忘れてしまうもんじゃよ。', en: "Words are things you forget if you don't use them." },
-    ],
-  },
   delivery: {
     id: 'delivery', sprite: 'delivery', frames: 4, name: '配達員',
     lines: [
@@ -86,13 +78,6 @@ export const FOLK: Record<string, FolkDef> = {
     lines: [
       { jp: '図書館で調べものをするつもりが、つい寝てしまって……。', en: 'I meant to do research at the library, but I dozed off…' },
       { jp: 'レポートの締め切りに間に合うかどうか、微妙なところだ。', en: 'Whether I’ll make the report deadline is a close call.' },
-    ],
-  },
-  grandma: {
-    id: 'grandma', sprite: 'grandma', frames: 4, name: 'おばあさん',
-    lines: [
-      { jp: 'あら、見かけない顔ね。日野森へようこそ。', en: 'Oh, a new face. Welcome to Hinomori.' },
-      { jp: '駅前のお団子屋さん、昔はいつも行列ができていたのよ。', en: 'The dumpling shop by the station used to always have a queue.' },
     ],
   },
   sparrow: {

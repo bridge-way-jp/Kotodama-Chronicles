@@ -66,7 +66,7 @@ export const QUESTS: Record<string, QuestDef> = {
     title: 'みどりの森のささやき', titleEn: 'Whispers of Midori Forest',
     description: 'A researcher at the edge of town knows something about the Kotodama. The forest to the north seems to be the key.',
     objectives: [
-      { id: 'kirishima', text: 'Talk to the researcher at the research facility (east, across the river)' },
+      { id: 'kirishima', text: 'Visit the researcher inside his lab (east, across the river)' },
       { id: 'befriend', text: 'Win a battle or befriend a Kotodama in Midori Forest' },
       { id: 'stone', text: 'Read the inscription at the forest shrine' },
       { id: 'report', text: 'Report back to Dr. Kirishima' },

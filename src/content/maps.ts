@@ -113,7 +113,6 @@ export const MAPS: Record<string, MapDef> = {
     wanderers: [
       { id: 'schoolgirl', x: 12, y: 11, r: 6 },
       { id: 'salaryman', x: 26, y: 12, r: 6 },
-      { id: 'grandpa', x: 9, y: 19, r: 3 },
       { id: 'delivery', x: 30, y: 11, r: 5 },
       { id: 'cat', x: 14, y: 14, r: 4 },
       { id: 'dog', x: 38, y: 16, r: 3 },
@@ -121,7 +120,6 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'gardener', x: 11, y: 17, r: 2 },
       { id: 'kid', x: 16, y: 12, r: 5 },
       { id: 'student', x: 8, y: 11, r: 4 },
-      { id: 'grandma', x: 22, y: 16, r: 3 },
       { id: 'sparrow', x: 38, y: 18, r: 3 },
     ], bg: 'bg_town_sunset.webp',
     objects: [
@@ -176,7 +174,6 @@ export const MAPS: Record<string, MapDef> = {
     npcs: [
       { id: 'mori', x: 6, y: 17, facing: 'down' },
       { id: 'station_staff', x: 18, y: 21, facing: 'down' },
-      { id: 'kirishima', x: 38, y: 11, facing: 'left', when: { questDone: 'mq4' } },
     ],
     warps: [
       { x: 4, y: 16, to: { map: 'apartment', x: 5, y: 10, facing: 'up' } },
