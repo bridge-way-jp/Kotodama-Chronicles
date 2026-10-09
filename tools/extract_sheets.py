@@ -381,7 +381,31 @@ def battle_bgs():
         img.crop((0, y0 + 1, img.width, y1 - 1)).save(os.path.join(OUT, name + '.webp'), quality=88)
 
 
+TOWN_BUILDINGS = [('b_apartment2', 112), ('b_konbini2', 128), ('b_ramen2', 104), ('b_library2', 120)]
+
+
+def town_buildings():
+    a = load('town-buildings.webp')
+    fg = ndimage.binary_opening(~magenta_mask(a))
+    boxes = sorted(components(fg, min_area=50000), key=lambda b: b[0])
+    assert len(boxes) == 4, len(boxes)
+    for (name, width), (x0, y0, x1, y1) in zip(TOWN_BUILDINGS, boxes):
+        crop = a[y0:y1, x0:x1].copy()
+        if name == 'b_konbini2':
+            # recolour the green/orange fascia stripes to blue so it reads as an original store
+            r, g, b = crop[:, :, 0], crop[:, :, 1], crop[:, :, 2]
+            band = np.zeros(crop.shape[:2], bool)
+            band[int(crop.shape[0] * 0.30):int(crop.shape[0] * 0.50)] = True
+            sat = crop.max(2) - crop.min(2)
+            hit = band & (sat > 60)
+            lum = crop[hit].mean(1, keepdims=True) / 128.0
+            crop[hit] = (np.array([[40, 95, 190]]) * lum).clip(0, 255).astype(np.int32)
+        img = trim(to_rgba(crop, fg[y0:y1, x0:x1]))
+        save(resize_px(img, round(img.height * width / img.width)), name)
+
+
 if __name__ == '__main__':
+    town_buildings()
     terrain()
     nature_props()
     interiors2()

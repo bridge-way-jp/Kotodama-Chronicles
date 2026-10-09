@@ -21,7 +21,7 @@ export const ASSET_KEYS = [
   'b_inn', 'b_house_blue', 'b_house_trad', 'b_konbini', 'b_shop_red', 'b_bridge',
   'p_sakura', 'p_shrine', 'p_pond', 'p_garden', 'p_lamp', 'p_signpost', 'p_board', 'p_board2', 'p_mailbox',
   'p_sign_nihon', 'p_banner', 'p_sign_small',
-  'room_konbini', 'room_library', 'room_station', 'room_apartment', 'room_cafe', 'b_station', 'b_lab', 'p_hokora',
+  'room_konbini', 'room_library', 'room_station', 'room_apartment', 'room_cafe', 'b_station', 'b_lab', 'b_apartment2', 'b_konbini2', 'b_ramen2', 'b_library2', 'p_hokora',
   ...new Set(Object.values(TILE_IMAGES).flat().filter((k): k is string => !!k)),
   'n_tree_round', 'n_tree_cedar', 'n_tree_sakura', 'n_bush', 'n_bush_flowers', 'n_rock', 'n_fence', 'n_fence_post', 'n_lantern',
 ];
