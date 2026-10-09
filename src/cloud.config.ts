@@ -10,4 +10,11 @@ export const FIREBASE_CONFIG: null | {
   projectId: string;
   appId: string;
   [k: string]: string;
-} = null;
+} = {
+  apiKey: 'AIzaSyDDi2LYCN0NhG_v2xQJL99yOvog2O-18Tk',
+  authDomain: 'kotodama-chronicles.firebaseapp.com',
+  projectId: 'kotodama-chronicles',
+  storageBucket: 'kotodama-chronicles.firebasestorage.app',
+  messagingSenderId: '17619480169',
+  appId: '1:17619480169:web:3d021953ba24e64a5ffcf8',
+};
