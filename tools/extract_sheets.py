@@ -495,7 +495,75 @@ def chapter_cards():
         img.crop((0, y0 + 1, img.width, y1 - 1)).save(os.path.join(OUT, name + '.webp'), quality=88)
 
 
+FOLK = [('schoolgirl', 4), ('salaryman', 4), ('grandpa', 3), ('delivery', 3), ('cat', 4), ('dog', 4)]
+FOLK_H = {'schoolgirl': 40, 'salaryman': 42, 'grandpa': 38, 'delivery': 40, 'cat': 22, 'dog': 26}
+
+
+def townsfolk():
+    a = load('townsfolk.webp')
+    fg = ndimage.binary_opening(~magenta_mask(a))
+    rows = rows_of(components(fg, min_area=1500, dilate=2), tol=60, by_center=True)
+    assert [len(r) for r in rows] == [22] * 4
+    for d, row in zip(['down', 'left', 'right', 'up'], rows):
+        i = 0
+        for who, n in FOLK:
+            boxes = row[i:i + n]
+            i += n
+            tallest = max(b[3] - b[1] for r in rows for b in r[sum(c for _, c in FOLK[:[w for w, _ in FOLK].index(who)]):][:n])
+            for f, (x0, y0, x1, y1) in enumerate(boxes):
+                img = trim(to_rgba(a[y0:y1, x0:x1], fg[y0:y1, x0:x1]))
+                save(resize_px(img, max(8, round(img.height * FOLK_H[who] / tallest))), f'folk_{who}_{d}_{f}')
+
+
+DECO = ['deco_poster', 'deco_worldmap', 'deco_certificate', 'deco_aquarium', 'deco_cactus', 'deco_bonsai', 'deco_lights',
+        'deco_cushion', 'deco_beanbag', 'deco_shelf', 'deco_books', 'deco_manekineko', 'deco_furin', 'deco_tv', 'deco_lamp', 'deco_laundry']
+DECO_W = {'deco_poster': 30, 'deco_worldmap': 40, 'deco_certificate': 28, 'deco_aquarium': 40, 'deco_cactus': 18, 'deco_bonsai': 30,
+          'deco_lights': 56, 'deco_cushion': 30, 'deco_beanbag': 34, 'deco_shelf': 30, 'deco_books': 24, 'deco_manekineko': 22,
+          'deco_furin': 12, 'deco_tv': 44, 'deco_lamp': 18, 'deco_laundry': 34}
+
+
+def deco():
+    a = load('deco.webp')
+    fg = ndimage.binary_opening(~magenta_mask(a))
+    rows = rows_of(components(fg, min_area=1500, dilate=3), tol=120, by_center=True)
+    assert [len(r) for r in rows] == [7, 9], [len(r) for r in rows]
+    for name, (x0, y0, x1, y1) in zip(DECO, rows[0] + rows[1]):
+        img = trim(to_rgba(a[y0:y1, x0:x1], fg[y0:y1, x0:x1]))
+        w = DECO_W[name]
+        save(resize_px(img, max(8, round(img.height * w / img.width))), name)
+
+
+IDLE = ['k_fox_blue', 'k_fox_pink', 'k_fox_nine', 'k_leaf1', 'k_leaf2', 'k_leaf3',
+        'k_bird1', 'k_bird2', 'k_fire2', 'k_fox_black', 'k_fox_winged', 'k_fire3']
+IDLE_H = {'k_fox_nine': 70}
+
+
+def idle_frames():
+    """Two idle frames per creature (row by row, left to right, matching IDLE)."""
+    a = load('creature-idle.webp')
+    fg = ndimage.binary_opening(~magenta_mask(a))
+    rows = rows_of(components(fg, min_area=3000, dilate=1), tol=100, by_center=True)
+    pairs = [(r[i], r[i + 1]) for r in rows for i in range(0, 6, 2)]
+    for name, (b0, b1) in zip(IDLE, pairs):
+        frames = [trim(to_rgba(a[y0:y1, x0:x1], fg[y0:y1, x0:x1])) for (x0, y0, x1, y1) in (b0, b1)]
+        path = os.path.join(OUT, name + '.png')
+        h = Image.open(path).height if os.path.exists(path) else IDLE_H.get(name, 64)
+        tallest = max(f.height for f in frames)
+        for k, f in enumerate(frames):
+            save(resize_px(f, max(8, round(f.height * h / tallest))), f'idle_{name}_{k}')
+        if not os.path.exists(path):  # new front sprite (e.g. the nine-tailed fox)
+            Image.open(os.path.join(OUT, f'idle_{name}_0.png')).save(path)
+
+
+def region_map():
+    Image.open(os.path.join(SHEETS, 'region-map.webp')).convert('RGB').save(os.path.join(OUT, 'region_map.webp'), quality=88)
+
+
 if __name__ == '__main__':
+    townsfolk()
+    deco()
+    idle_frames()
+    region_map()
     ui_kit()
     icon_rows()
     effects()

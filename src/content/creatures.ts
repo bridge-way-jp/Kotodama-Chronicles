@@ -228,4 +228,25 @@ export const ITEMS: Record<string, ItemDef> = {
   kakera: { id: 'kakera', name: '言葉の欠片', nameEn: 'Word fragment', desc: 'A glowing fragment found at the forest shrine. The researcher wants to see it.', icon: 'i_kakera', kind: 'key' },
   mystery_letter: { id: 'mystery_letter', name: '差出人のない手紙', nameEn: 'Unsigned letter', desc: 'A letter signed only “K”.', icon: 'i_letter_k', kind: 'key' },
   cake: { id: 'cake', name: '手作りケーキ', nameEn: 'Homemade cake', desc: 'Kaede’s cake. A nice gift. Restores 30 HP.', icon: 'i_cake', kind: 'heal', heal: 30, price: 350 },
+  deco_poster: { id: 'deco_poster', name: 'アニメのポスター', nameEn: 'Anime poster', desc: 'A poster of your favourite anime heroine.', icon: 'deco_poster', kind: 'deco', price: 800 },
+  deco_worldmap: { id: 'deco_worldmap', name: '世界地図', nameEn: 'World map', desc: 'A map to remember where you came from.', icon: 'deco_worldmap', kind: 'deco', price: 900 },
+  deco_aquarium: { id: 'deco_aquarium', name: '水そう', nameEn: 'Aquarium', desc: 'A small tank with a calm little fish.', icon: 'deco_aquarium', kind: 'deco', price: 2500 },
+  deco_cactus: { id: 'deco_cactus', name: 'サボテン', nameEn: 'Cactus', desc: 'Hard to kill. Perfect for busy learners.', icon: 'deco_cactus', kind: 'deco', price: 300 },
+  deco_bonsai: { id: 'deco_bonsai', name: '盆栽', nameEn: 'Bonsai', desc: 'Needs patience — like learning kanji.', icon: 'deco_bonsai', kind: 'deco', price: 1800 },
+  deco_lights: { id: 'deco_lights', name: 'ガーランドライト', nameEn: 'String lights', desc: 'Warm lights for evening study sessions.', icon: 'deco_lights', kind: 'deco', price: 700 },
+  deco_cushion: { id: 'deco_cushion', name: 'ざぶとん', nameEn: 'Floor cushion', desc: 'A soft pink cushion for the tatami.', icon: 'deco_cushion', kind: 'deco', price: 500 },
+  deco_beanbag: { id: 'deco_beanbag', name: 'ビーズクッション', nameEn: 'Bean bag', desc: 'You could fall asleep reading on this.', icon: 'deco_beanbag', kind: 'deco', price: 1500 },
+  deco_shelf: { id: 'deco_shelf', name: '小さな本棚', nameEn: 'Small bookshelf', desc: 'More room for Japanese books.', icon: 'deco_shelf', kind: 'deco', price: 1200 },
+  deco_books: { id: 'deco_books', name: '教科書の山', nameEn: 'Stack of textbooks', desc: 'N2 textbooks. Heavy, in every sense.', icon: 'deco_books', kind: 'deco', price: 600 },
+  deco_manekineko: { id: 'deco_manekineko', name: '招き猫', nameEn: 'Lucky cat', desc: 'Said to invite good fortune.', icon: 'deco_manekineko', kind: 'deco', price: 1000 },
+  deco_furin: { id: 'deco_furin', name: '風鈴', nameEn: 'Wind chime', desc: 'Its tinkling sound means summer.', icon: 'deco_furin', kind: 'deco', price: 400 },
+  deco_tv: { id: 'deco_tv', name: 'テレビとゲーム機', nameEn: 'TV and console', desc: 'For listening practice… and maybe games.', icon: 'deco_tv', kind: 'deco', price: 3000 },
+  deco_lamp: { id: 'deco_lamp', name: 'デスクライト', nameEn: 'Desk lamp', desc: 'Bright light for late-night reviews.', icon: 'deco_lamp', kind: 'deco', price: 600 },
+  deco_laundry: { id: 'deco_laundry', name: '物干し', nameEn: 'Laundry rack', desc: 'Very realistic Japanese apartment life.', icon: 'deco_laundry', kind: 'deco', price: 400 },
+  deco_certificate: { id: 'deco_certificate', name: 'JLPT模試合格証', nameEn: 'Mock exam certificate', desc: 'Awarded for scoring 70% or more on the mock exam. It hangs proudly on your wall.', icon: 'deco_certificate', kind: 'deco' },
 };
+
+export const DECO_CATALOG = ['deco_poster', 'deco_worldmap', 'deco_aquarium', 'deco_cactus', 'deco_bonsai', 'deco_lights', 'deco_cushion', 'deco_beanbag', 'deco_shelf', 'deco_books', 'deco_manekineko', 'deco_furin', 'deco_tv', 'deco_lamp', 'deco_laundry'];
+
+/** sprites that have idle_<sprite>_0/_1 frames */
+export const IDLE_SPRITES = ['k_fox_blue', 'k_fox_pink', 'k_leaf1', 'k_leaf2', 'k_leaf3', 'k_bird1', 'k_bird2', 'k_fire2', 'k_fox_black', 'k_fox_winged', 'k_fire3'];

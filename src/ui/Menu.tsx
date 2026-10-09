@@ -18,7 +18,7 @@ import { setSfx, hasJapaneseVoice, ttsAvailable } from '../core/audio';
 import { ItemDetail, MASTERY_LABEL } from './Cards';
 import type { Settings } from '../core/types';
 
-export type MenuTab = 'status' | 'quests' | 'kotodama' | 'bag' | 'notebook' | 'jlpt' | 'settings';
+export type MenuTab = 'status' | 'quests' | 'kotodama' | 'bag' | 'notebook' | 'jlpt' | 'map' | 'settings';
 
 const TABS: { id: MenuTab; ja: string; en: string; icon: string }[] = [
   { id: 'quests', ja: 'クエスト', en: 'Quests', icon: 'mi_quests' },
@@ -27,6 +27,7 @@ const TABS: { id: MenuTab; ja: string; en: string; icon: string }[] = [
   { id: 'jlpt', ja: 'JLPT N2', en: 'Readiness', icon: 'mi_jlpt' },
   { id: 'bag', ja: 'もちもの', en: 'Bag', icon: 'mi_bag' },
   { id: 'status', ja: 'ステータス', en: 'Status', icon: 'mi_status' },
+  { id: 'map', ja: 'ちず', en: 'Region map', icon: 'mi_map' },
   { id: 'settings', ja: '設定', en: 'Settings & Save', icon: 'mi_settings' },
 ];
 
@@ -60,6 +61,7 @@ export function Menu({ tab: initial, onClose, actions }: { tab?: MenuTab; onClos
           {tab === 'bag' && <BagTab />}
           {tab === 'notebook' && <NotebookTab />}
           {tab === 'jlpt' && <JlptTab actions={actions} />}
+          {tab === 'map' && <MapTab />}
           {tab === 'settings' && <SettingsTab actions={actions} />}
         </div>
       </div>
@@ -513,6 +515,39 @@ function SettingsTab({ actions }: { actions: MenuActions }) {
       {msg && <p className="note">{msg}</p>}
       <h3>操作 Controls</h3>
       <p className="note">Move: arrow keys / WASD · Talk / examine: Space, Enter, Z · Menu: Esc or M · On touch screens use the on-screen pad.</p>
+    </div>
+  );
+}
+
+// ------------------------------------------------------------------ region map
+const PLACES: { id: string; ja: string; en: string; x: number; y: number; open: (s: typeof store.s) => boolean; maps?: string[] }[] = [
+  { id: 'town', ja: '日野森町', en: 'Hinomori Town', x: 55, y: 44, open: () => true, maps: ['town', 'apartment', 'cafe', 'konbini', 'library', 'station'] },
+  { id: 'forest', ja: 'みどりの森', en: 'Midori Forest', x: 63, y: 16, open: (s) => !!s.flags.forest_open, maps: ['forest'] },
+  { id: 'lab', ja: '日野森言語研究所', en: 'Language Research Facility', x: 82, y: 24, open: () => true },
+  { id: 'city', ja: 'さくら市', en: 'Sakura City', x: 12, y: 33, open: () => false },
+  { id: 'village', ja: '山の村', en: 'Mountain village', x: 18, y: 14, open: () => false },
+  { id: 'univ', ja: '大学の街', en: 'University district', x: 18, y: 68, open: () => false },
+  { id: 'coast', ja: '港町', en: 'Harbour town', x: 52, y: 84, open: () => false },
+];
+
+function MapTab() {
+  const s = store.s;
+  const here = PLACES.find((p) => p.maps?.includes(s.map));
+  return (
+    <div className="tab-content">
+      <h3>地図 Region map</h3>
+      <div className="region-map">
+        <img src="assets/region_map.webp" alt="Map of the region around Hinomori" />
+        {PLACES.map((p) => (
+          <div key={p.id} className={`map-pin ${p.open(s) ? 'open' : 'locked'} ${here === p ? 'here' : ''}`} style={{ left: `${p.x}%`, top: `${p.y}%` }}>
+            <span lang="ja">{p.open(s) ? p.ja : '？？？'}</span>
+            {here === p && <img className="px map-me" src="assets/hero_down_0.png" alt="You are here" />}
+          </div>
+        ))}
+      </div>
+      <p className="note">
+        You are in <b lang="ja">{here?.ja ?? '日野森町'}</b>. Places marked ？？？ open up as the story continues — the railway west leads to the city in chapter 2.
+      </p>
     </div>
   );
 }

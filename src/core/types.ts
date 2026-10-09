@@ -230,7 +230,7 @@ export interface ItemDef {
   nameEn: string;
   desc: string;
   icon: string;
-  kind: 'heal' | 'key' | 'hint' | 'gift';
+  kind: 'heal' | 'key' | 'hint' | 'gift' | 'deco';
   heal?: number;
   price?: number;
 }

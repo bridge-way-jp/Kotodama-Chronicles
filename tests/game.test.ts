@@ -82,7 +82,8 @@ describe('maps', () => {
         expect(t).toBeTruthy();
         expect(BLOCKING.has(t.tiles[wp.to.y][wp.to.x]), `${m.id} warp -> ${wp.to.map}`).toBe(false);
       }
-      for (const o of m.objects) expect(SCRIPTS[o.script ?? o.id], `script for ${o.id}`).toBeTruthy();
+      for (const o of m.objects) if (o.w !== 0) expect(SCRIPTS[o.script ?? o.id], `script for ${o.id}`).toBeTruthy();
+      for (const w of m.wanderers ?? []) expect(BLOCKING.has(m.tiles[w.y][w.x]), `${m.id}:${w.id}`).toBe(false);
     }
   });
 });

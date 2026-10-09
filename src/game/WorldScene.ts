@@ -4,6 +4,8 @@ import { NPCS } from '../content/npcs';
 import { ENCOUNTERS } from '../content/creatures';
 import { check, pickRule, type Step } from '../core/script';
 import { SCRIPTS } from '../content/scripts';
+import { FOLK, type FolkDef } from '../content/folk';
+import { DECO_CATALOG } from '../content/creatures';
 import { store } from '../core/store';
 import { bus } from '../core/events';
 import type { Dir } from '../core/types';
@@ -22,6 +24,8 @@ export const ASSET_KEYS = [
   'b_inn', 'b_house_blue', 'b_house_trad', 'b_konbini', 'b_shop_red', 'b_bridge',
   'p_sakura', 'p_shrine', 'p_pond', 'p_garden', 'p_lamp', 'p_signpost', 'p_board', 'p_board2', 'p_mailbox',
   'p_sign_nihon', 'p_banner', 'p_sign_small',
+  ...Object.values(FOLK).flatMap((f) => DIR_NAMES.flatMap((d) => Array.from({ length: f.frames }, (_, i) => `folk_${f.sprite}_${d}_${i}`))),
+  ...DECO_CATALOG, 'deco_certificate',
   'room_konbini', 'room_library', 'room_station', 'room_apartment', 'room_cafe', 'em_alert', 'b_station', 'b_lab', 'b_apartment2', 'b_konbini2', 'b_ramen2', 'b_library2', 'p_hokora',
   ...new Set(Object.values(TILE_IMAGES).flat().filter((k): k is string => !!k)),
   'n_tree_round', 'n_tree_cedar', 'n_tree_sakura', 'n_bush', 'n_bush_flowers', 'n_rock', 'n_fence', 'n_fence_post', 'n_lantern',
@@ -38,6 +42,18 @@ interface NpcSprite {
   base: string;
   when?: any;
   marker?: Phaser.GameObjects.Image;
+}
+
+interface Wanderer {
+  def: FolkDef;
+  sprite: Phaser.GameObjects.Image;
+  x: number;
+  y: number;
+  hx: number;
+  hy: number;
+  r: number;
+  dir: Dir;
+  moving: boolean;
 }
 
 /** true if these steps advance a quest (start it or complete an objective) */
@@ -61,6 +77,7 @@ export class WorldScene extends Phaser.Scene {
   facing: Dir = 'down';
   moving = false;
   npcs: NpcSprite[] = [];
+  wanderers: Wanderer[] = [];
   objects: { def: MapObject; img?: Phaser.GameObjects.Image }[] = [];
   tileIndex: Record<string, number> = {};
   tilesetCols = 0;
@@ -81,6 +98,7 @@ export class WorldScene extends Phaser.Scene {
   create() {
     this.moving = false;
     this.npcs = [];
+    this.wanderers = [];
     this.objects = [];
     this.tint = undefined;
     if (!this.textures.exists('tiles')) {
@@ -160,8 +178,8 @@ export class WorldScene extends Phaser.Scene {
       if (def.sprite && this.textures.exists(def.sprite)) {
         const w = def.w ?? 1;
         const h = def.h ?? 1;
-        const cx = (def.x + w / 2) * TILE;
-        const by = (def.y + h) * TILE + (def.dy ?? 0);
+        const cx = def.at ? def.at[0] : (def.x + w / 2) * TILE;
+        const by = def.at ? def.at[1] : (def.y + h) * TILE + (def.dy ?? 0);
         const img = this.add.image(cx, by, def.sprite).setOrigin(0.5, 1);
         img.setDepth(by - 1);
         entry.img = img;
@@ -194,6 +212,15 @@ export class WorldScene extends Phaser.Scene {
       }
       this.npcs.push(entry);
     }
+
+    for (const w of this.map.wanderers ?? []) {
+      const def = FOLK[w.id];
+      if (!def) continue;
+      const img = this.add.image(w.x * TILE + TILE / 2, w.y * TILE + TILE - 2, `folk_${def.sprite}_down_0`).setOrigin(0.5, 1);
+      img.setDepth(img.y);
+      this.wanderers.push({ def, sprite: img, x: w.x, y: w.y, hx: w.x, hy: w.y, r: w.r, dir: 'down', moving: false });
+    }
+    if (this.wanderers.length) this.time.addEvent({ delay: 700, loop: true, callback: () => this.wander() });
 
     if (store.s.timeOfDay === 'evening' && !this.map.interior) {
       this.tint = this.add
@@ -284,6 +311,58 @@ export class WorldScene extends Phaser.Scene {
   }
 
   // ------------------------------------------------------------ collision
+  wandererAt(x: number, y: number): Wanderer | undefined {
+    return this.wanderers.find((w) => w.x === x && w.y === y);
+  }
+
+  /** each tick some townsfolk take a step within their home radius */
+  wander() {
+    if (input.locked) return;
+    const dirs: Dir[] = ['up', 'down', 'left', 'right'];
+    for (const w of this.wanderers) {
+      if (w.moving || Math.random() < 0.55) continue;
+      const dir = dirs[Math.floor(Math.random() * 4)];
+      const [dx, dy] = DIRS[dir];
+      const tx = w.x + dx;
+      const ty = w.y + dy;
+      w.dir = dir;
+      const ch = this.tileAt(tx, ty);
+      const key = (f: number) => `folk_${w.def.sprite}_${dir}_${f}`;
+      const free =
+        Math.abs(tx - w.hx) + Math.abs(ty - w.hy) <= w.r &&
+        !'rpP~b'.includes(ch) &&
+        !this.blocked(tx, ty) &&
+        !(tx === this.px && ty === this.py) &&
+        !this.map.warps.some((wp) => wp.x === tx && wp.y === ty);
+      if (!free) {
+        w.sprite.setTexture(key(0));
+        continue;
+      }
+      w.moving = true;
+      w.x = tx;
+      w.y = ty;
+      const sx = w.sprite.x;
+      const sy = w.sprite.y;
+      const ex = tx * TILE + TILE / 2;
+      const ey = ty * TILE + TILE - 2;
+      this.tweens.addCounter({
+        from: 0,
+        to: 1,
+        duration: 420,
+        onUpdate: (tw) => {
+          const t = tw.getValue() ?? 0;
+          w.sprite.setTexture(key(t < 0.5 ? 1 : Math.min(w.def.frames - 1, 2)));
+          w.sprite.setPosition(Phaser.Math.Linear(sx, ex, t), Phaser.Math.Linear(sy, ey, t));
+          w.sprite.setDepth(w.sprite.y);
+        },
+        onComplete: () => {
+          w.sprite.setTexture(key(0));
+          w.moving = false;
+        },
+      });
+    }
+  }
+
   tileAt(x: number, y: number): string {
     return this.map.tiles[y]?.[x] ?? 'T';
   }
@@ -310,9 +389,14 @@ export class WorldScene extends Phaser.Scene {
   blocked(x: number, y: number): boolean {
     if (BLOCKING.has(this.tileAt(x, y))) return true;
     if (this.npcAt(x, y)) return true;
-    const o = this.objectAt(x, y);
-    if (o && o.solid !== false) return true;
-    return false;
+    if (this.wandererAt(x, y)) return true;
+    const s = store.s;
+    return this.objects.some(({ def }) => {
+      if (def.solid === false || !check(s, def.when)) return false;
+      const w = def.w ?? 1;
+      const h = def.h ?? 1;
+      return x >= def.x && x < def.x + w && y >= def.y && y < def.y + h;
+    });
   }
 
   // ------------------------------------------------------------ update loop
@@ -415,6 +499,15 @@ export class WorldScene extends Phaser.Scene {
     for (let i = 0; i < 2 && this.tileAt(tx, ty) === 'c' && !this.npcAt(tx, ty); i++) {
       tx += dx;
       ty += dy;
+    }
+    const folk = this.wandererAt(fx, fy);
+    if (folk) {
+      const back: Record<Dir, Dir> = { up: 'down', down: 'up', left: 'right', right: 'left' };
+      folk.dir = back[this.facing];
+      folk.sprite.setTexture(`folk_${folk.def.sprite}_${folk.dir}_0`);
+      const line = folk.def.lines[Math.floor(Math.random() * folk.def.lines.length)];
+      bus.emit('message', { text: `${folk.def.name}：「${line.jp}」`, en: line.en });
+      return;
     }
     const npc = this.npcAt(tx, ty);
     if (npc) {

@@ -1,3 +1,4 @@
+import { toast } from '../core/events';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { store } from '../core/store';
 import { buildReviewSession, encounter, queueInfo, recordAnswer, recordComprehension, labelOfKey, type Exercise } from '../core/learning';
@@ -158,6 +159,11 @@ export function ExamRunner({ mode, section, onClose }: { mode: ExamMode; section
     };
     store.update((s) => {
       s.practice.push(result);
+      const ok = all.filter((a) => a.picked === a.item.answer).length;
+      if (mode === 'mock' && ok / Math.max(1, all.length) >= 0.7 && !s.inventory.deco_certificate) {
+        s.inventory.deco_certificate = 1;
+        toast('模試合格！ 合格証を手に入れた。部屋の壁に飾られました。', 'level');
+      }
       if (s.practice.length > 50) s.practice.shift();
       grantXp(s, all.filter((a) => a.picked === a.item.answer).length * 3);
       if (mode === 'diagnostic') s.flags.diagnostic_done = true;

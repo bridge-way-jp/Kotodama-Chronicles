@@ -590,3 +590,16 @@ button, .opt, .jp-word.linked, .dialogue, .msgbox { cursor: url(../public/assets
 
 .battle-ui { background: linear-gradient(#ead8b4, #dcc497); border-top-color: #6e4122; }
 .title-menu.panel { padding: 20px 24px; }
+
+/* region map */
+.region-map { position: relative; width: 100%; border-radius: 6px; overflow: hidden; }
+.region-map > img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+.map-pin {
+  position: absolute; transform: translate(-50%, -50%);
+  background: rgba(251, 242, 223, 0.92); border: 2px solid #8a5530; border-radius: 6px;
+  padding: 1px 8px; font-size: 13px; white-space: nowrap; font-family: var(--pixel);
+}
+.map-pin.locked { opacity: 0.75; color: var(--muted); }
+.map-pin.here { border-color: var(--sakura); box-shadow: 0 0 0 3px rgba(232, 135, 159, 0.5); }
+.map-me { position: absolute; left: 50%; bottom: 100%; transform: translateX(-50%); height: 40px; animation: bob 1.2s ease-in-out infinite; }
+@media (max-width: 720px) { .map-pin { font-size: 10px; padding: 0 4px; } }

@@ -28,6 +28,8 @@ export interface MapObject {
   label?: { text: string; x: number; y: number };
   /** extra vertical offset for the image in px */
   dy?: number;
+  /** draw at an absolute world position (bottom-centre, px) instead of the footprint */
+  at?: [number, number];
 }
 
 export interface NpcPlacement {
@@ -59,6 +61,8 @@ export interface MapDef {
   /** pre-drawn room image (public/assets/<image>.png) drawn instead of tiles; tiles then only define collision */
   image?: string;
   bg?: string; // battle background
+  /** wandering townsfolk: FOLK id, home tile, wander radius in tiles */
+  wanderers?: { id: string; x: number; y: number; r: number }[];
 }
 
 const TOWN = [
@@ -208,7 +212,15 @@ const STATION_ROOM = [
 
 export const MAPS: Record<string, MapDef> = {
   town: {
-    id: 'town', name: 'Hinomori Town', nameJa: '日野森町', tiles: TOWN, bg: 'bg_town_sunset.webp',
+    id: 'town', name: 'Hinomori Town', nameJa: '日野森町', tiles: TOWN,
+    wanderers: [
+      { id: 'schoolgirl', x: 12, y: 11, r: 6 },
+      { id: 'salaryman', x: 26, y: 12, r: 6 },
+      { id: 'grandpa', x: 9, y: 19, r: 3 },
+      { id: 'delivery', x: 30, y: 11, r: 5 },
+      { id: 'cat', x: 14, y: 14, r: 4 },
+      { id: 'dog', x: 38, y: 16, r: 3 },
+    ], bg: 'bg_town_sunset.webp',
     objects: [
       { id: 'shrine', sprite: 'p_shrine', x: 3, y: 4, w: 4, h: 2, interactAt: [{ x: 4, y: 5 }, { x: 5, y: 5 }] },
       { id: 'sakura1', sprite: 'p_sakura', x: 8, y: 5, w: 2, h: 1, script: 'sakura' },
@@ -278,6 +290,22 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'plant', x: 10, y: 3, w: 2, h: 2 },
       { id: 'kitchen', x: 1, y: 8, w: 4, h: 2 },
       { id: 'kotatsu', x: 8, y: 6, w: 3, h: 3 },
+      { id: 'deco_poster', sprite: 'deco_poster', x: 0, y: 0, w: 0, h: 0, solid: false, at: [110, 78], when: { item: 'deco_poster' } },
+      { id: 'deco_worldmap', sprite: 'deco_worldmap', x: 0, y: 0, w: 0, h: 0, solid: false, at: [287, 56], when: { item: 'deco_worldmap' } },
+      { id: 'deco_certificate', sprite: 'deco_certificate', x: 0, y: 0, w: 0, h: 0, solid: false, at: [36, 74], when: { item: 'deco_certificate' } },
+      { id: 'deco_lights', sprite: 'deco_lights', x: 0, y: 0, w: 0, h: 0, solid: false, at: [182, 40], when: { item: 'deco_lights' } },
+      { id: 'deco_furin', sprite: 'deco_furin', x: 0, y: 0, w: 0, h: 0, solid: false, at: [128, 62], when: { item: 'deco_furin' } },
+      { id: 'deco_cactus', sprite: 'deco_cactus', x: 0, y: 0, w: 0, h: 0, solid: false, at: [150, 112], when: { item: 'deco_cactus' } },
+      { id: 'deco_lamp', sprite: 'deco_lamp', x: 0, y: 0, w: 0, h: 0, solid: false, at: [212, 108], when: { item: 'deco_lamp' } },
+      { id: 'deco_bonsai', sprite: 'deco_bonsai', x: 0, y: 0, w: 0, h: 0, solid: false, at: [100, 228], when: { item: 'deco_bonsai' } },
+      { id: 'deco_cushion', sprite: 'deco_cushion', x: 0, y: 0, w: 0, h: 0, solid: false, at: [222, 232], when: { item: 'deco_cushion' } },
+      { id: 'deco_beanbag', sprite: 'deco_beanbag', x: 0, y: 0, w: 0, h: 0, solid: false, at: [160, 206], when: { item: 'deco_beanbag' } },
+      { id: 'deco_books', sprite: 'deco_books', x: 0, y: 0, w: 0, h: 0, solid: false, at: [128, 165], when: { item: 'deco_books' } },
+      { id: 'deco_aquarium', sprite: 'deco_aquarium', x: 0, y: 0, w: 0, h: 0, solid: false, at: [232, 334], when: { item: 'deco_aquarium' } },
+      { id: 'deco_tv', sprite: 'deco_tv', x: 0, y: 0, w: 0, h: 0, solid: false, at: [306, 344], when: { item: 'deco_tv' } },
+      { id: 'deco_manekineko', sprite: 'deco_manekineko', x: 0, y: 0, w: 0, h: 0, solid: false, at: [140, 348], when: { item: 'deco_manekineko' } },
+      { id: 'deco_shelf', sprite: 'deco_shelf', x: 0, y: 0, w: 0, h: 0, solid: false, at: [38, 350], when: { item: 'deco_shelf' } },
+      { id: 'deco_laundry', sprite: 'deco_laundry', x: 0, y: 0, w: 0, h: 0, solid: false, at: [96, 350], when: { item: 'deco_laundry' } },
     ],
     npcs: [],
     warps: [

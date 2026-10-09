@@ -296,7 +296,7 @@ function Shop({ items, onDone }: { items: string[]; onDone: () => void }) {
               </div>
               <button
                 className="btn small"
-                disabled={s.money < (it.price ?? 0)}
+                disabled={s.money < (it.price ?? 0) || (it.kind === 'deco' && !!s.inventory[id])}
                 onClick={() => {
                   store.update((st) => {
                     st.money -= it.price ?? 0;
@@ -306,7 +306,7 @@ function Shop({ items, onDone }: { items: string[]; onDone: () => void }) {
                   setV((v) => v + 1);
                 }}
               >
-                ¥{it.price} で買う
+                {it.kind === 'deco' && s.inventory[id] ? '購入済み' : `¥${it.price} で買う`}
               </button>
             </div>
           );

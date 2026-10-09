@@ -1,6 +1,6 @@
 import type { DialogueRule, Step } from '../core/script';
 import { GRAMMAR_BY_ID } from './grammar';
-import { SPECIES } from './creatures';
+import { DECO_CATALOG, SPECIES } from './creatures';
 
 /**
  * All interaction scripts, keyed by NPC id or map-object id.
@@ -52,6 +52,10 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
             { text: '復習する', en: 'Review (spaced repetition)', then: [{ do: [{ open: 'review' }] }] },
             { text: 'JLPT準備を確認する', en: 'Check JLPT N2 readiness', then: [{ do: [{ open: 'dashboard' }] }] },
             { text: '実力診断テスト', en: 'Diagnostic assessment', then: [{ do: [{ open: 'diagnostic' }] }] },
+            {
+              text: '通販カタログを見る', en: 'Browse the mail-order catalogue (decorate your room)',
+              then: [{ say: 'インテリアの{通販|つうはん}カタログだ。部屋に何を{飾|かざ}ろうかな。', en: 'An interior-goods catalogue. What should I decorate my room with?' }, { shop: DECO_CATALOG }],
+            },
             { text: 'やめる', en: 'Leave' },
           ],
         },

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AFFINITY_INFO, ITEMS, MOVES, SPECIES } from '../content/creatures';
+import { AFFINITY_INFO, IDLE_SPRITES, ITEMS, MOVES, SPECIES } from '../content/creatures';
 import { store } from '../core/store';
 import { battleExercise, recordAnswer, type Exercise, type Option } from '../core/learning';
 import { enemyDamage, enemyMaxHp, makeEnemy, playerDamage, recruitSucceeds, xpReward, type BattleSetup } from '../core/battle';
@@ -77,6 +77,15 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
   const [queue, setQueue] = useState<string[]>([]);
   const after = useRef<() => void>(() => setPhase({ k: 'menu' }));
   const [shake, setShake] = useState<'enemy' | 'me' | null>(null);
+  // idle "breathing / blinking": show the second frame briefly every couple of seconds
+  const [idleFrame, setIdleFrame] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => {
+      setIdleFrame(1);
+      setTimeout(() => setIdleFrame(0), 380);
+    }, 2200);
+    return () => clearInterval(t);
+  }, []);
   const [fx, setFx] = useState<{ name: string; on: 'enemy' | 'me'; k: number } | null>(null);
   const playFx = (name: string, on: 'enemy' | 'me') => {
     const k = Date.now() + Math.random();
@@ -249,7 +258,7 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
         <div className="arena-shade" />
         {fx && <div key={fx.k} className={`fx fx-on-${fx.on}`} style={{ backgroundImage: `url(assets/fx_${fx.name}.png)` }} />}
         <InfoBox c={enemy} max={enemyMax} />
-        <img className={`px enemy-sprite ${shake === 'enemy' ? 'shake' : ''} ${enemy.hp <= 0 ? 'fade' : ''}`} src={`assets/${esp.sprite}.png`} alt={esp.name} />
+        <img className={`px enemy-sprite ${shake === 'enemy' ? 'shake' : ''} ${enemy.hp <= 0 ? 'fade' : ''}`} src={IDLE_SPRITES.includes(esp.sprite) ? `assets/idle_${esp.sprite}_${idleFrame}.png` : `assets/${esp.sprite}.png`} alt={esp.name} />
         <img
           key={me.speciesId}
           className={`px my-sprite back ${shake === 'me' ? 'shake' : ''}`}

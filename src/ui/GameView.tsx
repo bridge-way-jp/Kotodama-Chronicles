@@ -93,7 +93,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
           push({ kind: 'script', steps });
         }
       }),
-      bus.on('message', ({ text }) => push({ kind: 'script', steps: [{ say: text }] })),
+      bus.on('message', ({ text, en }) => push({ kind: 'script', steps: [{ say: text, en }] })),
       bus.on('encounter', (p) => push({ kind: 'battle', setup: { species: p.species, level: p.level, recruitable: true, bg: p.bg } })),
       bus.on('open-menu', () => push({ kind: 'menu' })),
     ];
