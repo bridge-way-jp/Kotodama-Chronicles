@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { MAPS, BLOCKING, type MapDef, type MapObject } from '../content/maps';
+import { ROOMS_GEN } from '../content/rooms.gen';
 import { NPCS } from '../content/npcs';
 import { ENCOUNTERS } from '../content/creatures';
 import { check, pickRule, type Step } from '../core/script';
@@ -37,11 +38,13 @@ export const ASSET_KEYS = [
   'p_sign_nihon', 'p_banner', 'p_sign_small',
   ...Object.values(FOLK).flatMap((f) => DIR_NAMES.flatMap((d) => Array.from({ length: f.frames }, (_, i) => `folk_${f.sprite}_${d}_${i}`))),
   ...DECO_CATALOG, 'deco_certificate',
-  'room_konbini', 'room_library', 'room_station', 'room_apartment', 'room_cafe', 'em_alert', 'b_station', 'b_lab', 'b_apartment2', 'b_konbini2', 'b_ramen2', 'b_library2', 'p_hokora',
+  'room_library', 'room_station', 'em_alert', 'b_station', 'b_lab', 'b_apartment2', 'b_konbini2', 'b_ramen2', 'b_library2', 'p_hokora',
   ...new Set(Object.values(TILE_IMAGES).flat().filter((k): k is string => !!k)),
   ...AUTOTILE_KEYS,
   ...DETAIL_KEYS,
   'n_tree_round', 'n_tree_cedar', 'n_tree_sakura', 'n_bush', 'n_bush_flowers', 'n_rock', 'n_fence', 'n_fence_post', 'n_lantern',
+  // rooms built from the Hinomori sheets (tools/build_rooms.py)
+  ...Object.values(ROOMS_GEN).flatMap((r) => [r.image, ...r.objects.map((o) => o.sprite!)]),
 ];
 
 const DIRS: Record<Dir, [number, number]> = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };

@@ -1,4 +1,5 @@
 import type { Cond } from '../core/script';
+import { ROOMS_GEN } from './rooms.gen';
 import type { Dir } from '../core/types';
 
 /**
@@ -128,53 +129,8 @@ const FOREST = [
   'TTTTTTTTTTTTTT::TTTTTTTTTTTTTT',
 ];
 
-const APARTMENT = [
-  'WWWWWWWWWWWW',
-  'WWWWWWWWWWWW',
-  'WWWWWWWWWWWW',
-  'WWWWfWWWWWWW',
-  'WWWWfWfWWWWW',
-  'WWWWfffffffW',
-  'WWWWffffWWWW',
-  'WWWfffffWWWW',
-  'WWWWWfffWWWW',
-  'WWWWWfffWWWW',
-  'WfffffffWWWW',
-  'WWWWWDDWWWWW',
-];
 
-const CAFE = [
-  'WWWWWWWWWWWWW',
-  'WWWWWWWWWWWWW',
-  'WWWWWWWWWWWWW',
-  'WWWWfffWWWWWW',
-  'WccccccccccWW',
-  'WccccccccccWW',
-  'WWfffffffffWW',
-  'WWffffffffffW',
-  'WWfWWWWfWWWfW',
-  'WWfWWWWfWWWWW',
-  'WWfffffffffWW',
-  'WWWWWWDWWWWWW',
-];
 
-const KONBINI_ROOM = [
-  'WWWWWWWWWWWWWWWWWWWWW',
-  'WWWWWWWWWWWWWWWWWWWWW',
-  'WWWWWWWWWWWWWWWWWWWWW',
-  'WWWWWWWWWWWWWWWWWWWWW',
-  'WWWWWWWWWWfffWWWWWWWW',
-  'WWWffffffffffWWWWWWWW',
-  'WWWffWWffWWWfWWWWWWWW',
-  'WWWffWWffWWWffffffWWW',
-  'WWWffWWffWWWffWWWfWWW',
-  'WWWffWWffWWWffWWWfWWW',
-  'WWWffWWffWWWffWWWfWWW',
-  'WWWffWWffWWWffWWWfWWW',
-  'WWWffffffffffffffWWWW',
-  'WWWWWWWWWfffWWWWWWWWW',
-  'WWWWWWWWWWDWWWWWWWWWW',
-];
 
 const LIBRARY_ROOM = [
   'WWWWWWWWWWWWWWWWWWWWWW',
@@ -279,7 +235,7 @@ export const MAPS: Record<string, MapDef> = {
     warps: [
       { x: 4, y: 16, to: { map: 'apartment', x: 5, y: 10, facing: 'up' } },
       { x: 26, y: 9, to: { map: 'cafe', x: 6, y: 10, facing: 'up' } },
-      { x: 17, y: 9, to: { map: 'konbini', x: 10, y: 13, facing: 'up' } },
+      { x: 17, y: 9, to: { map: 'konbini', x: 7, y: 10, facing: 'up' } },
       { x: 12, y: 9, to: { map: 'library', x: 9, y: 13, facing: 'up' } },
       { x: 27, y: 19, to: { map: 'station', x: 11, y: 12, facing: 'up' } },
       {
@@ -307,30 +263,25 @@ export const MAPS: Record<string, MapDef> = {
     ],
   },
   apartment: {
-    id: 'apartment', name: 'Your apartment', nameJa: 'アパート', tiles: APARTMENT, interior: true, image: 'room_apartment',
+    id: 'apartment', name: 'Your apartment', nameJa: 'アパート', tiles: ROOMS_GEN.apartment.tiles, interior: true, image: ROOMS_GEN.apartment.image,
     objects: [
-      { id: 'bed', x: 1, y: 2, w: 3, h: 5 },
-      { id: 'desk', x: 5, y: 3, w: 3, h: 1 },
-      { id: 'shelf', x: 8, y: 2, w: 2, h: 3 },
-      { id: 'plant', x: 10, y: 3, w: 2, h: 2 },
-      { id: 'kitchen', x: 1, y: 8, w: 4, h: 2 },
-      { id: 'kotatsu', x: 8, y: 6, w: 3, h: 3 },
-      { id: 'deco_poster', sprite: 'deco_poster', x: 0, y: 0, w: 0, h: 0, solid: false, at: [110, 78], when: { item: 'deco_poster' } },
-      { id: 'deco_worldmap', sprite: 'deco_worldmap', x: 0, y: 0, w: 0, h: 0, solid: false, at: [287, 56], when: { item: 'deco_worldmap' } },
-      { id: 'deco_certificate', sprite: 'deco_certificate', x: 0, y: 0, w: 0, h: 0, solid: false, at: [36, 74], when: { item: 'deco_certificate' } },
-      { id: 'deco_lights', sprite: 'deco_lights', x: 0, y: 0, w: 0, h: 0, solid: false, at: [182, 40], when: { item: 'deco_lights' } },
-      { id: 'deco_furin', sprite: 'deco_furin', x: 0, y: 0, w: 0, h: 0, solid: false, at: [128, 62], when: { item: 'deco_furin' } },
+      ...ROOMS_GEN.apartment.objects,
+      { id: 'deco_poster', sprite: 'deco_poster', x: 0, y: 0, w: 0, h: 0, solid: false, at: [44, 56], when: { item: 'deco_poster' } },
+      { id: 'deco_worldmap', sprite: 'deco_worldmap', x: 0, y: 0, w: 0, h: 0, solid: false, at: [118, 24], when: { item: 'deco_worldmap' } },
+      { id: 'deco_certificate', sprite: 'deco_certificate', x: 0, y: 0, w: 0, h: 0, solid: false, at: [150, 52], when: { item: 'deco_certificate' } },
+      { id: 'deco_lights', sprite: 'deco_lights', x: 0, y: 0, w: 0, h: 0, solid: false, at: [210, 16], when: { item: 'deco_lights' } },
+      { id: 'deco_furin', sprite: 'deco_furin', x: 0, y: 0, w: 0, h: 0, solid: false, at: [118, 46], when: { item: 'deco_furin' } },
       { id: 'deco_cactus', sprite: 'deco_cactus', x: 0, y: 0, w: 0, h: 0, solid: false, at: [150, 112], when: { item: 'deco_cactus' } },
-      { id: 'deco_lamp', sprite: 'deco_lamp', x: 0, y: 0, w: 0, h: 0, solid: false, at: [212, 108], when: { item: 'deco_lamp' } },
-      { id: 'deco_bonsai', sprite: 'deco_bonsai', x: 0, y: 0, w: 0, h: 0, solid: false, at: [100, 228], when: { item: 'deco_bonsai' } },
-      { id: 'deco_cushion', sprite: 'deco_cushion', x: 0, y: 0, w: 0, h: 0, solid: false, at: [222, 232], when: { item: 'deco_cushion' } },
-      { id: 'deco_beanbag', sprite: 'deco_beanbag', x: 0, y: 0, w: 0, h: 0, solid: false, at: [160, 206], when: { item: 'deco_beanbag' } },
-      { id: 'deco_books', sprite: 'deco_books', x: 0, y: 0, w: 0, h: 0, solid: false, at: [128, 165], when: { item: 'deco_books' } },
-      { id: 'deco_aquarium', sprite: 'deco_aquarium', x: 0, y: 0, w: 0, h: 0, solid: false, at: [232, 334], when: { item: 'deco_aquarium' } },
-      { id: 'deco_tv', sprite: 'deco_tv', x: 0, y: 0, w: 0, h: 0, solid: false, at: [306, 344], when: { item: 'deco_tv' } },
-      { id: 'deco_manekineko', sprite: 'deco_manekineko', x: 0, y: 0, w: 0, h: 0, solid: false, at: [140, 348], when: { item: 'deco_manekineko' } },
-      { id: 'deco_shelf', sprite: 'deco_shelf', x: 0, y: 0, w: 0, h: 0, solid: false, at: [38, 350], when: { item: 'deco_shelf' } },
-      { id: 'deco_laundry', sprite: 'deco_laundry', x: 0, y: 0, w: 0, h: 0, solid: false, at: [96, 350], when: { item: 'deco_laundry' } },
+      { id: 'deco_lamp', sprite: 'deco_lamp', x: 0, y: 0, w: 0, h: 0, solid: false, at: [40, 200], when: { item: 'deco_lamp' } },
+      { id: 'deco_bonsai', sprite: 'deco_bonsai', x: 0, y: 0, w: 0, h: 0, solid: false, at: [118, 190], when: { item: 'deco_bonsai' } },
+      { id: 'deco_cushion', sprite: 'deco_cushion', x: 0, y: 0, w: 0, h: 0, solid: false, at: [200, 250], when: { item: 'deco_cushion' } },
+      { id: 'deco_beanbag', sprite: 'deco_beanbag', x: 0, y: 0, w: 0, h: 0, solid: false, at: [120, 250], when: { item: 'deco_beanbag' } },
+      { id: 'deco_books', sprite: 'deco_books', x: 0, y: 0, w: 0, h: 0, solid: false, at: [170, 190], when: { item: 'deco_books' } },
+      { id: 'deco_aquarium', sprite: 'deco_aquarium', x: 0, y: 0, w: 0, h: 0, solid: false, at: [340, 290], when: { item: 'deco_aquarium' } },
+      { id: 'deco_tv', sprite: 'deco_tv', x: 0, y: 0, w: 0, h: 0, solid: false, at: [60, 300], when: { item: 'deco_tv' } },
+      { id: 'deco_manekineko', sprite: 'deco_manekineko', x: 0, y: 0, w: 0, h: 0, solid: false, at: [240, 330], when: { item: 'deco_manekineko' } },
+      { id: 'deco_shelf', sprite: 'deco_shelf', x: 0, y: 0, w: 0, h: 0, solid: false, at: [56, 264], when: { item: 'deco_shelf' } },
+      { id: 'deco_laundry', sprite: 'deco_laundry', x: 0, y: 0, w: 0, h: 0, solid: false, at: [100, 264], when: { item: 'deco_laundry' } },
     ],
     npcs: [],
     warps: [
@@ -339,35 +290,25 @@ export const MAPS: Record<string, MapDef> = {
     ],
   },
   cafe: {
-    id: 'cafe', name: 'Café Kotonoha', nameJa: '喫茶ことのは', tiles: CAFE, interior: true, image: 'room_cafe',
-    objects: [
-      { id: 'cafe_shelf', x: 1, y: 4, w: 3, h: 1 },
-      { id: 'cafe_table', x: 3, y: 8, w: 4, h: 2 },
-      { id: 'cafe_table2', x: 8, y: 8, w: 3, h: 2, script: 'cafe_table' },
-      { id: 'cafe_window', x: 1, y: 6, w: 1, h: 5 },
-      { id: 'cafe_plant', x: 11, y: 4, w: 1, h: 2, script: 'plant' },
-    ],
+    id: 'cafe', name: 'Café Kotonoha', nameJa: '喫茶ことのは', tiles: ROOMS_GEN.cafe.tiles, interior: true, image: ROOMS_GEN.cafe.image,
+    objects: ROOMS_GEN.cafe.objects,
     npcs: [
-      { id: 'kaede', x: 5, y: 3, facing: 'down' },
-      { id: 'aoi', x: 2, y: 8, facing: 'right' },
+      { id: 'kaede', x: 4, y: 2, facing: 'down' },
+      { id: 'aoi', x: 3, y: 6, facing: 'left' },
     ],
     warps: [{ x: 6, y: 11, to: { map: 'town', x: 26, y: 10, facing: 'down' } }],
   },
+
   konbini: {
-    id: 'konbini', name: 'Convenience store', nameJa: 'コンビニ ひのもり店', tiles: KONBINI_ROOM, interior: true, image: 'room_konbini',
-    objects: [
-      { id: 'konbini_fridge', x: 3, y: 4, w: 5, h: 1 },
-      { id: 'konbini_shelf', x: 5, y: 6, w: 2, h: 6 },
-      { id: 'konbini_shelf2', x: 9, y: 6, w: 3, h: 6, script: 'konbini_shelf' },
-      { id: 'konbini_snacks', x: 14, y: 8, w: 3, h: 4, script: 'konbini_shelf' },
-      { id: 'konbini_counter', x: 14, y: 4, w: 6, h: 3 },
-    ],
+    id: 'konbini', name: 'Convenience store', nameJa: 'コンビニ ひのもり店', tiles: ROOMS_GEN.konbini.tiles, interior: true, image: ROOMS_GEN.konbini.image,
+    objects: ROOMS_GEN.konbini.objects,
     npcs: [
-      { id: 'haruto', x: 16, y: 7, facing: 'down' },
-      { id: 'customer', x: 12, y: 8, facing: 'right', when: { notObj: 'mq2.customer' } },
+      { id: 'haruto', x: 12, y: 3, facing: 'down' },
+      { id: 'customer', x: 7, y: 6, facing: 'left', when: { notObj: 'mq2.customer' } },
     ],
-    warps: [{ x: 10, y: 14, to: { map: 'town', x: 17, y: 10, facing: 'down' } }],
+    warps: [{ x: 7, y: 11, to: { map: 'town', x: 17, y: 10, facing: 'down' } }],
   },
+
   library: {
     id: 'library', name: 'Hinomori Library', nameJa: '日野森図書館', tiles: LIBRARY_ROOM, interior: true, image: 'room_library',
     objects: [

@@ -327,6 +327,11 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     },
   ],
   cafe_shelf: [{ steps: [n('コーヒー豆の{瓶|びん}が並んでいる。どれも{懐かしい|なつかしい|v:natsukashii}香りがする。', 'Jars of coffee beans. They all have a nostalgic aroma.'), { do: [{ learn: ['v:natsukashii'] }] }] }],
+  cafe_counter: [{ steps: [n('カウンターの{奥|おく}に、コーヒー{豆|まめ}とケーキが{並んで|ならんで}いる。', 'Behind the counter: coffee beans and cakes on display.')] }],
+  cafe_clock: [{ steps: [n('古い{柱時計|はしらどけい}だ。{正確|せいかく}な時間を{刻み続けて|きざみつづけて}いる。', 'An old grandfather clock, still keeping exact time.')] }],
+  cafe_sofa: [{ steps: [n('ふかふかのソファだ。ここで本を読んでいる{常連|じょうれん}さんが多いらしい。', 'A soft sofa. Many regulars apparently read here.')] }],
+  cafe_books: [{ steps: [n('お{客|きゃく}さんが{自由に|じゆうに}読める本棚だ。日本の{昔話|むかしばなし}の本もある。', 'A bookshelf guests can use freely, with some Japanese folk tales too.')] }],
+  cafe_menu: [{ steps: [n('「本日のおすすめ：{季節|きせつ}のケーキセット　{税込|ぜいこみ}八百円」', '“Today’s recommendation: seasonal cake set, ¥800 incl. tax.”')] }],
   cafe_table: [{ steps: [n('窓際の席だ。日当たりがいい。', 'A seat by the window. Nice and sunny.')] }],
   cafe_window: [{ steps: [n('窓の外を、自転車がゆっくり通り過ぎていく。', 'A bicycle slowly passes by outside.')] }],
 
@@ -591,6 +596,13 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       ],
     },
   ],
+  konbini_bento: [{ steps: [n('お弁当とおにぎりの{棚|たな}だ。「{温め|あたため}ますか？」とよく聞かれる。', 'Bento boxes and onigiri. Clerks often ask: “Shall I heat it up?”')] }],
+  konbini_coffee: [{ steps: [n('セルフのコーヒーマシンだ。レジでカップを買ってから、自分で{入れる|いれる}{仕組み|しくみ}になっている。', 'A self-service coffee machine: you buy a cup at the register and pour it yourself.')] }],
+  konbini_ice: [{ steps: [n('アイスの{冷凍|れいとう}ケースだ。{期間限定|きかんげんてい}の{抹茶|まっちゃ}味がある。', 'An ice-cream freezer. There’s a limited-time matcha flavour.')] }],
+  konbini_magazines: [{ steps: [n('雑誌の{棚|たな}だ。「{立ち読み|たちよみ}はご{遠慮|えんりょ}ください」と書いてある。', 'A magazine rack. A sign says “Please refrain from reading without buying.”')] }],
+  konbini_atm: [{ steps: [n('ATMだ。{手数料|てすうりょう}がかかるので、{必要|ひつよう}な時だけ使おう。', 'An ATM. It charges a fee, so only use it when you need to.')] }],
+  konbini_trash: [{ steps: [n('ゴミ箱が三つ{並んで|ならんで}いる。ペットボトル、{燃える|もえる}ゴミ、{缶|かん}・びん。{分別|ぶんべつ}してから{捨てよう|すてよう}。', 'Three bins: PET bottles, burnable, cans/bottles. Sort before you throw away.')] }],
+  konbini_baskets: [{ steps: [n('買い物かごだ。{使い終わったら|つかいおわったら}元の{場所|ばしょ}に{戻す|もどす}こと。', 'Shopping baskets. Put them back where they belong after use.')] }],
   konbini_counter: [{ steps: [n('レジの横に、肉まんとおでんのケースがある。いいにおいだ。', 'Next to the register are cases of steamed buns and oden. Smells good.')] }],
   library_shelf: [
     {
@@ -616,6 +628,14 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   station_map: [{ steps: [n('この地方の地図だ。日野森の先に、大きな街や山の村、海の町が描かれている。いつか行ってみたい。', 'A map of the region. Beyond Hinomori are a big city, a mountain village and a coastal town. Someday…')] }],
   station_stove: [{ steps: [n('古いだるまストーブだ。冬にはここで、みんな電車を待つのだろう。', 'An old pot-belly stove. In winter, people must wait for trains here.')] }],
   kitchen: [{ steps: [n('小さなキッチンだ。一人分の料理なら、ここで十分作れる。', 'A small kitchen. Enough to cook for one.')] }],
+  nightstand: [{ steps: [n('ベッドの横の小さな棚だ。目覚まし時計は六時に{設定|せってい}してある。', 'A little shelf by the bed. The alarm is set for six.')] }],
+  wardrobe: [{ steps: [n('{洋服|ようふく}ダンスだ。{引っ越し|ひっこし}の荷物はまだ半分しか片付いていない。', 'A wardrobe. Only half of the moving boxes are unpacked so far.')] }],
+  tv: [{ steps: [n('テレビをつけると、天気予報をやっていた。「明日は全国的に晴れるでしょう。」', 'You switch on the TV: the weather forecast. “Tomorrow will be sunny nationwide.”')] }],
+  fridge: [{ steps: [n('冷蔵庫の中には、牛乳と卵と、{賞味期限|しょうみきげん}が{切れ|きれ}そうなヨーグルトがある。', 'In the fridge: milk, eggs and a yoghurt about to pass its best-before date.')] }],
+  shoes: [{ steps: [n('{靴箱|くつばこ}だ。日本では家に入るとき、玄関で靴を{脱ぐ|ぬぐ}。', 'A shoe cabinet. In Japan you take off your shoes at the entrance.')] }],
+  laundry: [{ steps: [n('{洗濯物|せんたくもの}がたまっている。{天気|てんき}がいい日にまとめて{干そう|ほそう}。', 'The laundry is piling up. Better hang it all out on a sunny day.')] }],
+  floorlamp: [{ steps: [n('{柔らかい|やわらかい}光のスタンドだ。夜の勉強にちょうどいい。', 'A lamp with soft light. Just right for studying at night.')] }],
+  mirror_room: [{ steps: [n('{鏡|かがみ}に自分が{映って|うつって}いる。今日も{頑張ろう|がんばろう}！', 'Your reflection in the mirror. Let’s do our best today!')] }],
   kotatsu: [
     {
       steps: [
