@@ -8,8 +8,9 @@ import type { Dir } from '../core/types';
  *   T  tree         #  fence         r  rail track     p  station platform  P  platform edge
  *   X  facility wall  x  concrete    S  shrine stone
  *   W  interior wall  f  wooden floor  m  tatami / rug  c  counter  D  doormat
+ *   K  cliff (blocking, autotiled ends)  H  stone stairs up a cliff
  */
-export const BLOCKING = new Set(['T', '~', '#', 'r', 'X', 'W', 'c', 'S']);
+export const BLOCKING = new Set(['T', '~', '#', 'r', 'X', 'W', 'c', 'S', 'K']);
 
 export interface MapObject {
   id: string;
@@ -81,9 +82,9 @@ const TOWN = [
   'T================================bbxxxxxxxxT',
   'T...................::...........~~xxxxxxxxT',
   'T...................::...........~~.......TT',
-  'T...................::...........~~......TTT',
-  'T...................::...........~~..,....TT',
-  'T...................::......,....~~.....,..T',
+  'T...................::..~~~~.....~~......TTT',
+  'T...................::..~~~~.....~~..,....TT',
+  'T...................::..~~~~,....~~.....,..T',
   'T.......,....,......::.......,...~~....,...T',
   'T....,...,..........::....,......~~........T',
   'T...ppppppppppppppppppppppppppp..~~........T',
@@ -105,25 +106,25 @@ const FOREST = [
   'TT.""""""T..........T"."""..TT',
   'TT.""."."T..........."""""".TT',
   'TT.""""""..........T."""""".TT',
-  'TT.""."""...T.:....T..""""".TT',
-  'TT............:......".""."TTT',
+  'TT.""."""...T.::...T..""""".TT',
+  'TT............::.....".""."TTT',
   'TT..........:::"""""."".....TT',
-  'TT.""""".".T:.."."""""..T...TT',
-  'TT."""""""..:.."""""""......TT',
-  'TT."""""""..:...............TT',
-  'TT..""""""..:::::::.T.....T.TT',
-  'TT."".""""..T...T.:.""."""".TT',
-  'TT."."".""........:.""."""".TT',
-  'TT..T......T......:.".""""..TT',
-  'TT................:.""""""".TT',
-  'TT....T...:::::::::.""."".".TT',
-  'TT."""""".:.................TT',
-  'TT."""""..:......""""""~~~~.TT',
-  'TT."T"""".:..T.."""""""~~~~.TT',
-  'TT."""."".:::::."".."""~~~~.TT',
-  'TT."""""".....:..."""""~~~~.TT',
-  'TT............:..T..........TT',
-  'TTTTTTTTTTTTTT:.TTTTTTTTTTTTTT',
+  'TT.""""".".T::."."""""..T...TT',
+  'TT."""""""..::."""""""......TT',
+  'TT."""""""..::..............TT',
+  'TT..""""""..::::::::T.....T.TT',
+  'TT."".""""..T...T.::""."""".TT',
+  'TT."."".""........::""."""".TT',
+  'TTKKKKKKKKKKKKKKKKHKKKKKKKKKTT',
+  'TT................::""""""".TT',
+  'TT....T...::::::::::""."".".TT',
+  'TT."""""".::................TT',
+  'TT."""""..::.....""""""~~~~.TT',
+  'TT."T"""".::.T.."""""""~~~~.TT',
+  'TT."""."".::::::"".."""~~~~.TT',
+  'TT."""""".....::.."""""~~~~.TT',
+  'TT............::.T..........TT',
+  'TTTTTTTTTTTTTT::TTTTTTTTTTTTTT',
   'TTTTTTTTTTTTTT::TTTTTTTTTTTTTT',
 ];
 
@@ -233,7 +234,7 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'mailbox', sprite: 'p_mailbox', x: 7, y: 16, w: 1, h: 1 },
       { id: 'garden', sprite: 'p_garden', x: 10, y: 15, w: 3, h: 2 },
       { id: 'ramen', sprite: 'b_ramen2', x: 15, y: 15, w: 3, h: 2 },
-      { id: 'pond', sprite: 'p_pond', x: 24, y: 15, w: 3, h: 2 },
+      { id: 'pond', x: 24, y: 15, w: 4, h: 3 },
       { id: 'signpost', sprite: 'p_signpost', x: 22, y: 13, w: 1, h: 1 },
       { id: 'lamp1', sprite: 'p_lamp', x: 9, y: 13, w: 1, h: 1, script: 'lamp' },
       { id: 'lamp2', sprite: 'p_lamp', x: 28, y: 13, w: 1, h: 1, script: 'lamp' },

@@ -9,7 +9,8 @@ import { DECO_CATALOG } from '../content/creatures';
 import { store } from '../core/store';
 import { bus } from '../core/events';
 import type { Dir } from '../core/types';
-import { ANIMATED, TEX, TILE, TILE_IMAGES, buildProps, buildTileset } from './textures';
+import { TEX, TILE, TILE_IMAGES, buildProps, buildTileset } from './textures';
+import { AUTOTILE_KEYS, isForestWall, planCell } from './autotile';
 import { input } from './input';
 
 const DIR_NAMES = ['down', 'left', 'right', 'up'];
@@ -28,6 +29,7 @@ export const ASSET_KEYS = [
   ...DECO_CATALOG, 'deco_certificate',
   'room_konbini', 'room_library', 'room_station', 'room_apartment', 'room_cafe', 'em_alert', 'b_station', 'b_lab', 'b_apartment2', 'b_konbini2', 'b_ramen2', 'b_library2', 'p_hokora',
   ...new Set(Object.values(TILE_IMAGES).flat().filter((k): k is string => !!k)),
+  ...AUTOTILE_KEYS,
   'n_tree_round', 'n_tree_cedar', 'n_tree_sakura', 'n_bush', 'n_bush_flowers', 'n_rock', 'n_fence', 'n_fence_post', 'n_lantern',
 ];
 
@@ -81,6 +83,8 @@ export class WorldScene extends Phaser.Scene {
   objects: { def: MapObject; img?: Phaser.GameObjects.Image }[] = [];
   tileIndex: Record<string, number> = {};
   tilesetCols = 0;
+  animatedCols: number[] = [];
+  grassOverlay?: Phaser.GameObjects.Image;
   animFrame = 0;
   tint?: Phaser.GameObjects.Rectangle;
   unsub: (() => void)[] = [];
@@ -97,6 +101,7 @@ export class WorldScene extends Phaser.Scene {
 
   create() {
     this.moving = false;
+    this.animFrame = 0;
     this.npcs = [];
     this.wanderers = [];
     this.objects = [];
@@ -112,7 +117,6 @@ export class WorldScene extends Phaser.Scene {
     } else {
       this.tileIndex = this.registry.get('tileIndex');
     }
-    this.tilesetCols = Object.keys(this.tileIndex).length;
 
     const s = store.s;
     this.map = MAPS[s.map] ?? MAPS.town;
@@ -160,9 +164,10 @@ export class WorldScene extends Phaser.Scene {
   // ------------------------------------------------------------ map building
   buildMap() {
     const rows = this.map.tiles;
-    const data = rows.map((r) => [...r].map((ch) => this.tileIndex[ch] ?? this.tileIndex['.']));
+    const data = this.buildMapTileset();
+    const texKey = `tiles_${this.map.id}`;
     const tm = this.make.tilemap({ data, tileWidth: TEX, tileHeight: TEX });
-    const ts = tm.addTilesetImage('tiles', 'tiles', TEX, TEX, 0, 0)!;
+    const ts = tm.addTilesetImage(texKey, texKey, TEX, TEX, 0, 0)!;
     this.layer = tm.createLayer(0, ts, 0, 0)!;
     this.layer.setScale(TILE / TEX);
     this.layer.setDepth(-10);
@@ -242,6 +247,7 @@ export class WorldScene extends Phaser.Scene {
         const px = x * TILE + TILE / 2;
         const py = y * TILE + TILE;
         if (ch === 'T') {
+          if (isForestWall(rows, x, y)) continue; // drawn by the forest autotiles
           const key = forest ? (r < 0.5 ? 'n_tree_cedar' : 'n_tree_round') : r < 0.12 ? 'n_tree_sakura' : 'n_tree_round';
           if (!this.textures.exists(key)) continue;
           this.add.image(px + Math.round((r - 0.5) * 8), py + 2, key).setOrigin(0.5, 1).setDepth(py);
@@ -269,6 +275,9 @@ export class WorldScene extends Phaser.Scene {
   buildPlayer() {
     this.shadow = this.add.image(0, 0, 'gen_shadow').setOrigin(0.5, 1);
     this.player = this.add.image(0, 0, this.textureFor('hero', this.facing)).setOrigin(0.5, 1);
+    if (this.textures.exists('tallgrass_overlay')) {
+      this.grassOverlay = this.add.image(0, 0, 'tallgrass_overlay').setOrigin(0, 0).setScale(TILE / TEX).setVisible(false);
+    }
     this.placePlayer();
   }
 
@@ -279,6 +288,12 @@ export class WorldScene extends Phaser.Scene {
     this.shadow.setPosition(x, y + 4);
     this.player.setDepth(y);
     this.shadow.setDepth(y - 2);
+    // standing in tall grass hides the feet, like in classic handheld RPGs
+    const inGrass = this.tileAt(this.px, this.py) === '"';
+    this.shadow.setVisible(!inGrass);
+    if (this.grassOverlay) {
+      this.grassOverlay.setPosition(this.px * TILE, this.py * TILE).setDepth(y + 1).setVisible(inGrass);
+    }
   }
 
   refreshVisibility() {
@@ -300,10 +315,66 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
+  /**
+   * Builds (once per map) a tileset with exactly the tiles this map needs: plain tiles copied
+   * from the base set plus autotiled transitions composed from quadrants. Row 2 holds the
+   * second animation frame. Returns the tile-index grid.
+   */
+  buildMapTileset(): number[][] {
+    const rows = this.map.tiles;
+    const texKey = `tiles_${this.map.id}`;
+    const cached = this.registry.get(texKey) as { data: number[][]; animated: number[]; cols: number } | undefined;
+    if (cached && this.textures.exists(texKey)) {
+      this.animatedCols = cached.animated;
+      this.tilesetCols = cached.cols;
+      return cached.data;
+    }
+    const img = (k: string) => (this.textures.exists(k) ? (this.textures.get(k).getSourceImage() as CanvasImageSource) : undefined);
+    const base = this.textures.get('tiles').getSourceImage() as HTMLCanvasElement;
+    const baseCols = Object.keys(this.tileIndex).length;
+    const columns: { draw: (ctx: CanvasRenderingContext2D, x: number, y: number, f: number) => void; animated: boolean }[] = [];
+    const colOf = new Map<string, number>();
+    const data = rows.map((r, y) =>
+      [...r].map((ch, x) => {
+        const plan = this.map.interior ? null : planCell(rows, x, y, img);
+        const key = plan ? plan.key : `ch:${ch}`;
+        let col = colOf.get(key);
+        if (col === undefined) {
+          col = columns.length;
+          colOf.set(key, col);
+          if (plan) columns.push({ draw: (ctx, dx, dy, f) => plan.draw(ctx, dx, dy, TEX, f), animated: plan.animated });
+          else {
+            const bi = this.tileIndex[ch] ?? this.tileIndex['.'];
+            columns.push({
+              draw: (ctx, dx, dy, f) => ctx.drawImage(base, bi * TEX, f * TEX, TEX, TEX, dx, dy, TEX, TEX),
+              animated: ch === '~',
+            });
+          }
+        }
+        return col;
+      }),
+    );
+    void baseCols;
+    const canvas = document.createElement('canvas');
+    canvas.width = TEX * columns.length;
+    canvas.height = TEX * 2;
+    const ctx = canvas.getContext('2d')!;
+    ctx.imageSmoothingEnabled = false;
+    columns.forEach((c, i) => {
+      c.draw(ctx, i * TEX, 0, 0);
+      c.draw(ctx, i * TEX, TEX, 1);
+    });
+    if (this.textures.exists(texKey)) this.textures.remove(texKey);
+    this.textures.addCanvas(texKey, canvas);
+    this.animatedCols = columns.map((c, i) => (c.animated ? i : -1)).filter((i) => i >= 0);
+    this.tilesetCols = columns.length;
+    this.registry.set(texKey, { data, animated: this.animatedCols, cols: columns.length });
+    return data;
+  }
+
   animateTiles() {
     this.animFrame = 1 - this.animFrame;
-    for (const ch of ANIMATED) {
-      const a = this.tileIndex[ch];
+    for (const a of this.animatedCols) {
       const b = a + this.tilesetCols; // second row of the tileset
       if (this.animFrame) this.layer.replaceByIndex(a, b);
       else this.layer.replaceByIndex(b, a);
@@ -438,6 +509,8 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     this.moving = true;
+    this.grassOverlay?.setVisible(false);
+    this.shadow.setVisible(true);
     this.stepCount++;
     const stepFrame = this.stepCount % 2 ? 1 : 3;
     this.px = tx;

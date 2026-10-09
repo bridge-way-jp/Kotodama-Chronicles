@@ -59,8 +59,12 @@ export function kanjiReadingItems(n: number, r = Math.random, levels = ['N2', 'N
 export function contextItems(n: number, r = Math.random, levels = ['N2', 'N1']): TestItem[] {
   const pool = VOCAB.filter((v) => levels.includes(v.level) && v.example.includes(v.word));
   return shuffle(pool, r).slice(0, n).map((v) => {
-    const others = shuffle(VOCAB.filter((x) => x.id !== v.id && x.pos === v.pos), r).slice(0, 3).map((x) => x.word);
-    while (others.length < 3) others.push(shuffle(VOCAB, r)[0].word);
+    // distinct distractors of the same part of speech, topped up from the whole list
+    const others = [...new Set(shuffle(VOCAB.filter((x) => x.word !== v.word && x.pos === v.pos), r).map((x) => x.word))].slice(0, 3);
+    for (const x of shuffle(VOCAB, r)) {
+      if (others.length >= 3) break;
+      if (x.word !== v.word && !others.includes(x.word)) others.push(x.word);
+    }
     return {
       id: `cx:${v.id}`, section: '文脈規定', area: 'vocab',
       instruction: '（　　）に入れるのに最もよいものを選びなさい。',

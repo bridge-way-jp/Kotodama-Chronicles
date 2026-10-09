@@ -146,6 +146,12 @@ const painters: Record<string, Painter> = {
     for (let x = 0; x < 16; x++) p.px(x, 0, C.concrete2);
     for (let y = 0; y < 16; y++) p.px(0, y, C.concrete2);
   },
+  K: (p) => {
+    painters[':'](p, 0);
+  },
+  H: (p) => {
+    painters[':'](p, 0);
+  },
   S: (p) => {
     painters[':'](p, 0);
   },

@@ -10,6 +10,7 @@ Sheets (all generated on a flat #FF00FF background):
 Run: python3 tools/extract_sheets.py   (needs Pillow, NumPy, SciPy)
 """
 import os
+import json
 import numpy as np
 from PIL import Image
 from scipy import ndimage
@@ -559,7 +560,133 @@ def region_map():
     Image.open(os.path.join(SHEETS, 'region-map.webp')).convert('RGB').save(os.path.join(OUT, 'region_map.webp'), quality=88)
 
 
+# ------------------------------------------------------------------ autotiles
+# A tile's "mask" says which quadrants show the feature (path / water / trees):
+# bits TL=8, TR=4, BL=2, BR=1. The game picks a tile per map cell from its neighbours.
+AT_PX = 64
+
+
+def cells(sheet):
+    a = load(sheet)
+    fg = ndimage.binary_opening(~magenta_mask(a), iterations=2)
+    rows = rows_of(components(fg, min_area=4000, dilate=1), tol=80, by_center=True)
+    img = Image.open(os.path.join(SHEETS, sheet)).convert('RGB')
+    out = []
+    for b in [b for r in rows for b in r]:
+        x0, y0, x1, y1 = b
+        out.append(img.crop((x0 + 3, y0 + 3, x1 - 3, y1 - 3)))
+    return out
+
+
+def pixelize(img):
+    # snap to a 32px grid, then upscale 2x so every tile has the same crisp pixel size
+    return img.resize((32, 32), Image.BOX).resize((AT_PX, AT_PX), Image.NEAREST)
+
+
+def quad_mask(img, is_feature):
+    a = np.array(img.resize((32, 32), Image.BOX)).astype(np.int32)
+    f = is_feature(a)
+    m = 0
+    for bit, (ys, xs) in zip((8, 4, 2, 1), [(slice(0, 16), slice(0, 16)), (slice(0, 16), slice(16, 32)),
+                                            (slice(16, 32), slice(0, 16)), (slice(16, 32), slice(16, 32))]):
+        if f[ys, xs].mean() > 0.5:
+            m |= bit
+    return m
+
+
+def flip_mask(m, h, v):
+    tl, tr, bl, br = (m >> 3) & 1, (m >> 2) & 1, (m >> 1) & 1, m & 1
+    if h:
+        tl, tr, bl, br = tr, tl, br, bl
+    if v:
+        tl, tr, bl, br = bl, br, tl, tr
+    return tl << 3 | tr << 2 | bl << 1 | br
+
+
+def complete(tiles):
+    """tiles: {mask: [img,...]} -> fill all 16 masks using flips, then nearest by Hamming distance."""
+    for h, v in ((1, 0), (0, 1), (1, 1)):
+        for m, imgs in list(tiles.items()):
+            fm = flip_mask(m, h, v)
+            if fm not in tiles:
+                im = imgs[0]
+                if h:
+                    im = im.transpose(Image.FLIP_LEFT_RIGHT)
+                if v:
+                    im = im.transpose(Image.FLIP_TOP_BOTTOM)
+                tiles[fm] = [im]
+    for m in range(16):
+        if m not in tiles:
+            best = min(tiles, key=lambda k: (bin(k ^ m).count('1'), -bin(k).count('1')))
+            tiles[m] = tiles[best]
+    return tiles
+
+
+def match_grass(img, src_grass, dst_grass, is_grass):
+    """shift grass pixels so every set uses the same grass colour (no visible seams)."""
+    a = np.array(img).astype(np.int32)
+    g = is_grass(a)
+    a[g] = np.clip(a[g] + (np.array(dst_grass) - np.array(src_grass)), 0, 255)
+    return Image.fromarray(a.astype(np.uint8))
+
+
+def grassy(a):
+    r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    return (g > r + 25) & (g > b + 40)
+
+
+def mean_grass(imgs):
+    px = np.concatenate([np.array(i.resize((32, 32), Image.BOX)).reshape(-1, 3) for i in imgs]).astype(np.int32)
+    return px[grassy(px)].mean(0)
+
+
+# role of every cell in the autotile sheets (row by row, as cut by cells()).
+# NW/N/NE/W/E/SW/S/SE = feature cell whose grass side(s) point that way; C = centre;
+# iNW.. = inner corner (only the diagonal neighbour is grass); G = plain grass.
+AT_ROLES = {
+    'path': ['NW', 'N', 'NE', 'C', 'W', 'E', 'G', 'SW', 'S', 'SE', 'iNW', 'iNE', 'iSW', 'iSE'],
+    'water': ['NW', 'N', 'NE', 'G', 'W', 'C', 'C2', 'C3', 'E', 'SW', 'S', 'SE', 'iNW', 'x', 'iSE'],
+    'forest': ['iSW', 'S2', 'S3', 'iSE', 'E', 'C', 'C2', 'W', 'tree', 'iNE', 'S', 'S4', 'iNW'],
+}
+
+
+def autotiles():
+    path = cells('auto-path.webp')
+    ref = mean_grass([path[6]])
+    for name, roles in AT_ROLES.items():
+        imgs = cells(f'auto-{name}.webp')
+        assert len(imgs) == len(roles), (name, len(imgs))
+        src = mean_grass(imgs)
+        out = {}
+        for role, im in zip(roles, imgs):
+            if role in ('x', 'G', 'tree'):
+                continue
+            if name != 'path':
+                im = match_grass(im, src, ref, grassy)
+            out[role] = pixelize(im)
+        if name == 'water':  # inner corners missing in the sheet: mirror the ones we have
+            out['iNE'] = out['iNW'].transpose(Image.FLIP_LEFT_RIGHT)
+            out['iSW'] = out['iSE'].transpose(Image.FLIP_LEFT_RIGHT)
+        for role, im in out.items():
+            im.save(os.path.join(OUT, f'at_{name}_{role}.png'))
+    # cliffs: horizontal runs (left end, middle variants, right end) and stairs
+    cl = cells('auto-cliff.webp')
+    for key, i in {'cliff_l': 4, 'cliff_m0': 5, 'cliff_m1': 6, 'cliff_r': 7, 'cliff_stairs': 15}.items():
+        pixelize(match_grass(cl[i], mean_grass(cl), ref, grassy)).save(os.path.join(OUT, key + '.png'))
+    # tall grass: 3 frames + an overlay that hides the player's feet
+    tg = cells('tallgrass2.webp')
+    for i in range(3):
+        pixelize(match_grass(tg[i], mean_grass(tg[:3]), ref, grassy)).save(os.path.join(OUT, f'tile_tallgrass_{i}.png'))
+    ov = np.array(Image.open(os.path.join(OUT, 'tile_tallgrass_0.png')).convert('RGBA'))
+    ov[: AT_PX * 11 // 20, :, 3] = 0
+    Image.fromarray(ov).save(os.path.join(OUT, 'tallgrass_overlay.png'))
+    # plain grass / dirt everywhere else use the same art as the transitions
+    pixelize(path[6]).save(os.path.join(OUT, 'tile_grass.png'))
+    pixelize(path[3]).save(os.path.join(OUT, 'tile_dirt.png'))
+
+
 if __name__ == '__main__':
+    autotiles()
     townsfolk()
     deco()
     idle_frames()
