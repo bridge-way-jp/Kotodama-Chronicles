@@ -189,7 +189,7 @@ function CgScene({ step, onNext }: { step: Extract<Step, { cg: string }>; onNext
             {step.en && store.state?.settings.translation !== 'never' && (
               <button className="en-btn" onClick={() => setShowEn(!showEn)}>EN</button>
             )}
-            <span className="next-arrow blink" onClick={() => onNext()}>▼</span>
+            <span className="next-arrow petal" onClick={() => onNext()} />
           </div>
         </div>
       )}
@@ -224,7 +224,8 @@ function SayBox({ step, onNext }: { step: Extract<Step, { say: string }>; onNext
   }, []);
 
   const base = npc ? npc.portrait ?? npc.sprite : null;
-  const portrait = base?.startsWith('portrait_') ? `${base}_${step.mood ?? inferMood(step.say)}` : base;
+  const mood = step.mood ?? inferMood(step.say);
+  const portrait = base?.startsWith('portrait_') ? `${base}_${mood}` : base;
 
   return (
     <div className="dialogue-wrap" ref={wrapRef} onClick={() => (sfx('blip'), onNext())}>
@@ -245,6 +246,7 @@ function SayBox({ step, onNext }: { step: Extract<Step, { say: string }>; onNext
         {portrait && (
           <div className="portrait" style={{ borderColor: npc?.color }}>
             <img className="px" src={`assets/${portrait}.png`} alt="" style={npc?.portraitFilter ? { filter: npc.portraitFilter } : undefined} />
+            {mood !== 'neutral' && mood !== 'happy' && <img className="px portrait-emote" src={`assets/${mood === 'surprised' ? 'em_alert' : 'em_sweat'}.png`} alt="" />}
           </div>
         )}
         <div className="dlg-body">
@@ -266,7 +268,7 @@ function SayBox({ step, onNext }: { step: Extract<Step, { say: string }>; onNext
             <button className="en-btn" onClick={() => setShowLog(true)}>
               LOG
             </button>
-            <span className="next-arrow blink">▼</span>
+            <span className="next-arrow petal" />
           </div>
         </div>
       </div>

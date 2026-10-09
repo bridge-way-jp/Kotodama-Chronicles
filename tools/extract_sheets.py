@@ -404,7 +404,102 @@ def town_buildings():
         save(resize_px(img, round(img.height * width / img.width)), name)
 
 
+def ui_kit():
+    """Stitch the 3x3 frame tiles into one nine-slice image; cut name plate, cursor, petals and buttons."""
+    a = load('ui-kit.webp')
+    fg = ndimage.binary_opening(~magenta_mask(a))
+    rgba = np.array(to_rgba(a, fg))
+    cols = [(87, 300), (346, 572), (624, 836)]
+    rows = [(112, 304), (352, 549), (596, 772)]
+    pieces = [[rgba[y0:y1, x0:x1] for (x0, x1) in cols] for (y0, y1) in rows]
+    frame = np.concatenate([np.concatenate(r, 1) for r in pieces], 0)
+    img = Image.fromarray(frame, 'RGBA')
+    img = img.resize((img.width // 4, img.height // 4), Image.LANCZOS)
+    arr = np.array(img)
+    arr[:, :, 3] = np.where(arr[:, :, 3] > 100, 255, 0)
+    Image.fromarray(arr).save(os.path.join(OUT, 'ui_frame.png'))
+    print('ui_frame', img.size, 'slices', [(x1 - x0) // 4 for x0, x1 in cols], [(y1 - y0) // 4 for y0, y1 in rows])
+    named = {
+        'ui_nameplate': ((996, 169, 1566, 358), 48),
+        'ui_cursor': ((1050, 447, 1172, 578), 28),
+        'ui_petal0': ((1271, 482, 1342, 552), 16),
+        'ui_petal1': ((1431, 482, 1510, 552), 16),
+        'ui_btn': ((911, 653, 1156, 757), 26),
+        'ui_btn_hover': ((1194, 652, 1440, 757), 26),
+        'ui_btn_down': ((1477, 652, 1722, 757), 26),
+    }
+    for name, (box, h) in named.items():
+        save(crop_sprite(a, fg, box, h), name)
+
+
+MENU_ICONS = ['mi_quests', 'mi_kotodama', 'mi_notebook', 'mi_jlpt', 'mi_bag', 'mi_status', 'mi_settings', 'mi_map', 'mi_save']
+EMOTES = ['em_alert', 'em_question', 'em_music', 'em_heart', 'em_sweat', 'em_angry', 'em_dots', 'em_idea', 'em_sparkle', 'em_sleep']
+
+
+def icon_rows():
+    for sheet, names, h in [('menu-icons.webp', MENU_ICONS, 32), ('emotes.webp', EMOTES, 24)]:
+        a = load(sheet)
+        fg = ndimage.binary_opening(~magenta_mask(a))
+        boxes = sorted(components(fg, min_area=1500, dilate=2), key=lambda b: b[0])
+        assert len(boxes) == len(names), (sheet, len(boxes))
+        for name, b in zip(names, boxes):
+            save(crop_sprite(a, fg, b, h), name)
+
+
+FX = ['fire', 'water', 'leaf', 'wind', 'lightning', 'memory', 'hit', 'heal', 'levelup']
+
+
+def effects():
+    """9 rows x 4 frames -> one horizontal strip per effect (4 frames of 72x72)."""
+    a = load('effects.webp')
+    fg = ~magenta_mask(a)
+    # also drop pink-tinted glow fringe that came from blending with the magenta background
+    r, g, b = a[:, :, 0], a[:, :, 1], a[:, :, 2]
+    fg &= ~((np.minimum(r, b) - g > 70) & (np.abs(r - b) < 90))
+    H, W = fg.shape
+    cell = 72
+    # rows of content separated by empty bands
+    filled = ndimage.binary_closing(ndimage.binary_opening(fg).sum(1) >= 10, iterations=6)
+    lab, n = ndimage.label(filled)
+    bands = [(s_.start, s_.stop) for (s_,) in ndimage.find_objects(lab) if s_.stop - s_.start > 30]
+    if len(bands) == 8:  # heal sparkles and the level-up pillar touch: split the last band
+        y0, y1 = bands[-1]
+        bands[-1:] = [(y0, y0 + (y1 - y0) * 2 // 5), (y0 + (y1 - y0) * 2 // 5, y1)]
+    assert len(bands) == 9, bands
+    for i, name in enumerate(FX):
+        y0, y1 = bands[i]
+        y0, y1 = max(0, y0 - 4), min(H, y1 + 4)
+        strip = Image.new('RGBA', (cell * 4, cell), (0, 0, 0, 0))
+        for f in range(4):
+            x0, x1 = int(W * f / 4), int(W * (f + 1) / 4)
+            img = to_rgba(a[y0:y1, x0:x1], fg[y0:y1, x0:x1])
+            side = max(img.width, img.height)
+            sq = Image.new('RGBA', (side, side), (0, 0, 0, 0))
+            sq.paste(img, ((side - img.width) // 2, (side - img.height) // 2))
+            strip.alpha_composite(resize_px(sq, cell), (f * cell, 0))
+        strip.save(os.path.join(OUT, f'fx_{name}.png'))
+
+
+def chapter_cards():
+    img = Image.open(os.path.join(SHEETS, 'chapter-cards.webp')).convert('RGB')
+    a = np.array(img).astype(np.int32)
+    rw = (a.min(2) > 235).mean(1)
+    cuts = [y for y in range(a.shape[0]) if rw[y] > 0.85]
+    bands, prev = [], 0
+    for y in cuts + [a.shape[0]]:
+        if y - prev > 50:
+            bands.append((prev, y))
+        prev = y + 1
+    assert len(bands) == 2, bands
+    for name, (y0, y1) in zip(['cg_chapter1', 'cg_chapter2'], bands):
+        img.crop((0, y0 + 1, img.width, y1 - 1)).save(os.path.join(OUT, name + '.webp'), quality=88)
+
+
 if __name__ == '__main__':
+    ui_kit()
+    icon_rows()
+    effects()
+    chapter_cards()
     town_buildings()
     terrain()
     nature_props()

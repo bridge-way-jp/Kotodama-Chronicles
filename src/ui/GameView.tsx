@@ -28,6 +28,7 @@ type Overlay =
 type NewOverlay = Overlay extends infer O ? (O extends Overlay ? Omit<O, 'id'> : never) : never;
 
 const INTRO: Step[] = [
+  { cg: 'cg_chapter1', say: '第一章　日野森の夏', en: 'Chapter 1 — Summer in Hinomori' },
   { cg: 'cg_arrival', say: '春。@nameは、新しい生活を始めるために、日本の小さな町・{日野森|ひのもり}へやってきた。', en: 'Spring. @name has come to Hinomori, a small Japanese town, to start a new life.' },
   { say: 'JLPT N3には合格した。次の目標は、N2。そして、日本語で本当に生きていけるようになること。', en: 'You passed the JLPT N3. The next goal: N2 — and being able to truly live your life in Japanese.' },
   {

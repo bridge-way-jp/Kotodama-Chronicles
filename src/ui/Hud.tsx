@@ -53,7 +53,7 @@ export function Hud({ onMenu }: { onMenu: (tab?: any) => void }) {
             </button>
           )}
           <button className="hud-box menu-btn" onClick={() => onMenu()}>
-            ☰ メニュー
+            <img className="px hud-icon" src="assets/mi_bag.png" alt="" /> メニュー
           </button>
           <div className={`save-dot ${saveStatus.state}`} title={saveStatus.state === 'error' ? `Save failed: ${saveStatus.error}` : saveStatus.last ? `Saved ${new Date(saveStatus.last).toLocaleTimeString()}` : 'Not saved yet'}>
             {saveStatus.state === 'saving' ? '…' : saveStatus.state === 'error' ? '!' : '✓'}

@@ -2,7 +2,8 @@ import Phaser from 'phaser';
 import { MAPS, BLOCKING, type MapDef, type MapObject } from '../content/maps';
 import { NPCS } from '../content/npcs';
 import { ENCOUNTERS } from '../content/creatures';
-import { check } from '../core/script';
+import { check, pickRule, type Step } from '../core/script';
+import { SCRIPTS } from '../content/scripts';
 import { store } from '../core/store';
 import { bus } from '../core/events';
 import type { Dir } from '../core/types';
@@ -21,7 +22,7 @@ export const ASSET_KEYS = [
   'b_inn', 'b_house_blue', 'b_house_trad', 'b_konbini', 'b_shop_red', 'b_bridge',
   'p_sakura', 'p_shrine', 'p_pond', 'p_garden', 'p_lamp', 'p_signpost', 'p_board', 'p_board2', 'p_mailbox',
   'p_sign_nihon', 'p_banner', 'p_sign_small',
-  'room_konbini', 'room_library', 'room_station', 'room_apartment', 'room_cafe', 'b_station', 'b_lab', 'b_apartment2', 'b_konbini2', 'b_ramen2', 'b_library2', 'p_hokora',
+  'room_konbini', 'room_library', 'room_station', 'room_apartment', 'room_cafe', 'em_alert', 'b_station', 'b_lab', 'b_apartment2', 'b_konbini2', 'b_ramen2', 'b_library2', 'p_hokora',
   ...new Set(Object.values(TILE_IMAGES).flat().filter((k): k is string => !!k)),
   'n_tree_round', 'n_tree_cedar', 'n_tree_sakura', 'n_bush', 'n_bush_flowers', 'n_rock', 'n_fence', 'n_fence_post', 'n_lantern',
 ];
@@ -36,6 +37,18 @@ interface NpcSprite {
   y: number;
   base: string;
   when?: any;
+  marker?: Phaser.GameObjects.Image;
+}
+
+/** true if these steps advance a quest (start it or complete an objective) */
+function advancesQuest(steps: Step[]): boolean {
+  return steps.some((st) => {
+    if ('do' in st) return st.do.some((a) => 'objective' in a || 'startQuest' in a || 'recruit' in a);
+    if ('choice' in st) return st.choice.some((c) => c.then && advancesQuest(c.then));
+    if ('if' in st) return advancesQuest(st.then) || (!!st.else && advancesQuest(st.else));
+    if ('battle' in st) return true;
+    return false;
+  });
 }
 
 export class WorldScene extends Phaser.Scene {
@@ -174,7 +187,12 @@ export class WorldScene extends Phaser.Scene {
       const img = this.add.image(n.x * TILE + TILE / 2, n.y * TILE + TILE - 2, key).setOrigin(0.5, 1);
       if (def.tint) img.setTint(def.tint);
       img.setDepth(img.y);
-      this.npcs.push({ id: n.id, sprite: img, x: n.x, y: n.y, base, when: n.when });
+      const entry: NpcSprite = { id: n.id, sprite: img, x: n.x, y: n.y, base, when: n.when };
+      if (this.textures.exists('em_alert')) {
+        entry.marker = this.add.image(img.x, img.y - img.height - 2, 'em_alert').setOrigin(0.5, 1).setDepth(100001).setVisible(false);
+        this.tweens.add({ targets: entry.marker, y: entry.marker.y - 4, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+      }
+      this.npcs.push(entry);
     }
 
     if (store.s.timeOfDay === 'evening' && !this.map.interior) {
@@ -237,9 +255,16 @@ export class WorldScene extends Phaser.Scene {
   }
 
   refreshVisibility() {
-    if (!store.state || !this.sys.isActive()) return;
+    if (!store.state || !this.layer) return;
     const s = store.s;
-    for (const n of this.npcs) n.sprite.setVisible(check(s, n.when));
+    for (const n of this.npcs) {
+      const vis = check(s, n.when);
+      n.sprite.setVisible(vis);
+      if (n.marker) {
+        const steps = vis && SCRIPTS[n.id] ? pickRule(s, SCRIPTS[n.id]) : null;
+        n.marker.setVisible(!!steps && advancesQuest(steps));
+      }
+    }
     for (const o of this.objects) o.img?.setVisible(check(s, o.def.when));
     if (this.tint) this.tint.setVisible(s.timeOfDay === 'evening');
     else if (s.timeOfDay === 'evening' && !this.map.interior) {

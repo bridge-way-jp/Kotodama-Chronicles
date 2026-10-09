@@ -77,6 +77,12 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
   const [queue, setQueue] = useState<string[]>([]);
   const after = useRef<() => void>(() => setPhase({ k: 'menu' }));
   const [shake, setShake] = useState<'enemy' | 'me' | null>(null);
+  const [fx, setFx] = useState<{ name: string; on: 'enemy' | 'me'; k: number } | null>(null);
+  const playFx = (name: string, on: 'enemy' | 'me') => {
+    const k = Date.now() + Math.random();
+    setFx({ name, on, k });
+    setTimeout(() => setFx((cur) => (cur?.k === k ? null : cur)), 700);
+  };
   const [tools, setTools] = useState<ExerciseTools>({});
   const usedAbility = useRef(new Set<string>());
   const bond = useRef(0);
@@ -122,6 +128,7 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
       st.team[active].hp = Math.max(0, st.team[active].hp - hit.dmg);
     }, 'battle');
     setShake('me');
+    playFx(FX_BY_AFFINITY[hit.move.affinity], 'me');
     sfx('hit');
     setTimeout(() => setShake(null), 400);
     const msgs = [`${esp.name}の「${hit.move.name}」！ ${hit.dmg}のダメージ。`];
@@ -156,6 +163,7 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
     }, 'battle');
     if (levelMsgs.current.length) {
       sfx('level');
+      playFx('levelup', 'me');
       say(levelMsgs.current, () => setPhase({ k: 'end', result }));
       levelMsgs.current = [];
     } else setPhase({ k: 'end', result });
@@ -166,6 +174,7 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
     const hit = playerDamage(me, moveId, enemy, ok, ms);
     enemy.hp = Math.max(0, enemy.hp - hit.dmg);
     setShake('enemy');
+    playFx(ok ? FX_BY_AFFINITY[MOVES[moveId].affinity] : 'hit', 'enemy');
     sfx('hit');
     setTimeout(() => setShake(null), 400);
     setTools({});
@@ -205,6 +214,7 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
       st.inventory[id]--;
       if (!st.inventory[id]) delete st.inventory[id];
     }, 'battle');
+    playFx('heal', 'me');
     say([`${item.name}を使った！ ${SPECIES[me.speciesId].name}は元気になった。`], enemyTurn);
   };
 
@@ -237,6 +247,7 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
     <div className="battle">
       <div className="arena" style={{ backgroundImage: `url(assets/${bgFile(setup.bg)})` }}>
         <div className="arena-shade" />
+        {fx && <div key={fx.k} className={`fx fx-on-${fx.on}`} style={{ backgroundImage: `url(assets/fx_${fx.name}.png)` }} />}
         <InfoBox c={enemy} max={enemyMax} />
         <img className={`px enemy-sprite ${shake === 'enemy' ? 'shake' : ''} ${enemy.hp <= 0 ? 'fade' : ''}`} src={`assets/${esp.sprite}.png`} alt={esp.name} />
         <img
@@ -257,7 +268,7 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
         {phase.k === 'msg' && (
           <div className="msgbox" onClick={nextMsg}>
             <span lang="ja">{queue[0]}</span>
-            <button className="next-arrow" autoFocus onClick={(e) => (e.stopPropagation(), nextMsg())}>▼</button>
+            <button className="next-arrow petal" aria-label="Next" autoFocus onClick={(e) => (e.stopPropagation(), nextMsg())} />
           </div>
         )}
         {phase.k === 'menu' && (
@@ -377,6 +388,11 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
     </div>
   );
 }
+
+const FX_BY_AFFINITY: Record<string, string> = {
+  fire: 'fire', water: 'water', nature: 'leaf', wind: 'wind', lightning: 'lightning',
+  memory: 'memory', knowledge: 'memory', emotion: 'memory',
+};
 
 function bgFile(bg?: string) {
   const name = bg ?? 'bg_forest_clearing.webp';

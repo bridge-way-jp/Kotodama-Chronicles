@@ -536,6 +536,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         say('kirishima', '君に届いた手紙。もしかすると、計画はまだ終わっていないのかもしれない。', 'The letter you received… perhaps the project isn’t over yet.'),
         { do: [{ take: 'kakera' }, { objective: 'mq5.report' }, { rel: 'kirishima', points: 3, memory: 'archive_project' }, { learn: ['g:wokikkakeni', 'v:kakera'] }] },
         { cg: 'cg_ending', say: '夕暮れの研究所。欠片の光は、まだ消えていなかった。\n― 第一章「日野森の夏」完 ―', en: 'Dusk at the research facility. The fragment’s light had not gone out yet.\n— End of Chapter 1: “Summer in Hinomori” —' },
+        { cg: 'cg_chapter2', say: '次章予告 ― 第二章「線路の向こうの街」（準備中）', en: 'Next time — Chapter 2: “The City Beyond the Tracks” (in development)' },
         n('Chapter 1 complete! Hinomori stays open: keep befriending Kotodama in Midori Forest, finish side quests, and use your desk to review and track your N2 readiness. Chapter 2 is in development.'),
       ],
     },
