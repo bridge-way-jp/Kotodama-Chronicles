@@ -16,7 +16,7 @@ import { mastery } from '../core/srs';
 import { SECTIONS, type Section } from '../core/exam';
 import { exportToJson, makeEnvelope } from '../core/save';
 import { ExportBox, ImportBox } from './Backup';
-import { CloudSettings } from './CloudPanel';
+import { CloudSettings, PackSettings } from './CloudPanel';
 import { saveNow, saveStatus } from '../core/persistence';
 import { setSfx, setMusicVolume, hasJapaneseVoice, ttsAvailable } from '../core/audio';
 import { ItemDetail, MASTERY_LABEL } from './Cards';
@@ -395,7 +395,7 @@ function JlptTab({ actions }: { actions: MenuActions }) {
           <span>{Math.round(r.overall * 100)}%</span>
         </div>
         <div>
-          <b>Chapter-1 curriculum mastery</b>
+          <b>Curriculum mastery</b>
           <p className="note">
             Measures demonstrated, retained knowledge of the game's current content ({VOCAB.length} words, {GRAMMAR.length} grammar points, {KANJI.length} kanji)
             plus reading/listening accuracy. It is not an estimate of your official JLPT score; the N2 scope is much larger and the curriculum will grow.
@@ -599,6 +599,8 @@ function SettingsTab({ actions }: { actions: MenuActions }) {
       {msg && <p className="note">{msg}</p>}
       <h3>☁ クラウド Cloud</h3>
       <CloudSettings />
+      <h3>📚 Lernpaket (Anki)</h3>
+      <PackSettings />
       <h3>操作 Controls</h3>
       <p className="note">Move: arrow keys / WASD · Talk / examine: Space, Enter, Z · Menu: Esc or M · On touch screens use the on-screen pad.</p>
     </div>

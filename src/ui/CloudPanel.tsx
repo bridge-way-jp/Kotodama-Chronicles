@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { bus } from '../core/events';
-import { cloud, cloudEnabled, adoptBase, pushNow, refreshRemote, signIn, signOut } from '../core/cloud';
+import { cloud, cloudEnabled, adoptBase, pushNow, pushPack, refreshRemote, signIn, signOut } from '../core/cloud';
+import { packInfo, parsePack, registerPack, seedProgress, storeLocalPack } from '../core/packs';
 import { makeEnvelope } from '../core/save';
 import { store } from '../core/store';
 import { saveNow } from '../core/persistence';
@@ -92,6 +93,63 @@ export function CloudSettings() {
           <button className="btn ghost" disabled={busy} onClick={() => run(refreshRemote)}>Cloud prüfen</button>
         </div>
       )}
+    </div>
+  );
+}
+
+/** content pack (Anki) import in the settings tab */
+export function PackSettings() {
+  const [, setN] = useState(0);
+  useEffect(() => bus.on('pack', () => setN((n) => n + 1)), []);
+  const [msg, setMsg] = useState('');
+  const [busy, setBusy] = useState(false);
+  const p = packInfo.loaded;
+  const onFile = async (file: File) => {
+    setBusy(true);
+    setMsg('');
+    try {
+      const text = await file.text();
+      const pack = parsePack(text);
+      if (packInfo.loaded && packInfo.loaded.id === pack.id) {
+        // replacing an already registered pack needs a fresh start of the curriculum
+        await storeLocalPack(text);
+        if (cloud.user) await pushPack(text);
+        setMsg('Lernpaket aktualisiert – das Spiel lädt neu…');
+        await saveNow();
+        setTimeout(() => location.reload(), 800);
+        return;
+      }
+      await storeLocalPack(text);
+      registerPack(pack);
+      const n = store.state ? seedProgress(store.state) : 0;
+      if (store.state) store.update(() => undefined, 'learn');
+      await saveNow();
+      let cloudMsg = '';
+      if (cloud.user) {
+        await pushPack(text);
+        cloudMsg = ' Auch in der Cloud gespeichert – deine anderen Geräte laden es nach dem Anmelden automatisch.';
+      }
+      setMsg(`Importiert: ${pack.vocab.length} Wörter, ${pack.grammar.length} Grammatikpunkte. ${n} Einträge mit deinem Anki-Lernstand übernommen.${cloudMsg}`);
+    } catch (e) {
+      setMsg('Fehler: ' + (e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <div>
+      {p ? (
+        <p>
+          <b>{p.title}</b>: {p.words} Wörter · {p.grammar} Grammatikpunkte · Lernstand für {p.progress} Einträge
+        </p>
+      ) : (
+        <p className="note">Noch kein Lernpaket. Importiere die Datei <code>kotodama-anki-pack.json</code>, die Claude aus deiner Anki-Sammlung erstellt hat.</p>
+      )}
+      <label className="btn">
+        {p ? 'Lernpaket ersetzen' : '📥 Lernpaket importieren'}
+        <input type="file" accept=".json,application/json" hidden disabled={busy} onChange={(e) => e.target.files?.[0] && void onFile(e.target.files[0])} />
+      </label>
+      {msg && <p className="note">{msg}</p>}
     </div>
   );
 }

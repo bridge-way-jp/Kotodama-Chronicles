@@ -9,6 +9,7 @@ Output: decks, note types with field names, and every note with its deck(s), fie
 learning state (interval in days, lapses) — media is ignored.
 Requires: pip install zstandard (only for .anki21b)
 """
+import html
 import json
 import os
 import re
@@ -38,7 +39,7 @@ def strip_html(s: str) -> str:
     s = re.sub(r'<br\s*/?>', '\n', s)
     s = re.sub(r'\[sound:[^\]]*\]', '', s)
     s = re.sub(r'<[^>]+>', '', s)
-    return s.replace('&nbsp;', ' ').replace('&lt;', '<').replace('&gt;', '>').replace('&amp;', '&').strip()
+    return html.unescape(s.replace('&nbsp;', ' ')).strip()
 
 
 def main(src: str, out: str):

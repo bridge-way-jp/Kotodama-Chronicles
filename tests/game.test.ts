@@ -242,3 +242,37 @@ describe('N2 core lists', () => {
     }
   });
 });
+
+describe('content packs', () => {
+  it('registers vocab/grammar, keeps known words, seeds Anki progress once', async () => {
+    const { registerPack, seedProgress, packInfo } = await import('../src/core/packs');
+    const { VOCAB_BY_ID, VOCAB } = await import('../src/content/vocab');
+    const { GRAMMAR_BY_ID } = await import('../src/content/grammar');
+    const { createInitialState } = await import('../src/core/store');
+    const { exerciseFor } = await import('../src/core/learning');
+    const before = VOCAB.length;
+    const gram = (i: number, blank: string) => ({ id: 'ag' + i, pattern: blank + 'X', meaning: 'm' + i, context: 'c', example: `文の${blank}です。`, exampleDe: 'de', blank });
+    registerPack({
+      id: 'anki', title: 't', version: 1,
+      vocab: [
+        { id: 'a1', word: '一家', reading: 'いっか', en: 'family', de: 'Familie', pos: 'noun', level: 'N2', chapter: 1, tags: [], example: '一家を支える。', exampleEn: 'support the family' },
+        { id: 'a2', word: '締め切り', reading: 'しめきり', en: 'deadline', de: 'Frist', pos: 'noun', level: 'N2', chapter: 1, tags: [], example: '締め切りだ。', exampleEn: 'deadline' },
+      ],
+      grammar: [gram(1, 'あげく'), gram(2, 'ものなら'), gram(3, 'たまえ'), gram(4, 'そうすると')],
+      progress: { 'v:a1': { ivl: 40, lapses: 0, reps: 5 }, 'v:a2': { ivl: 10, lapses: 1, reps: 3 }, 'g:ag1': { ivl: 0, lapses: 0, reps: 1 } },
+    });
+    expect(VOCAB.length).toBe(before + 1); // 締め切り already exists
+    expect(VOCAB_BY_ID.a1.source).toBe('anki');
+    expect(GRAMMAR_BY_ID.ag1.exercises[0].options).toHaveLength(4);
+    expect(packInfo.loaded?.words).toBe(2);
+    const s = createInitialState('M');
+    expect(seedProgress(s)).toBe(2); // a1 + alias a2 -> shimekiri; ag1 has no interval
+    expect(s.cards['v:a1'].interval).toBe(40);
+    expect(s.cards['v:shimekiri'].introduced).toBe(true);
+    expect(seedProgress(s)).toBe(0);
+    for (let i = 0; i < 20; i++) {
+      exerciseFor(s, 'g:ag1');
+      exerciseFor(s, 'v:a1');
+    }
+  });
+});

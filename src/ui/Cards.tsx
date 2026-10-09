@@ -42,7 +42,7 @@ export function ItemDetail({ k }: { k: string }) {
           {v.pos} · {v.level === 'story' ? 'story word' : `≈${v.level}`} <MasteryBadge k={k} />
         </div>
         <div className="example" lang="ja">{v.example}</div>
-        <div className="q-en">{v.exampleEn}</div>
+        <div className="q-en">{(lang === 'de' && v.exampleDe) || v.exampleEn}</div>
         <AudioButton lines={[{ text: v.word }, { text: v.example }]} label="▶ 発音" />
         {v.collocations && <div className="meta">Collocations: {v.collocations.join('・')}</div>}
         {v.related && <div className="meta">Related: {v.related.map((r) => VOCAB_BY_ID[r]?.word).join('・')}</div>}
@@ -57,11 +57,11 @@ export function ItemDetail({ k }: { k: string }) {
         <div className="big-word" lang="ja">{g.pattern}</div>
         <div className="meaning">{g.meaning}</div>
         <div className="meta">
-          Form: {g.formation} <MasteryBadge k={k} />
+          {g.formation && <>Form: {g.formation} </>}<MasteryBadge k={k} />
         </div>
         <p>{g.explanation}</p>
-        <p className="meta">Nuance: {g.nuance}</p>
-        <p className="meta warn">⚠ {g.mistakes}</p>
+        {g.nuance && <p className="meta">Nuance: {g.nuance}</p>}
+        {g.mistakes && <p className="meta warn">⚠ {g.mistakes}</p>}
         {g.examples.map((e, i) => (
           <div key={i}>
             <div className="example" lang="ja">{e.jp}</div>

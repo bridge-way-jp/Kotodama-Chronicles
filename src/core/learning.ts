@@ -3,7 +3,7 @@ import { GRAMMAR, GRAMMAR_BY_ID } from '../content/grammar';
 import { KANJI, KANJI_BY_ID } from '../content/kanji';
 import { gradeFromAnswer, isDue, mastery, needsContext, newCard, review } from './srs';
 import { rollDaily } from './store';
-import type { Card, GameState, SkillArea } from './types';
+import type { VocabEntry, Card, GameState, SkillArea } from './types';
 
 /**
  * Exercise generation and answer recording. Every learnable item has a card
@@ -116,13 +116,14 @@ export function encounter(s: GameState, keys: string[], now = Date.now()): strin
 function vocabExercise(id: string, mode: string, s: GameState, r: () => number): Exercise {
   const v = VOCAB_BY_ID[id];
   const lang = s.settings.meaningLang;
-  const others = VOCAB.filter((x) => x.id !== id && !confusable(v, x) && x.word !== v.word);
+  const others = VOCAB.filter((x) => x.id !== id && !confusable(v, x) && x.word !== v.word && x.de !== v.de && x.en !== v.en && x.exampleEn !== v.exampleEn);
   const samePos = others.filter((x) => x.pos === v.pos);
   const pool = samePos.length >= 3 ? samePos : others;
   const distract = pickN(pool, 3, r);
   const key = 'v:' + id;
   const base = { id: `${key}:${mode}:${Math.floor(r() * 1e6)}`, key, area: 'vocab' as SkillArea, mode };
-  const expl = `**${v.word}**（${v.reading}）— ${lang === 'de' ? v.de : v.en}\n${v.example}\n${v.exampleEn}`;
+  const tr = (x: VocabEntry) => (lang === 'de' && x.exampleDe) || x.exampleEn;
+  const expl = `**${v.word}**（${v.reading}）— ${lang === 'de' ? v.de : v.en}\n${v.example}\n${tr(v)}`;
   switch (mode) {
     case 'reading':
       return {
@@ -143,7 +144,7 @@ function vocabExercise(id: string, mode: string, s: GameState, r: () => number):
       if (!sentence) return vocabExercise(id, 'sentence', s, r);
       return {
         ...base, context: true, instruction: 'Which word fits the blank?',
-        prompt: sentence, promptEn: v.exampleEn,
+        prompt: sentence, promptEn: tr(v),
         options: shuffle([{ text: v.word, correct: true }, ...distract.map((d) => ({ text: d.word, correct: false, key: 'v:' + d.id }))], r),
         explanation: expl,
       };
@@ -152,14 +153,14 @@ function vocabExercise(id: string, mode: string, s: GameState, r: () => number):
       return {
         ...base, context: true, instruction: 'What does this sentence mean?',
         prompt: v.example,
-        options: shuffle([{ text: v.exampleEn, correct: true }, ...distract.map((d) => ({ text: d.exampleEn, correct: false }))], r),
+        options: shuffle([{ text: tr(v), correct: true }, ...distract.map((d) => ({ text: tr(d), correct: false }))], r),
         explanation: expl,
       };
     case 'listen':
       return {
         ...base, area: 'vocab', context: true, instruction: 'Listen. What does the sentence mean?',
         prompt: v.example, audio: v.example, hideTextUntilAnswered: true,
-        options: shuffle([{ text: v.exampleEn, correct: true }, ...distract.map((d) => ({ text: d.exampleEn, correct: false }))], r),
+        options: shuffle([{ text: tr(v), correct: true }, ...distract.map((d) => ({ text: tr(d), correct: false }))], r),
         explanation: expl,
       };
     case 'type':
@@ -208,11 +209,12 @@ export function readingDistractors(reading: string, r: () => number): string[] {
 function grammarExercise(id: string, mode: string, r: () => number): Exercise {
   const g = GRAMMAR_BY_ID[id];
   const key = 'g:' + id;
-  const expl = `**${g.pattern}** — ${g.meaning}\n${g.explanation}\n${g.examples[0].jp}\n${g.examples[0].en}`;
-  if (mode === 'meaning') {
-    const others = pickN(GRAMMAR.filter((x) => x.id !== id), 3, r);
+  const expl = `**${g.pattern}** — ${g.meaning}\n${g.explanation}\n${g.examples[0]?.jp ?? ''}\n${g.examples[0]?.en ?? ''}`;
+  if (mode === 'meaning' || !g.exercises.length) {
+    // meanings of imported items are German, built-in ones English: only compare like with like
+    const others = pickN(GRAMMAR.filter((x) => x.id !== id && x.source === g.source), 3, r);
     return {
-      id: `${key}:meaning:${Math.floor(r() * 1e6)}`, key, area: 'grammar', mode, context: false,
+      id: `${key}:meaning:${Math.floor(r() * 1e6)}`, key, area: 'grammar', mode: 'meaning', context: false,
       instruction: 'What does this pattern express?', prompt: g.pattern,
       options: shuffle([{ text: g.meaning, correct: true }, ...others.map((o) => ({ text: o.meaning, correct: false, key: 'g:' + o.id }))], r),
       explanation: expl,

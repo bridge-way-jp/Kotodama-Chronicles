@@ -169,6 +169,23 @@ export function adoptBase(savedAt: number) {
   emit();
 }
 
+/** content pack (see packs.ts), stored next to the save as gzip */
+export async function pushPack(text: string): Promise<void> {
+  const { fs, db } = await refs();
+  const ref = fs.doc(db, 'users', cloud.user!.uid, 'saves', 'pack_anki');
+  const stream = new Blob([text]).stream().pipeThrough(new CompressionStream('gzip'));
+  const gz = new Uint8Array(await new Response(stream).arrayBuffer());
+  await fs.setDoc(ref, { savedAt: Date.now(), gz: fs.Bytes.fromUint8Array(gz) });
+}
+
+export async function fetchPack(): Promise<string | null> {
+  const { fs, db } = await refs();
+  const snap = await fs.getDoc(fs.doc(db, 'users', cloud.user!.uid, 'saves', 'pack_anki'));
+  if (!snap.exists()) return null;
+  const bytes: Uint8Array = snap.data().gz.toUint8Array();
+  return new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
+}
+
 let pushing: Promise<void> | null = null;
 let queued: SaveEnvelope | null = null;
 let timer: ReturnType<typeof setTimeout> | null = null;
@@ -229,6 +246,8 @@ export async function pushNow(env: SaveEnvelope, force = false): Promise<void> {
 export function schedulePush(env: SaveEnvelope, soon = false) {
   if (!cloudEnabled || !cloud.user) return;
   queuedEnv = env;
+  // throttle, not debounce: continuous play must still upload every 20 s
+  if (timer && !soon) return;
   if (timer) clearTimeout(timer);
   timer = setTimeout(flushPush, soon ? 0 : 20000);
 }

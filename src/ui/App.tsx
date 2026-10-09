@@ -3,30 +3,56 @@ import { store, createInitialState } from '../core/store';
 import { saves, saveNow, startAutosave } from '../core/persistence';
 import { importFromJson, type LoadResult } from '../core/save';
 import { Title } from './Title';
-import { cloud, initCloud, adoptBase } from '../core/cloud';
+import { GameView } from './GameView';
+import { cloud, initCloud, adoptBase, fetchPack } from '../core/cloud';
+import { loadLocalPack, packInfo, parsePack, registerPack, seedProgress, storeLocalPack } from '../core/packs';
+import { bus, toast } from '../core/events';
 
 /** this device may overwrite the cloud save it has seen (the player chose a save on the title screen) */
 const acceptRemote = () => adoptBase(cloud.remote?.savedAt ?? 0);
-import { GameView } from './GameView';
+
+/** a content pack imported on another device arrives through the cloud */
+let packFetch = false;
+async function pullPackFromCloud() {
+  if (packFetch || packInfo.loaded || !cloud.user) return;
+  packFetch = true;
+  try {
+    const text = await fetchPack();
+    if (!text) return;
+    await storeLocalPack(text);
+    registerPack(parsePack(text));
+    if (store.state && seedProgress(store.state)) store.update(() => undefined, 'learn');
+  } catch {
+    packFetch = false;
+  }
+}
 
 export function App() {
   const [screen, setScreen] = useState<'boot' | 'title' | 'game'>('boot');
   const [load, setLoad] = useState<LoadResult>({ kind: 'none' });
 
   const refresh = async () => {
+    await loadLocalPack();
     const [r] = await Promise.all([saves.load(), Promise.race([initCloud(), new Promise((ok) => setTimeout(ok, 6000))])]);
     setLoad(r);
     setScreen('title');
+    void pullPackFromCloud();
   };
 
   useEffect(() => {
     void refresh();
     // ask the browser to keep our storage (best effort)
     navigator.storage?.persist?.().catch(() => undefined);
+    return bus.on('cloud', () => void pullPackFromCloud());
   }, []);
 
   useEffect(() => {
     if (screen !== 'game') return;
+    const n = store.state ? seedProgress(store.state) : 0;
+    if (n) {
+      store.update(() => undefined, 'learn');
+      toast(`Anki-Lernstand übernommen: ${n} Einträge`, 'learn');
+    }
     return startAutosave();
   }, [screen]);
 

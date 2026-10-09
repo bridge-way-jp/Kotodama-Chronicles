@@ -126,6 +126,8 @@ export interface VocabEntry {
   pos: 'noun' | 'verb' | 'i-adj' | 'na-adj' | 'adverb' | 'expression';
   example: string; // plain Japanese
   exampleEn: string;
+  exampleDe?: string;
+  source?: string;
   /** approximate level, based on common N2 study lists (no official list exists) */
   level: 'N3' | 'N2' | 'N1' | 'story';
   tags: string[];
@@ -155,6 +157,8 @@ export interface GrammarEntry {
   exercises: GrammarExercise[];
   level: 'N3' | 'N2';
   chapter: number;
+  /** imported from a content pack (e.g. 'anki'); such items quiz against each other */
+  source?: string;
 }
 
 export interface KanjiEntry {
