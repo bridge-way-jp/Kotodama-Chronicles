@@ -296,7 +296,7 @@ export const MAPS: Record<string, MapDef> = {
   library: {
     id: 'library', name: 'Hinomori Library', nameJa: '日野森図書館', tiles: ROOMS_GEN.library.tiles, interior: true, image: ROOMS_GEN.library.image,
     objects: ROOMS_GEN.library.objects,
-    npcs: [{ id: 'sato', x: 12, y: 7, facing: 'down' }],
+    npcs: [{ id: 'sato', x: 9, y: 7, facing: 'down' }],
     warps: [
       { x: 6, y: 11, to: { map: 'town', x: 12, y: 10, facing: 'down' } },
       { x: 7, y: 11, to: { map: 'town', x: 12, y: 10, facing: 'down' } },

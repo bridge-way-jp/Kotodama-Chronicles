@@ -486,179 +486,181 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
     "tiles": [
       "WWWWWWWWWWWWWW",
       "WWWWWWWWWWWWWW",
-      "ffffffffffffff",
-      "ffffffffffffff",
-      "ffffffffffffff",
-      "ffffffffffffff",
-      "ffffffffffffff",
-      "ffffffffffffff",
-      "fffffffffffccf",
-      "ffffffffffffff",
-      "ffffffffffffff",
+      "WWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
       "WWWWWWDDWWWWWW"
     ],
     "objects": [
       {
-        "id": "library_shelf1",
-        "sprite": "fu_library_shelf1",
-        "x": 1,
-        "y": 2,
-        "w": 2,
-        "h": 1,
-        "script": "library_shelf"
-      },
-      {
-        "id": "library_shelf2",
-        "sprite": "fu_library_shelf2",
+        "id": "library_chair1",
+        "sprite": "fu_library_chair1",
         "x": 3,
-        "y": 2,
+        "y": 5,
         "w": 1,
         "h": 1,
-        "script": "library_shelf"
+        "script": "library_table"
       },
       {
-        "id": "library_shelf3",
-        "sprite": "fu_library_shelf3",
-        "x": 4,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "library_shelf"
-      },
-      {
-        "id": "library_clock",
-        "sprite": "fu_library_clock",
+        "id": "library_chair2",
+        "sprite": "fu_library_chair2",
         "x": 5,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "library_clock"
-      },
-      {
-        "id": "library_shelf4",
-        "sprite": "fu_library_shelf4",
-        "x": 8,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "library_shelf"
-      },
-      {
-        "id": "library_shelf5",
-        "sprite": "fu_library_shelf5",
-        "x": 9,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "library_shelf"
-      },
-      {
-        "id": "library_globe",
-        "sprite": "fu_library_globe",
-        "x": 10,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "library_globe"
-      },
-      {
-        "id": "library_display",
-        "sprite": "fu_library_display",
-        "x": 11,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "library_display"
-      },
-      {
-        "id": "library_shelf6",
-        "sprite": "fu_library_shelf6",
-        "x": 12,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "library_shelf"
-      },
-      {
-        "id": "library_plant",
-        "sprite": "fu_library_plant",
-        "x": 13,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "plant"
-      },
-      {
-        "id": "library_table1",
-        "sprite": "fu_library_table1",
-        "x": 1,
         "y": 5,
-        "w": 2,
+        "w": 1,
         "h": 1,
         "script": "library_table"
       },
       {
-        "id": "library_table2",
-        "sprite": "fu_library_table2",
-        "x": 4,
-        "y": 5,
-        "w": 2,
-        "h": 1,
-        "script": "library_table"
-      },
-      {
-        "id": "library_reading",
-        "sprite": "fu_library_reading",
-        "x": 8,
-        "y": 5,
+        "id": "library_table",
+        "sprite": "fu_library_table",
+        "x": 3,
+        "y": 6,
         "w": 3,
+        "h": 1,
+        "script": "library_table"
+      },
+      {
+        "id": "library_chair3",
+        "sprite": "fu_library_chair3",
+        "x": 3,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "library_table"
+      },
+      {
+        "id": "library_chair4",
+        "sprite": "fu_library_chair4",
+        "x": 5,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "library_table"
+      },
+      {
+        "id": "library_armchair1",
+        "sprite": "fu_library_armchair1",
+        "x": 7,
+        "y": 5,
+        "w": 1,
         "h": 1,
         "script": "library_reading"
       },
       {
-        "id": "library_magazines",
-        "sprite": "fu_library_magazines",
-        "x": 13,
+        "id": "library_round",
+        "sprite": "fu_library_round",
+        "x": 8,
         "y": 5,
         "w": 1,
         "h": 1,
-        "script": "library_magazines"
+        "script": "library_reading"
+      },
+      {
+        "id": "library_armchair2",
+        "sprite": "fu_library_armchair2",
+        "x": 9,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "library_reading"
+      },
+      {
+        "id": "library_librarian_chair",
+        "sprite": "fu_library_librarian_chair",
+        "x": 10,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "solid": false
       },
       {
         "id": "library_desk",
         "sprite": "fu_library_desk",
-        "x": 11,
+        "x": 8,
         "y": 8,
-        "w": 2,
+        "w": 3,
         "h": 1,
         "script": "library_desk"
       },
       {
-        "id": "library_study",
-        "sprite": "fu_library_study",
-        "x": 1,
-        "y": 9,
-        "w": 2,
-        "h": 1,
-        "script": "library_table"
-      },
-      {
         "id": "library_cart",
         "sprite": "fu_library_cart",
-        "x": 4,
+        "x": 2,
         "y": 9,
         "w": 1,
         "h": 1,
         "script": "library_cart"
       },
       {
-        "id": "library_plant2",
-        "sprite": "fu_library_plant2",
-        "x": 13,
-        "y": 10,
+        "id": "library_magazines",
+        "sprite": "fu_library_magazines",
+        "x": 11,
+        "y": 4,
         "w": 1,
         "h": 1,
-        "script": "plant"
+        "script": "library_magazines"
+      },
+      {
+        "id": "library_shelf",
+        "x": 1,
+        "y": 3,
+        "w": 9,
+        "h": 1,
+        "script": "library_shelf"
+      },
+      {
+        "id": "library_clock",
+        "x": 10,
+        "y": 3,
+        "w": 1,
+        "h": 1,
+        "script": "library_clock"
+      },
+      {
+        "id": "library_shelf2",
+        "x": 11,
+        "y": 3,
+        "w": 2,
+        "h": 1,
+        "script": "library_shelf"
+      },
+      {
+        "id": "library_shelf3",
+        "x": 1,
+        "y": 4,
+        "w": 1,
+        "h": 2,
+        "script": "library_shelf"
+      },
+      {
+        "id": "library_globe",
+        "x": 1,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "script": "library_globe"
+      },
+      {
+        "id": "library_shelf4",
+        "x": 1,
+        "y": 7,
+        "w": 1,
+        "h": 4,
+        "script": "library_shelf"
+      },
+      {
+        "id": "library_display",
+        "x": 12,
+        "y": 4,
+        "w": 1,
+        "h": 7,
+        "script": "library_display"
       }
     ],
     "image": "room2_library"

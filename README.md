@@ -129,6 +129,7 @@ NPC placement is valid.
   background, a tile grid gives the collision, and only free-standing furniture is separate.
   `tools/layout_plan.mjs` + `tools/layout_plan.py` draw colour-coded map plans (`art/reference/layout_*.png`) as
   layout references for painting outdoor ground the same way.
+- `art/sheets/portraits_p1/p2.webp` → `python3 tools/build_portraits.py` cuts the dialogue portraits (4 expressions each).
 - Remaining ground tiles are painted procedurally in `src/game/textures.ts`.
 - Any texture can be replaced by dropping a PNG with the same key into `public/assets/` without touching game logic.
 - `art/sheets/asset-pack.webp` and `overview.webp` are reference sheets (painted checkerboard background) for upcoming
