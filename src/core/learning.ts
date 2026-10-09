@@ -1,4 +1,4 @@
-import { VOCAB, VOCAB_BY_ID } from '../content/vocab';
+import { VOCAB, VOCAB_BY_ID, confusable, hasKanji } from '../content/vocab';
 import { GRAMMAR, GRAMMAR_BY_ID } from '../content/grammar';
 import { KANJI, KANJI_BY_ID } from '../content/kanji';
 import { gradeFromAnswer, isDue, mastery, needsContext, newCard, review } from './srs';
@@ -116,7 +116,7 @@ export function encounter(s: GameState, keys: string[], now = Date.now()): strin
 function vocabExercise(id: string, mode: string, s: GameState, r: () => number): Exercise {
   const v = VOCAB_BY_ID[id];
   const lang = s.settings.meaningLang;
-  const others = VOCAB.filter((x) => x.id !== id);
+  const others = VOCAB.filter((x) => x.id !== id && !confusable(v, x) && x.word !== v.word);
   const samePos = others.filter((x) => x.pos === v.pos);
   const pool = samePos.length >= 3 ? samePos : others;
   const distract = pickN(pool, 3, r);
@@ -274,6 +274,9 @@ export function exerciseFor(s: GameState, key: string, opts: { prefer?: 'listen'
   else modes = ['cloze', 'sentence', 'listen', 'type', 'reverse'];
   if (opts.prefer === 'isolated') modes = ['meaning', 'reading', 'reverse'];
   if (opts.prefer === 'context') modes = ['cloze', 'sentence'];
+  // kana-only words (conjunctions, onomatopoeia) have nothing to read or type
+  if (!hasKanji(VOCAB_BY_ID[id]?.word ?? '')) modes = modes.filter((x) => x !== 'reading' && x !== 'type');
+  if (!modes.length) modes = ['meaning', 'cloze'];
   return vocabExercise(id, modes[Math.floor(r() * modes.length)], s, r);
 }
 

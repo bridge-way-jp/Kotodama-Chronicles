@@ -2,6 +2,7 @@ import { toast } from '../core/events';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { store } from '../core/store';
 import { buildReviewSession, encounter, queueInfo, recordAnswer, recordComprehension, labelOfKey, type Exercise } from '../core/learning';
+import { tipFor } from '../content/examtypes';
 import { buildDiagnostic, buildMockExam, buildSectionPractice, MOCK_TIME_LIMIT_MS, SECTIONS, type Section, type TestItem } from '../core/exam';
 import { review } from '../core/srs';
 import { grantXp } from '../core/game';
@@ -189,6 +190,11 @@ export function ExamRunner({ mode, section, onClose }: { mode: ExamMode; section
           <p>
             This estimates where you stand after N3: kanji readings, vocabulary in context, grammar, reading and listening. Results personalise
             your review queue — items you already know are scheduled further out, so you don't repeat beginner material.
+          </p>
+        )}
+        {mode === 'practice' && section && tipFor(section) && (
+          <p className="exam-tip">
+            💡 <b>{tipFor(section)!.what}</b> — {tipFor(section)!.how}
           </p>
         )}
         {mode === 'mock' && <p>Answers are revealed at the end, like a real exam. Sections mirror the N2 structure (言語知識・読解 / 聴解) in shortened form.</p>}

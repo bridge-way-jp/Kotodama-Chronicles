@@ -617,3 +617,10 @@ button, .opt, .jp-word.linked, .dialogue, .msgbox { cursor: url(../public/assets
   .cg-img { width: 100%; height: 62vh; object-fit: cover; }
   .cg-scene { justify-content: flex-start; padding-top: env(safe-area-inset-top, 0px); }
 }
+.ref-list { max-height: 60vh; overflow-y: auto; }
+.ref-list h4 { margin: 10px 0 4px; }
+.ref-ex { display: inline-block; margin-right: 10px; }
+.ref-group { border-bottom: 1px solid #ead9b8; padding-bottom: 6px; }
+.ref-group ul { margin: 4px 0; padding-left: 18px; }
+.exam-tip { background: #fff6dc; border: 1px solid #ead9b8; border-radius: 6px; padding: 6px 8px; }
+.exam-types summary { cursor: pointer; font-weight: bold; margin: 10px 0; }

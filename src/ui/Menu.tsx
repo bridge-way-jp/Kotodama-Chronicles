@@ -6,6 +6,9 @@ import { NPCS } from '../content/npcs';
 import { VOCAB } from '../content/vocab';
 import { GRAMMAR } from '../content/grammar';
 import { KANJI } from '../content/kanji';
+import { AFFIXES } from '../content/wordformation';
+import { CONFUSIONS } from '../content/confusions';
+import { EXAM_TYPES } from '../content/examtypes';
 import { creatureXpToNext, maxHp, xpToNext } from '../core/game';
 import { readiness } from '../core/readiness';
 import { queueInfo } from '../core/learning';
@@ -286,7 +289,7 @@ function BagTab() {
 // ------------------------------------------------------------------ notebook
 function NotebookTab() {
   const s = store.s;
-  const [kind, setKind] = useState<'v' | 'g' | 'k'>('v');
+  const [kind, setKind] = useState<'v' | 'g' | 'k' | 'w' | 'c'>('v');
   const [sel, setSel] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
   const items =
@@ -302,10 +305,15 @@ function NotebookTab() {
         <button className={`btn small ${kind === 'v' ? 'primary' : ''}`} onClick={() => setKind('v')}>語彙 Vocab</button>
         <button className={`btn small ${kind === 'g' ? 'primary' : ''}`} onClick={() => setKind('g')}>文法 Grammar</button>
         <button className={`btn small ${kind === 'k' ? 'primary' : ''}`} onClick={() => setKind('k')}>漢字 Kanji</button>
-        <label className="note">
+        <button className={`btn small ${kind === 'w' ? 'primary' : ''}`} onClick={() => setKind('w')}>語形成 Affixe</button>
+        <button className={`btn small ${kind === 'c' ? 'primary' : ''}`} onClick={() => setKind('c')}>比較 Verwechslungen</button>
+        {kind !== 'w' && kind !== 'c' && <label className="note">
           <input type="checkbox" checked={showAll} onChange={(e) => setShowAll(e.target.checked)} /> show whole chapter curriculum
-        </label>
+        </label>}
       </div>
+      {kind === 'w' && <AffixList />}
+      {kind === 'c' && <ConfusionList />}
+      {kind !== 'w' && kind !== 'c' && <>
       <p className="note">
         {visible.length} shown · items you have only seen are not counted as learned until you answer them correctly in reviews, quests or battles.
       </p>
@@ -325,6 +333,50 @@ function NotebookTab() {
         </div>
         <div className="nb-detail">{sel ? <ItemDetail k={sel} /> : <p className="note">Select an entry.</p>}</div>
       </div>
+      </>}
+    </div>
+  );
+}
+
+function AffixList() {
+  return (
+    <div className="ref-list">
+      {(['prefix', 'suffix'] as const).map((kind) => (
+        <div key={kind}>
+          <h4>{kind === 'prefix' ? '接頭語 Präfixe' : '接尾語 Suffixe'}</h4>
+          <table className="report">
+            <tbody>
+              {AFFIXES.filter((a) => a.kind === kind).map((a) => (
+                <tr key={a.part}>
+                  <td lang="ja"><b>{a.part}</b> <small>{a.reading}</small></td>
+                  <td>{a.de}</td>
+                  <td lang="ja">{a.examples.map((e) => <span key={e.word} className="ref-ex">{e.word}<small>（{e.reading}）</small></span>)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ))}
+      <p className="note">Übe sie im JLPT-Tab unter 語形成.</p>
+    </div>
+  );
+}
+
+function ConfusionList() {
+  return (
+    <div className="ref-list">
+      {CONFUSIONS.map((g) => (
+        <div key={g.id} className="ref-group">
+          <h4 lang="ja">{g.forms.join(' · ')}</h4>
+          <p>{g.note}</p>
+          <ul>
+            {g.ex.map((e, i) => (
+              <li key={i} lang="ja">{e.s.split('＿＿').join(`【${e.opts[0]}】`)} <small className="note">{e.en}</small></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+      <p className="note">Diese Gruppen kommen auch im Training 文法形式の判断 und im Probetest vor.</p>
     </div>
   );
 }
@@ -415,6 +467,22 @@ function JlptTab({ actions }: { actions: MenuActions }) {
           </table>
         </>
       )}
+      <details className="exam-types">
+        <summary>試験の問題形式 Aufgabentypen & Vorgehen</summary>
+        <table className="report">
+          <tbody>
+            {EXAM_TYPES.map((t) => (
+              <tr key={t.area + t.type}>
+                <td>{t.area}</td>
+                <td lang="ja"><b>{t.type}</b>{t.inGame ? ' ✓' : ''}</td>
+                <td>{t.what}</td>
+                <td>{t.how}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p className="note">✓ = im Spiel trainierbar.</p>
+      </details>
       <p className="note">All practice questions are original and written in the style of the JLPT N2 — not official JLPT material. No in-game score guarantees passing the real exam.</p>
     </div>
   );

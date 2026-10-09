@@ -171,8 +171,8 @@ const KONBINI_ROOM = [
   'WWWffWWffWWWffWWWfWWW',
   'WWWffWWffWWWffWWWfWWW',
   'WWWffWWffWWWffWWWfWWW',
-  'WWWffWWffWWWfffffWWWW',
   'WWWffffffffffffffWWWW',
+  'WWWWWWWWWfffWWWWWWWWW',
   'WWWWWWWWWWDWWWWWWWWWW',
 ];
 
@@ -357,8 +357,8 @@ export const MAPS: Record<string, MapDef> = {
     id: 'konbini', name: 'Convenience store', nameJa: 'コンビニ ひのもり店', tiles: KONBINI_ROOM, interior: true, image: 'room_konbini',
     objects: [
       { id: 'konbini_fridge', x: 3, y: 4, w: 5, h: 1 },
-      { id: 'konbini_shelf', x: 5, y: 6, w: 2, h: 7 },
-      { id: 'konbini_shelf2', x: 9, y: 6, w: 3, h: 7, script: 'konbini_shelf' },
+      { id: 'konbini_shelf', x: 5, y: 6, w: 2, h: 6 },
+      { id: 'konbini_shelf2', x: 9, y: 6, w: 3, h: 6, script: 'konbini_shelf' },
       { id: 'konbini_snacks', x: 14, y: 8, w: 3, h: 4, script: 'konbini_shelf' },
       { id: 'konbini_counter', x: 14, y: 4, w: 6, h: 3 },
     ],

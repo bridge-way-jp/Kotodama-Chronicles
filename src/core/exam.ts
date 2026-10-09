@@ -1,7 +1,9 @@
-import { VOCAB } from '../content/vocab';
+import { VOCAB, confusable } from '../content/vocab';
 import { GRAMMAR } from '../content/grammar';
 import { LISTENING } from '../content/texts';
 import { ORDERING, PARAPHRASE, PRACTICE_LISTENING, PRACTICE_READING } from '../content/practice';
+import { AFFIXES } from '../content/wordformation';
+import { CONFUSIONS } from '../content/confusions';
 import { readingDistractors, shuffle } from './learning';
 import type { ListeningItem, SkillArea } from './types';
 
@@ -11,10 +13,11 @@ import type { ListeningItem, SkillArea } from './types';
  * themselves are original and not official exam material.
  */
 
-export type Section = '漢字読み' | '文脈規定' | '言い換え類義' | '文法形式の判断' | '文の組み立て' | '読解' | '聴解';
+export type Section = '漢字読み' | '語形成' | '文脈規定' | '言い換え類義' | '文法形式の判断' | '文の組み立て' | '読解' | '聴解';
 
 export const SECTIONS: { id: Section; area: SkillArea; en: string; part: '言語知識（文字・語彙・文法）・読解' | '聴解' }[] = [
   { id: '漢字読み', area: 'kanji', en: 'Kanji reading', part: '言語知識（文字・語彙・文法）・読解' },
+  { id: '語形成', area: 'vocab', en: 'Word formation (prefix / suffix)', part: '言語知識（文字・語彙・文法）・読解' },
   { id: '文脈規定', area: 'vocab', en: 'Contextually-defined expressions', part: '言語知識（文字・語彙・文法）・読解' },
   { id: '言い換え類義', area: 'vocab', en: 'Paraphrases', part: '言語知識（文字・語彙・文法）・読解' },
   { id: '文法形式の判断', area: 'grammar', en: 'Selecting grammar form', part: '言語知識（文字・語彙・文法）・読解' },
@@ -60,10 +63,10 @@ export function contextItems(n: number, r = Math.random, levels = ['N2', 'N1']):
   const pool = VOCAB.filter((v) => levels.includes(v.level) && v.example.includes(v.word));
   return shuffle(pool, r).slice(0, n).map((v) => {
     // distinct distractors of the same part of speech, topped up from the whole list
-    const others = [...new Set(shuffle(VOCAB.filter((x) => x.word !== v.word && x.pos === v.pos), r).map((x) => x.word))].slice(0, 3);
+    const others = [...new Set(shuffle(VOCAB.filter((x) => x.word !== v.word && x.pos === v.pos && !confusable(v, x)), r).map((x) => x.word))].slice(0, 3);
     for (const x of shuffle(VOCAB, r)) {
       if (others.length >= 3) break;
-      if (x.word !== v.word && !others.includes(x.word)) others.push(x.word);
+      if (x.word !== v.word && !confusable(v, x) && !others.includes(x.word)) others.push(x.word);
     }
     return {
       id: `cx:${v.id}`, section: '文脈規定', area: 'vocab',
@@ -74,6 +77,36 @@ export function contextItems(n: number, r = Math.random, levels = ['N2', 'N1']):
       keys: ['v:' + v.id],
     } as TestItem;
   });
+}
+
+/** 語形成: the affix is blanked out of a real sentence; distractors are affixes of the same kind that do not form a word there */
+export function affixItems(n: number, r = Math.random): TestItem[] {
+  const pool = AFFIXES.flatMap((a) => a.examples.map((ex) => ({ a, ex })));
+  return shuffle(pool, r).slice(0, n).map(({ a, ex }, i) => {
+    const blank = a.kind === 'prefix' ? '（　）' + ex.word.slice(a.part.length) : ex.word.slice(0, ex.word.length - a.part.length) + '（　）';
+    const wrong = shuffle(AFFIXES.filter((b) => b.kind === a.kind && b.part !== a.part && !ex.alt?.includes(b.part)), r).slice(0, 3).map((b) => b.part);
+    return {
+      id: `af:${i}:${ex.word}`, section: '語形成', area: 'vocab',
+      instruction: '（　）に入れるのに最もよいものを選びなさい。',
+      prompt: ex.sentence.replace(ex.word, blank),
+      ...mc([a.part, ...wrong], 0, r),
+      why: `${ex.word}（${ex.reading}）— ${a.part}（${a.reading}）: ${a.de}`,
+      keys: [],
+    };
+  });
+}
+
+/** contrast questions from the Verwechslungsgruppen */
+export function confusionItems(n: number, r = Math.random): TestItem[] {
+  const pool = CONFUSIONS.flatMap((g) => g.ex.map((ex, i) => ({ g, ex, i })));
+  return shuffle(pool, r).slice(0, n).map(({ g, ex, i }) => ({
+    id: `cf:${g.id}:${i}`, section: '文法形式の判断', area: 'grammar',
+    instruction: '次の文の（　　）に入れるのに最もよいものを選びなさい。',
+    prompt: ex.s.split('＿＿').join('（　　）'),
+    ...mc(ex.opts, 0, r),
+    why: `${ex.why}\n${ex.en}\n— ${g.forms.join(' · ')}: ${g.note}`,
+    keys: [],
+  }));
 }
 
 export function paraphraseItems(n: number, r = Math.random): TestItem[] {
@@ -145,9 +178,13 @@ export function listeningItems(n: number, r = Math.random): TestItem[] {
 export function buildSectionPractice(section: Section, n = 6, r = Math.random): TestItem[] {
   switch (section) {
     case '漢字読み': return kanjiReadingItems(n, r);
+    case '語形成': return affixItems(n, r);
     case '文脈規定': return contextItems(n, r);
     case '言い換え類義': return paraphraseItems(n, r);
-    case '文法形式の判断': return grammarItems(n, r);
+    case '文法形式の判断': {
+      const c = Math.floor(n / 2);
+      return shuffle([...grammarItems(n - c, r), ...confusionItems(c, r)], r);
+    }
     case '文の組み立て': return orderingItems(n, r);
     case '読解': return readingItems(n, r);
     case '聴解': return listeningItems(n, r);
@@ -158,9 +195,11 @@ export function buildSectionPractice(section: Section, n = 6, r = Math.random): 
 export function buildMockExam(r = Math.random): TestItem[] {
   return [
     ...kanjiReadingItems(4, r),
+    ...affixItems(2, r),
     ...contextItems(4, r),
     ...paraphraseItems(3, r),
-    ...grammarItems(5, r),
+    ...grammarItems(3, r),
+    ...confusionItems(2, r),
     ...orderingItems(3, r),
     ...readingItems(4, r),
     ...listeningItems(4, r),

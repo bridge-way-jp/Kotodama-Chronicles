@@ -1,4 +1,5 @@
 import type { VocabEntry } from '../core/types';
+import { CORE_VOCAB } from './vocab_core';
 
 /**
  * Chapter 1 vocabulary. Levels are approximate and based on common N2 study
@@ -135,6 +136,14 @@ export const VOCAB: VocabEntry[] = [
     example: '来週、ゼミで研究の発表をする。', exampleEn: 'Next week I will present my research in the seminar.', tags: ['university'] }),
   V({ id: 'kinchou', word: '緊張', reading: 'きんちょう', en: 'nervousness, tension', de: 'Nervosität, Anspannung', pos: 'noun', level: 'N3',
     example: '人前で話すと、どうしても緊張してしまう。', exampleEn: "I can't help getting nervous when I speak in front of people.", tags: ['university', 'emotion'] }),
+  ...CORE_VOCAB,
 ];
+
+/** near-synonyms (shared `syn:` tag) must never be offered as wrong answers for each other */
+export function confusable(a: VocabEntry, b: VocabEntry): boolean {
+  return a.tags.some((t) => t.startsWith('syn:') && b.tags.includes(t));
+}
+
+export const hasKanji = (w: string) => /[一-龯々]/.test(w);
 
 export const VOCAB_BY_ID: Record<string, VocabEntry> = Object.fromEntries(VOCAB.map((v) => [v.id, v]));

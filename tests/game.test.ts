@@ -210,3 +210,35 @@ describe('room reachability', () => {
     }
   });
 });
+
+describe('N2 core lists', () => {
+  it('vocab ids are unique and examples contain their word', async () => {
+    const { VOCAB } = await import('../src/content/vocab');
+    const ids = new Set<string>();
+    for (const v of VOCAB) {
+      expect(ids.has(v.id), v.id).toBe(false);
+      ids.add(v.id);
+      if (v.tags.includes('core')) expect(v.example.includes(v.word), v.id).toBe(true);
+    }
+  });
+  it('affix examples start/end with their affix and sentences contain the word', async () => {
+    const { AFFIXES } = await import('../src/content/wordformation');
+    for (const a of AFFIXES) for (const e of a.examples) {
+      expect(a.kind === 'prefix' ? e.word.startsWith(a.part) : e.word.endsWith(a.part), e.word).toBe(true);
+      expect(e.sentence.includes(e.word), e.word).toBe(true);
+    }
+  });
+  it('confusion exercises have a blank and 4 distinct options', async () => {
+    const { CONFUSIONS } = await import('../src/content/confusions');
+    for (const g of CONFUSIONS) for (const e of g.ex) {
+      expect(e.s.includes('＿＿'), e.s).toBe(true);
+      expect(new Set(e.opts).size, e.s).toBe(4);
+    }
+  });
+  it('exam sections build without duplicate options', async () => {
+    const { buildSectionPractice, SECTIONS } = await import('../src/core/exam');
+    for (const sec of SECTIONS) for (let k = 0; k < 20; k++) for (const it of buildSectionPractice(sec.id, 6)) {
+      expect(new Set(it.options).size, it.prompt).toBe(it.options.length);
+    }
+  });
+});
