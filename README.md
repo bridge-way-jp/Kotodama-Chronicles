@@ -120,7 +120,10 @@ NPC placement is valid.
   player walk cycle (`hero_<dir>_<frame>`), 8 NPCs in four directions (`npc_<id>_<dir>`), dialogue portraits with
   four expressions (`portrait_<id>_<neutral|happy|surprised|worried>`), creature back views for battles (`back_<sprite>`)
   and five story illustrations (`cg_*`, shown by `{ cg: ... }` script steps).
-- Ground tiles and furniture are painted procedurally in `src/game/textures.ts`.
+- `art/sheets/hm_*.webp` (the unified Hinomori set) → `python3 tools/build_rooms.py` builds the five interiors
+  (apartment, café, konbini, library, station) with furniture as separate objects; `python3 tools/build_exteriors.py`
+  cuts the town buildings (`bx_*`).
+- Remaining ground tiles are painted procedurally in `src/game/textures.ts`.
 - Any texture can be replaced by dropping a PNG with the same key into `public/assets/` without touching game logic.
 - `art/sheets/asset-pack.webp` and `overview.webp` are reference sheets (painted checkerboard background) for upcoming
   content: starter lines, more creatures, interiors, items.
@@ -132,6 +135,6 @@ reading & listening challenges, grammar teaching cards, glossary, SRS reviews, 1
 turn-based battles with recruitment, items and shop, relationships with remembered events, JLPT dashboard,
 diagnostic, section practice, timed mock exam, autosave and backups, touch controls.
 
-**Not yet:** chapters 2+ and further regions (city, mountain village, coast, university district), interiors for the
-library/konbini/station, train travel, apartment decoration, seasonal events, walking NPCs, recorded native audio, kanji stroke-order data, broader N2 coverage (the full N2 scope is several thousand
-words), FSRS, cloud saves.
+**Not yet:** chapters 2+ and further regions (city, mountain village, coast, university district), train travel,
+seasonal events, walking NPCs, recorded native audio, kanji stroke-order data, broader N2 coverage (the full N2 scope is several thousand
+words), FSRS.

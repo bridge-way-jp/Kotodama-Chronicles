@@ -548,5 +548,339 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
       }
     ],
     "image": "room2_apartment"
+  },
+  "library": {
+    "tiles": [
+      "WWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWW",
+      "ffffffffffffff",
+      "ffffffffffffff",
+      "ffffffffffffff",
+      "ffffffffffffff",
+      "ffffffffffffff",
+      "ffffffffffffff",
+      "fffffffffffccf",
+      "ffffffffffffff",
+      "ffffffffffffff",
+      "WWWWWWDDWWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "library_shelf1",
+        "sprite": "fu_library_shelf1",
+        "x": 1,
+        "y": 2,
+        "w": 2,
+        "h": 1,
+        "script": "library_shelf"
+      },
+      {
+        "id": "library_shelf2",
+        "sprite": "fu_library_shelf2",
+        "x": 3,
+        "y": 2,
+        "w": 1,
+        "h": 1,
+        "script": "library_shelf"
+      },
+      {
+        "id": "library_shelf3",
+        "sprite": "fu_library_shelf3",
+        "x": 4,
+        "y": 2,
+        "w": 1,
+        "h": 1,
+        "script": "library_shelf"
+      },
+      {
+        "id": "library_clock",
+        "sprite": "fu_library_clock",
+        "x": 5,
+        "y": 2,
+        "w": 1,
+        "h": 1,
+        "script": "library_clock"
+      },
+      {
+        "id": "library_shelf4",
+        "sprite": "fu_library_shelf4",
+        "x": 8,
+        "y": 2,
+        "w": 1,
+        "h": 1,
+        "script": "library_shelf"
+      },
+      {
+        "id": "library_shelf5",
+        "sprite": "fu_library_shelf5",
+        "x": 9,
+        "y": 2,
+        "w": 1,
+        "h": 1,
+        "script": "library_shelf"
+      },
+      {
+        "id": "library_globe",
+        "sprite": "fu_library_globe",
+        "x": 10,
+        "y": 2,
+        "w": 1,
+        "h": 1,
+        "script": "library_globe"
+      },
+      {
+        "id": "library_display",
+        "sprite": "fu_library_display",
+        "x": 11,
+        "y": 2,
+        "w": 1,
+        "h": 1,
+        "script": "library_display"
+      },
+      {
+        "id": "library_shelf6",
+        "sprite": "fu_library_shelf6",
+        "x": 12,
+        "y": 2,
+        "w": 1,
+        "h": 1,
+        "script": "library_shelf"
+      },
+      {
+        "id": "library_plant",
+        "sprite": "fu_library_plant",
+        "x": 13,
+        "y": 2,
+        "w": 1,
+        "h": 1,
+        "script": "plant"
+      },
+      {
+        "id": "library_table1",
+        "sprite": "fu_library_table1",
+        "x": 1,
+        "y": 5,
+        "w": 2,
+        "h": 1,
+        "script": "library_table"
+      },
+      {
+        "id": "library_table2",
+        "sprite": "fu_library_table2",
+        "x": 4,
+        "y": 5,
+        "w": 2,
+        "h": 1,
+        "script": "library_table"
+      },
+      {
+        "id": "library_reading",
+        "sprite": "fu_library_reading",
+        "x": 8,
+        "y": 5,
+        "w": 3,
+        "h": 1,
+        "script": "library_reading"
+      },
+      {
+        "id": "library_magazines",
+        "sprite": "fu_library_magazines",
+        "x": 13,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "library_magazines"
+      },
+      {
+        "id": "library_desk",
+        "sprite": "fu_library_desk",
+        "x": 11,
+        "y": 8,
+        "w": 2,
+        "h": 1,
+        "script": "library_desk"
+      },
+      {
+        "id": "library_study",
+        "sprite": "fu_library_study",
+        "x": 1,
+        "y": 9,
+        "w": 2,
+        "h": 1,
+        "script": "library_table"
+      },
+      {
+        "id": "library_cart",
+        "sprite": "fu_library_cart",
+        "x": 4,
+        "y": 9,
+        "w": 1,
+        "h": 1,
+        "script": "library_cart"
+      },
+      {
+        "id": "library_plant2",
+        "sprite": "fu_library_plant2",
+        "x": 13,
+        "y": 10,
+        "w": 1,
+        "h": 1,
+        "script": "plant"
+      }
+    ],
+    "image": "room2_library"
+  },
+  "station": {
+    "tiles": [
+      "WWWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWWW",
+      "fffffffffffffff",
+      "fffffffffffffff",
+      "fffffffffffffff",
+      "fffffffffffffff",
+      "fffffffffffffff",
+      "fffffffffffffff",
+      "fffffffffffffff",
+      "fffffffffffffff",
+      "WWWWWWWDWWWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "station_ticket1",
+        "sprite": "fu_station_ticket1",
+        "x": 1,
+        "y": 2,
+        "w": 1,
+        "h": 1,
+        "script": "station_ticket"
+      },
+      {
+        "id": "station_ticket2",
+        "sprite": "fu_station_ticket2",
+        "x": 2,
+        "y": 2,
+        "w": 1,
+        "h": 1,
+        "script": "station_ticket"
+      },
+      {
+        "id": "station_ticket3",
+        "sprite": "fu_station_ticket3",
+        "x": 3,
+        "y": 2,
+        "w": 1,
+        "h": 1,
+        "script": "station_ticket"
+      },
+      {
+        "id": "station_timetable",
+        "sprite": "fu_station_timetable",
+        "x": 5,
+        "y": 2,
+        "w": 5,
+        "h": 1,
+        "script": "station_timetable"
+      },
+      {
+        "id": "station_gate",
+        "sprite": "fu_station_gate",
+        "x": 11,
+        "y": 2,
+        "w": 2,
+        "h": 1,
+        "script": "station_gate"
+      },
+      {
+        "id": "station_gate2",
+        "sprite": "fu_station_gate2",
+        "x": 13,
+        "y": 2,
+        "w": 1,
+        "h": 1,
+        "script": "station_gate"
+      },
+      {
+        "id": "station_lockers",
+        "sprite": "fu_station_lockers",
+        "x": 0,
+        "y": 5,
+        "w": 2,
+        "h": 1,
+        "script": "station_locker"
+      },
+      {
+        "id": "station_vending",
+        "sprite": "fu_station_vending",
+        "x": 14,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "vending"
+      },
+      {
+        "id": "station_map",
+        "sprite": "fu_station_map",
+        "x": 14,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "station_map"
+      },
+      {
+        "id": "station_bench1",
+        "sprite": "fu_station_bench1",
+        "x": 4,
+        "y": 5,
+        "w": 2,
+        "h": 1,
+        "script": "station_bench"
+      },
+      {
+        "id": "station_bench2",
+        "sprite": "fu_station_bench2",
+        "x": 9,
+        "y": 5,
+        "w": 2,
+        "h": 1,
+        "script": "station_bench"
+      },
+      {
+        "id": "station_bench3",
+        "sprite": "fu_station_bench3",
+        "x": 4,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "station_bench"
+      },
+      {
+        "id": "station_bench4",
+        "sprite": "fu_station_bench4",
+        "x": 10,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "station_bench"
+      },
+      {
+        "id": "station_bins",
+        "sprite": "fu_station_bins",
+        "x": 0,
+        "y": 9,
+        "w": 2,
+        "h": 1,
+        "script": "konbini_trash"
+      },
+      {
+        "id": "station_flowers",
+        "sprite": "fu_station_flowers",
+        "x": 13,
+        "y": 9,
+        "w": 2,
+        "h": 1,
+        "script": "planter"
+      }
+    ],
+    "image": "room2_station"
   }
 };

@@ -615,6 +615,12 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   ],
   library_clock: [{ steps: [n('古い柱時計だ。こち、こち、と静かに時を{刻|きざ|v:kizamu}んでいる。', 'An old grandfather clock, quietly ticking away the time.'), { do: [{ learn: ['v:kizamu'] }] }] }],
   library_table: [{ steps: [n('読書用の机だ。誰かが読みかけの本を置いたままにしている。', 'A reading table. Someone left a book open here.')] }],
+  library_globe: [{ steps: [n('古い{地球儀|ちきゅうぎ}だ。回すと、日本がずいぶん小さく見える。', 'An old globe. Spin it and Japan looks very small.')] }],
+  library_display: [{ steps: [n('「今月のおすすめ」のコーナーだ。町の{昔話|むかしばなし}の本が並んでいる。', 'A “Recommended this month” corner with books of local folk tales.')] }],
+  library_reading: [{ steps: [n('{静か|しずか}な読書コーナーだ。ソファに座ると、つい{眠く|ねむく}なりそうだ。', 'A quiet reading corner. Sit on the sofa and you might doze off.')] }],
+  library_magazines: [{ steps: [n('新聞と雑誌の{棚|たな}だ。ここでは{立ち読み|たちよみ}しても{大丈夫|だいじょうぶ}だ。', 'Newspapers and magazines. Here, reading without buying is fine.')] }],
+  library_desk: [{ steps: [n('{貸し出し|かしだし}カウンターだ。「返却は二週間以内にお願いします」と書いてある。', 'The lending desk. A sign says “Please return books within two weeks.”')] }],
+  library_cart: [{ steps: [n('返された本のワゴンだ。{棚|たな}に戻されるのを待っている。', 'A cart of returned books, waiting to go back on the shelves.')] }],
   station_timetable: [
     {
       steps: [
@@ -626,7 +632,9 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   ],
   station_ticket: [{ steps: [n('切符の{券売機|けんばいき}だ。画面に「ただいま発売を停止しております」と表示されている。', 'A ticket machine. The screen says “Ticket sales are currently suspended.”')] }],
   station_map: [{ steps: [n('この地方の地図だ。日野森の先に、大きな街や山の村、海の町が描かれている。いつか行ってみたい。', 'A map of the region. Beyond Hinomori are a big city, a mountain village and a coastal town. Someday…')] }],
-  station_stove: [{ steps: [n('古いだるまストーブだ。冬にはここで、みんな電車を待つのだろう。', 'An old pot-belly stove. In winter, people must wait for trains here.')] }],
+  station_locker: [{ steps: [n('コインロッカーだ。{全部|ぜんぶ}{空いて|あいて}いる。最近は旅行客も少ないのだろう。', 'Coin lockers, all empty. Few travellers come these days.')] }],
+  station_bench: [{ steps: [n('待合室のベンチだ。{誰|だれ}もいない。電車が止まってから、ずっとこうなのだろう。', 'A waiting-room bench. Nobody here. It has probably been like this since the trains stopped.')] }],
+  station_gate: [{ steps: [n('{改札|かいさつ}だ。電車が動いていないので、{通れ|とおれ}ないようになっている。', 'The ticket gates. With no trains running, they are closed.')] }],
   kitchen: [{ steps: [n('小さなキッチンだ。一人分の料理なら、ここで十分作れる。', 'A small kitchen. Enough to cook for one.')] }],
   nightstand: [{ steps: [n('ベッドの横の小さな棚だ。目覚まし時計は六時に{設定|せってい}してある。', 'A little shelf by the bed. The alarm is set for six.')] }],
   wardrobe: [{ steps: [n('{洋服|ようふく}ダンスだ。{引っ越し|ひっこし}の荷物はまだ半分しか片付いていない。', 'A wardrobe. Only half of the moving boxes are unpacked so far.')] }],

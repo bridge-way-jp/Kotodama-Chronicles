@@ -132,40 +132,7 @@ const FOREST = [
 
 
 
-const LIBRARY_ROOM = [
-  'WWWWWWWWWWWWWWWWWWWWWW',
-  'WWWWWWWWWWWWWWWWWWWWWW',
-  'WWWWWWWWWWWWWWWWWWWWWW',
-  'WWWWWWWWWWWWWWWWWWWWWW',
-  'WWWWWWWWWWWWWWWWWWWWWW',
-  'WWWWWWWWWWWWWWWWWWWWWW',
-  'WWfffffffffffffWWWWWWW',
-  'WWfWWWWWWWWWWffWWWWWWW',
-  'WWfWWWWWWWWWWffWWWWWWW',
-  'WWfWWWWWWWWWWffWWWWWWW',
-  'WWfWWWWWWWWWWfffffffWW',
-  'WWffffffffffffffWfffWW',
-  'WWWWWWWffffffWWWWWWWWW',
-  'WWWWWWWWffffWWWWWWWWWW',
-  'WWWWWWWWWDDWWWWWWWWWWW',
-];
 
-const STATION_ROOM = [
-  'WWWWWWWWWWWWWWWWWWWWWWW',
-  'WWWWWWWWWWWWWWWWWWWWWWW',
-  'WWWWWWWWWWWWWWWWWWWWWWW',
-  'WWWWWWWWWWWWWWWWWWWWWWW',
-  'WWWWWWWWWWWWWWWWWWWWWWW',
-  'WWWWWWWWWWWWWWWWWWWWWWW',
-  'WWWffWWWWWWWfWWfffffWWW',
-  'WWWfffffffffffffffWWWWW',
-  'WWWffWWWWWffWWWWffWWWWW',
-  'WWWffWWWWWffWWWWffWWWWW',
-  'WWWfffffffffffffffffWWW',
-  'WWWffffffffffffffffWWWW',
-  'WWWWWWWWWWfffWWWWWWWWWW',
-  'WWWWWWWWWWWDWWWWWWWWWWW',
-];
 
 export const MAPS: Record<string, MapDef> = {
   town: {
@@ -179,17 +146,17 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'dog', x: 38, y: 16, r: 3 },
     ], bg: 'bg_town_sunset.webp',
     objects: [
-      { id: 'shrine', sprite: 'p_shrine', x: 3, y: 4, w: 4, h: 2, interactAt: [{ x: 4, y: 5 }, { x: 5, y: 5 }] },
+      { id: 'shrine', sprite: 'bx_shrine', x: 3, y: 4, w: 4, h: 2, interactAt: [{ x: 4, y: 5 }, { x: 5, y: 5 }] },
       { id: 'sakura1', sprite: 'p_sakura', x: 8, y: 5, w: 2, h: 1, script: 'sakura' },
       { id: 'sakura2', sprite: 'p_sakura', x: 29, y: 15, w: 2, h: 1, script: 'sakura' },
-      { id: 'library', sprite: 'b_library2', x: 11, y: 8, w: 3, h: 2 },
-      { id: 'konbini', sprite: 'b_konbini2', x: 15, y: 8, w: 4, h: 2 },
+      { id: 'library', sprite: 'bx_library', x: 11, y: 8, w: 3, h: 2 },
+      { id: 'konbini', sprite: 'bx_konbini', x: 15, y: 8, w: 4, h: 2 },
       { id: 'konbini_notice', sprite: 'p_board', x: 19, y: 9, w: 1, h: 1 },
-      { id: 'cafe', sprite: 'b_inn', x: 23, y: 7, w: 6, h: 3 },
-      { id: 'apartment', sprite: 'b_apartment2', x: 3, y: 15, w: 3, h: 2 },
+      { id: 'cafe', sprite: 'bx_cafe', x: 23, y: 7, w: 6, h: 3 },
+      { id: 'apartment', sprite: 'bx_apartment', x: 3, y: 15, w: 3, h: 2 },
       { id: 'mailbox', sprite: 'p_mailbox', x: 7, y: 16, w: 1, h: 1 },
       { id: 'garden', sprite: 'p_garden', x: 10, y: 15, w: 3, h: 2 },
-      { id: 'ramen', sprite: 'b_ramen2', x: 15, y: 15, w: 3, h: 2 },
+      { id: 'ramen', sprite: 'bx_ramen', x: 15, y: 15, w: 3, h: 2 },
       { id: 'pond', x: 24, y: 15, w: 4, h: 3 },
       { id: 'signpost', sprite: 'p_signpost', x: 22, y: 13, w: 1, h: 1 },
       { id: 'lamp1', sprite: 'p_lamp', x: 9, y: 13, w: 1, h: 1, script: 'lamp' },
@@ -205,7 +172,7 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'vending', sprite: 'tp_vending', x: 14, y: 9, w: 1, h: 1 },
       { id: 'postbox', sprite: 'tp_postbox', x: 22, y: 19, w: 1, h: 1 },
       { id: 'bench_station', sprite: 'tp_bench', x: 5, y: 21, w: 2, h: 1, script: 'bench' },
-      { id: 'bench_pond', sprite: 'tp_bench', x: 29, y: 17, w: 2, h: 1, script: 'bench' },
+      { id: 'bench_pond', sprite: 'tp_bench', x: 31, y: 17, w: 2, h: 1, script: 'bench' },
       { id: 'bicycle', sprite: 'tp_bicycle', x: 6, y: 15, w: 2, h: 1 },
       { id: 'pole1', sprite: 'tp_pole', x: 2, y: 9, w: 1, h: 1, script: 'pole' },
       { id: 'pole2', sprite: 'tp_pole', x: 31, y: 9, w: 1, h: 1, script: 'pole' },
@@ -225,7 +192,7 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'nosign', sprite: 'tp_sign', x: 35, y: 14, w: 1, h: 1 },
       { id: 'trash', sprite: 'tp_trash', x: 14, y: 21, w: 1, h: 1 },
       { id: 'barrel', sprite: 'tp_barrel', x: 18, y: 16, w: 1, h: 1 },
-      { id: 'station_building', sprite: 'b_station', x: 25, y: 18, w: 5, h: 2, label: { text: '日野森駅', x: 0.5, y: 0.54 } },
+      { id: 'station_building', sprite: 'bx_station', x: 25, y: 18, w: 5, h: 2 },
     ],
     npcs: [
       { id: 'mori', x: 6, y: 17, facing: 'down' },
@@ -236,8 +203,8 @@ export const MAPS: Record<string, MapDef> = {
       { x: 4, y: 16, to: { map: 'apartment', x: 5, y: 10, facing: 'up' } },
       { x: 26, y: 9, to: { map: 'cafe', x: 6, y: 10, facing: 'up' } },
       { x: 17, y: 9, to: { map: 'konbini', x: 7, y: 10, facing: 'up' } },
-      { x: 12, y: 9, to: { map: 'library', x: 9, y: 13, facing: 'up' } },
-      { x: 27, y: 19, to: { map: 'station', x: 11, y: 12, facing: 'up' } },
+      { x: 12, y: 9, to: { map: 'library', x: 6, y: 10, facing: 'up' } },
+      { x: 27, y: 19, to: { map: 'station', x: 7, y: 9, facing: 'up' } },
       {
         x: 20, y: 0, to: { map: 'forest', x: 14, y: 23, facing: 'up' },
         when: { flag: 'forest_open' },
@@ -310,27 +277,18 @@ export const MAPS: Record<string, MapDef> = {
   },
 
   library: {
-    id: 'library', name: 'Hinomori Library', nameJa: '日野森図書館', tiles: LIBRARY_ROOM, interior: true, image: 'room_library',
-    objects: [
-      { id: 'library_shelf', x: 2, y: 5, w: 12, h: 1 },
-      { id: 'library_clock', x: 14, y: 5, w: 2, h: 1 },
-      { id: 'library_table', x: 3, y: 7, w: 10, h: 4 },
-    ],
-    npcs: [{ id: 'sato', x: 17, y: 10, facing: 'down' }],
+    id: 'library', name: 'Hinomori Library', nameJa: '日野森図書館', tiles: ROOMS_GEN.library.tiles, interior: true, image: ROOMS_GEN.library.image,
+    objects: ROOMS_GEN.library.objects,
+    npcs: [{ id: 'sato', x: 12, y: 7, facing: 'down' }],
     warps: [
-      { x: 9, y: 14, to: { map: 'town', x: 12, y: 10, facing: 'down' } },
-      { x: 10, y: 14, to: { map: 'town', x: 12, y: 10, facing: 'down' } },
+      { x: 6, y: 11, to: { map: 'town', x: 12, y: 10, facing: 'down' } },
+      { x: 7, y: 11, to: { map: 'town', x: 12, y: 10, facing: 'down' } },
     ],
   },
   station: {
-    id: 'station', name: 'Station waiting room', nameJa: '日野森駅 待合室', tiles: STATION_ROOM, interior: true, image: 'room_station',
-    objects: [
-      { id: 'station_timetable', x: 7, y: 6, w: 5, h: 1 },
-      { id: 'station_ticket', x: 13, y: 6, w: 2, h: 1 },
-      { id: 'station_map', x: 3, y: 5, w: 2, h: 1 },
-      { id: 'station_stove', x: 20, y: 8, w: 2, h: 4 },
-    ],
+    id: 'station', name: 'Station waiting room', nameJa: '日野森駅 待合室', tiles: ROOMS_GEN.station.tiles, interior: true, image: ROOMS_GEN.station.image,
+    objects: ROOMS_GEN.station.objects,
     npcs: [],
-    warps: [{ x: 11, y: 13, to: { map: 'town', x: 27, y: 20, facing: 'down' } }],
+    warps: [{ x: 7, y: 10, to: { map: 'town', x: 27, y: 20, facing: 'down' } }],
   },
 };

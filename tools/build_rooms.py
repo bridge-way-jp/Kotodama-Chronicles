@@ -65,7 +65,7 @@ def strict_bg(a):
     return (r > 190) & (b > 190) & (g < 90) & (np.abs(r - b) < 45)
 
 
-def piece(name, idx, scale=SCALE, inset=0):
+def piece(name, idx, scale=SCALE, inset=0, depink=False):
     """One labelled object of a sheet as RGBA, scaled to game size."""
     a, fg, lab, order = sheet(name)
     _, _, li, s = order[idx]
@@ -78,6 +78,9 @@ def piece(name, idx, scale=SCALE, inset=0):
     for _ in range(3):
         edge = m & ~ndimage.binary_erosion(m)
         m &= ~(edge & pinkish)
+    if depink:
+        # see-through parts (e.g. gate flaps) show the magenta background: drop every magenta-tinted pixel
+        m &= ~pinkish
     img = trim(to_rgba(a[s], m))
     if inset:
         img = img.crop((inset, inset, img.width - inset, img.height - inset))
@@ -101,6 +104,7 @@ def fit(img, w, h):
 # ------------------------------------------------------------------ room definitions
 # furniture: (id, sheet, index, x, y, w, h, script)  footprint in tiles; script None = decoration (not solid)
 # optional 9th field: dict(counter=True) marks the footprint as counter tiles (talk across),
+#   depink=True removes magenta showing through see-through parts,
 #   split=0.45 cuts the sprite: the top part (back shelves) is drawn behind people standing behind it
 
 ROOMS = {
@@ -178,6 +182,53 @@ ROOMS = {
             ('plant2', 'apartment', 27, 11, 10, 1, 1, 'plant'),
         ],
     ),
+    'library': dict(
+        size=(14, 12), door=[6, 7], floor=('tiles', 1), wall=('tiles', 15),
+        wall_items=[('libstation', 17, 7.0, 0.3)],
+        rugs=[('libstation', 28, 3.5, 8.6), ('tiles', 68, 7.0, 10.5)],
+        furniture=[
+            ('shelf1', 'libstation', 1, 1, 2, 2, 1, 'library_shelf'),
+            ('shelf2', 'libstation', 0, 3, 2, 1, 1, 'library_shelf'),
+            ('shelf3', 'libstation', 2, 4, 2, 1, 1, 'library_shelf'),
+            ('clock', 'cafe', 31, 5, 2, 1, 1, 'library_clock'),
+            ('shelf4', 'libstation', 3, 8, 2, 1, 1, 'library_shelf'),
+            ('shelf5', 'libstation', 0, 9, 2, 1, 1, 'library_shelf'),
+            ('globe', 'libstation', 7, 10, 2, 1, 1, 'library_globe'),
+            ('display', 'libstation', 8, 11, 2, 1, 1, 'library_display'),
+            ('shelf6', 'libstation', 11, 12, 2, 1, 1, 'library_shelf'),
+            ('plant', 'libstation', 25, 13, 2, 1, 1, 'plant'),
+            ('table1', 'libstation', 12, 1, 5, 2, 1, 'library_table'),
+            ('table2', 'libstation', 14, 4, 5, 2, 1, 'library_table'),
+            ('reading', 'libstation', 21, 8, 5, 3, 1, 'library_reading'),
+            ('magazines', 'libstation', 24, 13, 5, 1, 1, 'library_magazines'),
+            ('desk', 'libstation', 15, 11, 8, 2, 1, 'library_desk', dict(counter=True)),
+            ('study', 'libstation', 22, 1, 9, 2, 1, 'library_table'),
+            ('cart', 'libstation', 19, 4, 9, 1, 1, 'library_cart'),
+            ('plant2', 'libstation', 27, 13, 10, 1, 1, 'plant'),
+        ],
+    ),
+    'station': dict(
+        size=(15, 11), door=[7], floor=('tiles', 3), wall=('tiles', 18),
+        wall_items=[('libstation', 48, 13.0, 0.15)],
+        rugs=[('tiles', 67, 7.5, 9.5)],
+        furniture=[
+            ('ticket1', 'libstation', 41, 1, 2, 1, 1, 'station_ticket'),
+            ('ticket2', 'libstation', 42, 2, 2, 1, 1, 'station_ticket'),
+            ('ticket3', 'libstation', 43, 3, 2, 1, 1, 'station_ticket'),
+            ('timetable', 'libstation', 40, 5, 2, 5, 1, 'station_timetable'),
+            ('gate', 'libstation', 53, 11, 2, 2, 1, 'station_gate', dict(depink=True)),
+            ('gate2', 'libstation', 54, 13, 2, 1, 1, 'station_gate', dict(depink=True)),
+            ('lockers', 'libstation', 60, 0, 5, 2, 1, 'station_locker'),
+            ('vending', 'libstation', 58, 14, 5, 1, 1, 'vending'),
+            ('map', 'libstation', 50, 14, 7, 1, 1, 'station_map'),
+            ('bench1', 'libstation', 36, 4, 5, 2, 1, 'station_bench'),
+            ('bench2', 'libstation', 36, 9, 5, 2, 1, 'station_bench'),
+            ('bench3', 'libstation', 37, 4, 7, 1, 1, 'station_bench'),
+            ('bench4', 'libstation', 37, 10, 7, 1, 1, 'station_bench'),
+            ('bins', 'libstation', 59, 0, 9, 2, 1, 'konbini_trash'),
+            ('flowers', 'libstation', 69, 13, 9, 2, 1, 'planter'),
+        ],
+    ),
 }
 
 
@@ -227,7 +278,7 @@ def build_room(rid, r):
     objects = []
     for oid, sh, idx, x, y, w, h, script, *extra in r['furniture']:
         opt = extra[0] if extra else {}
-        p = piece(sh, idx)
+        p = piece(sh, idx, depink=opt.get('depink', False))
         key = f'fu_{rid}_{oid}'
         if opt.get('split'):
             # back part drawn behind people standing behind the counter
