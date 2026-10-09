@@ -77,7 +77,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
   // battles get a quieter mix so the Japanese questions stay in focus
   const inBattle = overlays.some((o) => o.kind === 'battle' || o.kind === 'exam');
   useEffect(() => {
-    duckMusic(inBattle ? 0.45 : 1);
+    duckMusic(inBattle ? 0.7 : 1);
   }, [inBattle]);
 
   // lock world input while any overlay is open

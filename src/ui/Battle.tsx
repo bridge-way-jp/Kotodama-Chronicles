@@ -4,7 +4,7 @@ import { store } from '../core/store';
 import { battleExercise, recordAnswer, type Exercise, type Option } from '../core/learning';
 import { enemyDamage, enemyMaxHp, makeEnemy, playerDamage, recruitSucceeds, xpReward, type BattleSetup } from '../core/battle';
 import { addCreature, completeObjective, giveCreatureXp, grantXp, healTeam, maxHp } from '../core/game';
-import { sfx } from '../core/audio';
+import { currentMusic, playJingle, playMusic, sfx } from '../core/audio';
 import { ExerciseView, QuestionBlock, type ExerciseTools } from './Question';
 import type { CreatureInstance, Question } from '../core/types';
 
@@ -77,6 +77,15 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
   const [queue, setQueue] = useState<string[]>([]);
   const after = useRef<() => void>(() => setPhase({ k: 'menu' }));
   const [shake, setShake] = useState<'enemy' | 'me' | null>(null);
+  // boss fights get their own theme; the map music returns afterwards
+  useEffect(() => {
+    if (!setup.boss) return;
+    const prev = currentMusic();
+    playMusic('boss');
+    return () => playMusic(prev || 'town');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // idle "breathing / blinking": show the second frame briefly every couple of seconds
   const [idleFrame, setIdleFrame] = useState(0);
   useEffect(() => {
@@ -170,6 +179,7 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
       }
       if (result === 'lose') healTeam(st);
     }, 'battle');
+    if (result === 'win' || result === 'recruit') playJingle('victory');
     if (levelMsgs.current.length) {
       sfx('level');
       playFx('levelup', 'me');

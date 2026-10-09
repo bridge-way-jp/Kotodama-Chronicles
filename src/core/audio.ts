@@ -120,6 +120,10 @@ export function sfx(kind: 'blip' | 'ok' | 'bad' | 'hit' | 'level' | 'open') {
  */
 export const TRACKS: Record<string, string> = {
   town: 'audio/town.mp3',
+  forest: 'audio/forest.mp3',
+  cafe: 'audio/cafe.mp3',
+  home: 'audio/home.mp3',
+  boss: 'audio/boss.mp3',
 };
 
 export const MAP_MUSIC: Record<string, string> = {
@@ -166,7 +170,13 @@ function tryPlay(el: HTMLAudioElement) {
   });
 }
 
+let musicKey = '';
+export function currentMusic() {
+  return musicKey;
+}
+
 export function playMusic(key: string) {
+  musicKey = key;
   const src = TRACKS[key] ?? TRACKS.town;
   if (!src || src === musicSrc) return;
   const old = music;
@@ -179,6 +189,16 @@ export function playMusic(key: string) {
   tryPlay(el);
   if (fadeTimer) clearInterval(fadeTimer);
   fadeTimer = fadeTo(el, target(), 1200);
+}
+
+/** short one-shot jingle (e.g. victory); the music dips underneath it */
+export function playJingle(key: string) {
+  const el = new Audio(`audio/${key}.mp3`);
+  el.volume = Math.min(1, musicVolume * 1.4 + 0.1);
+  const prev = duck;
+  duckMusic(0.1);
+  el.onended = () => duckMusic(prev);
+  el.play().catch(() => duckMusic(prev));
 }
 
 export function stopMusic() {
