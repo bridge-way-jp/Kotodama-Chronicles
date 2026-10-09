@@ -123,6 +123,8 @@ NPC placement is valid.
 - `art/sheets/hm_*.webp` (the unified Hinomori set) → `python3 tools/build_rooms.py` builds the five interiors
   (apartment, café, konbini, library, station) with furniture as separate objects; `python3 tools/build_exteriors.py`
   cuts the town buildings (`bx_*`).
+- `art/sheets/hm_characters.webp` → `python3 tools/build_characters.py` (run after `extract_sheets.py`) replaces the
+  player, six NPCs and the townsfolk with the matching Hinomori characters.
 - Remaining ground tiles are painted procedurally in `src/game/textures.ts`.
 - Any texture can be replaced by dropping a PNG with the same key into `public/assets/` without touching game logic.
 - `art/sheets/asset-pack.webp` and `overview.webp` are reference sheets (painted checkerboard background) for upcoming

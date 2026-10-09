@@ -25,7 +25,7 @@ export const FOLK: Record<string, FolkDef> = {
     ],
   },
   grandpa: {
-    id: 'grandpa', sprite: 'grandpa', frames: 3, name: 'おじいさん',
+    id: 'grandpa', sprite: 'grandpa', frames: 4, name: 'おじいさん',
     lines: [
       { jp: '若いころは、毎朝この川沿いを走ったものじゃ。', en: 'When I was young, I used to run along this river every morning.' },
       { jp: 'この町も、ずいぶん変わったのう。', en: 'This town has really changed.' },
@@ -51,6 +51,41 @@ export const FOLK: Record<string, FolkDef> = {
     lines: [
       { jp: 'ワン！ （しっぽを振っている）', en: 'Woof! (It is wagging its tail.)' },
       { jp: 'くぅーん。（散歩に行きたそうだ）', en: 'Whimper. (It seems to want a walk.)' },
+    ],
+  },
+  miko: {
+    id: 'miko', sprite: 'miko', frames: 4, name: '巫女さん',
+    lines: [
+      { jp: 'お参りの前に、手水舎で手を清めてくださいね。', en: 'Before you pray, please purify your hands at the water basin.' },
+      { jp: 'このごろ、おみくじの文字が読めないと言う方が増えているんです。', en: 'Lately more and more people say they can’t read the fortune slips.' },
+    ],
+  },
+  chef: {
+    id: 'chef', sprite: 'chef', frames: 4, name: 'ラーメン屋の店主',
+    lines: [
+      { jp: 'うちのスープは、三日かけて作ってるんだ。一度食べてみな！', en: 'Our broth takes three days to make. Come try it some time!' },
+      { jp: '今日は仕込みが間に合わなくて、開店が少し遅れそうだ。', en: 'Prep isn’t done in time today, so we’ll open a little late.' },
+    ],
+  },
+  gardener: {
+    id: 'gardener', sprite: 'gardener', frames: 4, name: '畑のおばあさん',
+    lines: [
+      { jp: '今年はトマトがよく育ったよ。雨が多かったおかげだね。', en: 'The tomatoes grew well this year, thanks to all the rain.' },
+      { jp: '野菜は手をかければかけるほど、おいしくなるもんさ。', en: 'The more care you give vegetables, the tastier they get.' },
+    ],
+  },
+  kid: {
+    id: 'kid', sprite: 'kid', frames: 4, name: '小学生',
+    lines: [
+      { jp: 'ねえねえ、森の奥に光る動物がいるって本当？', en: 'Hey, is it true there’s a glowing animal deep in the forest?' },
+      { jp: '宿題、まだ終わってないけど……遊んでからやろうっと。', en: 'I haven’t finished my homework… I’ll do it after playing.' },
+    ],
+  },
+  student: {
+    id: 'student', sprite: 'student', frames: 4, name: '大学生',
+    lines: [
+      { jp: '図書館で調べものをするつもりが、つい寝てしまって……。', en: 'I meant to do research at the library, but I dozed off…' },
+      { jp: 'レポートの締め切りに間に合うかどうか、微妙なところだ。', en: 'Whether I’ll make the report deadline is a close call.' },
     ],
   },
 };

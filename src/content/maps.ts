@@ -144,6 +144,11 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'delivery', x: 30, y: 11, r: 5 },
       { id: 'cat', x: 14, y: 14, r: 4 },
       { id: 'dog', x: 38, y: 16, r: 3 },
+      { id: 'miko', x: 8, y: 6, r: 2 },
+      { id: 'chef', x: 14, y: 17, r: 2 },
+      { id: 'gardener', x: 11, y: 17, r: 2 },
+      { id: 'kid', x: 16, y: 12, r: 5 },
+      { id: 'student', x: 8, y: 11, r: 4 },
     ], bg: 'bg_town_sunset.webp',
     objects: [
       { id: 'shrine', sprite: 'bx_shrine', x: 3, y: 4, w: 4, h: 2, interactAt: [{ x: 4, y: 5 }, { x: 5, y: 5 }] },
