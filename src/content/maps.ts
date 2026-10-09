@@ -24,6 +24,8 @@ export interface MapObject {
   /** tiles that trigger this object's script when faced (defaults to footprint) */
   interactAt?: { x: number; y: number }[];
   when?: Cond;
+  /** text painted onto the sprite, position relative to the image (0..1) */
+  label?: { text: string; x: number; y: number };
   /** extra vertical offset for the image in px */
   dy?: number;
 }
@@ -214,14 +216,14 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'signpost', sprite: 'p_signpost', x: 22, y: 13, w: 1, h: 1 },
       { id: 'lamp1', sprite: 'p_lamp', x: 9, y: 13, w: 1, h: 1, script: 'lamp' },
       { id: 'lamp2', sprite: 'p_lamp', x: 28, y: 13, w: 1, h: 1, script: 'lamp' },
-      { id: 'lamp3', sprite: 'p_lamp', x: 25, y: 19, w: 1, h: 1, script: 'lamp' },
+      { id: 'lamp3', sprite: 'p_lamp', x: 24, y: 19, w: 1, h: 1, script: 'lamp' },
       { id: 'station_banner', sprite: 'p_banner', x: 8, y: 20, w: 1, h: 1 },
       { id: 'old_board', sprite: 'p_board2', x: 13, y: 20, w: 2, h: 1 },
       { id: 'timetable', sprite: 'p_sign_nihon', x: 24, y: 20, w: 1, h: 1 },
       { id: 'forest_sign', sprite: 'p_sign_small', x: 22, y: 2, w: 1, h: 1 },
       { id: 'lab_door', x: 39, y: 9, w: 1, h: 1 },
       { id: 'lab_sign', sprite: 'p_board', x: 36, y: 10, w: 1, h: 1 },
-      { id: 'station_building', sprite: 'gen_station', x: 26, y: 18, w: 3, h: 2 },
+      { id: 'station_building', sprite: 'b_station', x: 25, y: 18, w: 5, h: 2, label: { text: '日野森駅', x: 0.5, y: 0.54 } },
     ],
     npcs: [
       { id: 'mori', x: 6, y: 17, facing: 'down' },

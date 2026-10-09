@@ -21,7 +21,7 @@ export const ASSET_KEYS = [
   'b_inn', 'b_house_blue', 'b_house_trad', 'b_konbini', 'b_shop_red', 'b_bridge',
   'p_sakura', 'p_shrine', 'p_pond', 'p_garden', 'p_lamp', 'p_signpost', 'p_board', 'p_board2', 'p_mailbox',
   'p_sign_nihon', 'p_banner', 'p_sign_small',
-  'room_konbini', 'room_library', 'room_station',
+  'room_konbini', 'room_library', 'room_station', 'b_station',
 ];
 
 const DIRS: Record<Dir, [number, number]> = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
@@ -146,6 +146,17 @@ export class WorldScene extends Phaser.Scene {
         const img = this.add.image(cx, by, def.sprite).setOrigin(0.5, 1);
         img.setDepth(by - 1);
         entry.img = img;
+        if (def.label) {
+          this.add
+            .text(cx - img.width / 2 + def.label.x * img.width, by - img.height + def.label.y * img.height, def.label.text, {
+              fontFamily: 'DotGothic16, "Noto Sans JP", sans-serif',
+              fontSize: '9px',
+              color: '#2a2018',
+            })
+            .setOrigin(0.5)
+            .setResolution(4)
+            .setDepth(by);
+        }
       }
       this.objects.push(entry);
     }

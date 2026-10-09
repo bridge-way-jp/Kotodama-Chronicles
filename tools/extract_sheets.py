@@ -280,7 +280,18 @@ def interiors():
         Image.fromarray(arr).save(os.path.join(OUT, name + '.png'))
 
 
+def station_building():
+    """Transparent background: use the image's own alpha channel."""
+    img = Image.open(os.path.join(SHEETS, 'station-building.webp')).convert('RGBA')
+    arr = np.array(img)
+    fg = keep_main(ndimage.binary_opening(arr[:, :, 3] > 128, iterations=2), frac=0.2)
+    arr[:, :, 3] = np.where(fg, 255, 0)
+    out = resize_px(trim(Image.fromarray(arr, 'RGBA')), 104)
+    save(out, 'b_station')
+
+
 if __name__ == '__main__':
+    station_building()
     items()
     creature_lines()
     interiors()
