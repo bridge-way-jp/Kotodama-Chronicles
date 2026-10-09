@@ -207,33 +207,86 @@ ROOMS = {
             ('plant2', 'libstation', 27, 13, 10, 1, 1, 'plant'),
         ],
     ),
+    # painted as one picture (art/sheets/room_station_v2.webp); only free-standing furniture is separate
     'station': dict(
-        size=(15, 11), door=[7], floor=('tiles', 3), wall=('tiles', 18),
-        wall_items=[('libstation', 48, 13.0, 0.15)],
-        rugs=[('tiles', 67, 7.5, 9.5)],
+        size=(22, 15), painted='room_station_v2.webp', crop=(17, 48, 1447, 1001),
+        grid=['W' * 22] * 6 + ['WW' + 'f' * 18 + 'WW'] * 8 + ['W' * 10 + 'DD' + 'W' * 10],
+        spots=[
+            ('map', 2, 5, 1, 1, 'station_map'),
+            ('window', 3, 5, 4, 1, 'station_window'),
+            ('ticket', 7, 5, 2, 1, 'station_ticket'),
+            ('timetable', 9, 5, 3, 1, 'station_timetable'),
+            ('poster', 12, 5, 1, 1, 'station_poster'),
+            ('gate', 14, 5, 6, 1, 'station_gate'),
+            ('lockers', 2, 6, 1, 5, 'station_locker'),
+            ('plant', 2, 11, 1, 2, 'plant'),
+            ('posters', 20, 5, 1, 3, 'station_poster'),
+            ('vending', 19, 8, 2, 4, 'vending'),
+            ('plant2', 7, 13, 1, 1, 'plant'),
+            ('bin1', 8, 13, 1, 1, 'station_trash'),
+            ('bin2', 13, 13, 1, 1, 'station_trash'),
+        ],
+        # placeholders until the free-standing station furniture sheet exists
         furniture=[
-            ('ticket1', 'libstation', 41, 1, 2, 1, 1, 'station_ticket'),
-            ('ticket2', 'libstation', 42, 2, 2, 1, 1, 'station_ticket'),
-            ('ticket3', 'libstation', 43, 3, 2, 1, 1, 'station_ticket'),
-            ('timetable', 'libstation', 40, 5, 2, 5, 1, 'station_timetable'),
-            ('gate', 'libstation', 53, 11, 2, 2, 1, 'station_gate', dict(depink=True)),
-            ('gate2', 'libstation', 54, 13, 2, 1, 1, 'station_gate', dict(depink=True)),
-            ('lockers', 'libstation', 60, 0, 5, 2, 1, 'station_locker'),
-            ('vending', 'libstation', 58, 14, 5, 1, 1, 'vending'),
-            ('map', 'libstation', 50, 14, 7, 1, 1, 'station_map'),
-            ('bench1', 'libstation', 36, 4, 5, 2, 1, 'station_bench'),
-            ('bench2', 'libstation', 36, 9, 5, 2, 1, 'station_bench'),
-            ('bench3', 'libstation', 37, 4, 7, 1, 1, 'station_bench'),
-            ('bench4', 'libstation', 37, 10, 7, 1, 1, 'station_bench'),
-            ('bins', 'libstation', 59, 0, 9, 2, 1, 'konbini_trash'),
-            ('flowers', 'libstation', 69, 13, 9, 2, 1, 'planter'),
+            ('bench1', 'libstation', 36, 4, 8, 2, 1, 'station_bench'),
+            ('bench2', 'libstation', 36, 4, 10, 2, 1, 'station_bench'),
+            ('bench3', 'libstation', 36, 15, 8, 2, 1, 'station_bench'),
+            ('bench4', 'libstation', 36, 15, 10, 2, 1, 'station_bench'),
         ],
     ),
 }
 
 
+def painted_shell(rid, r):
+    """A room painted as one picture (art/sheets/<src>): crop the room, scale it to W x H tiles."""
+    W, H = r['size']
+    a = load(r['painted'])
+    a[magenta_mask(a)] = (34, 26, 20)  # outside the room: the dark game background
+    src = Image.fromarray(a.clip(0, 255).astype(np.uint8), 'RGB')
+    src.crop(r['crop']).resize((W * T, H * T), Image.LANCZOS).save(os.path.join(OUT, f'room2_{rid}.png'))
+    grid = [list(row) for row in r['grid']]
+    assert len(grid) == H and all(len(row) == W for row in grid), rid
+    return grid
+
+
+def place(rid, r, grid):
+    """Furniture sprites, plus invisible interaction spots (id, x, y, w, h, script), as map objects."""
+    objects = []
+    for oid, sh, idx, x, y, w, h, script, *extra in r['furniture']:
+        opt = extra[0] if extra else {}
+        p = piece(sh, idx, depink=opt.get('depink', False))
+        key = f'fu_{rid}_{oid}'
+        if opt.get('split'):
+            # back part drawn behind people standing behind the counter
+            cut = round(p.height * opt['split'])
+            back = p.crop((0, 0, p.width, cut))
+            back.save(os.path.join(OUT, key + '_back.png'))
+            cx = (x + w / 2) * T
+            bottom = (y + h) * T
+            objects.append({'id': f'{rid}_{oid}_back', 'sprite': key + '_back', 'x': 0, 'y': 0, 'w': 0, 'h': 0, 'solid': False,
+                            'at': [round(cx), bottom - p.height + cut]})
+            p = p.crop((0, cut, p.width, p.height))
+        p.save(os.path.join(OUT, key + '.png'))
+        o = {'id': f'{rid}_{oid}', 'sprite': key, 'x': x, 'y': y, 'w': w, 'h': h}
+        if script:
+            o['script'] = script
+        else:
+            o['solid'] = False
+        if opt.get('counter'):
+            for yy in range(y, y + h):
+                for xx in range(x, x + w):
+                    grid[yy][xx] = 'c'
+        objects.append(o)
+    for oid, x, y, w, h, script in r.get('spots', []):
+        objects.append({'id': f'{rid}_{oid}', 'x': x, 'y': y, 'w': w, 'h': h, 'script': script})
+    return objects
+
+
 def build_room(rid, r):
     W, H = r['size']
+    if 'painted' in r:
+        grid = painted_shell(rid, r)
+        return {'tiles': [''.join(row) for row in grid], 'objects': place(rid, r, grid), 'image': f'room2_{rid}'}
     img = Image.new('RGBA', (W * T, H * T), (34, 26, 20, 255))
     # floor
     ft = tile(*r['floor'], T, T)
@@ -275,32 +328,7 @@ def build_room(rid, r):
     for y in (0, 1):
         grid[y] = ['W'] * W
     grid[H - 1] = ['D' if x in r['door'] else 'W' for x in range(W)]
-    objects = []
-    for oid, sh, idx, x, y, w, h, script, *extra in r['furniture']:
-        opt = extra[0] if extra else {}
-        p = piece(sh, idx, depink=opt.get('depink', False))
-        key = f'fu_{rid}_{oid}'
-        if opt.get('split'):
-            # back part drawn behind people standing behind the counter
-            cut = round(p.height * opt['split'])
-            back = p.crop((0, 0, p.width, cut))
-            back.save(os.path.join(OUT, key + '_back.png'))
-            cx = (x + w / 2) * T
-            bottom = (y + h) * T
-            objects.append({'id': f'{rid}_{oid}_back', 'sprite': key + '_back', 'x': 0, 'y': 0, 'w': 0, 'h': 0, 'solid': False,
-                            'at': [round(cx), bottom - p.height + cut]})
-            p = p.crop((0, cut, p.width, p.height))
-        p.save(os.path.join(OUT, key + '.png'))
-        o = {'id': f'{rid}_{oid}', 'sprite': key, 'x': x, 'y': y, 'w': w, 'h': h}
-        if script:
-            o['script'] = script
-        else:
-            o['solid'] = False
-        if opt.get('counter'):
-            for yy in range(y, y + h):
-                for xx in range(x, x + w):
-                    grid[yy][xx] = 'c'
-        objects.append(o)
+    objects = place(rid, r, grid)
     return {'tiles': [''.join(row) for row in grid], 'objects': objects, 'image': f'room2_{rid}'}
 
 

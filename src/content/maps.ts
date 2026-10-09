@@ -209,7 +209,7 @@ export const MAPS: Record<string, MapDef> = {
       { x: 26, y: 9, to: { map: 'cafe', x: 6, y: 10, facing: 'up' } },
       { x: 17, y: 9, to: { map: 'konbini', x: 7, y: 10, facing: 'up' } },
       { x: 12, y: 9, to: { map: 'library', x: 6, y: 10, facing: 'up' } },
-      { x: 27, y: 19, to: { map: 'station', x: 7, y: 9, facing: 'up' } },
+      { x: 27, y: 19, to: { map: 'station', x: 10, y: 13, facing: 'up' } },
       {
         x: 20, y: 0, to: { map: 'forest', x: 14, y: 23, facing: 'up' },
         when: { flag: 'forest_open' },
@@ -294,6 +294,9 @@ export const MAPS: Record<string, MapDef> = {
     id: 'station', name: 'Station waiting room', nameJa: '日野森駅 待合室', tiles: ROOMS_GEN.station.tiles, interior: true, image: ROOMS_GEN.station.image,
     objects: ROOMS_GEN.station.objects,
     npcs: [],
-    warps: [{ x: 7, y: 10, to: { map: 'town', x: 27, y: 20, facing: 'down' } }],
+    warps: [
+      { x: 10, y: 14, to: { map: 'town', x: 27, y: 20, facing: 'down' } },
+      { x: 11, y: 14, to: { map: 'town', x: 27, y: 20, facing: 'down' } },
+    ],
   },
 };

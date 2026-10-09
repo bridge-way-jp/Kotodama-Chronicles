@@ -45,7 +45,7 @@ export const ASSET_KEYS = [
   'n_tree_round', 'n_tree_cedar', 'n_tree_sakura', 'n_bush', 'n_bush_flowers', 'n_rock', 'n_fence', 'n_fence_post', 'n_lantern',
   // town buildings and rooms built from the Hinomori sheets (tools/build_exteriors.py, tools/build_rooms.py)
   'bx_apartment', 'bx_konbini', 'bx_cafe', 'bx_library', 'bx_station', 'bx_ramen', 'bx_shrine',
-  ...Object.values(ROOMS_GEN).flatMap((r) => [r.image, ...r.objects.map((o) => o.sprite!)]),
+  ...Object.values(ROOMS_GEN).flatMap((r) => [r.image, ...r.objects.flatMap((o) => (o.sprite ? [o.sprite] : []))]),
 ];
 
 const DIRS: Record<Dir, [number, number]> = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };

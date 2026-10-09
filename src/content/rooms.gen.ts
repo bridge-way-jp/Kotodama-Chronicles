@@ -732,105 +732,28 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
   },
   "station": {
     "tiles": [
-      "WWWWWWWWWWWWWWW",
-      "WWWWWWWWWWWWWWW",
-      "fffffffffffffff",
-      "fffffffffffffff",
-      "fffffffffffffff",
-      "fffffffffffffff",
-      "fffffffffffffff",
-      "fffffffffffffff",
-      "fffffffffffffff",
-      "fffffffffffffff",
-      "WWWWWWWDWWWWWWW"
+      "WWWWWWWWWWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWWWWWWWWWW",
+      "WWffffffffffffffffffWW",
+      "WWffffffffffffffffffWW",
+      "WWffffffffffffffffffWW",
+      "WWffffffffffffffffffWW",
+      "WWffffffffffffffffffWW",
+      "WWffffffffffffffffffWW",
+      "WWffffffffffffffffffWW",
+      "WWffffffffffffffffffWW",
+      "WWWWWWWWWWDDWWWWWWWWWW"
     ],
     "objects": [
-      {
-        "id": "station_ticket1",
-        "sprite": "fu_station_ticket1",
-        "x": 1,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "station_ticket"
-      },
-      {
-        "id": "station_ticket2",
-        "sprite": "fu_station_ticket2",
-        "x": 2,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "station_ticket"
-      },
-      {
-        "id": "station_ticket3",
-        "sprite": "fu_station_ticket3",
-        "x": 3,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "station_ticket"
-      },
-      {
-        "id": "station_timetable",
-        "sprite": "fu_station_timetable",
-        "x": 5,
-        "y": 2,
-        "w": 5,
-        "h": 1,
-        "script": "station_timetable"
-      },
-      {
-        "id": "station_gate",
-        "sprite": "fu_station_gate",
-        "x": 11,
-        "y": 2,
-        "w": 2,
-        "h": 1,
-        "script": "station_gate"
-      },
-      {
-        "id": "station_gate2",
-        "sprite": "fu_station_gate2",
-        "x": 13,
-        "y": 2,
-        "w": 1,
-        "h": 1,
-        "script": "station_gate"
-      },
-      {
-        "id": "station_lockers",
-        "sprite": "fu_station_lockers",
-        "x": 0,
-        "y": 5,
-        "w": 2,
-        "h": 1,
-        "script": "station_locker"
-      },
-      {
-        "id": "station_vending",
-        "sprite": "fu_station_vending",
-        "x": 14,
-        "y": 5,
-        "w": 1,
-        "h": 1,
-        "script": "vending"
-      },
-      {
-        "id": "station_map",
-        "sprite": "fu_station_map",
-        "x": 14,
-        "y": 7,
-        "w": 1,
-        "h": 1,
-        "script": "station_map"
-      },
       {
         "id": "station_bench1",
         "sprite": "fu_station_bench1",
         "x": 4,
-        "y": 5,
+        "y": 8,
         "w": 2,
         "h": 1,
         "script": "station_bench"
@@ -838,8 +761,8 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
       {
         "id": "station_bench2",
         "sprite": "fu_station_bench2",
-        "x": 9,
-        "y": 5,
+        "x": 4,
+        "y": 10,
         "w": 2,
         "h": 1,
         "script": "station_bench"
@@ -847,38 +770,124 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
       {
         "id": "station_bench3",
         "sprite": "fu_station_bench3",
-        "x": 4,
-        "y": 7,
-        "w": 1,
+        "x": 15,
+        "y": 8,
+        "w": 2,
         "h": 1,
         "script": "station_bench"
       },
       {
         "id": "station_bench4",
         "sprite": "fu_station_bench4",
-        "x": 10,
-        "y": 7,
-        "w": 1,
+        "x": 15,
+        "y": 10,
+        "w": 2,
         "h": 1,
         "script": "station_bench"
       },
       {
-        "id": "station_bins",
-        "sprite": "fu_station_bins",
-        "x": 0,
-        "y": 9,
-        "w": 2,
+        "id": "station_map",
+        "x": 2,
+        "y": 5,
+        "w": 1,
         "h": 1,
-        "script": "konbini_trash"
+        "script": "station_map"
       },
       {
-        "id": "station_flowers",
-        "sprite": "fu_station_flowers",
-        "x": 13,
-        "y": 9,
+        "id": "station_window",
+        "x": 3,
+        "y": 5,
+        "w": 4,
+        "h": 1,
+        "script": "station_window"
+      },
+      {
+        "id": "station_ticket",
+        "x": 7,
+        "y": 5,
         "w": 2,
         "h": 1,
-        "script": "planter"
+        "script": "station_ticket"
+      },
+      {
+        "id": "station_timetable",
+        "x": 9,
+        "y": 5,
+        "w": 3,
+        "h": 1,
+        "script": "station_timetable"
+      },
+      {
+        "id": "station_poster",
+        "x": 12,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "station_poster"
+      },
+      {
+        "id": "station_gate",
+        "x": 14,
+        "y": 5,
+        "w": 6,
+        "h": 1,
+        "script": "station_gate"
+      },
+      {
+        "id": "station_lockers",
+        "x": 2,
+        "y": 6,
+        "w": 1,
+        "h": 5,
+        "script": "station_locker"
+      },
+      {
+        "id": "station_plant",
+        "x": 2,
+        "y": 11,
+        "w": 1,
+        "h": 2,
+        "script": "plant"
+      },
+      {
+        "id": "station_posters",
+        "x": 20,
+        "y": 5,
+        "w": 1,
+        "h": 3,
+        "script": "station_poster"
+      },
+      {
+        "id": "station_vending",
+        "x": 19,
+        "y": 8,
+        "w": 2,
+        "h": 4,
+        "script": "vending"
+      },
+      {
+        "id": "station_plant2",
+        "x": 7,
+        "y": 13,
+        "w": 1,
+        "h": 1,
+        "script": "plant"
+      },
+      {
+        "id": "station_bin1",
+        "x": 8,
+        "y": 13,
+        "w": 1,
+        "h": 1,
+        "script": "station_trash"
+      },
+      {
+        "id": "station_bin2",
+        "x": 13,
+        "y": 13,
+        "w": 1,
+        "h": 1,
+        "script": "station_trash"
       }
     ],
     "image": "room2_station"

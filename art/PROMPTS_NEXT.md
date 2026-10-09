@@ -193,6 +193,61 @@ Only this one building, centred. Pure magenta #FF00FF background.
 
 ---
 
+## 4. Ort Hinomori und Midori-Wald hübscher (gemalter Boden)
+
+Gleicher Mix wie bei den Innenräumen und beim Bahnhof:
+**der Boden wird als ein großes Bild gemalt** (Wiese, Wege, Straße, Fluss, Teich, Brücke, Bahnsteig, Gleise, Zäune,
+Blumenbeete, Waldrand, Klippen). **Gebäude, Bäume vor dem Weg, Laternen, Schilder, Bänke usw. bleiben einzelne Objekte**,
+damit man hinter ihnen vorbeilaufen kann.
+
+Damit das Bild genau zur Spielkarte passt, gibt es einen **farbigen Lageplan** als Referenz:
+`art/reference/layout_town.png` (Ort, 44 × 30 Kacheln) und `art/reference/layout_forest.png` (Wald, 30 × 26 Kacheln).
+Farben im Plan: hellgrün = Wiese, hellere Flecken = Blumen, dunkelgrün = dichter Wald (nicht begehbar),
+mittelgrün = hohes Gras, beige = Erdweg, grau = gepflasterte Straße, hellgrau = Beton/Platz, blau = Wasser,
+braun = Brücke bzw. Klippe, sehr hell = Bahnsteig, gelb = Bahnsteigkante, dunkelbraun = Gleise, rosa = Schrein-Platz,
+**rote Kästen = Gebäude** (dort kommt später das Gebäude hin), **weiße Rahmen = kleine Objekte** (kommen später dazu).
+
+**Referenzbilder mitgeben:** Lageplan, Blatt 0, das Gebäude-Blatt (`hm_exterior`) und das neue Bahnhofsbild (für den Stil).
+
+### 4a. Ort Hinomori
+
+```
+[STYLE LOCK]
+Paint the GROUND of a whole small Japanese country town (Hinomori) for a top-down 16-bit RPG, seen from above in the same 3/4 style and warm light as the attached sheets.
+FOLLOW THE ATTACHED COLOUR LAYOUT PLAN EXACTLY: same shapes, same positions, same proportions. The plan is 44 × 30 tiles; the picture must have the same aspect ratio (44:30, e.g. 1536 × 1047 px) so every tile of the plan lands on the same spot.
+Translate the plan colours: light green = lush grass with small variations; lighter patches = little flower patches; mid green = tall grass; dark green = dense forest wall (tree crowns seen from above, dark, not walkable); beige = soft dirt path with grass edges; grey = paved town street with kerb stones; light grey = concrete square; blue = river and pond with soft shorelines, reeds and stones; brown on the river = wooden bridge with railings; very light = station platform with tiles; yellow = platform edge with the yellow tactile strip; dark brown = two railway tracks on gravel; the brown line below = a wooden fence; pink = the shrine's stone-paved forecourt.
+RED BOXES: paint only plain ground there (grass or paving, matching the surroundings) — the buildings are added on top later. WHITE FRAMES: ignore, small objects are added later.
+Paint NO buildings, NO free-standing trees, NO lamps, signs, benches, people or text. Only ground and flat things lying on the ground (paths, flower beds, puddles, stones, fallen sakura petals, manhole covers, drain grates).
+Pure magenta #FF00FF outside the map edge only.
+```
+
+### 4b. Midori-Wald
+
+```
+[STYLE LOCK]
+Paint the GROUND of a mysterious green forest clearing area (Midori Forest) for a top-down 16-bit RPG, same 3/4 style as the attached sheets, soft light falling through the leaves, a little magical.
+FOLLOW THE ATTACHED COLOUR LAYOUT PLAN EXACTLY: same shapes and positions. The plan is 30 × 26 tiles; same aspect ratio (30:26, e.g. 1200 × 1040 px).
+Translate the plan colours: light green = mossy forest floor with clover and small mushrooms; mid green = tall grass (where wild Kotodama hide); dark green = dense forest wall (tree crowns seen from above, not walkable); beige = narrow dirt path with roots and stepping stones; brown band = a low rocky cliff ledge running left to right, with a lighter spot = stone stairs up the cliff; blue = a small clear pond with lily pads.
+RED BOX at the top: a small clearing with old stone paving around where the ancient shrine stone will stand (paint only the ground).
+Paint NO free-standing trees, NO signs, NO shrine stone, NO creatures. Only ground and flat things on it.
+Pure magenta #FF00FF outside the map edge only.
+```
+
+### 4c. Bäume und Deko einzeln (passend zum gemalten Boden)
+
+```
+[STYLE LOCK]
+Free-standing outdoor objects for Hinomori town and Midori Forest, same style, light and 3/4 top-down angle as the attached ground painting, separate pieces with at least 24 px magenta gap, no ground shadow.
+Trees (each about 2 tiles wide, 3 tiles tall incl. crown): round leafy tree, sakura tree in full bloom, Japanese cedar, maple with autumn-red leaves, a small pine; bushes: round green bush, flowering azalea bush, hedge piece 2×1;
+town props (1×1 unless noted): street lamp, telegraph pole with wires stub, stone lantern, small shrine (hokora), torii gate 3×1, wooden bench 2×1, red post box, vending machine, bicycle 2×1, notice board 2×1, signpost, curved traffic mirror, flower pot, wooden barrel;
+forest props: mossy boulder, tree stump, fallen log 2×1, glowing mushrooms, small stone statue (jizō), old wooden signpost.
+Pure magenta #FF00FF background.
+```
+
+**Reihenfolge:** zuerst 4a (Ort), dann 4c (Bäume und Deko), danach 4b (Wald).
+
+---
+
 ## Später (Kapitel 2)
 
 Wenn das nächste Gebiet feststeht (Stadt, Bergdorf, Küste oder Uni-Viertel), schreibe ich dafür eigene Prompts:

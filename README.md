@@ -125,6 +125,10 @@ NPC placement is valid.
   cuts the town buildings (`bx_*`).
 - `art/sheets/hm_characters.webp` → `python3 tools/build_characters.py` (run after `extract_sheets.py`) replaces the
   player, six NPCs and the townsfolk with the matching Hinomori characters.
+- Rooms can also be painted as one picture (`painted=` in `tools/build_rooms.py`, e.g. the station): the picture is the
+  background, a tile grid gives the collision, and only free-standing furniture is separate.
+  `tools/layout_plan.mjs` + `tools/layout_plan.py` draw colour-coded map plans (`art/reference/layout_*.png`) as
+  layout references for painting outdoor ground the same way.
 - Remaining ground tiles are painted procedurally in `src/game/textures.ts`.
 - Any texture can be replaced by dropping a PNG with the same key into `public/assets/` without touching game logic.
 - `art/sheets/asset-pack.webp` and `overview.webp` are reference sheets (painted checkerboard background) for upcoming
