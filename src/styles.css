@@ -603,3 +603,17 @@ button, .opt, .jp-word.linked, .dialogue, .msgbox { cursor: url(../public/assets
 .map-pin.here { border-color: var(--sakura); box-shadow: 0 0 0 3px rgba(232, 135, 159, 0.5); }
 .map-me { position: absolute; left: 50%; bottom: 100%; transform: translateX(-50%); height: 40px; animation: bob 1.2s ease-in-out infinite; }
 @media (max-width: 720px) { .map-pin { font-size: 10px; padding: 0 4px; } }
+
+/* phones with notches / home indicator (app mode runs edge to edge) */
+.hud-top { top: calc(8px + env(safe-area-inset-top, 0px)); left: calc(8px + env(safe-area-inset-left, 0px)); right: calc(8px + env(safe-area-inset-right, 0px)); }
+.dialogue-wrap { padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+.battle-ui { padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
+@media (pointer: coarse) {
+  .touch { bottom: calc(14px + env(safe-area-inset-bottom, 0px)); padding-left: calc(16px + env(safe-area-inset-left, 0px)); padding-right: calc(16px + env(safe-area-inset-right, 0px)); }
+}
+
+/* portrait phones: story images fill more of the screen (crops the sides a little) */
+@media (orientation: portrait) {
+  .cg-img { width: 100%; height: 62vh; object-fit: cover; }
+  .cg-scene { justify-content: flex-start; padding-top: env(safe-area-inset-top, 0px); }
+}

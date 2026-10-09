@@ -124,6 +124,7 @@ export const TRACKS: Record<string, string> = {
   cafe: 'audio/cafe.mp3',
   home: 'audio/home.mp3',
   boss: 'audio/boss.mp3',
+  battle: 'audio/battle.mp3',
 };
 
 export const MAP_MUSIC: Record<string, string> = {

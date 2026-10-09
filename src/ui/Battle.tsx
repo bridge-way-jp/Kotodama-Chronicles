@@ -77,11 +77,10 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
   const [queue, setQueue] = useState<string[]>([]);
   const after = useRef<() => void>(() => setPhase({ k: 'menu' }));
   const [shake, setShake] = useState<'enemy' | 'me' | null>(null);
-  // boss fights get their own theme; the map music returns afterwards
+  // battle theme (boss fights get their own); the map music returns afterwards
   useEffect(() => {
-    if (!setup.boss) return;
     const prev = currentMusic();
-    playMusic('boss');
+    playMusic(setup.boss ? 'boss' : 'battle');
     return () => playMusic(prev || 'town');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
