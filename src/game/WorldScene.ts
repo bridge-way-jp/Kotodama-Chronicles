@@ -38,7 +38,7 @@ export const ASSET_KEYS = [
   'p_sign_nihon', 'p_banner', 'p_sign_small',
   ...Object.values(FOLK).flatMap((f) => DIR_NAMES.flatMap((d) => Array.from({ length: f.frames }, (_, i) => `folk_${f.sprite}_${d}_${i}`))),
   ...DECO_CATALOG, 'deco_certificate',
-  'em_alert', 'b_station', 'b_lab', 'b_apartment2', 'b_konbini2', 'b_ramen2', 'b_library2', 'p_hokora',
+  'em_alert', 'map_forest', 'map_town', 'b_station', 'b_lab', 'b_apartment2', 'b_konbini2', 'b_ramen2', 'b_library2', 'p_hokora',
   ...new Set(Object.values(TILE_IMAGES).flat().filter((k): k is string => !!k)),
   ...AUTOTILE_KEYS,
   ...DETAIL_KEYS,
@@ -187,7 +187,8 @@ export class WorldScene extends Phaser.Scene {
     this.layer.setScale(TILE / TEX);
     this.layer.setDepth(-10);
     if (!this.map.interior) {
-      this.placeScenery();
+      // painted outdoor maps already show trees, flowers and grass
+      if (!this.map.image) this.placeScenery();
       this.spawnButterflies();
     }
     if (this.map.image && this.textures.exists(this.map.image)) {

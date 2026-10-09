@@ -1,5 +1,6 @@
 import type { Cond } from '../core/script';
 import { ROOMS_GEN } from './rooms.gen';
+import { FOREST_GEN } from './forest.gen';
 import type { Dir } from '../core/types';
 
 /**
@@ -70,7 +71,7 @@ export interface MapDef {
 const TOWN = [
   'TTTTTTTTTTTTTTTTTTTT::TTTTTTTTTTT~~TTTTTTTTT',
   'TTT.................::........TTT~~T......TT',
-  'TT..................::.........TT~~.ZZZZZZZT',
+  'TT..................::.........TT~~........T',
   'T.JJJJJJ............::..,........~~........T',
   'T...................::.,.........~~........T',
   'T..............,....::......,....~~........T',
@@ -82,7 +83,7 @@ const TOWN = [
   'T================================bbxxxxxxxxT',
   'T================================bbxxxxxxxxT',
   'T...................::...........~~xxxxxxxxT',
-  'T...................::...........~~..YYYYYTT',
+  'T...................::...........~~.......TT',
   'T...................::..~~~~.....~~......TTT',
   'T...................::..~~~~.....~~..,....TT',
   'T...................::..~~~~,....~~.....,..T',
@@ -91,43 +92,15 @@ const TOWN = [
   'T...ppppppppppppppppppppppppppp..~~........T',
   'T...ppppppppppppppppppppppppppp..~~........T',
   'T...PPPPPPPPPPPPPPPPPPPPPPPPPPP..~~........T',
-  'Trrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr~~........T',
-  'Trrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr~~........T',
+  'Trrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr~~rrrrrrrrT',
+  'Trrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr~~rrrrrrrrT',
   'TT##############################T~~........T',
-  'TTT..""""""""..................TT~~.......TT',
-  'TTTT."""""""".................TTT~~TT.....TT',
+  'TTT............................TT~~.......TT',
+  'TTTT..........................TTT~~TT.....TT',
   'T................................~~........T',
   'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT~~TTTTTTTTT',
 ];
 
-const FOREST = [
-  'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
-  'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
-  'TT..........................TT',
-  'TT.""""""T..........T"."""..TT',
-  'TT.""."."T..........."""""".TT',
-  'TT.""""""..........T."""""".TT',
-  'TT.""."""...T.::...T..""""".TT',
-  'TT............::.....".""."TTT',
-  'TT..........:::"""""."".....TT',
-  'TT.""""".".T::."."""""..T...TT',
-  'TT."""""""..::."""""""......TT',
-  'TT."""""""..::..............TT',
-  'TT..""""""..::::::::T.....T.TT',
-  'TT."".""""..T...T.::""."""".TT',
-  'TT."."".""........::""."""".TT',
-  'TTKKKKKKKKKKKKKKKKHKKKKKKKKKTT',
-  'TT................::""""""".TT',
-  'TT....T...::::::::::""."".".TT',
-  'TT."""""".::................TT',
-  'TT."""""..::.....""""""~~~~.TT',
-  'TT."T"""".::.T.."""""""~~~~.TT',
-  'TT."""."".::::::"".."""~~~~.TT',
-  'TT."""""".....::.."""""~~~~.TT',
-  'TT............::.T..........TT',
-  'TTTTTTTTTTTTTT::TTTTTTTTTTTTTT',
-  'TTTTTTTTTTTTTT::TTTTTTTTTTTTTT',
-];
 
 
 
@@ -136,7 +109,7 @@ const FOREST = [
 
 export const MAPS: Record<string, MapDef> = {
   town: {
-    id: 'town', name: 'Hinomori Town', nameJa: '日野森町', tiles: TOWN,
+    id: 'town', name: 'Hinomori Town', nameJa: '日野森町', tiles: TOWN, image: 'map_town',
     wanderers: [
       { id: 'schoolgirl', x: 12, y: 11, r: 6 },
       { id: 'salaryman', x: 26, y: 12, r: 6 },
@@ -232,9 +205,9 @@ export const MAPS: Record<string, MapDef> = {
     ],
   },
   forest: {
-    id: 'forest', name: 'Midori Forest', nameJa: 'みどりの森', tiles: FOREST, encounters: 'forest', bg: 'bg_forest_clearing.webp',
+    id: 'forest', name: 'Midori Forest', nameJa: 'みどりの森', tiles: FOREST_GEN, image: 'map_forest', encounters: 'forest', bg: 'bg_forest_clearing.webp',
     objects: [
-      { id: 'forest_stone', sprite: 'p_hokora', x: 13, y: 3, w: 4, h: 2, interactAt: [{ x: 14, y: 4 }, { x: 15, y: 4 }] },
+      { id: 'forest_stone', sprite: 'p_hokora', x: 13, y: 2, w: 4, h: 2, interactAt: [{ x: 14, y: 4 }, { x: 15, y: 4 }] },
       { id: 'forest_sign2', sprite: 'p_signpost', x: 16, y: 22, w: 1, h: 1 },
     ],
     npcs: [],
