@@ -665,6 +665,134 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
     ],
     "image": "room2_library"
   },
+  "ramen": {
+    "tiles": [
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WccccccccfWW",
+      "WccccccccffW",
+      "WWfffffffffW",
+      "WWfffffffffW",
+      "WWfffffffffW",
+      "WWfffffffffW",
+      "WWWWWDDWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "ramen_stool1",
+        "sprite": "fu_ramen_stool1",
+        "x": 2,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "ramen_counter"
+      },
+      {
+        "id": "ramen_stool2",
+        "sprite": "fu_ramen_stool2",
+        "x": 4,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "ramen_counter"
+      },
+      {
+        "id": "ramen_stool3",
+        "sprite": "fu_ramen_stool3",
+        "x": 6,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "ramen_counter"
+      },
+      {
+        "id": "ramen_stool4",
+        "sprite": "fu_ramen_stool4",
+        "x": 3,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "ramen_table"
+      },
+      {
+        "id": "ramen_table",
+        "sprite": "fu_ramen_table",
+        "x": 4,
+        "y": 7,
+        "w": 2,
+        "h": 1,
+        "script": "ramen_table"
+      },
+      {
+        "id": "ramen_stool5",
+        "sprite": "fu_ramen_stool5",
+        "x": 6,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "ramen_table"
+      },
+      {
+        "id": "ramen_maneki",
+        "sprite": "fu_ramen_maneki",
+        "x": 10,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "ramen_maneki"
+      },
+      {
+        "id": "ramen_counter",
+        "x": 1,
+        "y": 3,
+        "w": 8,
+        "h": 2,
+        "script": "ramen_counter"
+      },
+      {
+        "id": "ramen_noren",
+        "x": 9,
+        "y": 2,
+        "w": 1,
+        "h": 1,
+        "script": "ramen_noren"
+      },
+      {
+        "id": "ramen_shelf",
+        "x": 10,
+        "y": 3,
+        "w": 1,
+        "h": 1,
+        "script": "ramen_shelf"
+      },
+      {
+        "id": "ramen_ticket",
+        "x": 1,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "ramen_ticket"
+      },
+      {
+        "id": "ramen_menu",
+        "x": 1,
+        "y": 5,
+        "w": 1,
+        "h": 2,
+        "script": "ramen_menu"
+      },
+      {
+        "id": "ramen_posters",
+        "x": 11,
+        "y": 5,
+        "w": 1,
+        "h": 4,
+        "script": "ramen_poster"
+      }
+    ],
+    "image": "room2_ramen"
+  },
   "lab": {
     "tiles": [
       "WWWWWWWWWWWWWW",

@@ -217,6 +217,29 @@ ROOMS = {
             ('magazines', 'library_furniture', 11, 11, 4, 1, 1, 'library_magazines', dict(tw=0.85)),
         ],
     ),
+    # painted as one picture (art/sheets/room_ramen_v2.webp); furniture from hm_ramen_furniture.webp
+    'ramen': dict(
+        size=(12, 10), painted='room_ramen_v2.webp', crop=(14, 12, 1361, 1106),
+        grid=['W' * 12] * 3 + ['W' + 'c' * 8 + 'fWW', 'W' + 'c' * 8 + 'ffW'] + ['WW' + 'f' * 9 + 'W'] * 4
+        + ['W' * 5 + 'DD' + 'W' * 5],
+        spots=[
+            ('counter', 1, 3, 8, 2, 'ramen_counter'),
+            ('noren', 9, 2, 1, 1, 'ramen_noren'),
+            ('shelf', 10, 3, 1, 1, 'ramen_shelf'),
+            ('ticket', 1, 7, 1, 1, 'ramen_ticket'),
+            ('menu', 1, 5, 1, 2, 'ramen_menu'),
+            ('posters', 11, 5, 1, 4, 'ramen_poster'),
+        ],
+        furniture=[
+            ('stool1', 'ramen_furniture', 1, 2, 5, 1, 1, 'ramen_counter', dict(tw=0.6)),
+            ('stool2', 'ramen_furniture', 1, 4, 5, 1, 1, 'ramen_counter', dict(tw=0.6)),
+            ('stool3', 'ramen_furniture', 1, 6, 5, 1, 1, 'ramen_counter', dict(tw=0.6)),
+            ('stool4', 'ramen_furniture', 2, 3, 7, 1, 1, 'ramen_table', dict(tw=0.6)),
+            ('table', 'ramen_furniture', 0, 4, 7, 2, 1, 'ramen_table', dict(tw=2.0)),
+            ('stool5', 'ramen_furniture', 2, 6, 7, 1, 1, 'ramen_table', dict(tw=0.6)),
+            ('maneki', 'ramen_furniture', 4, 10, 8, 1, 1, 'ramen_maneki', dict(tw=0.75)),
+        ],
+    ),
     # painted as one picture (art/sheets/room_lab_v2.webp); furniture from hm_lab_furniture.webp
     'lab': dict(
         size=(14, 11), painted='room_lab_v2.webp', crop=(40, 41, 1374, 1028),

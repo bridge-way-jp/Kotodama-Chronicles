@@ -145,7 +145,6 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'cat', x: 14, y: 14, r: 4 },
       { id: 'dog', x: 38, y: 16, r: 3 },
       { id: 'miko', x: 8, y: 6, r: 2 },
-      { id: 'chef', x: 14, y: 17, r: 2 },
       { id: 'gardener', x: 11, y: 17, r: 2 },
       { id: 'kid', x: 16, y: 12, r: 5 },
       { id: 'student', x: 8, y: 11, r: 4 },
@@ -213,6 +212,11 @@ export const MAPS: Record<string, MapDef> = {
         x: 39, y: 9, to: { map: 'lab', x: 6, y: 9, facing: 'up' },
         when: { questDone: 'mq4' },
         locked: 'ドアには鍵がかかっている。中は暗くて、何も見えない。',
+      },
+      {
+        x: 16, y: 16, to: { map: 'ramen', x: 5, y: 8, facing: 'up' },
+        when: { questDone: 'mq2' },
+        locked: 'ラーメン屋「まんぷく」の張り紙：「本日は臨時休業いたします。ご迷惑をおかけして申し訳ございません。」',
       },
       { x: 27, y: 19, to: { map: 'station', x: 10, y: 13, facing: 'up' } },
       {
@@ -284,6 +288,14 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'customer', x: 7, y: 6, facing: 'left', when: { notObj: 'mq2.customer' } },
     ],
     warps: [6, 7, 8].map((x) => ({ x, y: 11, to: { map: 'town', x: 17, y: 10, facing: 'down' as const } })),
+  },
+
+  ramen: {
+    id: 'ramen', name: 'Ramen Manpuku', nameJa: 'ラーメン まんぷく', tiles: ROOMS_GEN.ramen.tiles, interior: true, image: ROOMS_GEN.ramen.image,
+    objects: ROOMS_GEN.ramen.objects,
+    wanderers: [{ id: 'chef', x: 9, y: 3, r: 1 }],
+    npcs: [],
+    warps: [5, 6].map((x) => ({ x, y: 9, to: { map: 'town', x: 16, y: 17, facing: 'down' as const } })),
   },
 
   lab: {
