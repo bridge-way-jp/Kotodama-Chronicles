@@ -400,7 +400,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       steps: [
         n('境内の桜の下で、ピンク色の言霊がこちらを見ている……！', 'Under the cherry tree, a pink Kotodama is watching you…!'),
         { do: [{ flag: 'sakurako_met' }, { seen: 'sakurako' }] },
-        { battle: { species: 'sakurako', level: 6, recruitable: true, bg: 'bg_bridge' } },
+        { battle: { species: 'sakurako', level: 6, recruitable: true, bg: 'bg_shrine_night.webp' } },
       ],
     },
     { steps: [n('日野森神社。静かで、心が落ち着く。', 'Hinomori Shrine. Quiet and calming.')] },
@@ -554,7 +554,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         { reading: 'r_forest_stone' },
         { cg: 'cg_shrine', say: '石碑が光った！ 祠の影から、黒い猫のような言霊が飛び出してきた！', en: 'The stone glows! A black, cat-like Kotodama leaps out of the shrine’s shadow!' },
         {
-          battle: { species: 'kurone', level: 6, boss: true, bg: 'bg_forest' },
+          battle: { species: 'kurone', level: 6, boss: true, bg: 'bg_shrine_night.webp' },
           win: [
             n('クロネは研究所の方角へ走り去った……。祠の前に、光る欠片が落ちている。', 'Kurone ran off towards the research facility… A glowing fragment lies in front of the shrine.'),
             { do: [{ give: 'kakera' }, { objective: 'mq5.stone' }, { objective: 'mq5.befriend' }, { seen: 'kurone' }] },
@@ -610,4 +610,18 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   station_ticket: [{ steps: [n('切符の{券売機|けんばいき}だ。画面に「ただいま発売を停止しております」と表示されている。', 'A ticket machine. The screen says “Ticket sales are currently suspended.”')] }],
   station_map: [{ steps: [n('この地方の地図だ。日野森の先に、大きな街や山の村、海の町が描かれている。いつか行ってみたい。', 'A map of the region. Beyond Hinomori are a big city, a mountain village and a coastal town. Someday…')] }],
   station_stove: [{ steps: [n('古いだるまストーブだ。冬にはここで、みんな電車を待つのだろう。', 'An old pot-belly stove. In winter, people must wait for trains here.')] }],
+  kitchen: [{ steps: [n('小さなキッチンだ。一人分の料理なら、ここで十分作れる。', 'A small kitchen. Enough to cook for one.')] }],
+  kotatsu: [
+    {
+      steps: [
+        n('畳の上の低いテーブルだ。座ってお茶を飲みながら、日本語の本を読むのにちょうどいい。', 'A low table on the tatami. Perfect for reading a Japanese book over tea.'),
+        {
+          choice: [
+            { text: '少し復習する', en: 'Do a short review', then: [{ do: [{ open: 'review' }] }] },
+            { text: 'やめる', en: 'Leave' },
+          ],
+        },
+      ],
+    },
+  ],
 };

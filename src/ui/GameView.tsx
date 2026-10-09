@@ -149,7 +149,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
                     healTeam(s);
                     runAction(s, { time: 'morning' });
                   }, 'battle');
-                  bus.emit('warp', { map: 'apartment', x: 2, y: 3, facing: 'down' });
+                  bus.emit('warp', { map: 'apartment', x: 4, y: 4, facing: 'down' });
                   push({
                     kind: 'script',
                     steps: [{ say: '……気がつくと、自分の部屋にいた。言霊たちも、ぐっすり休んで元気になったようだ。', en: '…You wake up in your room. Your Kotodama have rested and recovered.' }],

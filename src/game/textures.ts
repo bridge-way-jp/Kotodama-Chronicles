@@ -182,16 +182,56 @@ export const TILE_CHARS = Object.keys(painters);
 /** animated tiles: char -> extra frame index */
 export const ANIMATED = ['~', '"'];
 
-/** Builds the tileset canvas: one column per tile char, second row = animation frame. */
-export function buildTileset(): { canvas: HTMLCanvasElement; index: Record<string, number> } {
+/** Hand-drawn terrain tiles (public/assets/tile_*.png, 64×64) used instead of the procedural painters. */
+export const TILE_IMAGES: Record<string, [string, string?]> = {
+  '.': ['tile_grass'],
+  ',': ['tile_grass'], // flowers are drawn as small sprites on top
+  '"': ['tile_tallgrass'],
+  ':': ['tile_dirt'],
+  '=': ['tile_street'],
+  '~': ['tile_water0', 'tile_water1'],
+  b: ['tile_bridge'],
+  r: ['tile_rail'],
+  p: ['tile_platform'],
+  P: ['tile_platform_edge'],
+  x: ['tile_concrete'],
+  X: ['tile_concrete'],
+  T: ['tile_grass'], // trees are drawn as sprites on top
+  '#': ['tile_grass'], // fences are drawn as sprites on top
+  S: ['tile_dirt'],
+};
+
+/** texture resolution of one tile; the layer is scaled down to TILE world px so the art keeps its detail */
+export const TEX = 64;
+
+/**
+ * Builds the tileset canvas: one column per tile char, second row = animation frame.
+ * `image(key)` returns a loaded texture source, or undefined to fall back to the procedural painter.
+ */
+export function buildTileset(image: (key: string) => CanvasImageSource | undefined): { canvas: HTMLCanvasElement; index: Record<string, number> } {
   const canvas = document.createElement('canvas');
-  canvas.width = TILE * TILE_CHARS.length;
-  canvas.height = TILE * 2;
+  canvas.width = TEX * TILE_CHARS.length;
+  canvas.height = TEX * 2;
   const ctx = canvas.getContext('2d')!;
+  ctx.imageSmoothingEnabled = false;
+  const scratch = document.createElement('canvas');
+  scratch.width = TILE;
+  scratch.height = TILE;
+  const sctx = scratch.getContext('2d')!;
   const index: Record<string, number> = {};
   TILE_CHARS.forEach((ch, i) => {
     index[ch] = i;
-    for (let f = 0; f < 2; f++) painters[ch](new Pix(ctx, i * TILE, f * TILE, 1234 + i * 97), f);
+    for (let f = 0; f < 2; f++) {
+      const keys = TILE_IMAGES[ch];
+      const src = keys ? image((f && keys[1]) || keys[0]) : undefined;
+      if (src) {
+        ctx.drawImage(src, i * TEX, f * TEX, TEX, TEX);
+      } else {
+        sctx.clearRect(0, 0, TILE, TILE);
+        painters[ch](new Pix(sctx, 0, 0, 1234 + i * 97), f);
+        ctx.drawImage(scratch, i * TEX, f * TEX, TEX, TEX);
+      }
+    }
   });
   return { canvas, index };
 }

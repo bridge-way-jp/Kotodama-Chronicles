@@ -290,7 +290,103 @@ def station_building():
     save(out, 'b_station')
 
 
+TERRAIN = ['grass', 'flowers', 'tallgrass', 'dirt', 'street', 'plaza', 'water0', 'water1', 'bridge', 'rail', 'platform_edge', 'concrete']
+ORGANIC = {'grass', 'flowers', 'tallgrass', 'dirt', 'water0', 'water1', 'concrete'}
+TEX = 64  # tile texture size; shown at 32 world px so the art keeps its detail at zoom 2
+
+
+def make_seamless(arr, band=18):
+    """Blend the tile with a half-offset copy so opposite edges match (removes visible seams)."""
+    h, w = arr.shape[:2]
+    rolled = np.roll(np.roll(arr, h // 2, 0), w // 2, 1)
+    yy, xx = np.mgrid[0:h, 0:w]
+    d = np.minimum(np.minimum(xx, w - 1 - xx), np.minimum(yy, h - 1 - yy)).astype(np.float32)
+    m = np.clip(d / band, 0, 1)[..., None]
+    return (arr * m + rolled * (1 - m)).astype(np.uint8)
+
+
+def terrain():
+    img = Image.open(os.path.join(SHEETS, 'terrain.webp')).convert('RGB')
+    a = load('terrain.webp')
+    fg = ndimage.binary_opening(~magenta_mask(a))
+    boxes = sorted(components(fg, min_area=3000, dilate=2), key=lambda b: (b[1] // 200, b[0]))
+    assert len(boxes) == 12, len(boxes)
+    for name, (x0, y0, x1, y1) in zip(TERRAIN, boxes):
+        crop = img.crop((x0 + 4, y0 + 4, x1 - 4, y1 - 4))
+        if name == 'bridge':
+            crop = crop.rotate(90, expand=True)  # planks run across a river crossed east-west
+        t = np.array(crop.resize((TEX, TEX), Image.BOX))
+        if name in ORGANIC:
+            t = make_seamless(t)
+        Image.fromarray(t).save(os.path.join(OUT, f'tile_{name}.png'))
+        if name == 'platform_edge':
+            # plain platform: the paving above the tactile strip
+            top = crop.crop((0, 0, crop.width, int(crop.height * 0.48))).resize((TEX, TEX), Image.BOX)
+            top.save(os.path.join(OUT, 'tile_platform.png'))
+
+
+NATURE = [('tree_round', 74), ('tree_cedar', 86), ('tree_sakura', 74), ('bush', 30), ('bush_flowers', 26),
+          ('rock', 26), ('fence', 18), ('fence_post', 18), ('lantern', 40)]
+
+
+def nature_props():
+    a = load('nature-props.webp')
+    fg = ndimage.binary_opening(~magenta_mask(a))
+    boxes = sorted(components(fg, min_area=3000, dilate=2), key=lambda b: (b[1] // 300, b[0]))
+    assert len(boxes) == 9, len(boxes)
+    for (name, h), b in zip(NATURE, boxes):
+        save(crop_sprite(a, fg, b, h), 'n_' + name)
+
+
+INTERIORS2 = [('room_apartment', 12, 12), ('room_cafe', 13, 12)]
+
+
+def interiors2():
+    a = load('interiors2.webp')
+    fg = ndimage.binary_opening(~magenta_mask(a))
+    boxes = sorted(components(fg, min_area=50000), key=lambda b: b[0])
+    assert len(boxes) == 2
+    for (name, tw, th), (x0, y0, x1, y1) in zip(INTERIORS2, boxes):
+        img = to_rgba(a[y0:y1, x0:x1], fg[y0:y1, x0:x1]).resize((tw * 32, th * 32), Image.LANCZOS)
+        arr = np.array(img)
+        arr[:, :, 3] = np.where(arr[:, :, 3] > 128, 255, 0)
+        Image.fromarray(arr).save(os.path.join(OUT, name + '.png'))
+
+
+def landmarks():
+    a = load('landmarks.webp')
+    fg = ndimage.binary_opening(~magenta_mask(a))
+    boxes = sorted(components(fg, min_area=50000), key=lambda b: b[0])
+    assert len(boxes) == 2
+    for (name, width), (x0, y0, x1, y1) in zip([('b_lab', 7 * 32), ('p_hokora', 4 * 32)], boxes):
+        img = trim(to_rgba(a[y0:y1, x0:x1], fg[y0:y1, x0:x1]))
+        save(resize_px(img, round(img.height * width / img.width)), name)
+
+
+BATTLE_BGS = ['bg_forest_clearing', 'bg_town_sunset', 'bg_shrine_night']
+
+
+def battle_bgs():
+    img = Image.open(os.path.join(SHEETS, 'battle-bgs.webp')).convert('RGB')
+    a = np.array(img).astype(np.int32)
+    rw = (a.min(2) > 235).mean(1)
+    cuts = [y for y in range(a.shape[0]) if rw[y] > 0.85]
+    bands, prev = [], 0
+    for y in cuts + [a.shape[0]]:
+        if y - prev > 50:
+            bands.append((prev, y))
+        prev = y + 1
+    assert len(bands) == 3, bands
+    for name, (y0, y1) in zip(BATTLE_BGS, bands):
+        img.crop((0, y0 + 1, img.width, y1 - 1)).save(os.path.join(OUT, name + '.webp'), quality=88)
+
+
 if __name__ == '__main__':
+    terrain()
+    nature_props()
+    interiors2()
+    landmarks()
+    battle_bgs()
     station_building()
     items()
     creature_lines()

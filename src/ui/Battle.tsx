@@ -235,7 +235,7 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
 
   return (
     <div className="battle">
-      <div className="arena" style={{ backgroundImage: `url(assets/${setup.bg ?? 'bg_forest'}.png)` }}>
+      <div className="arena" style={{ backgroundImage: `url(assets/${bgFile(setup.bg)})` }}>
         <div className="arena-shade" />
         <InfoBox c={enemy} max={enemyMax} />
         <img className={`px enemy-sprite ${shake === 'enemy' ? 'shake' : ''} ${enemy.hp <= 0 ? 'fade' : ''}`} src={`assets/${esp.sprite}.png`} alt={esp.name} />
@@ -376,6 +376,11 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
       </div>
     </div>
   );
+}
+
+function bgFile(bg?: string) {
+  const name = bg ?? 'bg_forest_clearing.webp';
+  return name.includes('.') ? name : `${name}.png`;
 }
 
 function pickTalk(speciesId: string): Question {

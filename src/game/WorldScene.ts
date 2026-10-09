@@ -6,7 +6,7 @@ import { check } from '../core/script';
 import { store } from '../core/store';
 import { bus } from '../core/events';
 import type { Dir } from '../core/types';
-import { ANIMATED, TILE, buildProps, buildTileset } from './textures';
+import { ANIMATED, TEX, TILE, TILE_IMAGES, buildProps, buildTileset } from './textures';
 import { input } from './input';
 
 const DIR_NAMES = ['down', 'left', 'right', 'up'];
@@ -21,7 +21,9 @@ export const ASSET_KEYS = [
   'b_inn', 'b_house_blue', 'b_house_trad', 'b_konbini', 'b_shop_red', 'b_bridge',
   'p_sakura', 'p_shrine', 'p_pond', 'p_garden', 'p_lamp', 'p_signpost', 'p_board', 'p_board2', 'p_mailbox',
   'p_sign_nihon', 'p_banner', 'p_sign_small',
-  'room_konbini', 'room_library', 'room_station', 'b_station',
+  'room_konbini', 'room_library', 'room_station', 'room_apartment', 'room_cafe', 'b_station', 'b_lab', 'p_hokora',
+  ...new Set(Object.values(TILE_IMAGES).flat().filter((k): k is string => !!k)),
+  'n_tree_round', 'n_tree_cedar', 'n_tree_sakura', 'n_bush', 'n_bush_flowers', 'n_rock', 'n_fence', 'n_fence_post', 'n_lantern',
 ];
 
 const DIRS: Record<Dir, [number, number]> = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
@@ -69,7 +71,9 @@ export class WorldScene extends Phaser.Scene {
     this.objects = [];
     this.tint = undefined;
     if (!this.textures.exists('tiles')) {
-      const { canvas, index } = buildTileset();
+      const { canvas, index } = buildTileset((key) =>
+        this.textures.exists(key) ? (this.textures.get(key).getSourceImage() as CanvasImageSource) : undefined,
+      );
       this.textures.addCanvas('tiles', canvas);
       this.tileIndex = index;
       this.registry.set('tileIndex', index);
@@ -126,10 +130,12 @@ export class WorldScene extends Phaser.Scene {
   buildMap() {
     const rows = this.map.tiles;
     const data = rows.map((r) => [...r].map((ch) => this.tileIndex[ch] ?? this.tileIndex['.']));
-    const tm = this.make.tilemap({ data, tileWidth: TILE, tileHeight: TILE });
-    const ts = tm.addTilesetImage('tiles', 'tiles', TILE, TILE, 0, 0)!;
+    const tm = this.make.tilemap({ data, tileWidth: TEX, tileHeight: TEX });
+    const ts = tm.addTilesetImage('tiles', 'tiles', TEX, TEX, 0, 0)!;
     this.layer = tm.createLayer(0, ts, 0, 0)!;
+    this.layer.setScale(TILE / TEX);
     this.layer.setDepth(-10);
+    if (!this.map.interior) this.placeScenery();
     if (this.map.image && this.textures.exists(this.map.image)) {
       // pre-drawn room: the tile layer only provides collision
       this.layer.setVisible(false);
@@ -176,6 +182,33 @@ export class WorldScene extends Phaser.Scene {
         .rectangle(0, 0, rows[0].length * TILE, rows.length * TILE, 0x30205a, 0.28)
         .setOrigin(0)
         .setDepth(100000);
+    }
+  }
+
+  /** Trees on 'T' tiles, fences on '#', and a little undergrowth in the forest. */
+  placeScenery() {
+    const rows = this.map.tiles;
+    const hash = (x: number, y: number) => (((x * 73856093) ^ (y * 19349663)) >>> 0) % 1000 / 1000;
+    const forest = this.map.id === 'forest';
+    for (let y = 0; y < rows.length; y++) {
+      for (let x = 0; x < rows[y].length; x++) {
+        const ch = rows[y][x];
+        const r = hash(x, y);
+        const px = x * TILE + TILE / 2;
+        const py = y * TILE + TILE;
+        if (ch === 'T') {
+          const key = forest ? (r < 0.5 ? 'n_tree_cedar' : 'n_tree_round') : r < 0.12 ? 'n_tree_sakura' : 'n_tree_round';
+          if (!this.textures.exists(key)) continue;
+          this.add.image(px + Math.round((r - 0.5) * 8), py + 2, key).setOrigin(0.5, 1).setDepth(py);
+        } else if (ch === ',' && this.textures.exists('n_bush_flowers')) {
+          this.add.image(px + Math.round((r - 0.5) * 10), py - 6, 'n_bush_flowers').setOrigin(0.5, 1).setScale(0.55).setDepth(-5);
+        } else if (ch === '#' && this.textures.exists('n_fence')) {
+          this.add.image(px, py - 4, 'n_fence').setOrigin(0.5, 1).setDepth(py - 4);
+        } else if (forest && ch === '.' && r > 0.93) {
+          const key = r > 0.98 ? 'n_rock' : r > 0.955 ? 'n_bush_flowers' : 'n_bush';
+          if (this.textures.exists(key)) this.add.image(px, py - 2, key).setOrigin(0.5, 1).setDepth(py - 2).setScale(0.8);
+        }
+      }
     }
   }
 
@@ -351,8 +384,10 @@ export class WorldScene extends Phaser.Scene {
     const [dx, dy] = DIRS[this.facing];
     let tx = this.px + dx;
     let ty = this.py + dy;
-    // talk across counters
-    if (this.tileAt(tx, ty) === 'c') {
+    const fx = tx;
+    const fy = ty;
+    // talk across counters (up to two tiles deep)
+    for (let i = 0; i < 2 && this.tileAt(tx, ty) === 'c' && !this.npcAt(tx, ty); i++) {
       tx += dx;
       ty += dy;
     }
@@ -363,7 +398,7 @@ export class WorldScene extends Phaser.Scene {
       bus.emit('interact', { id: npc.id, kind: 'npc' });
       return;
     }
-    const obj = this.objectAt(tx, ty, true) ?? this.objectAt(tx, ty);
+    const obj = this.objectAt(fx, fy, true) ?? this.objectAt(fx, fy) ?? this.objectAt(tx, ty, true) ?? this.objectAt(tx, ty);
     if (obj) bus.emit('interact', { id: obj.script ?? obj.id, kind: 'object' });
   }
 
