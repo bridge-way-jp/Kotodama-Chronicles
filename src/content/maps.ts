@@ -143,7 +143,7 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'old_board', sprite: 'p_board2', x: 13, y: 20, w: 2, h: 1 },
       { id: 'timetable', sprite: 'p_sign_nihon', x: 24, y: 20, w: 1, h: 1 },
       { id: 'forest_sign', sprite: 'p_sign_small', x: 22, y: 2, w: 1, h: 1 },
-      { id: 'lab', sprite: 'b_lab', x: 36, y: 5, w: 7, h: 5, script: 'lab_door' },
+      { id: 'lab', sprite: 'bx_lab', x: 36, y: 5, w: 7, h: 5, script: 'lab_door' },
       { id: 'lab_sign', sprite: 'p_board', x: 36, y: 10, w: 1, h: 1 },
       // street furniture
       { id: 'vending', sprite: 'tp_vending', x: 14, y: 9, w: 1, h: 1 },

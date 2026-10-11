@@ -13,8 +13,9 @@ import numpy as np
 from PIL import Image
 
 sys.path.insert(0, os.path.dirname(__file__))
-from build_rooms import piece, sheet  # noqa: E402
-from extract_sheets import OUT, resize_px  # noqa: E402
+from build_rooms import piece, sheet, strict_bg  # noqa: E402
+from scipy import ndimage  # noqa: E402
+from extract_sheets import OUT, load, resize_px, to_rgba, trim  # noqa: E402
 
 # name: (index on the sheet, width in game px)
 BUILDINGS = {
@@ -47,6 +48,20 @@ def neutral_konbini(img):
     return Image.fromarray(a.astype(np.uint8), 'RGBA')
 
 
+def lab(width=224):
+    """Dr. Kirishima's lab: a sheet with just this building (pieces touch, so take everything)."""
+    a = load('hm_lab_exterior.webp')
+    sub = a
+    m = ~strict_bg(sub)
+    m = ndimage.binary_opening(m, iterations=1)
+    pinkish = (sub[:, :, 0] - sub[:, :, 1] > 50) & (sub[:, :, 2] - sub[:, :, 1] > 50)
+    m &= ~pinkish  # magenta between the bicycle spokes
+    img = trim(to_rgba(sub, m))
+    img = resize_px(img, round(img.height * width / img.width))
+    img.save(os.path.join(OUT, 'bx_lab.png'))
+    print('bx_lab', img.size)
+
+
 def main():
     sheet('exterior')
     for name, (idx, width) in BUILDINGS.items():
@@ -60,3 +75,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    lab()

@@ -205,7 +205,13 @@ REDRAWN = {
                            [('npc', 'haruto'), ('npc', 'aoi'), ('npc', 'sato')]],
     'hm_chars_more.webp': [[('npc', 'kirishima'), ('npc', 'station_staff'), ('npc', 'customer')],
                            [('folk', 'schoolgirl'), ('folk', 'salaryman'), ('folk', 'delivery')]],
+    'hm_chars_town.webp': [[('folk', 'miko'), ('folk', 'chef'), ('folk', 'gardener')],
+                           [('folk', 'kid'), ('folk', 'student')]],
 }
+
+
+CHILDREN = {'kid'}
+CHILD_HEIGHT = 38
 
 
 def split_n(v, n):
@@ -248,7 +254,8 @@ def redrawn_sheet(name, layout):
             rows = split_n(prof, n)
             imgs = [cut(a, fg, (cx0, y0 + ry0, cx1, y0 + ry1)) for ry0, ry1 in rows for cx0, cx1 in gx]
             tallest = max(i.height for i in imgs)
-            scaled = [resize_px(i, max(8, round(i.height * HEIGHT / tallest))) for i in imgs]
+            h = CHILD_HEIGHT if who in CHILDREN else HEIGHT
+            scaled = [resize_px(i, max(8, round(i.height * h / tallest))) for i in imgs]
             dirs = ['down', 'left', 'right', 'up'] if n == 4 else ['down', 'left', 'up']
             f = {d: scaled[k * 4:(k + 1) * 4] for k, d in enumerate(dirs)}
             if n == 3:
