@@ -1,6 +1,7 @@
 import type { Cond } from '../core/script';
 import { ROOMS_GEN } from './rooms.gen';
 import { FOREST_GEN } from './forest.gen';
+import { VALLEY_GEN } from './valley.gen';
 import type { Dir } from '../core/types';
 
 /**
@@ -214,6 +215,27 @@ export const MAPS: Record<string, MapDef> = {
       { x: 14, y: 25, to: { map: 'town', x: 20, y: 1, facing: 'down' } },
       { x: 15, y: 25, to: { map: 'town', x: 21, y: 1, facing: 'down' } },
     ],
+  },
+  valley: {
+    id: 'valley', name: 'Hinomori Valley', nameJa: '日野森の谷', tiles: VALLEY_GEN, image: 'map_valley', encounters: 'valley', bg: 'bg_valley_orchard.webp',
+    // footprints match tools/build_valley.py BUILDINGS
+    objects: [
+      { id: 'valley_farmhouse', sprite: 'bx_farmhouse', x: 4, y: 4, w: 5, h: 2 },
+      { id: 'valley_winery', sprite: 'bx_winery', x: 22, y: 13, w: 4, h: 2 },
+      { id: 'valley_stand', sprite: 'bx_stand', x: 15, y: 19, w: 3, h: 1 },
+      { id: 'valley_workshop', sprite: 'bx_workshop', x: 16, y: 14, w: 3, h: 1 },
+      { id: 'valley_busstop', sprite: 'bx_busstop', x: 22, y: 19, w: 3, h: 1, interactAt: [{ x: 22, y: 20 }, { x: 23, y: 20 }, { x: 24, y: 20 }, { x: 21, y: 19 }] },
+      { id: 'valley_ryokan', sprite: 'bx_ryokan', x: 29, y: 13, w: 7, h: 2 },
+    ],
+    npcs: [
+      { id: 'hayashi', x: 7, y: 6, facing: 'down' },
+      { id: 'sakura_hayashi', x: 24, y: 3, facing: 'right' },
+      { id: 'okami', x: 32, y: 15, facing: 'down' },
+      { id: 'kenji', x: 24, y: 15, facing: 'down' },
+      { id: 'ota', x: 17, y: 15, facing: 'down' },
+      { id: 'busdriver', x: 23, y: 21, facing: 'up' },
+    ],
+    warps: [19, 20, 21].map((x) => ({ x, y: 27, to: { map: 'town', x: 27, y: 20, facing: 'down' as const } })),
   },
   apartment: {
     id: 'apartment', name: 'Your apartment', nameJa: 'アパート', tiles: ROOMS_GEN.apartment.tiles, interior: true, image: ROOMS_GEN.apartment.image,

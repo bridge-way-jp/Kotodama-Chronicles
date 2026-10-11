@@ -40,6 +40,8 @@ export const MOVES: Record<string, Move> = {
   ripple_read: { id: 'ripple_read', name: 'よみのさざなみ', nameEn: 'Reading Ripple', power: 15, area: 'kanji', affinity: 'water' },
   sky_verse: { id: 'sky_verse', name: 'そらのうた', nameEn: 'Sky Verse', power: 20, area: 'listening', affinity: 'wind' },
   shadow_kanji: { id: 'shadow_kanji', name: 'かげの漢字', nameEn: 'Shadow Kanji', power: 18, area: 'kanji', affinity: 'knowledge' },
+  petal_dance: { id: 'petal_dance', name: 'ももの花まい', nameEn: 'Peach Petal Dance', power: 17, area: 'vocab', affinity: 'nature' },
+  steam_veil: { id: 'steam_veil', name: 'ゆけむり', nameEn: 'Steam Veil', power: 16, area: 'listening', affinity: 'water' },
   bloom_bond: { id: 'bloom_bond', name: 'はなのきずな', nameEn: 'Blossom Bond', power: 16, area: 'grammar', affinity: 'memory' },
 };
 
@@ -209,6 +211,73 @@ export const SPECIES: Record<string, Species> = {
     ability: { id: 'highlight', name: 'ひかりの筆', desc: 'Highlights the grammar structure in a question.' },
     talk: [],
   },
+  // ---- Hinomori valley (chapter 2)
+  momotan: {
+    id: 'momotan', name: 'モモタン', nameEn: 'Momotan', sprite: 'k_peach1', affinity: 'nature', baseHp: 30, baseAtk: 10,
+    desc: '「おいしい」と言われた{桃|もも}から生まれた。{甘|あま}いにおいがする。',
+    descEn: 'Born from a peach someone called delicious. It smells sweet.',
+    personality: 'cheerful, greedy',
+    moves: ['petal_dance', 'leaf_whisper'],
+    evolvesTo: { species: 'momoriss', level: 12 },
+    ability: { id: 'eliminate', name: 'えだわけ', desc: 'Removes one wrong answer.' },
+    talk: [
+      talk('この桃、食べてもいい？　……だめ？　ちょっとだけでもいいから！', 'Can I eat this peach? …No? Even just a little!',
+        ['じゃあ、半分こしよう。', '桃は果物ではありません。', 'ちょっとだけ食べたことがある。'],
+        'でもいいから = “even (just) that is fine” — it begs; sharing half is the friendly answer.'),
+    ],
+  },
+  momoriss: {
+    id: 'momoriss', name: 'モモリス', nameEn: 'Momoriss', sprite: 'k_peach2', affinity: 'nature', baseHp: 40, baseAtk: 13,
+    desc: '花の{尾|お}をふると、{果樹園|かじゅえん}の実が{熟|じゅく}すという。',
+    descEn: 'They say the orchard’s fruit ripens when it waves its blossom tail.',
+    personality: 'playful',
+    moves: ['petal_dance', 'root_grammar'],
+    evolvesTo: { species: 'tougenkyo', level: 20 },
+    ability: { id: 'eliminate', name: 'えだわけ', desc: 'Removes one wrong answer.' },
+    talk: [],
+  },
+  tougenkyo: {
+    id: 'tougenkyo', name: 'トウゲンキョウ', nameEn: 'Tougenkyō', sprite: 'k_peach3', affinity: 'nature', baseHp: 54, baseAtk: 17,
+    desc: '{桃源郷|とうげんきょう}の名を持つ{狐|きつね}。光る花びらは、大切な人の言葉を運ぶ。',
+    descEn: 'A fox named after the land of peach blossoms. Its glowing petals carry the words of loved ones.',
+    personality: 'graceful, kind',
+    moves: ['petal_dance', 'bloom_bond'],
+    ability: { id: 'eliminate', name: 'えだわけ', desc: 'Removes one wrong answer.' },
+    talk: [],
+  },
+  yukemuri: {
+    id: 'yukemuri', name: 'ユケムリ', nameEn: 'Yukemuri', sprite: 'k_steam1', affinity: 'water', baseHp: 28, baseAtk: 10,
+    desc: '{温泉|おんせん}で「ああ、いい{湯|ゆ}だ」とつぶやいた声から生まれた。',
+    descEn: 'Born from someone sighing “ah, what a nice bath” in a hot spring.',
+    personality: 'sleepy, easygoing',
+    moves: ['steam_veil', 'ripple_read'],
+    evolvesTo: { species: 'yukawauso', level: 12 },
+    ability: { id: 'replay', name: 'こだま', desc: 'Replays listening audio at slower speed.' },
+    talk: [
+      talk('お湯につかったとたん、ねむくなっちゃった……。', 'The moment I got into the hot water, I got sleepy…',
+        ['気持ちよかったんだね。少し休もう。', 'まだ温泉に入っていないんだね。', 'ねむくなるまで走ろう。'],
+        'たとたん = “the moment (it happened)”: it already got in and immediately got sleepy.'),
+    ],
+  },
+  yukawauso: {
+    id: 'yukawauso', name: 'ユカワウソ', nameEn: 'Yukawauso', sprite: 'k_steam2', affinity: 'water', baseHp: 38, baseAtk: 13,
+    desc: '{手|て}ぬぐいを{頭|あたま}にのせた{川|かわ}うそ。{湯加減|ゆかげん}にはうるさい。',
+    descEn: 'An otter with a towel on its head. Very particular about the water temperature.',
+    personality: 'fussy, friendly',
+    moves: ['steam_veil', 'ripple_read'],
+    evolvesTo: { species: 'yudatsu', level: 20 },
+    ability: { id: 'replay', name: 'こだま', desc: 'Replays listening audio at slower speed.' },
+    talk: [],
+  },
+  yudatsu: {
+    id: 'yudatsu', name: 'ユダツ', nameEn: 'Yudatsu', sprite: 'k_steam3', affinity: 'water', baseHp: 52, baseAtk: 17,
+    desc: '湯けむりのように{渦巻|うずま}く{竜|りゅう}。谷の{温泉|おんせん}を何百年も守ってきた。',
+    descEn: 'A dragon that curls like onsen steam. It has guarded the valley’s hot springs for centuries.',
+    personality: 'dignified, warm',
+    moves: ['steam_veil', 'sky_verse'],
+    ability: { id: 'replay', name: 'こだま', desc: 'Replays listening audio at slower speed.' },
+    talk: [],
+  },
 };
 
 export const ENCOUNTERS: Record<string, { species: string; min: number; max: number; weight: number }[]> = {
@@ -217,6 +286,12 @@ export const ENCOUNTERS: Record<string, { species: string; min: number; max: num
     { species: 'mebuki', min: 2, max: 4, weight: 4 },
     { species: 'homura', min: 3, max: 5, weight: 2 },
     { species: 'fuwari', min: 3, max: 5, weight: 2 },
+  ],
+  valley: [
+    { species: 'momotan', min: 6, max: 9, weight: 4 },
+    { species: 'yukemuri', min: 6, max: 9, weight: 4 },
+    { species: 'kotori', min: 6, max: 8, weight: 1 },
+    { species: 'fuwari', min: 6, max: 8, weight: 1 },
   ],
 };
 
@@ -250,6 +325,7 @@ export const DECO_CATALOG = ['deco_poster', 'deco_worldmap', 'deco_aquarium', 'd
 
 /** sprites that have idle_<sprite>_0/_1 frames */
 /** sprites with a 2-frame idle animation (tools/build_kotodama.py) */
-export const IDLE_SPRITES = ['k_fox_blue', 'k_fox_winged', 'k_bird1', 'k_bird2', 'k_bird3', 'k_leaf1', 'k_leaf2', 'k_leaf3', 'k_fire1', 'k_fire2', 'k_fire3', 'k_puff', 'k_fox_pink', 'k_cat_black'];
+export const IDLE_SPRITES = ['k_fox_blue', 'k_fox_winged', 'k_bird1', 'k_bird2', 'k_bird3', 'k_leaf1', 'k_leaf2', 'k_leaf3', 'k_fire1', 'k_fire2', 'k_fire3', 'k_puff', 'k_fox_pink', 'k_cat_black',
+  'k_peach1', 'k_peach2', 'k_peach3', 'k_steam1', 'k_steam2', 'k_steam3'];
 /** sprites with an action pose (atk_<key>.png), shown when the creature attacks */
 export const ATTACK_SPRITES = IDLE_SPRITES;

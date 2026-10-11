@@ -25,7 +25,7 @@ const DETAIL_KEYS = [
   'tp_pot_flower', 'tp_planter_y', 'tp_planter_p', 'tp_mirror', 'tp_sign', 'tp_trash', 'tp_barrel', 'tp_torii',
   'tile_bridge_n', 'tile_bridge_s',
 ];
-const NPC_SHEETS = ['mori', 'kaede', 'haruto', 'aoi', 'sato', 'kirishima', 'station_staff', 'customer'];
+const NPC_SHEETS = ['mori', 'kaede', 'haruto', 'aoi', 'sato', 'kirishima', 'station_staff', 'customer', 'hayashi', 'sakura', 'okami', 'kenji', 'ota', 'busdriver'];
 
 export const ASSET_KEYS = [
   // player walk cycle: hero_<dir>_<frame>, frames 0/2 standing, 1/3 stepping
@@ -45,6 +45,8 @@ export const ASSET_KEYS = [
   'n_tree_round', 'n_tree_cedar', 'n_tree_sakura', 'n_bush', 'n_bush_flowers', 'n_rock', 'n_fence', 'n_fence_post', 'n_lantern',
   // town buildings and rooms built from the Hinomori sheets (tools/build_exteriors.py, tools/build_rooms.py)
   'bx_apartment', 'bx_konbini', 'bx_cafe', 'bx_library', 'bx_station', 'bx_ramen', 'bx_shrine', 'bx_lab',
+  // Hinomori valley, chapter 2 (tools/build_valley.py)
+  'map_valley', 'bx_farmhouse', 'bx_winery', 'bx_stand', 'bx_workshop', 'bx_busstop', 'bx_ryokan',
   ...Object.values(ROOMS_GEN).flatMap((r) => [r.image, ...r.objects.flatMap((o) => (o.sprite ? [o.sprite] : []))]),
 ];
 

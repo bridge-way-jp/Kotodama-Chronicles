@@ -205,6 +205,9 @@ REDRAWN = {
                            [('npc', 'haruto'), ('npc', 'aoi'), ('npc', 'sato')]],
     # Haruto, Aoi and Satō redrawn with real right-facing views (overrides their 3-row blocks above)
     'hm_chars_main2.webp': [[('npc', 'haruto'), ('npc', 'aoi'), ('npc', 'sato')]],
+    # chapter 2: people of the Hinomori valley
+    'hm_chars_valley.webp': [[('npc', 'hayashi'), ('npc', 'sakura'), ('npc', 'okami')],
+                             [('npc', 'kenji'), ('npc', 'ota'), ('npc', 'busdriver')]],
     'hm_chars_more.webp': [[('npc', 'kirishima'), ('npc', 'station_staff'), ('npc', 'customer')],
                            [('folk', 'schoolgirl'), ('folk', 'salaryman'), ('folk', 'delivery')]],
     'hm_chars_town.webp': [[('folk', 'miko'), ('folk', 'chef'), ('folk', 'gardener')],

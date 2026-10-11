@@ -18,6 +18,7 @@ from extract_sheets import OUT, load, magenta_mask, resize_px, to_rgba, trim  # 
 SHEETS = {
     'portraits_p1.webp': ['hero', 'mori', 'kaede', 'haruto', 'aoi'],
     'portraits_p2.webp': ['sato', 'kirishima', 'station_staff', 'customer'],
+    'portraits_valley.webp': ['hayashi', 'sakura', 'okami', 'kenji', 'ota'],
 }
 EXPR = ['neutral', 'happy', 'surprised', 'worried']
 HEIGHT = 104

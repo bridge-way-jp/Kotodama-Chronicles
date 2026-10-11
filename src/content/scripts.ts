@@ -597,7 +597,49 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   ],
 
   // ================================================================ interiors
-  station_building: [{ steps: [n('日野森駅。小さいが、町の人にとって大切な駅だ。', 'Hinomori Station. Small, but important to the townspeople.')] }],
+  station_building: [
+    {
+      when: { flag: 'chapter1_done' },
+      steps: [
+        n('日野森駅。駅前から、谷へ行くバスが出ている。', 'Hinomori Station. A bus to the valley leaves from the station square.'),
+        {
+          choice: [
+            {
+              text: 'バスで谷へ行く', en: 'Take the bus to Hinomori Valley',
+              then: [n('バスは山道をのぼっていく。窓の外に、{桃|もも}の花が見えてきた。', 'The bus climbs the mountain road. Peach blossoms appear outside the window.'), { do: [{ warp: { map: 'valley', x: 20, y: 24 } }] }],
+            },
+            { text: 'やめる', en: 'Stay in town' },
+          ],
+        },
+      ],
+    },
+    { steps: [n('日野森駅。小さいが、町の人にとって大切な駅だ。', 'Hinomori Station. Small, but important to the townspeople.')] },
+  ],
+  // ================================================================ chapter 2: Hinomori valley
+  valley_busstop: [
+    {
+      steps: [
+        n('バス停だ。{時刻表|じこくひょう}によると、町へのバスは一時間に一本。', 'A bus stop. According to the timetable, there is one bus an hour to town.'),
+        {
+          choice: [
+            { text: '町へ帰る', en: 'Ride back to Hinomori town', then: [{ do: [{ warp: { map: 'town', x: 27, y: 20 } }] }] },
+            { text: 'もう少しいる', en: 'Stay a little longer' },
+          ],
+        },
+      ],
+    },
+  ],
+  valley_farmhouse: [{ steps: [n('{茅葺|かやぶ}き{屋根|やね}の古い{農家|のうか}。{縁側|えんがわ}で{猫|ねこ}が{昼寝|ひるね}をしている。', 'An old farmhouse with a thatched roof. A cat is napping on the veranda.')] }],
+  valley_winery: [{ steps: [n('小さなワイナリー。{樽|たる}から、ぶどうの{香|かお}りがする。', 'A small winery. The barrels smell of grapes.')] }],
+  valley_stand: [{ steps: [n('{無人販売所|むじんはんばいじょ}だ。「桃 一{袋|ふくろ} 三百円。お金は{箱|はこ}に入れてください」', 'An unmanned stand: “Peaches, 300 yen a bag. Please put the money in the box.”')] }],
+  valley_workshop: [{ steps: [n('{書道|しょどう}の{工房|こうぼう}。{入口|いりぐち}に、大きな{掛け軸|かけじく}がかかっている。', 'A calligraphy workshop. A large hanging scroll hangs by the entrance.')] }],
+  valley_ryokan: [{ steps: [n('{温泉旅館|おんせんりょかん}「ゆのか」。のれんの{奥|おく}から、湯けむりが{立|た}ちのぼっている。', 'The hot-spring inn “Yunoka”. Steam rises from behind the noren curtain.')] }],
+  hayashi: [{ steps: [say('hayashi', 'おう、見ない{顔|かお}だな。この谷は桃とぶどうと温泉しかないが、いいところだぞ。', 'Oh, a new face. This valley has nothing but peaches, grapes and hot springs, but it’s a good place.')] }],
+  sakura_hayashi: [{ steps: [say('sakura_hayashi', 'こんにちは！ {桃畑|ももばたけ}の{奥|おく}は{草|くさ}が{深|ふか}いから、言霊がよく出るよ。気をつけてね！', 'Hi! The grass is deep at the back of the peach orchard, so Kotodama show up a lot. Be careful!')] }],
+  okami: [{ steps: [say('okami', 'ようこそお{越|こ}しくださいました。温泉にはいつでもどうぞ。', 'Welcome. Please use the hot spring any time.')] }],
+  kenji: [{ steps: [say('kenji', '今年のぶどうは{出来|でき}がいいんだ。{収穫|しゅうかく}の{季節|きせつ}になったら、手伝ってくれないか？', 'This year’s grapes are good. Would you help with the harvest when the season comes?')] }],
+  ota: [{ steps: [say('ota', '……言葉は、書いて初めて{形|かたち}になる。また来なさい。', '…Words only take shape once you write them. Come again.')] }],
+  busdriver: [{ steps: [say('busdriver', '町行きのバスは、そこのバス停から出ますよ。', 'The bus to town leaves from that stop over there.')] }],
   konbini_fridge: [
     {
       steps: [

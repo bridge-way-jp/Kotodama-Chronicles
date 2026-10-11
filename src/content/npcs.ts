@@ -23,4 +23,11 @@ export const NPCS: Record<string, NpcDef> = {
   station_staff: { id: 'station_staff', name: '駅員', nameEn: 'Station attendant', role: 'Station attendant', sprite: 'npc_station_staff', portrait: 'portrait_station_staff', color: '#2b4c9b' },
   kirishima: { id: 'kirishima', name: '霧島博士', nameEn: 'Dr. Kirishima', role: 'Researcher', sprite: 'npc_kirishima', portrait: 'portrait_kirishima', color: '#4a6670' },
   yukitsune: { id: 'yukitsune', name: '？？？', nameEn: '???', role: 'Kotodama', sprite: 'k_fox_blue', portrait: 'k_fox_blue', color: '#6c8fd6' },
+  // chapter 2: Hinomori valley
+  hayashi: { id: 'hayashi', name: '林さん', nameEn: 'Mr. Hayashi', role: 'Peach farmer', sprite: 'npc_hayashi', portrait: 'portrait_hayashi', color: '#b5733a' },
+  sakura_hayashi: { id: 'sakura_hayashi', name: 'さくら', nameEn: 'Sakura', role: 'Farmer’s granddaughter', sprite: 'npc_sakura', portrait: 'portrait_sakura', color: '#e0a32a' },
+  okami: { id: 'okami', name: '女将さん', nameEn: 'Okami-san', role: 'Onsen inn owner', sprite: 'npc_okami', portrait: 'portrait_okami', color: '#6b3f7a' },
+  kenji: { id: 'kenji', name: '健二', nameEn: 'Kenji', role: 'Winemaker', sprite: 'npc_kenji', portrait: 'portrait_kenji', color: '#3f7a4a' },
+  ota: { id: 'ota', name: '太田先生', nameEn: 'Mr. Ōta', role: 'Calligrapher, master of words', sprite: 'npc_ota', portrait: 'portrait_ota', color: '#2f4a7a' },
+  busdriver: { id: 'busdriver', name: '運転手さん', nameEn: 'Bus driver', role: 'Bus driver', sprite: 'npc_busdriver', color: '#4a86b5' },
 };
