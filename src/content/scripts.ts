@@ -51,6 +51,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
           choice: [
             { text: '復習する', en: 'Review (spaced repetition)', then: [{ do: [{ open: 'review' }] }] },
             { text: 'JLPT準備を確認する', en: 'Check JLPT N2 readiness', then: [{ do: [{ open: 'dashboard' }] }] },
+            { text: '言葉の庭を見る', en: 'Look at your word garden (every word you meet grows here)', then: [{ do: [{ open: 'garden' }] }] },
             { text: '実力診断テスト', en: 'Diagnostic assessment', then: [{ do: [{ open: 'diagnostic' }] }] },
             {
               text: '通販カタログを見る', en: 'Browse the mail-order catalogue (decorate your room)',
@@ -700,6 +701,16 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       ],
     },
   ],
+  valley_garden: [
+    {
+      when: { questDone: 'mq7' },
+      steps: [
+        n('林さんが貸してくれた畑。覚えた言葉が、ここで育っている。', 'The plot Mr. Hayashi lent you. The words you’ve learned are growing here.'),
+        { do: [{ open: 'garden' }] },
+      ],
+    },
+    { steps: [n('{手入れ|ていれ|v:teire}の行き届いた小さな畑だ。木の札には何も書かれていない。', 'A small, well-kept plot. The wooden tag is blank.')] },
+  ],
   valley_farmhouse: [{ steps: [n('{茅葺|かやぶ}き{屋根|やね}の古い{農家|のうか}。{縁側|えんがわ}で{猫|ねこ}が{昼寝|ひるね}をしている。', 'An old farmhouse with a thatched roof. A cat is napping on the veranda.')] }],
   valley_winery: [{ steps: [n('小さなワイナリー。{樽|たる}から、ぶどうの{香|かお}りがする。', 'A small winery. The barrels smell of grapes.')] }],
   valley_stand: [{ steps: [n('{無人販売所|むじんはんばいじょ}だ。「桃 一{袋|ふくろ} 三百円。お金は{箱|はこ}に入れてください」', 'An unmanned stand: “Peaches, 300 yen a bag. Please put the money in the box.”')] }],
@@ -796,7 +807,9 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
             say('sakura_hayashi', 'この子、モモタン！ おじいちゃんの黄色い桃から生まれたんだ。……そうだ、思い出した！ あの桃の名前は「ひのもり金」！', 'It’s a Momotan! Born from Grandpa’s yellow peaches… That’s it, I remember! That peach is called “Hinomori Gold”!', 'happy'),
             say('sakura_hayashi', '名前を呼んであげたら、木がまた元気になった気がする。おじいちゃんに教えてくるね！', 'When I called its name, the tree seemed to perk up again. I’ll go tell Grandpa!', 'happy'),
             { do: [{ objective: 'mq7.sakura' }, { flag: 'mq7_peach_named' }, { rel: 'sakura_hayashi', points: 2 }, { seen: 'momotan' }, { learn: ['g:tabini'] }] },
-            n('名前を呼ぶと、言葉は戻ってくる……？ 旅館の女将さんにも、話を聞いてみよう。', 'Calling a name brings the words back…? Let’s talk to the proprietress of the inn, too.'),
+            say('sakura_hayashi', 'そうだ、おじいちゃんがね、家の横の畑をあなたに貸すって。覚えた言葉を植えて、毎日{水|みず}をあげてね！', 'Oh, and Grandpa says you can use the plot next to the house. Plant the words you learn and water them every day!', 'happy'),
+            n('言葉の庭が使えるようになった！ 覚えた言葉が植物になって育つ。（アパートの机からも見られる）', 'The word garden is open! The words you learn grow as plants. (You can also open it from the desk in your apartment.)'),
+                        n('名前を呼ぶと、言葉は戻ってくる……？ 旅館の女将さんにも、話を聞いてみよう。', 'Calling a name brings the words back…? Let’s talk to the proprietress of the inn, too.'),
           ],
           lose: [say('sakura_hayashi', '大丈夫？ 少し休んでから、また来てね。', 'Are you okay? Rest a bit and come back.', 'worried')],
         },

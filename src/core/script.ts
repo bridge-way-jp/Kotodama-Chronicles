@@ -36,7 +36,7 @@ export type Action =
   | { seen: string }
   | { warp: { map: string; x: number; y: number } }
   | { time: 'morning' | 'evening' }
-  | { open: 'review' | 'dashboard' | 'diagnostic' | 'shop' | 'menu' | `job:${string}` }
+  | { open: 'review' | 'dashboard' | 'diagnostic' | 'shop' | 'menu' | 'garden' | `job:${string}` }
   | { chapter: number };
 
 export type Mood = 'neutral' | 'happy' | 'surprised' | 'worried';

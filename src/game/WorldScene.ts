@@ -46,6 +46,7 @@ export const ASSET_KEYS = [
   // town buildings and rooms built from the Hinomori sheets (tools/build_exteriors.py, tools/build_rooms.py)
   'bx_apartment', 'bx_konbini', 'bx_cafe', 'bx_library', 'bx_station', 'bx_ramen', 'bx_shrine', 'bx_lab',
   // Hinomori valley, chapter 2 (tools/build_valley.py)
+  'wgs_peach_3', 'wgs_grape_3', 'wgs_sunflower_3', 'wgs_rice_2', 'wgs_asagao_3', 'wgs_sakura_2', 'wgs_tag',
   'map_valley', 'bx_farmhouse', 'bx_winery', 'bx_stand', 'bx_workshop', 'bx_busstop', 'bx_ryokan',
   ...Object.values(ROOMS_GEN).flatMap((r) => [r.image, ...r.objects.flatMap((o) => (o.sprite ? [o.sprite] : []))]),
 ];

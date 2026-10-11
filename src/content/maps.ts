@@ -226,6 +226,11 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'valley_workshop', sprite: 'bx_workshop', x: 16, y: 14, w: 3, h: 1 },
       { id: 'valley_busstop', sprite: 'bx_busstop', x: 22, y: 19, w: 3, h: 1, interactAt: [{ x: 22, y: 20 }, { x: 23, y: 20 }, { x: 24, y: 20 }, { x: 21, y: 19 }] },
       { id: 'valley_ryokan', sprite: 'bx_ryokan', x: 29, y: 13, w: 7, h: 2 },
+      // the word garden next to the farmhouse (Mr. Hayashi lends Maria a bed after the harvest)
+      ...(['peach_3', 'grape_3', 'sunflower_3', 'rice_2', 'asagao_3', 'sakura_2'] as const).map((p, i) => ({
+        id: `valley_garden_${i}`, sprite: `wgs_${p}`, x: 10 + (i % 2), y: 3 + Math.floor(i / 2), w: 1, h: 1, script: 'valley_garden',
+      })),
+      { id: 'valley_garden_tag', sprite: 'wgs_tag', x: 9, y: 5, w: 1, h: 1, script: 'valley_garden' },
       // the footbath on the onsen square: talk to it from the square, facing north
       { id: 'valley_ashiyu', x: 35, y: 8, w: 6, h: 1, solid: false, interactAt: [35, 36, 37, 38, 39, 40].map((x) => ({ x, y: 9 })) },
     ],
