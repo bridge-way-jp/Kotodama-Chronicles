@@ -262,7 +262,7 @@ export const MAPS: Record<string, MapDef> = {
     ],
   },
   mountain: {
-    id: 'mountain', name: 'Yukimi Village', nameJa: '雪見村', tiles: MOUNTAIN_GEN, image: 'map_mountain', encounters: 'mountain', snow: true,
+    id: 'mountain', name: 'Yukimi Village', nameJa: '雪見村', tiles: MOUNTAIN_GEN, image: 'map_mountain', encounters: 'mountain', snow: true, bg: 'bg_mountain_village.webp',
     // footprints match tools/build_mountain.py BUILDINGS
     objects: [
       { id: 'yukimi_guesthouse', sprite: 'bx_guesthouse', x: 32, y: 15, w: 6, h: 2 },
@@ -271,6 +271,8 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'yukimi_temple', sprite: 'bx_temple', x: 18, y: 2, w: 6, h: 2, interactAt: [{ x: 20, y: 4 }, { x: 21, y: 4 }] },
       { id: 'yukimi_station', sprite: 'bx_yukimi_station', x: 1, y: 19, w: 4, h: 2, interactAt: [{ x: 5, y: 19 }, { x: 6, y: 20 }, { x: 3, y: 18 }, { x: 4, y: 18 }] },
       { id: 'yukimi_kamakura', sprite: 'bx_kamakura', x: 17, y: 15, w: 3, h: 1 },
+      // the festival field (snow lanterns are lit in the story)
+      { id: 'yukimi_festival', x: 13, y: 21, w: 6, h: 3, solid: false },
     ],
     npcs: [
       { id: 'tsuru', x: 34, y: 17, facing: 'down' },
@@ -281,8 +283,8 @@ export const MAPS: Record<string, MapDef> = {
     ],
     warps: [],
     zones: [
-      { x0: 2, y0: 11, x1: 7, y1: 13, encounters: 'mountain_snow' },
-      { x0: 37, y0: 10, x1: 40, y1: 13, encounters: 'mountain_lantern' },
+      { x0: 2, y0: 11, x1: 7, y1: 13, encounters: 'mountain_snow', bg: 'bg_mountain_trail.webp' },
+      { x0: 37, y0: 10, x1: 40, y1: 13, encounters: 'mountain_lantern', bg: 'bg_mountain_trail.webp' },
     ],
   },
   apartment: {

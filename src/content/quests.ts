@@ -127,6 +127,57 @@ export const QUESTS: Record<string, QuestDef> = {
     learning: ['v:shodou', 'v:fude', 'v:sumi', 'v:nazukeru', 'v:nagori', 'g:karaniwa'],
     onComplete: 'chapter2_done',
   },
+  // ================================================================ chapter 3: Yukimi mountain village
+  mq10: {
+    id: 'mq10', kind: 'main', chapter: 3,
+    title: '雪国からの便り', titleEn: 'A Letter from the Snow Country',
+    description: 'Ms. Mori’s old friend Tsuru writes from Yukimi Village — but her letters are full of blank spaces where the kanji should be.',
+    objectives: [
+      { id: 'mori', text: 'Talk to Ms. Mori in front of the apartment' },
+      { id: 'arrive', text: 'Take the train to Yukimi Village', hint: 'The train leaves from the station building.' },
+      { id: 'tsuru', text: 'Visit Grandma Tsuru at her guesthouse (east)' },
+    ],
+    rewards: { xp: 200, items: { amazake: 3 } },
+    learning: ['v:tayori', 'v:fuutou', 'v:irori', 'v:hougen', 'g:hodo'],
+    next: 'mq11',
+  },
+  mq11: {
+    id: 'mq11', kind: 'main', chapter: 3,
+    title: '消えていく字', titleEn: 'Fading Characters',
+    description: 'It is not only Tsuru: all over the village, kanji are disappearing from signs, labels and books.',
+    objectives: [
+      { id: 'hina', text: 'Ask Hina about the kamakura sign (centre)' },
+      { id: 'fujii', text: 'Help Dr. Fujii at the clinic (south)' },
+    ],
+    rewards: { xp: 240, money: 3000, items: { oyaki: 3 } },
+    learning: ['v:shinryoujo', 'v:shoujou', 'v:shohou', 'v:taichou', 'v:kogoeru', 'g:naikagiri', 'g:seika'],
+    next: 'mq12',
+  },
+  mq12: {
+    id: 'mq12', kind: 'main', chapter: 3,
+    title: '雪灯籠の夜', titleEn: 'The Night of Snow Lanterns',
+    description: 'Mr. Kuroda is preparing the snow-lantern festival. Tsuru says a traveller with a notebook comes every year for it.',
+    objectives: [
+      { id: 'kuroda', text: 'Help Mr. Kuroda with the lanterns (south road)' },
+      { id: 'festival', text: 'Go to the festival field west of the square', hint: 'The snowy field next to the station path.' },
+    ],
+    rewards: { xp: 280, items: { hoshigaki: 2 } },
+    learning: ['v:dentou', 'v:gyouji', 'v:tourou', 'v:tsugu', 'g:kotonaku', 'g:dakeni'],
+    next: 'mq13',
+  },
+  mq13: {
+    id: 'mq13', kind: 'main', chapter: 3,
+    title: '山寺の試練', titleEn: 'The Trial of the Mountain Temple',
+    description: 'The traveller left a sealed letter. Jōkan-oshō, the head priest and the region’s master of kanji, keeps the seal’s secret.',
+    objectives: [
+      { id: 'jokan', text: 'Show the sealed letter to Jōkan-oshō (temple, north)' },
+      { id: 'master', text: 'Pass Jōkan-oshō’s trial of kanji' },
+      { id: 'tsuru', text: 'Read the letter with Grandma Tsuru' },
+    ],
+    rewards: { xp: 400, money: 6000, items: { amazake: 3 } },
+    learning: ['v:bushu', 'v:kakusuu', 'v:kakitomeru', 'v:tsutaeru', 'g:nikagirazu', 'g:kotoni'],
+    onComplete: 'chapter3_done',
+  },
   sq_aoi: {
     id: 'sq_aoi', kind: 'character', chapter: 1,
     title: 'アオイの発表', titleEn: "Aoi's Presentation",

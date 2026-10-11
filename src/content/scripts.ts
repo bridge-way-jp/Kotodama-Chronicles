@@ -170,7 +170,27 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         say('mori', '部屋に{飾|かざ}っておくわ。忘れそうになったら、毎朝これを見るの。ありがとう。', 'I’ll hang it in my room. Whenever I start to forget, I’ll look at it every morning. Thank you.', 'happy'),
         { do: [{ take: 'name_scroll' }, { flag: 'mori_scroll' }, { rel: 'mori', points: 3, memory: 'name_scroll' }] },
         { cg: 'cg_ending', say: '名前は、呼ばれるたびに強くなる。\n― 第二章「桃と湯けむりの谷」完 ―', en: 'A name grows stronger every time it is called.\n— End of Chapter 2: “The Valley of Peaches and Steam” —' },
-        n('Chapter 2 complete! The valley stays open: help out with jobs, befriend the valley Kotodama and keep reviewing. Chapter 3 is in development.'),
+        n('Chapter 2 complete! Talk to Ms. Mori again to begin Chapter 3. The valley stays open: help out with jobs, befriend the valley Kotodama and keep reviewing.'),
+      ],
+    },
+    {
+      when: { all: [{ flag: 'mori_scroll' }, { questNotStarted: 'mq10' }] },
+      steps: [
+        say('mori', '@nameちゃん、ちょっといい？ 雪見村にいる古い友だちの、つるさんから{便|たよ|v:tayori}りが来たの。', '@name, do you have a moment? I got a letter from my old friend Tsuru in Yukimi Village.'),
+        n('手紙を見せてもらった。ところどころ、字があるはずの場所が、白く抜けている。', 'She shows you the letter. Here and there, where characters should be, there are only white gaps.'),
+        say('mori', 'つるさん、昔はとてもきれいな字を書く人だったのに……。わたしと同じように、言葉が消えはじめているのかもしれない。', 'Tsuru used to have such beautiful handwriting… Maybe her words are starting to fade, just like mine.', 'worried'),
+        say('mori', '北の山の雪見村まで、日野森駅から電車が出ているわ。つるさんの様子を、見てきてくれないかしら。', 'A train runs from Hinomori Station up to Yukimi Village in the northern mountains. Could you go and see how she is?'),
+        {
+          quiz: {
+            q: '森さんがマリアに頼んだことは何か。',
+            qEn: 'What did Ms. Mori ask Maria to do?',
+            options: ['雪見村へ行って、つるさんの様子を見てくること', 'つるさんに新しい手紙を書くこと', '駅で電車の切符を買ってくること', 'つるさんを日野森に連れてくること'],
+            answer: 0,
+            why: '様子を見てきてくれないかしら = could you go and check on her (and come back).',
+          },
+          keys: ['v:tayori'], area: 'reading', retry: true,
+        },
+        { do: [{ startQuest: 'mq10' }, { objective: 'mq10.mori' }, { chapter: 3 }, { rel: 'mori', points: 1 }, { learn: ['v:tayori', 'v:fuutou'] }] },
       ],
     },
     {
@@ -663,17 +683,13 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   // ================================================================ interiors
   station_building: [
     {
-      when: { all: [{ flag: 'chapter2_done' }, { notFlag: 'yukimi_visited' }] },
+      when: { all: [{ questActive: 'mq10' }, { notObj: 'mq10.arrive' }] },
       steps: [
-        n('日野森駅。北の山へ向かう、小さなローカル線が出ている。', 'Hinomori Station. A small local line runs north into the mountains.'),
-        say('station_staff', '雪見村行きの電車ですね。山の上は雪が深いので、暖かくしていってくださいね。', 'The train to Yukimi Village? There’s deep snow up in the mountains, so dress warmly.'),
-        {
-          choice: [
-            { text: '電車で雪見村へ', en: 'Take the train to Yukimi Village (chapter 3, in development)', then: [{ do: [{ flag: 'yukimi_visited' }, { warp: { map: 'mountain', x: 7, y: 20 } }] }] },
-            { text: 'バスで谷へ行く', en: 'Take the bus to Hinomori Valley', then: [{ do: [{ warp: { map: 'valley', x: 20, y: 24 } }] }] },
-            { text: 'やめる', en: 'Stay in town' },
-          ],
-        },
+        n('日野森駅。北の山へ向かう、一両だけの小さな電車が待っている。', 'Hinomori Station. A small one-car train bound for the northern mountains is waiting.'),
+        say('station_staff', '雪見村行きですね。山の上は雪が深いので、暖かくしていってくださいね。', 'To Yukimi Village? The snow is deep up there, so keep warm.'),
+        { cg: 'cg_mountain_arrival', say: '電車を降りると、空気が{凍|こお}るように冷たかった。夕焼けの中、雪に埋もれた村に、ぽつぽつと明かりがともる。', en: 'Stepping off the train, the air is freezing. In the sunset glow, lights flicker on one by one in the village buried in snow.' },
+        { cg: 'cg_mountain_arrival', say: 'ここが雪見村……。字が消えていく村。', en: 'So this is Yukimi Village… the village where characters are fading.' },
+        { do: [{ objective: 'mq10.arrive' }, { flag: 'yukimi_visited' }, { warp: { map: 'mountain', x: 7, y: 20 } }] },
       ],
     },
     {
@@ -749,11 +765,285 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   yukimi_clinic: [{ steps: [n('村の{診療所|しんりょうじょ}。「{本日|ほんじつ}の{診療|しんりょう}　九時〜十七時」', 'The village clinic. “Consultation hours today: 9:00–17:00.”')] }],
   yukimi_temple: [{ steps: [n('山寺の{本堂|ほんどう}。{静|しず}かな空気の中、お{香|こう}の{香|かお}りがする。', 'The main hall of the mountain temple. Incense hangs in the quiet air.')] }],
   yukimi_kamakura: [{ steps: [n('{雪|ゆき}で作った{かまくら}。中は思ったより{暖|あたた}かい。', 'A kamakura made of snow. It’s warmer inside than you’d think.')] }],
-  tsuru: [{ steps: [say('tsuru', 'まあまあ、遠いところをよう来なさったね。寒かったろう。中でお茶でもどうだい。', 'My, my, you’ve come a long way. You must be cold. How about some tea inside?')] }],
-  hina: [{ steps: [say('hina', 'ねえ、かまくら見た？ わたしが作ったんだよ！ 中であったかいお{餅|もち}食べるの。', 'Hey, did you see the kamakura? I made it! We eat warm mochi inside.')] }],
-  fujii: [{ steps: [say('fujii', 'こんにちは。村の医者の藤井です。寒い日は、{体調|たいちょう}を{崩|くず}しやすいから気をつけてね。', 'Hello, I’m Fujii, the village doctor. People fall ill easily on cold days, so take care.')] }],
-  kuroda: [{ steps: [say('kuroda', 'この先は山道だ。今は雪が深すぎて{危険|きけん}だから、{通行止|つうこうど}めにしている。', 'Beyond here is the mountain trail. The snow is too deep right now, so it’s closed.')] }],
-  jokan: [{ steps: [say('jokan', 'ほう、旅の方か。漢字というものは、一つ一つが小さな物語なのですよ。', 'Oh, a traveller. Each kanji, you know, is a little story of its own.')] }],
+  tsuru: [
+    {
+      when: { all: [{ questActive: 'mq10' }, { obj: 'mq10.arrive' }, { notObj: 'mq10.tsuru' }] },
+      steps: [
+        say('tsuru', 'まあまあ、あんたが森ちゃんの言うとった子かね。遠いところを、よう来なさった。', 'My, my, so you’re the one Mori-chan wrote about. You’ve come a long way.', 'happy'),
+        { do: [{ music: 'memory' }] },
+        { cg: 'cg_mountain_hearth', say: '{囲炉裏|いろり|v:irori}の火が、ぱちぱちと鳴っている。つるさんは、温かい甘酒を出してくれた。', en: 'The fire in the sunken hearth crackles. Grandma Tsuru serves you warm amazake.' },
+        say('tsuru', '森ちゃんへの手紙、ちゃんと読めたかね。……実はね、最近、字が思い出せんのよ。', 'Could Mori-chan read my letter? …The truth is, lately I can’t remember the characters.', 'worried'),
+        say('tsuru', '東京におる息子から、毎月便りが来る。でも{封筒|ふうとう|v:fuutou}を開けても、漢字が雪みたいに溶けて、読めんの。', 'My son in Tokyo writes every month. But when I open the envelope, the kanji melt like snow and I can’t read them.', 'worried'),
+        say('tsuru', '年をとる{ほど||g:hodo}、字というもんは大事になるのにねえ。', 'The older you get, the more precious characters become.', 'worried'),
+        { teach: 'g:hodo' },
+        n('息子さんの手紙を見せてもらった。消えかけた字を、ゆっくり読んでみる。', 'She shows you her son’s letter. You try to read the fading characters slowly.'),
+        {
+          quiz: {
+            q: '手紙の一行：「寒い日が続きますが、【体調】はいかがですか。」　【体調】の読みはどれか。',
+            qEn: 'A line of the letter: “The cold days continue — how is your health?” How is 【体調】 read?',
+            options: ['たいちょう', 'からだしらべ', 'たいしょう', 'ていちょう'],
+            answer: 0,
+            why: '体調（たいちょう）= physical condition. 体 is read たい here, 調 ちょう (as in 調子).',
+          },
+          keys: ['v:taichou'], area: 'kanji', retry: true,
+        },
+        say('tsuru', 'たいちょう……。そうそう、体の調子のことやね。あんたが読んでくれると、字が戻ってくるみたいやわ。', 'Taichou… yes, of course, how the body is doing. When you read it, it’s as if the characters come back.', 'happy'),
+        say('tsuru', 'ここらの言葉は{方言|ほうげん|v:hougen}が強いで、わかりにくいかもしれんけど、ゆっくりしていきなれ。', 'Folks round here speak a strong dialect, so it may be hard to follow, but make yourself at home.'),
+        say('tsuru', 'そうそう、毎年冬になると、帳面を持った旅の女の人が、うちに泊まりに来るんよ。村の言葉を、ひとつひとつ{書き留め|かきとめ|v:kakitomeru}ていくの。', 'Oh, and every winter a travelling woman with a notebook stays here. She writes down the village’s words, one by one.'),
+        { do: [{ objective: 'mq10.tsuru' }, { rel: 'tsuru', points: 2, memory: 'hearth' }, { learn: ['v:irori', 'v:hougen', 'v:taichou', 'v:fuutou', 'v:kakitomeru', 'g:hodo'] }] },
+        n('村のあちこちで、字が消えはじめているらしい。ひなという女の子が、かまくらの前で困っていたそうだ。', 'Characters seem to be fading all over the village. A girl called Hina was apparently upset in front of the kamakura.'),
+      ],
+    },
+    {
+      when: { all: [{ questActive: 'mq13' }, { obj: 'mq13.master' }, { notObj: 'mq13.tsuru' }] },
+      steps: [
+        { do: [{ music: 'memory' }] },
+        { cg: 'cg_mountain_hearth', say: 'つるさんの囲炉裏の前で、手紙を開いた。うっすらと光る字が、並んでいる。', en: 'By Grandma Tsuru’s hearth, you open the letter. Faintly glowing characters line the page.' },
+        n('「この手紙を読めるあなたへ。」', '“To you, who can read this letter.”'),
+        n('「わたしは昔、言葉を失っていく人たちを救おうとして、言葉を集めつづけました。けれど、集めれば集めるほど、わたし自身の言葉が、こぼれ落ちていったのです。」', '“Long ago I tried to save people who were losing their words, and I kept collecting words. But the more I collected, the more my own words slipped away.”'),
+        n('「いつか、わたしの名前を呼んでくれる人がいたら、海の見える町で待っています。　K」', '“If one day someone calls my name, I will be waiting in a town by the sea. — K”'),
+        {
+          quiz: {
+            q: '手紙によると、Kさんはなぜ自分の言葉を失ったのか。',
+            qEn: 'According to the letter, why did K lose her own words?',
+            options: ['言葉を集めつづけたから', '雪の村に住んでいたから', '手紙を書かなかったから', '漢字を勉強しなかったから'],
+            answer: 0,
+            why: '集めれば集めるほど、わたし自身の言葉がこぼれ落ちていった — the more she collected, the more she lost.',
+          },
+          keys: ['v:tsutaeru'], area: 'reading', retry: true,
+        },
+        say('tsuru', '海の町……。あの人、毎年言うとった。「春になったら、海の見える町へ行く」って。', 'A town by the sea… She said it every year: “When spring comes, I’ll go to a town where you can see the sea.”', 'surprised'),
+        say('tsuru', 'それにね、@nameちゃん。あんたと字を読んどったら、ほら。', 'And you know, @name — reading with you, look.', 'happy'),
+        n('つるさんは、息子さんの手紙を、自分の声で読みはじめた。一字一字、ゆっくりと。でも、はっきりと。', 'Grandma Tsuru begins to read her son’s letter in her own voice. One character at a time, slowly, but clearly.'),
+        say('tsuru', '「お母さん、お正月には帰ります」……。読める。ちゃんと、読めるよ。', '“Mum, I’ll come home for New Year”… I can read it. I can really read it.', 'happy'),
+        say('tsuru', 'うれしい{ことに||g:kotoni}、字が戻ってきたんよ。ありがとうね、@nameちゃん。', 'To my joy, the characters have come back. Thank you, @name.', 'happy'),
+        { teach: 'g:kotoni' },
+        { do: [{ objective: 'mq13.tsuru' }, { rel: 'tsuru', points: 3, memory: 'letter_read' }, { learn: ['v:tsutaeru', 'g:kotoni'] }] },
+        { cg: 'cg_mountain_arrival', say: '雪の下で、言葉は春を待っている。\n― 第三章「雪見村の手紙」完 ―', en: 'Beneath the snow, words are waiting for spring.\n— End of Chapter 3: “Letters from Yukimi Village” —' },
+        n('Chapter 3 complete! Yukimi stays open: help at the clinic, befriend the snow and lantern Kotodama and keep reviewing. Chapter 4 (the town by the sea) is in development.'),
+      ],
+    },
+    {
+      when: { questDone: 'mq13' },
+      steps: [say('tsuru', '息子の手紙、毎晩読み返しとるんよ。字は、読むたびに{温|あった}かくなるねえ。', 'I read my son’s letter again every night. Characters get warmer every time you read them.', 'happy')],
+    },
+    { steps: [say('tsuru', 'まあまあ、寒かったろう。中でお茶でもどうだい。', 'My, you must be cold. How about some tea inside?')] },
+  ],
+  hina: [
+    {
+      when: { all: [{ questActive: 'mq11' }, { notObj: 'mq11.hina' }] },
+      steps: [
+        say('hina', 'ねえ、聞いて！ かまくらの前に立てた看板の字が、朝になったら消えてたの！', 'Hey, listen! The sign I put up in front of the kamakura — the writing vanished overnight!', 'worried'),
+        say('hina', '「雪見村　かまくら」って、ちゃんと書いたのに。……あっ、あそこ！ 雪の中で何か動いてる！', 'I wrote “Yukimi Village — Kamakura” properly. …Ah, over there! Something’s moving in the snow!', 'surprised'),
+        n('雪だまのような小さな言霊が、字のかけらをくわえて転がっていく！', 'A small Kotodama like a snowball rolls away with a fragment of a character in its mouth!'),
+        {
+          battle: { species: 'yukidama', level: 13, recruitable: true, bg: 'bg_mountain_village.webp' },
+          win: [
+            say('hina', 'つかまえた！ ……この子、字を食べてたんじゃないんだって。消えそうな字を、雪の中にしまって守ってたの。', 'Got it! …It wasn’t eating the writing. It was keeping the fading characters safe inside the snow.', 'happy'),
+            say('hina', '字が全部なくなら{ないかぎり||g:naikagiri}、看板はまた書けるよね。いっしょに書こう！', 'As long as the characters don’t disappear completely, we can write the sign again, right? Let’s write it together!', 'happy'),
+            { teach: 'g:naikagiri' },
+            {
+              quiz: {
+                q: '「字がなくならないかぎり、看板はまた書ける」の意味に一番近いものはどれか。',
+                qEn: 'Which is closest to 字がなくならないかぎり、看板はまた書ける?',
+                options: ['字が残っていれば、また書ける', '字がなくなったら、また書ける', '字がなくなっても、書けない', '字は絶対になくならない'],
+                answer: 0,
+                why: 'ないかぎり = as long as … not / unless: as long as the characters don’t vanish, the sign can be rewritten.',
+              },
+              keys: ['g:naikagiri'], area: 'grammar', retry: true,
+            },
+            say('hina', 'これ、お礼！ 雪うさぎのお守りだよ。山でも、言霊がこごえないんだって。', 'This is for you! A snow-rabbit charm. They say your Kotodama won’t freeze in the mountains.', 'happy'),
+            { do: [{ objective: 'mq11.hina' }, { give: 'usagi_charm' }, { rel: 'hina', points: 2 }, { seen: 'yukidama' }, { learn: ['g:naikagiri', 'v:kogoeru'] }] },
+            n('{診療所|しんりょうじょ|v:shinryoujo}の藤井先生も、字のことで困っているらしい。', 'Dr. Fujii at the clinic seems to be having trouble with characters too.'),
+          ],
+          lose: [say('hina', 'だいじょうぶ？ 少し休んでから来てね。', 'Are you okay? Rest a bit and come back.', 'worried')],
+        },
+      ],
+    },
+    { steps: [say('hina', 'かまくら見た？ わたしが作ったんだよ！ 中であったかいお{餅|もち}食べるの。', 'Did you see the kamakura? I made it! We eat warm mochi inside.', 'happy')] },
+  ],
+  fujii: [
+    {
+      when: { all: [{ questActive: 'mq11' }, { notObj: 'mq11.fujii' }] },
+      steps: [
+        say('fujii', 'ちょうどよかった！ 薬の袋の字が消えかけていて、どれが誰のお薬か、わからなくなってしまったの。', 'Perfect timing! The writing on the medicine bags is fading, and I can’t tell whose medicine is whose.', 'worried'),
+        say('fujii', '寒くなった{せいか||g:seika}、最近は{体調|たいちょう|v:taichou}を崩す人が多くて……。', 'Perhaps because it’s got colder, lots of people have been falling ill lately…', 'worried'),
+        { teach: 'g:seika' },
+        say('fujii', 'カルテを読み上げるから、合うものを選んでくれる？', 'I’ll read out the charts — can you pick the right one?'),
+        {
+          quiz: {
+            q: '「熱があって、のどが痛い」――これは患者さんの何か。',
+            qEn: '“A fever and a sore throat” — what are these?',
+            options: ['症状', '処方', '診療所', '回復'],
+            answer: 0,
+            why: '症状 = symptoms. 処方 = prescription, 診療所 = clinic, 回復 = recovery.',
+          },
+          keys: ['v:shoujou'], area: 'vocab', retry: true,
+        },
+        {
+          quiz: {
+            q: '薬の袋：「医師の【処方】どおりに飲んでください」　【処方】の読みはどれか。',
+            qEn: 'Medicine bag: “Take as prescribed by the doctor.” How is 【処方】 read?',
+            options: ['しょほう', 'しょぼう', 'ところかた', 'しょうほう'],
+            answer: 0,
+            why: '処方（しょほう）: 処 is しょ, 方 is ほう — no voicing here.',
+          },
+          keys: ['v:shohou'], area: 'kanji', retry: true,
+        },
+        {
+          quiz: {
+            q: '「雪の中で長い時間待っていたら、手が＿＿しまった。」',
+            qEn: 'I waited in the snow for a long time, and my hands ＿＿.',
+            options: ['凍えて', '冷やして', '回復して', '継いで'],
+            answer: 0,
+            why: '凍える = a person’s body freezing / going numb. 冷やす is to cool something on purpose.',
+          },
+          keys: ['v:kogoeru'], area: 'vocab', retry: true,
+        },
+        say('fujii', '完璧！ あなた、漢字の読みが本当に正確ね。', 'Perfect! Your kanji readings are really accurate.', 'happy'),
+        say('fujii', 'でも、おかしいの。消えるのは字だけじゃない。患者さんの「名前」も、少しずつ思い出しにくくなっているみたい。', 'But it’s strange. It isn’t only characters. Patients are finding it harder and harder to remember names, too.', 'worried'),
+        say('fujii', 'そうだ、黒田さんが雪灯籠まつりの準備で人手を探していたわ。お祭りの夜には、毎年あの「旅の人」も来るのよ。', 'Oh, Mr. Kuroda was looking for help preparing the snow-lantern festival. On festival night, that “traveller” comes every year, too.'),
+        { do: [{ objective: 'mq11.fujii' }, { rel: 'fujii', points: 2 }, { learn: ['v:shoujou', 'v:shohou', 'v:kogoeru', 'v:shinryoujo', 'v:taichou', 'g:seika'] }] },
+      ],
+    },
+    {
+      when: { questDone: 'mq11' },
+      steps: [
+        say('fujii', 'こんにちは。今日も受付、お願いできる？ 薬の字がまた薄くなっていて……。', 'Hello. Could you help at reception again today? The writing on the medicine is fading again…'),
+        {
+          choice: [
+            { text: 'バイトする', en: 'Work: clinic reception (kanji & health words, pays ¥220 per correct answer)', then: [{ do: [{ open: 'job:clinic' }] }] },
+            { text: 'またこんど', en: 'Maybe later' },
+          ],
+        },
+      ],
+    },
+    { steps: [say('fujii', 'こんにちは。村の医者の藤井です。寒い日は、体調を崩しやすいから気をつけてね。', 'Hello, I’m Fujii, the village doctor. People fall ill easily on cold days, so take care.')] },
+  ],
+  kuroda: [
+    {
+      when: { all: [{ questActive: 'mq12' }, { notObj: 'mq12.kuroda' }] },
+      steps: [
+        say('kuroda', 'おう、手伝ってくれるのか。雪灯籠まつりは、この村に三百年続く{伝統|でんとう|v:dentou}の{行事|ぎょうじ|v:gyouji}だ。', 'Oh, you’ll help? The snow-lantern festival is a tradition this village has kept for three hundred years.'),
+        say('kuroda', '昔は、冬の間に亡くなった人の名前を一つずつ{灯籠|とうろう|v:tourou}に書いた。名前を忘れる{ことなく||g:kotonaku}、春を迎えるためにな。', 'Long ago, people wrote the name of everyone who died over the winter on a lantern — so they could greet spring without forgetting a single name.'),
+        { teach: 'g:kotonaku' },
+        {
+          quiz: {
+            q: '「名前を忘れることなく、春を迎える」の意味に一番近いものはどれか。',
+            qEn: 'Which is closest to 名前を忘れることなく、春を迎える?',
+            options: ['名前を忘れないで、春を迎える', '名前を忘れてから、春を迎える', '名前を忘れないと、春が来ない', '名前を忘れるために、春を迎える'],
+            answer: 0,
+            why: 'ことなく = without doing: they greet spring without forgetting the names.',
+          },
+          keys: ['g:kotonaku'], area: 'grammar', retry: true,
+        },
+        n('あなたは黒田さんと一緒に、川沿いに雪灯籠を並べた。', 'Together with Mr. Kuroda, you line the river with snow lanterns.'),
+        say('kuroda', '俺は一度村を出て、都会で働いていた。でも親父が倒れて、山の案内の仕事を{継|つ|v:tsugu}いだんだ。', 'I left the village once and worked in the city. But when my father collapsed, I took over his work as a mountain guide.'),
+        say('kuroda', '一度は捨てた村な{だけに||g:dakeni}、この祭りだけは絶対になくしたくないんだ。', 'Precisely because I once turned my back on this village, I never want to lose this festival.'),
+        { teach: 'g:dakeni' },
+        say('kuroda', '日が暮れたら、駅の近くの広場に来てくれ。灯籠に火を入れるぞ。', 'When the sun goes down, come to the field near the station. We’ll light the lanterns.', 'happy'),
+        { do: [{ objective: 'mq12.kuroda' }, { time: 'evening' }, { rel: 'kuroda', points: 2 }, { learn: ['v:dentou', 'v:gyouji', 'v:tourou', 'v:tsugu', 'g:kotonaku', 'g:dakeni'] }] },
+      ],
+    },
+    { steps: [say('kuroda', 'この先は山道だ。今は雪が深すぎて、{雪崩|なだれ|v:nadare}の危険がある。{通行止|つうこうど}めにしている。', 'Beyond here is the mountain trail. The snow is too deep and there’s a risk of avalanches, so it’s closed.')] },
+  ],
+  yukimi_festival: [
+    {
+      when: { all: [{ questActive: 'mq12' }, { obj: 'mq12.kuroda' }, { notObj: 'mq12.festival' }] },
+      steps: [
+        { do: [{ music: 'memory' }] },
+        { cg: 'cg_mountain_festival', say: '日が暮れると、何百もの雪灯籠に、いっせいに火がともった。川の水が、金色に光っている。', en: 'As night falls, hundreds of snow lanterns are lit at once. The river shines gold.' },
+        { cg: 'cg_mountain_festival', say: '橋の上に、帳面を抱えた女の人が立っていた。深い緑のコートに、白いマフラー。', en: 'On the bridge stands a woman holding a notebook. A deep green coat, a white scarf.' },
+        {
+          choice: [
+            { text: '「待ってください！」', en: '“Please wait!”' },
+            { text: '「あなたが、Kさんですか？」', en: '“Are you… K?”' },
+          ],
+        },
+        { cg: 'cg_mountain_festival', say: '女の人は少しだけ振り向いて、悲しそうにほほえんだ。そして、灯籠の光の中に消えていった。', en: 'She turns back for a moment and smiles sadly. Then she vanishes into the lantern light.' },
+        n('橋の上に、赤い封をされた手紙が落ちている。', 'A letter sealed in red lies on the bridge.'),
+        n('そのとき、灯籠の火がゆらりと集まって、言霊の姿になった！', 'Then the lantern flames gather and sway, taking the shape of a Kotodama!'),
+        {
+          battle: { species: 'tomoshibi', level: 14, recruitable: true, bg: 'bg_mountain_temple.webp' },
+          win: [
+            n('トモシビは、手紙の封をじっと照らしている。封には、見たことのない形の漢字が一字、押されている。', 'Tomoshibi keeps shining on the seal. A single kanji you have never seen is pressed into it.'),
+            n('この字が読めないと、封は開かないらしい……。山寺の和尚さんなら、わかるかもしれない。', 'It seems the seal won’t open unless you can read that kanji… The priest at the mountain temple might know.'),
+            { do: [{ give: 'sealed_letter' }, { objective: 'mq12.festival' }, { seen: 'tomoshibi' }, { learn: ['v:tourou'] }] },
+          ],
+          lose: [n('灯籠の光にまぎれて、見失ってしまった……。もう一度来よう。', 'You lose sight of it among the lantern lights… Try again.')],
+        },
+      ],
+    },
+    { steps: [n('お祭りの広場。雪で作った灯籠が並んでいる。', 'The festival field. Lanterns made of snow stand in rows.')] },
+  ],
+  jokan: [
+    {
+      when: { all: [{ questActive: 'mq13' }, { notObj: 'mq13.jokan' }] },
+      steps: [
+        say('jokan', 'ほう……その封は。あの方の手紙ですな。', 'Oh… that seal. It is her letter.', 'surprised'),
+        say('jokan', 'あの方は毎年冬に来ては、村の言葉を帳面に書き留めていかれる。だが、ご自分のお名前は、もう思い出せないとおっしゃっていた。', 'Every winter she comes and writes the village’s words in her notebook. But she said she can no longer remember her own name.', 'worried'),
+        say('jokan', '漢字に{限らず||g:nikagirazu}、言葉というものは、使わなければ消えてしまう。', 'Not only kanji — any word disappears if it is not used.'),
+        { teach: 'g:nikagirazu' },
+        say('jokan', 'この封は、字の心を知る者にしか開けられん。……あなたにその力があるか、試させていただこう。準備ができたら、声をかけなさい。', 'This seal opens only for one who knows the heart of characters. …Let me test whether you have that strength. Speak to me when you are ready.'),
+        { do: [{ objective: 'mq13.jokan' }, { rel: 'jokan', points: 1 }, { learn: ['g:nikagirazu', 'v:kakitomeru'] }] },
+      ],
+    },
+    {
+      when: { all: [{ questActive: 'mq13' }, { obj: 'mq13.jokan' }, { notObj: 'mq13.master' }] },
+      steps: [
+        say('jokan', '一つ目。字の{部首|ぶしゅ|v:bushu}を見なさい。', 'First. Look at the radical of each character.'),
+        {
+          quiz: {
+            q: '「休む」「体」「住む」に共通する部首はどれか。',
+            qEn: 'Which radical do 休, 体 and 住 share?',
+            options: ['にんべん（亻）', 'さんずい（氵）', 'きへん（木）', 'ごんべん（言）'],
+            answer: 0,
+            why: '休・体・住 all have the person radical 亻 (にんべん) on the left.',
+          },
+          keys: ['v:bushu'], area: 'kanji', retry: true,
+        },
+        say('jokan', '二つ目。言葉の組み立てだ。', 'Second. How words are built.'),
+        {
+          quiz: {
+            q: '「雪」と組み合わせて、「雪がとけること」を表す言葉はどれか。',
+            qEn: 'Which word built with 雪 means “snow melting”?',
+            options: ['雪解け', '雪崩', '積雪', '吹雪'],
+            answer: 0,
+            why: '雪解け（ゆきどけ）= thaw. 雪崩 = avalanche, 積雪 = snow cover, 吹雪 = snowstorm.',
+          },
+          keys: ['v:yukidoke'], area: 'vocab', retry: true,
+        },
+        say('jokan', '三つ目。読みを見分けなさい。', 'Third. Tell the readings apart.'),
+        {
+          quiz: {
+            q: '「行事」の「行」と同じ読み方をするものはどれか。',
+            qEn: 'Which word reads 行 the same way as in 行事 (ぎょうじ)?',
+            options: ['行列', '銀行', '旅行', '行動'],
+            answer: 0,
+            why: '行事・行列 read 行 as ぎょう. 銀行・旅行・行動 use こう.',
+          },
+          keys: ['v:gyouji'], area: 'kanji', retry: true,
+        },
+        say('jokan', 'ふむ。字の心は、確かにわかっておられる。最後に、この寺の灯明を守る言霊と向き合いなさい。', 'Hm. You truly understand the heart of characters. Lastly, face the Kotodama that guards this temple’s light.'),
+        {
+          battle: { species: 'toumyou', level: 20, boss: true, bg: 'bg_mountain_temple.webp' },
+          win: [
+            say('jokan', '見事。字は、書く人と読む人がいて、初めて命を持つ。あなたは、よい読み手だ。', 'Splendid. Characters only come alive when there is someone to write them and someone to read them. You are a good reader.', 'happy'),
+            say('jokan', 'この印をお持ちなさい。……さあ、封を開けてみるとよい。', 'Take this seal. …Now, try opening the letter.'),
+            n('和尚の印を押すと、赤い封がほどけた。中の字が、うっすらと光っている。', 'When you press the priest’s seal to it, the red seal comes undone. The characters inside glow faintly.'),
+            say('jokan', 'わしが読むより、つるさんの囲炉裏で読むのがよかろう。あの方の手紙は、いつもつるさんの家に置いていかれたのだから。', 'Better to read it by Tsuru’s hearth than with me. Her letters were always left at Tsuru’s house.'),
+            { do: [{ objective: 'mq13.master' }, { give: 'kanji_stamp' }, { rel: 'jokan', points: 3, memory: 'trial_passed' }, { learn: ['v:bushu', 'v:yukidoke', 'v:kakusuu', 'v:gyouji'] }] },
+          ],
+          lose: [say('jokan', 'まだ字の声が聞こえておらんようだ。修行して、また来なさい。', 'You cannot hear the voice of the characters yet. Train, and come back.')],
+        },
+      ],
+    },
+    {
+      when: { questDone: 'mq13' },
+      steps: [say('jokan', '字は、書く人と読む人がいて、初めて命を持つ。忘れなさるな。', 'Characters come alive only with a writer and a reader. Do not forget.', 'happy')],
+    },
+    { steps: [say('jokan', 'ほう、旅の方か。漢字というものは、一つ一つが小さな物語なのですよ。', 'Oh, a traveller. Each kanji, you know, is a little story of its own.')] },
+  ],
   valley_garden: [
     {
       when: { questDone: 'mq7' },

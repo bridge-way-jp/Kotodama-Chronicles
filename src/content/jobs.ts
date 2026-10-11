@@ -55,6 +55,15 @@ export const JOBS: Record<string, JobDef> = {
     task: 'ラベルの漢字', taskEn: 'Label kanji',
     thanks: 'ありがとう！ 完璧なラベルだ。バイト代と、うちのジュースをどうぞ。', thanksEn: 'Thanks! Perfect labels. Here’s your pay.',
   },
+  clinic: {
+    id: 'clinic', title: '診療所の受付', titleEn: 'Clinic reception (kanji & health words)', npc: 'fujii', area: 'kanji',
+    theme: ['v:shinryoujo', 'v:shoujou', 'v:shohou', 'v:taichou', 'v:kaifuku', 'v:hieru', 'v:kogoeru'],
+    rounds: 8, payPer: 220, bonus: 'oyaki',
+    intro: '薬の袋やカルテの字が、また消えかけているの。読み方を確かめながら、受付を手伝ってくれる？',
+    introEn: 'The kanji on the medicine bags and charts are fading again. Could you help at reception and check the readings?',
+    task: 'カルテ・薬の袋', taskEn: 'Chart / medicine bag',
+    thanks: 'ありがとう、助かったわ。あなたがいると、村のみんなも安心ね。', thanksEn: 'Thank you, that was a great help. With you here, the whole village feels safer.',
+  },
 };
 
 /** the game day on which the job was last done (flags store numbers) */

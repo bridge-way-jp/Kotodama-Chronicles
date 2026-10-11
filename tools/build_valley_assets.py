@@ -1,5 +1,5 @@
 """
-Chapter-2 art besides the map (see tools/build_valley.py):
+Chapter-2 and chapter-3 art besides the maps (see tools/build_valley.py):
 - battle backgrounds (art/sheets/battle_bgs_valley.webp, three stacked scenes)
 - item icons (art/sheets/hm_items_valley.webp, 4 x 3)
 - story pictures (art/sheets/cg_valley_*.webp)
@@ -13,8 +13,10 @@ import numpy as np
 from PIL import Image
 
 sys.path.insert(0, os.path.dirname(__file__))
-from build_rooms import piece, sheet  # noqa: E402
-from extract_sheets import OUT, ROOT, resize_px  # noqa: E402
+from scipy import ndimage  # noqa: E402
+
+from build_rooms import piece, sheet, strict_bg  # noqa: E402
+from extract_sheets import OUT, ROOT, load, magenta_mask, resize_px, to_rgba, trim  # noqa: E402
 
 SHEETS = os.path.join(ROOT, 'art', 'sheets')
 BGS = ['bg_valley_orchard', 'bg_valley_onsen', 'bg_valley_river']
@@ -23,8 +25,8 @@ ITEMS = ['i_peach', 'i_grapes', 'i_onsen_tamago', 'i_grape_juice', 'i_tenugui', 
 CGS = ['cg_valley_arrival', 'cg_valley_onsen', 'cg_valley_calligraphy']
 
 
-def bgs():
-    img = Image.open(os.path.join(SHEETS, 'battle_bgs_valley.webp')).convert('RGB')
+def bgs(sheet='battle_bgs_valley.webp', names=BGS):
+    img = Image.open(os.path.join(SHEETS, sheet)).convert('RGB')
     a = np.asarray(img).astype(int)
     dark = (a.sum(2) < 90).mean(1) > 0.9  # the black separator lines
     rows = [y for y in range(a.shape[0]) if dark[y]]
@@ -35,27 +37,48 @@ def bgs():
     cuts.append(a.shape[0])
     bands = [(cuts[i], cuts[i + 1]) for i in range(len(cuts) - 1) if cuts[i + 1] - cuts[i] > 100]
     assert len(bands) == 3, bands
-    for name, (y0, y1) in zip(BGS, bands):
+    for name, (y0, y1) in zip(names, bands):
         band = img.crop((0, y0 + 4, img.width, y1 - 2))
         band.save(os.path.join(OUT, name + '.webp'), quality=88)
 
 
-def items():
-    sheet('items_valley')
-    for i, name in enumerate(ITEMS):
-        p = piece('items_valley', i, scale=1)
+def items(key='items_valley', names=ITEMS):
+    sheet(key)
+    for i, name in enumerate(names):
+        p = piece(key, i, scale=1)
         resize_px(p, 32 if p.height >= p.width else round(32 * p.height / p.width)).save(os.path.join(OUT, name + '.png'))
 
 
-def cgs():
-    for name in CGS:
+def grid_items(file, names, cols=4, rows=3):
+    """Items on a regular grid; each cell keeps all its parts (e.g. steam above a cup)."""
+    a = load(file)
+    fg = ndimage.binary_opening(~magenta_mask(a), iterations=1)
+    h, w = fg.shape
+    for i, name in enumerate(names):
+        r, c = divmod(i, cols)
+        y0, y1, x0, x1 = r * h // rows, (r + 1) * h // rows, c * w // cols, (c + 1) * w // cols
+        p = trim(to_rgba(a[y0:y1, x0:x1], fg[y0:y1, x0:x1] & ~strict_bg(a[y0:y1, x0:x1])))
+        resize_px(p, 32 if p.height >= p.width else round(32 * p.height / p.width)).save(os.path.join(OUT, name + '.png'))
+
+
+def cgs(names=CGS):
+    for name in names:
         img = Image.open(os.path.join(SHEETS, name + '.webp')).convert('RGB')
         img.thumbnail((1344, 760), Image.LANCZOS)
         img.save(os.path.join(OUT, name + '.webp'), quality=86)
 
 
+# chapter 3: Yukimi mountain village
+MOUNTAIN_BGS = ['bg_mountain_village', 'bg_mountain_trail', 'bg_mountain_temple']
+MOUNTAIN_ITEMS = ['i_amazake', 'i_oyaki', 'i_kairo', 'i_mittens', 'i_yukigutsu', 'i_herbs',
+                  'i_hoshigaki', 'i_usagi_charm', 'i_chochin', 'i_stamp', 'i_sealed_letter', 'i_train_ticket']
+MOUNTAIN_CGS = ['cg_mountain_arrival', 'cg_mountain_hearth', 'cg_mountain_festival']
+
 if __name__ == '__main__':
     bgs()
     items()
     cgs()
+    bgs('battle_bgs_mountain.webp', MOUNTAIN_BGS)
+    grid_items('hm_items_mountain.webp', MOUNTAIN_ITEMS)
+    cgs(MOUNTAIN_CGS)
     print('ok')
