@@ -3,6 +3,7 @@ import type { LoadResult } from '../core/save';
 import { exportToJson } from '../core/save';
 import { ExportBox, ImportBox } from './Backup';
 import { CloudLogin, useCloud } from './CloudPanel';
+import { cloudEnabled } from '../core/cloud';
 
 function fmtPlay(ms: number) {
   const h = Math.floor(ms / 3600000);
@@ -26,7 +27,7 @@ export function Title({
   const [mode, setMode] = useState<'menu' | 'name' | 'confirm'>('menu');
   const [name, setName] = useState('マリア');
   const [confirmText, setConfirmText] = useState('');
-  const [box, setBox] = useState<'import' | 'raw' | 'current' | null>(null);
+  const [box, setBox] = useState<'import' | 'raw' | 'current' | 'account' | null>(null);
   const c = useCloud();
   const remote = c.user ? c.remote : null;
   const hasSave = load.kind === 'ok' || !!remote;
@@ -36,18 +37,18 @@ export function Title({
 
   return (
     <div className="title-screen">
-      <div className="title-bg" style={{ backgroundImage: 'url(assets/cg_arrival.webp)' }} />
-      <div className="title-art">
-        <img className="px t-sprite s1" src="assets/hero_up_0.png" alt="" />
-        <img className="px t-sprite s2" src="assets/back_k_fox_blue.png" alt="" />
-      </div>
+      <div className="title-bg" />
       <div className="title-logo">
-        <h1>Kotodama Chronicles</h1>
-        <div className="subtitle" lang="ja">― 言葉でつながる、あたらしい世界へ ―</div>
-        <div className="tagline">A Japanese RPG for the road from JLPT N3 to N2</div>
+        <h1>
+          <img src="assets/title_logo.png" alt="Kotodama Chronicles" />
+        </h1>
+        <div className="subtitle" lang="ja">
+          言葉でつながる、あたらしい世界へ
+        </div>
+        <div className="tagline">A Japanese learning RPG · from JLPT N3 to N2</div>
       </div>
 
-      <div className="panel title-menu">
+      <div className="title-menu">
         {mode === 'menu' && (
           <>
             {load.kind === 'error' && (
@@ -61,39 +62,73 @@ export function Title({
               </div>
             )}
             {remote && cloudNewer && (
-              <button className="btn primary big" autoFocus onClick={onContinueCloud}>
-                ☁ つづきから Continue (cloud)
-                <small>
-                  {remote.playerName} · Lv.{remote.summary.level} · Day {remote.summary.day} · {fmtPlay(remote.summary.playMs)} · saved{' '}
-                  {new Date(remote.savedAt).toLocaleString()}
-                </small>
+              <button className="t-btn t-main" autoFocus onClick={onContinueCloud}>
+                <span className="t-ico">☁</span>
+                <span className="t-lbl">
+                  <b lang="ja">
+                    つづきから <span>Continue (cloud)</span>
+                  </b>
+                  <small lang="ja">
+                    {remote.playerName} · Lv.{remote.summary.level} · Day {remote.summary.day}
+                  </small>
+                  <small>
+                    {fmtPlay(remote.summary.playMs)} played · saved {new Date(remote.savedAt).toLocaleString()}
+                  </small>
+                </span>
+                <span className="t-chev">›</span>
               </button>
             )}
             {local && load.kind === 'ok' && (
-              <button className={`btn big ${cloudNewer ? '' : 'primary'}`} autoFocus={!cloudNewer} onClick={onContinue}>
-                ▶ つづきから Continue
-                <small>
-                  {load.env.playerName} · Lv.{load.env.summary.level} · Day {load.env.summary.day} · {fmtPlay(load.env.summary.playMs)} · saved{' '}
-                  {new Date(load.env.savedAt).toLocaleString()}
-                  {load.fromBackup && ' (restored from backup slot)'}
-                  {cloudNewer && ' · dieses Gerät (älter als die Cloud – überschreibt sie, die Cloud behält eine Sicherung)'}
-                </small>
+              <button className={`t-btn ${cloudNewer ? '' : 't-main'}`} autoFocus={!cloudNewer} onClick={onContinue}>
+                <span className="t-ico">▶</span>
+                <span className="t-lbl">
+                  <b lang="ja">
+                    つづきから <span>Continue</span>
+                  </b>
+                  <small lang="ja">
+                    {load.env.playerName} · Lv.{load.env.summary.level} · Day {load.env.summary.day}
+                  </small>
+                  <small>
+                    {fmtPlay(load.env.summary.playMs)} played
+                    {load.fromBackup && ' · restored from backup slot'}
+                    {cloudNewer && ' · this device (older than the cloud save)'}
+                  </small>
+                </span>
+                <span className="t-chev">›</span>
               </button>
             )}
-            <button className={`btn big ${hasSave ? '' : 'primary'}`} autoFocus={!hasSave} onClick={() => setMode(hasSave || load.kind === 'error' ? 'confirm' : 'name')}>
-              ✦ はじめから New game
+            <button
+              className={`t-btn ${hasSave ? '' : 't-main'}`}
+              autoFocus={!hasSave}
+              onClick={() => setMode(hasSave || load.kind === 'error' ? 'confirm' : 'name')}
+            >
+              <span className="t-ico t-sakura">✿</span>
+              <span className="t-lbl">
+                <b lang="ja">
+                  はじめから <span>New game</span>
+                </b>
+              </span>
+              <span className="t-chev">›</span>
             </button>
-            <button className="btn" onClick={() => setBox(box === 'import' ? null : 'import')}>
+            <button className="t-link" onClick={() => setBox(box === 'import' ? null : 'import')}>
               ⤓ Import backup
             </button>
             {box === 'import' && <ImportBox hasSave={hasSave} onClose={() => setBox(null)} onImport={(_env, text) => onImport(text)} />}
             {box === 'raw' && load.kind === 'error' && (
               <ExportBox text={exportToJson(load.raw)} filename="kotodama-save-raw.json" onClose={() => setBox(null)} />
             )}
-            <CloudLogin />
-            <p className="note">
-              Progress is saved automatically in this browser. Clearing site data erases it — export a backup from Settings now and then.
-            </p>
+            <div className="t-divider" />
+            <div className="t-status" title="Progress is saved automatically in this browser. Clearing site data erases it — export a backup from Settings now and then.">
+              {hasSave ? '✓ Progress saved' : 'Progress is saved automatically'}
+              {c.user ? ' · ☁ cloud sync on' : ' in this browser'}
+            </div>
+            {cloudEnabled && (
+              <button className="t-link small" onClick={() => setBox(box === 'account' ? null : 'account')}>
+                Account
+              </button>
+            )}
+            {box === 'account' && <CloudLogin />}
+            <div className="t-foot">Original game · Unofficial JLPT practice</div>
           </>
         )}
         {mode === 'confirm' && (
@@ -147,7 +182,6 @@ export function Title({
           </form>
         )}
       </div>
-      <div className="credits">Original game. Practice questions are N2-style originals, not official JLPT material.</div>
     </div>
   );
 }
