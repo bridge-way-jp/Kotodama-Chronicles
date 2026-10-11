@@ -3,6 +3,7 @@ import { AFFINITY_INFO, IDLE_SPRITES, ITEMS, MOVES, SPECIES } from '../content/c
 import { store } from '../core/store';
 import { battleExercise, recordAnswer, type Exercise, type Option } from '../core/learning';
 import { enemyDamage, enemyMaxHp, makeEnemy, playerDamage, recruitSucceeds, xpReward, type BattleSetup } from '../core/battle';
+import { KotodamaScene, type SceneSpec } from './KotodamaScene';
 import { addCreature, completeObjective, giveCreatureXp, grantXp, healTeam, maxHp } from '../core/game';
 import { currentMusic, playJingle, playMusic, sfx } from '../core/audio';
 import { ExerciseView, QuestionBlock, type ExerciseTools } from './Question';
@@ -74,6 +75,17 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
   };
   const levelMsgs = useRef<string[]>([]);
   const [phase, setPhase] = useState<Phase>({ k: 'msg' });
+  const [scene, setScene] = useState<{ queue: SceneSpec[]; then: () => void } | null>(null);
+  const playScenes = (queue: SceneSpec[], then: () => void) => (queue.length ? setScene({ queue, then }) : then());
+  const nextScene = () => {
+    if (!scene) return;
+    const rest = scene.queue.slice(1);
+    if (rest.length) setScene({ ...scene, queue: rest });
+    else {
+      setScene(null);
+      scene.then();
+    }
+  };
   const [queue, setQueue] = useState<string[]>([]);
   const after = useRef<() => void>(() => setPhase({ k: 'menu' }));
   const [shake, setShake] = useState<'enemy' | 'me' | null>(null);
@@ -166,25 +178,28 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
 
   const finish = (result: BattleResult) => {
     const active = activeRef.current;
+    const evolutions: { from: string; to: string }[] = [];
     store.update((st) => {
       if (result === 'win' || result === 'recruit') {
         st.stats.battlesWon++;
         const xp = xpReward(enemy, setup.boss);
         grantXp(st, Math.round(xp / 2));
         st.team.forEach((c, i) => {
-          if (c.hp > 0 || i === active) giveCreatureXp(st, c, i === active ? xp : Math.round(xp / 2)).forEach((m) => levelMsgs.current.push(m));
+          if (c.hp > 0 || i === active) giveCreatureXp(st, c, i === active ? xp : Math.round(xp / 2), evolutions).forEach((m) => levelMsgs.current.push(m));
         });
         if (st.map === 'forest' && st.quests.mq5?.status === 'active' && st.quests.mq5.objectives.kirishima) completeObjective(st, 'mq5.befriend');
       }
       if (result === 'lose') healTeam(st);
     }, 'battle');
     if (result === 'win' || result === 'recruit') playJingle('victory');
+    const scenes: SceneSpec[] = [...(result === 'recruit' ? [{ kind: 'new' as const, species: enemy.speciesId }] : []), ...evolutions.map((e) => ({ kind: 'evolve' as const, ...e }))];
+    const end = () => playScenes(scenes, () => setPhase({ k: 'end', result }));
     if (levelMsgs.current.length) {
       sfx('level');
       playFx('levelup', 'me');
-      say(levelMsgs.current, () => setPhase({ k: 'end', result }));
+      say(levelMsgs.current, end);
       levelMsgs.current = [];
-    } else setPhase({ k: 'end', result });
+    } else end();
   };
 
   const onAnswer = (moveId: string, ex: Exercise, ok: boolean, ms: number, chosen?: Option) => {
@@ -215,7 +230,7 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
     if (ok && recruitSucceeds(enemy, enemyMax, true, bond.current)) {
       store.update((st) => addCreature(st, enemy.speciesId, enemy.level), 'battle');
       sfx('level');
-      say([`${esp.name}は、うれしそうに近づいてきた。`, `${esp.name}が仲間になった！`], () => finish('recruit'));
+      say([`${esp.name}は、うれしそうに近づいてきた。`], () => finish('recruit'));
       return;
     }
     if (ok) {
@@ -263,6 +278,7 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
 
   return (
     <div className="battle">
+      {scene && <KotodamaScene key={scene.queue.length} spec={scene.queue[0]} onDone={nextScene} />}
       <div className="arena" style={{ backgroundImage: `url(assets/${bgFile(setup.bg)})` }}>
         <div className="arena-shade" />
         {fx && <div key={fx.k} className={`fx fx-on-${fx.on}`} style={{ backgroundImage: `url(assets/fx_${fx.name}.png)` }} />}

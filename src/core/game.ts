@@ -61,8 +61,8 @@ export function addCreature(s: GameState, speciesId: string, level: number) {
   return c;
 }
 
-/** Returns evolution messages, if any. */
-export function giveCreatureXp(s: GameState, c: CreatureInstance, amount: number): string[] {
+/** Returns level-up/evolution messages; evolutions are also pushed to `evolutions` (for the evolution scene). */
+export function giveCreatureXp(s: GameState, c: CreatureInstance, amount: number, evolutions?: { from: string; to: string }[]): string[] {
   const msgs: string[] = [];
   const bonus = s.inventory.omamori ? 1.1 : 1;
   c.xp += Math.round(amount * bonus);
@@ -74,11 +74,13 @@ export function giveCreatureXp(s: GameState, c: CreatureInstance, amount: number
     msgs.push(`${SPECIES[c.speciesId].name} grew to Lv. ${c.level}!`);
     const evo = SPECIES[c.speciesId].evolvesTo;
     if (evo && c.level >= evo.level) {
-      const from = SPECIES[c.speciesId].name;
+      const fromId = c.speciesId;
+      const from = SPECIES[fromId].name;
       const ratio = c.hp / maxHp(c);
       c.speciesId = evo.species;
       c.hp = Math.max(1, Math.round(maxHp(c) * ratio));
       s.dex[evo.species] = 'caught';
+      evolutions?.push({ from: fromId, to: evo.species });
       msgs.push(`${from} evolved into ${SPECIES[evo.species].name}!`);
     }
   }
