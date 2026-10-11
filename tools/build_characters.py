@@ -195,3 +195,74 @@ def grid_sheet(name, height, blocks, gap=30):
 if __name__ == '__main__':
     for n, cfg in GRID_SHEETS.items():
         grid_sheet(n, **cfg)
+
+
+# ---------------------------------------------------------------- redrawn sheets (art/PROMPTS_CHARACTERS.md)
+# blocks of 4 columns x 4 rows (down / left / right / up); blocks with only 3 rows are down / left / up
+# and get "right" mirrored. Listed row by row (blocks left to right).
+REDRAWN = {
+    'hm_chars_main.webp': [[('hero', 'hero'), ('npc', 'mori'), ('npc', 'kaede')],
+                           [('npc', 'haruto'), ('npc', 'aoi'), ('npc', 'sato')]],
+}
+
+
+def split_n(v, n):
+    """n stretches, cut where the row sum is smallest near the equal divisions."""
+    L = len(v)
+    cuts = [0]
+    for i in range(1, n):
+        t = L * i / n
+        lo, hi = int(t - L / (3 * n)), int(t + L / (3 * n))
+        cuts.append(lo + int(np.argmin(v[lo:hi])))
+    cuts.append(L)
+    return list(zip(cuts[:-1], cuts[1:]))
+
+
+def redrawn_sheet(name, layout):
+    a = load(name)
+    fg = ndimage.binary_opening(~magenta_mask(a))
+    cols = runs(fg.sum(0), 10)
+    assert len(cols) == 4 * len(layout[0]), (name, cols)
+    # block rows: horizontal gaps across the whole sheet
+    bands = runs(fg.sum(1), 15)
+    blocks_y, cur = [], None
+    for b in bands:
+        if cur and b[0] - cur[1] < 20:
+            cur = (cur[0], b[1])
+        else:
+            if cur:
+                blocks_y.append(cur)
+            cur = b
+    blocks_y.append(cur)
+    assert len(blocks_y) == len(layout), (name, blocks_y)
+    for (y0, y1), row in zip(blocks_y, layout):
+        for gi, (kind, who) in enumerate(row):
+            gx = cols[gi * 4:gi * 4 + 4]
+            x0, x1 = gx[0][0], gx[-1][1]
+            prof = fg[y0:y1, x0:x1].sum(1)
+            # frame rows can touch: count them from the block height (a frame is ~1.25x as tall as wide)
+            col_w = sum(c1 - c0 for c0, c1 in gx) / 4
+            n = 4 if (y1 - y0) / col_w > 4.6 else 3
+            rows = split_n(prof, n)
+            imgs = [cut(a, fg, (cx0, y0 + ry0, cx1, y0 + ry1)) for ry0, ry1 in rows for cx0, cx1 in gx]
+            tallest = max(i.height for i in imgs)
+            scaled = [resize_px(i, max(8, round(i.height * HEIGHT / tallest))) for i in imgs]
+            dirs = ['down', 'left', 'right', 'up'] if n == 4 else ['down', 'left', 'up']
+            f = {d: scaled[k * 4:(k + 1) * 4] for k, d in enumerate(dirs)}
+            if n == 3:
+                f['right'] = [i.transpose(Image.FLIP_LEFT_RIGHT) for i in f['left']]
+            for d, fr in f.items():
+                if kind == 'hero':
+                    for i, img in enumerate(fr):
+                        img.save(os.path.join(OUT, f'hero_{d}_{i}.png'))
+                elif kind == 'npc':
+                    fr[0].save(os.path.join(OUT, f'npc_{who}_{d}.png'))
+                else:
+                    for i, img in enumerate(fr):
+                        img.save(os.path.join(OUT, f'folk_{who}_{d}_{i}.png'))
+            print(name, who, f'{n} rows')
+
+
+if __name__ == '__main__':
+    for n, layout in REDRAWN.items():
+        redrawn_sheet(n, layout)
