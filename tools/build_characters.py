@@ -203,6 +203,8 @@ if __name__ == '__main__':
 REDRAWN = {
     'hm_chars_main.webp': [[('hero', 'hero'), ('npc', 'mori'), ('npc', 'kaede')],
                            [('npc', 'haruto'), ('npc', 'aoi'), ('npc', 'sato')]],
+    # Haruto, Aoi and Satō redrawn with real right-facing views (overrides their 3-row blocks above)
+    'hm_chars_main2.webp': [[('npc', 'haruto'), ('npc', 'aoi'), ('npc', 'sato')]],
     'hm_chars_more.webp': [[('npc', 'kirishima'), ('npc', 'station_staff'), ('npc', 'customer')],
                            [('folk', 'schoolgirl'), ('folk', 'salaryman'), ('folk', 'delivery')]],
     'hm_chars_town.webp': [[('folk', 'miko'), ('folk', 'chef'), ('folk', 'gardener')],
@@ -230,6 +232,15 @@ def redrawn_sheet(name, layout):
     a = load(name)
     fg = ndimage.binary_opening(~magenta_mask(a))
     cols = runs(fg.sum(0), 10)
+    if len(cols) != 4 * len(layout[0]):
+        # frames that touch (long hair): split each too-wide run into equal frame columns
+        fw = np.median([c1 - c0 for c0, c1 in cols])
+        fixed = []
+        for c0, c1 in cols:
+            n = max(1, round((c1 - c0) / fw))
+            prof = fg[:, c0:c1].sum(0)
+            fixed += [(c0 + a, c0 + b) for a, b in split_n(prof, n)] if n > 1 else [(c0, c1)]
+        cols = fixed
     assert len(cols) == 4 * len(layout[0]), (name, cols)
     # block rows: horizontal gaps across the whole sheet
     bands = runs(fg.sum(1), 15)
