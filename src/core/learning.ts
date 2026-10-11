@@ -116,7 +116,9 @@ export function encounter(s: GameState, keys: string[], now = Date.now()): strin
 function vocabExercise(id: string, mode: string, s: GameState, r: () => number): Exercise {
   const v = VOCAB_BY_ID[id];
   const lang = s.settings.meaningLang;
-  const others = VOCAB.filter((x) => x.id !== id && !confusable(v, x) && x.word !== v.word && x.de !== v.de && x.en !== v.en && x.exampleEn !== v.exampleEn);
+  const others = VOCAB.filter(
+    (x) => x.id !== id && !confusable(v, x) && x.word !== v.word && x.de !== v.de && x.en !== v.en && x.exampleEn !== v.exampleEn && (x.example || (mode !== 'sentence' && mode !== 'listen')),
+  );
   const samePos = others.filter((x) => x.pos === v.pos);
   const pool = samePos.length >= 3 ? samePos : others;
   const distract = pickN(pool, 3, r);
@@ -278,7 +280,10 @@ export function exerciseFor(s: GameState, key: string, opts: { prefer?: 'listen'
   if (opts.prefer === 'context') modes = ['cloze', 'sentence'];
   // kana-only words (conjunctions, onomatopoeia) have nothing to read or type
   if (!hasKanji(VOCAB_BY_ID[id]?.word ?? '')) modes = modes.filter((x) => x !== 'reading' && x !== 'type');
-  if (!modes.length) modes = ['meaning', 'cloze'];
+  // curriculum words without an example sentence yet are drilled without context
+  const noExample = !VOCAB_BY_ID[id]?.example;
+  if (noExample) modes = modes.filter((x) => x !== 'cloze' && x !== 'sentence' && x !== 'listen');
+  if (!modes.length) modes = noExample ? ['meaning', 'reverse'] : ['meaning', 'cloze'];
   return vocabExercise(id, modes[Math.floor(r() * modes.length)], s, r);
 }
 
@@ -298,7 +303,11 @@ export function queueInfo(s: GameState, now = Date.now()): QueueInfo {
   const due = cards.filter((c) => isDue(c, now)).sort((a, b) => a.due - b.due).map((c) => c.key);
   // new = encountered in the world but never studied; chapter items come after
   const encounteredNew = cards.filter((c) => !c.introduced).sort((a, b) => b.encounters - a.encounters).map((c) => c.key);
-  const chapterNew = allKeys().filter((k) => !s.cards[k] && chapterOf(k) <= s.chapter);
+  const chapterNew = allKeys()
+    .filter((k) => !s.cards[k] && isNewCandidate(s, k))
+    .map((k, i) => [k, chapterOf(k) * 1e5 + i] as const)
+    .sort((a, b) => a[1] - b[1])
+    .map(([k]) => k);
   const struggling = cards.filter((c) => mastery(c) === 'struggling').map((c) => c.key);
   return {
     due,
@@ -312,7 +321,20 @@ function chapterOf(key: string): number {
   const [t, id] = key.split(':');
   if (t === 'v') return VOCAB_BY_ID[id]?.chapter ?? 99;
   if (t === 'g') return GRAMMAR_BY_ID[id]?.chapter ?? 99;
+  if (t === 'k') return KANJI_BY_ID[id]?.chapter ?? 1;
   return 1;
+}
+
+/**
+ * Story items unlock with the story chapter. The imported N2 curriculum is available from the start
+ * and comes region by region (N3 review words only when met); its kanji follow once one of their
+ * words has been introduced.
+ */
+function isNewCandidate(s: GameState, key: string): boolean {
+  const [t, id] = key.split(':');
+  if (t === 'v' && VOCAB_BY_ID[id]?.source === 'jlpt') return VOCAB_BY_ID[id].chapter > 0;
+  if (t === 'k' && KANJI_BY_ID[id]?.source === 'jlpt') return KANJI_BY_ID[id].words.some((w) => s.cards['v:' + w]?.introduced);
+  return chapterOf(key) <= s.chapter;
 }
 
 /** A focused review session: due first, then contrast drills, then limited new items. */

@@ -46,8 +46,9 @@ After the chapter: a post-game encounter at the shrine, continued reviews and N2
 
 ## Learning system
 
-- **Curriculum**: 56 vocabulary items, 14 grammar points and 22 kanji for chapter 1 (`src/content/`). Levels are approximate:
-  the JLPT does not publish an official vocabulary or grammar list.
+- **Curriculum**: hand-written story content per chapter (`src/content/`) plus the full N2 list — about 1,870 N2 words
+  and 320 N2 kanji, sorted into the game's regions (`tools/import_jlpt.py`, plan in `docs/CURRICULUM.md`).
+  The JLPT does not publish official lists; the game uses common community lists (`data/jlpt/SOURCES.md`).
 - **Spaced repetition**: SM-2-based scheduler (`src/core/srs.ts`). Answers are graded from correctness and response
   time; missed items return after 10 minutes, then 1 day, 3 days and ease-multiplied intervals.
 - **Exposure ≠ mastery**: meeting a word in dialogue only registers an encounter. Mastery levels

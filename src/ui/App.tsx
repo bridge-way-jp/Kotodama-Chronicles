@@ -5,6 +5,7 @@ import { importFromJson, type LoadResult } from '../core/save';
 import { Title } from './Title';
 import { GameView } from './GameView';
 import { cloud, initCloud, adoptBase, fetchPack } from '../core/cloud';
+import { loadCurriculum } from '../core/curriculum';
 import { loadLocalPack, packInfo, parsePack, registerPack, seedProgress, storeLocalPack } from '../core/packs';
 import { bus, toast } from '../core/events';
 
@@ -32,7 +33,7 @@ export function App() {
   const [load, setLoad] = useState<LoadResult>({ kind: 'none' });
 
   const refresh = async () => {
-    await loadLocalPack();
+    await Promise.all([loadLocalPack(), loadCurriculum()]);
     const [r] = await Promise.all([saves.load(), Promise.race([initCloud(), new Promise((ok) => setTimeout(ok, 6000))])]);
     setLoad(r);
     setScreen('title');

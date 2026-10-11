@@ -169,6 +169,9 @@ export interface KanjiEntry {
   meaning: string;
   words: string[]; // vocab ids
   strokes: number;
+  /** 'jlpt' for the imported N2 curriculum (src/core/curriculum.ts) */
+  source?: string;
+  chapter?: number;
 }
 
 export interface Question {
