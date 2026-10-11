@@ -203,6 +203,8 @@ if __name__ == '__main__':
 REDRAWN = {
     'hm_chars_main.webp': [[('hero', 'hero'), ('npc', 'mori'), ('npc', 'kaede')],
                            [('npc', 'haruto'), ('npc', 'aoi'), ('npc', 'sato')]],
+    'hm_chars_more.webp': [[('npc', 'kirishima'), ('npc', 'station_staff'), ('npc', 'customer')],
+                           [('folk', 'schoolgirl'), ('folk', 'salaryman'), ('folk', 'delivery')]],
 }
 
 
