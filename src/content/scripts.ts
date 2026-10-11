@@ -134,6 +134,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     {
       when: { all: [{ flag: 'chapter1_done' }, { questNotStarted: 'mq6' }] },
       steps: [
+        { do: [{ music: 'memory' }] },
         say('mori', 'あら、おかえりなさい。えっと……あなた、お名前は……。', 'Oh, welcome back. Um… your name is…', 'surprised'),
         n('森さんは、困ったように笑った。いつも「@nameちゃん」と呼んでくれていたのに。', 'Ms. Mori smiled awkwardly. She has always called you “@name”.'),
         {
@@ -161,6 +162,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     {
       when: { all: [{ item: 'name_scroll' }, { notFlag: 'mori_scroll' }] },
       steps: [
+        { do: [{ music: 'memory' }] },
         n('森さんに、谷で書いた書を渡した。', 'You give Ms. Mori the calligraphy you wrote in the valley.'),
         say('mori', 'これは……「森」。わたしの名前ね。', 'This is… “Mori”. My name.', 'surprised'),
         say('mori', '上手じゃないけど、一画一画、ていねいに書いてある。……あなたが書いてくれたのね、@nameちゃん。', 'It isn’t perfect, but every stroke is careful… You wrote this for me, @name.', 'happy'),
@@ -848,6 +850,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       when: { all: [{ questActive: 'mq8' }, { obj: 'mq8.okami' }, { notObj: 'mq8.onsen' }] },
       steps: [
         { cg: 'cg_valley_onsen', say: '足をお湯に{浸|つ}けると、体の{芯|しん}まで温かくなった。白い{湯気|ゆげ}が、夕空にとけていく。', en: 'As you soak your feet, warmth spreads through your whole body. White steam melts into the evening sky.' },
+        { do: [{ music: 'memory' }] },
         say('okami', '主人は、とても声のやさしい人でした。でも最近、その声が思い出せないのです。', 'My husband had a very gentle voice. But lately I can’t remember it.', 'worried'),
         say('okami', '忘れるのがこわい{あまり||g:amari}、毎晩、主人との思い出を日記に書いています。', 'I’m so afraid of forgetting that I write my memories of him in a diary every night.', 'worried'),
         { teach: 'g:amari' },
@@ -896,6 +899,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       steps: [
         say('ota', '……何の用だ。弟子なら取らんぞ。', '…What do you want? I don’t take students.'),
         n('あなたは、森さんのこと、町で消えていく言葉のこと、そして「K」の手紙のことを話した。', 'You tell him about Ms. Mori, the words vanishing in town, and the letter signed “K”.'),
+        { do: [{ music: 'memory' }] },
         say('ota', 'Kか……。霧島くんから聞いたのだな。', 'K… So you heard it from Kirishima.', 'surprised'),
         say('ota', 'あの人は、言葉を失っていく人たちを救おうとした。そして、自分の言葉を失った。……わしは、止められなかった。', 'That person tried to save people who were losing their words — and lost their own words instead. …I couldn’t stop it.', 'worried'),
         say('ota', 'ここまで来た{からには||g:karaniwa}、覚悟はできているのだろうな。入りなさい。', 'Now that you’ve come this far, I trust you’re prepared. Come in.'),

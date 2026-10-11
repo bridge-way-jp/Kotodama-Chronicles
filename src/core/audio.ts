@@ -125,10 +125,12 @@ export const TRACKS: Record<string, string> = {
   home: 'audio/home.mp3',
   boss: 'audio/boss.mp3',
   battle: 'audio/battle.mp3',
+  onsen: 'audio/onsen.mp3',
+  memory: 'audio/memory.mp3',
 };
 
 export const MAP_MUSIC: Record<string, string> = {
-  town: 'town', apartment: 'home', cafe: 'cafe', konbini: 'town', library: 'home', station: 'town', forest: 'forest',
+  town: 'town', apartment: 'home', cafe: 'cafe', konbini: 'town', library: 'home', station: 'town', forest: 'forest', valley: 'onsen',
 };
 
 let music: HTMLAudioElement | null = null;

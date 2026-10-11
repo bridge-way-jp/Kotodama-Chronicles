@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { SPECIES } from '../content/creatures';
-import { sfx } from '../core/audio';
+import { playJingle, sfx } from '../core/audio';
 
 /**
  * Full-screen moments for Kotodama:
@@ -20,10 +20,12 @@ export function KotodamaScene({ spec, onDone }: { spec: SceneSpec; onDone: () =>
 
   useEffect(() => {
     setDone(false);
-    sfx('open');
+    // evolve: rising chimes that peak at the reveal; new friend: a little fanfare when it pops out
+    if (spec.kind === 'evolve') playJingle('evolve');
+    else sfx('open');
     const t = setTimeout(() => {
       setDone(true);
-      sfx('level');
+      if (spec.kind === 'new') playJingle('newfriend');
     }, spec.kind === 'evolve' ? EVOLVE_MS : NEW_MS);
     return () => clearTimeout(t);
   }, [spec]);

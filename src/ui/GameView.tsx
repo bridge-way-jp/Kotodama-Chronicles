@@ -6,7 +6,7 @@ import { bus } from '../core/events';
 import { store } from '../core/store';
 import { pickRule, type Step } from '../core/script';
 import { healTeam, runAction, type ActionHooks } from '../core/game';
-import { MAP_MUSIC, duckMusic, playMusic, setMusicVolume, setSfx, sfx, stopMusic, stopSpeech } from '../core/audio';
+import { MAP_MUSIC, currentMusic, duckMusic, playMusic, setMusicVolume, setSfx, sfx, stopMusic, stopSpeech } from '../core/audio';
 import { SCRIPTS } from '../content/scripts';
 import { saveNow } from '../core/persistence';
 import type { BattleSetup } from '../core/battle';
@@ -70,6 +70,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
 
   const hooks: ActionHooks = {
     warp: (map, x, y) => bus.emit('warp', { map, x, y }),
+    music: (key) => playMusic(key === 'map' ? MAP_MUSIC[store.s.map] ?? 'town' : key),
     open: (what) => {
       if (what === 'review') push({ kind: 'review' });
       else if (what === 'dashboard') push({ kind: 'menu', tab: 'jlpt' });
@@ -148,6 +149,8 @@ export function GameView({ onExit }: { onExit: () => void }) {
             hooks={hooks}
             onEnd={() => {
               remove(o.id);
+              // an emotional scene's music ends with the scene
+              if (currentMusic() === 'memory') playMusic(MAP_MUSIC[store.s.map] ?? 'town');
               void saveNow();
             }}
           />
