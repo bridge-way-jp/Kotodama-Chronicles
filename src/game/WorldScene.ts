@@ -193,6 +193,7 @@ export class WorldScene extends Phaser.Scene {
       // painted outdoor maps already show trees, flowers and grass
       if (!this.map.image) this.placeScenery();
       this.spawnButterflies();
+      this.spawnSteam();
     }
     if (this.map.image && this.textures.exists(this.map.image)) {
       // pre-drawn room: the tile layer only provides collision
@@ -321,6 +322,43 @@ export class WorldScene extends Phaser.Scene {
     if (!this.textures.exists(key)) return;
     const py = y * TILE + TILE;
     this.add.image(x * TILE + TILE / 2, py, key).setOrigin(0.5, 1).setFlipX(flip).setDepth(py - 4);
+  }
+
+  /** soft steam puffs rising from hot springs (map.steam) */
+  spawnSteam() {
+    if (!this.map.steam?.length) return;
+    if (!this.textures.exists('fx_steam')) {
+      const g = this.make.graphics({ x: 0, y: 0 }, false);
+      for (let r = 16; r > 0; r--) {
+        g.fillStyle(0xffffff, 0.09);
+        g.fillCircle(16, 16, r);
+      }
+      g.generateTexture('fx_steam', 32, 32);
+      g.destroy();
+    }
+    for (const src of this.map.steam) {
+      this.time.addEvent({
+        delay: 200,
+        loop: true,
+        callback: () => {
+          const p = this.add
+            .image(src.x + Phaser.Math.Between(-src.w / 2, src.w / 2), src.y + Phaser.Math.Between(-6, 6), 'fx_steam')
+            .setDepth(src.depth ?? 100000)
+            .setAlpha(0)
+            .setScale(Phaser.Math.FloatBetween(0.8, 1.4));
+          this.tweens.add({
+            targets: p,
+            y: p.y - Phaser.Math.Between(60, 110),
+            x: p.x + Phaser.Math.Between(-14, 14),
+            scale: p.scale * 2.2,
+            alpha: { from: 0.95, to: 0 },
+            duration: Phaser.Math.Between(2200, 3200),
+            ease: 'Sine.easeOut',
+            onComplete: () => p.destroy(),
+          });
+        },
+      });
+    }
   }
 
   /** a few butterflies drifting over outdoor maps */
@@ -633,13 +671,14 @@ export class WorldScene extends Phaser.Scene {
     if (this.tileAt(this.px, this.py) === '"' && this.map.encounters && s.team.length > 0) {
       if (s.stats.steps - this.lastStepEncounter > 3 && Math.random() < 0.12) {
         this.lastStepEncounter = s.stats.steps;
-        const table = ENCOUNTERS[this.map.encounters];
+        const zone = this.map.zones?.find((z) => this.px >= z.x0 && this.px <= z.x1 && this.py >= z.y0 && this.py <= z.y1);
+        const table = ENCOUNTERS[zone?.encounters ?? this.map.encounters];
         const total = table.reduce((a, b) => a + b.weight, 0);
         let roll = Math.random() * total;
         const pick = table.find((e) => (roll -= e.weight) < 0) ?? table[0];
         const level = pick.min + Math.floor(Math.random() * (pick.max - pick.min + 1));
         this.cameras.main.flash(250, 255, 255, 255);
-        bus.emit('encounter', { species: pick.species, level, bg: this.map.bg });
+        bus.emit('encounter', { species: pick.species, level, bg: zone?.bg ?? this.map.bg });
       }
     }
   }

@@ -287,6 +287,16 @@ export const ENCOUNTERS: Record<string, { species: string; min: number; max: num
     { species: 'homura', min: 3, max: 5, weight: 2 },
     { species: 'fuwari', min: 3, max: 5, weight: 2 },
   ],
+  valley_grove: [
+    { species: 'momotan', min: 6, max: 9, weight: 6 },
+    { species: 'yukemuri', min: 6, max: 8, weight: 1 },
+    { species: 'kotori', min: 6, max: 8, weight: 1 },
+  ],
+  valley_river: [
+    { species: 'yukemuri', min: 6, max: 9, weight: 6 },
+    { species: 'momotan', min: 6, max: 8, weight: 1 },
+    { species: 'fuwari', min: 6, max: 8, weight: 1 },
+  ],
   valley: [
     { species: 'momotan', min: 6, max: 9, weight: 4 },
     { species: 'yukemuri', min: 6, max: 9, weight: 4 },

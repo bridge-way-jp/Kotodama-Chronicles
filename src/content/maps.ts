@@ -65,6 +65,10 @@ export interface MapDef {
   /** pre-drawn room image (public/assets/<image>.png) drawn instead of tiles; tiles then only define collision */
   image?: string;
   bg?: string; // battle background
+  /** areas with their own encounter table / battle background (inclusive tile rectangles) */
+  zones?: { x0: number; y0: number; x1: number; y1: number; encounters?: string; bg?: string }[];
+  /** world positions (px) where steam rises, with the depth to draw it at */
+  steam?: { x: number; y: number; w: number; depth?: number }[];
   /** wandering townsfolk: FOLK id, home tile, wander radius in tiles */
   wanderers?: { id: string; x: number; y: number; r: number }[];
 }
@@ -243,6 +247,16 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'busdriver', x: 23, y: 21, facing: 'up' },
     ],
     warps: [19, 20, 21].map((x) => ({ x, y: 27, to: { map: 'town', x: 27, y: 20, facing: 'down' as const } })),
+    zones: [
+      { x0: 25, y0: 1, x1: 32, y1: 4, encounters: 'valley_grove', bg: 'bg_valley_orchard.webp' },
+      { x0: 2, y0: 15, x1: 7, y1: 17, encounters: 'valley_river', bg: 'bg_valley_river.webp' },
+    ],
+    steam: [
+      { x: 1000, y: 300, w: 30, depth: 470 }, // behind the inn roof
+      { x: 1085, y: 300, w: 30, depth: 470 },
+      { x: 1205, y: 270, w: 70 }, // hot-spring falls
+      { x: 1240, y: 336, w: 50 }, // footbath on the onsen square
+    ],
   },
   apartment: {
     id: 'apartment', name: 'Your apartment', nameJa: 'アパート', tiles: ROOMS_GEN.apartment.tiles, interior: true, image: ROOMS_GEN.apartment.image,
