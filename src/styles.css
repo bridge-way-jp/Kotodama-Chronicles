@@ -482,8 +482,6 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
 .backup-box textarea { width: 100%; font: 12px/1.4 ui-monospace, monospace; border: 2px solid #cfae7d; border-radius: 6px; padding: 6px; resize: vertical; background: #fff; color: var(--ink); }
 
 /* ================================================================= wooden sakura skin */
-html { cursor: url(../public/assets/ui_cursor.png) 2 2, auto; }
-button, .opt, .jp-word.linked, .dialogue, .msgbox { cursor: url(../public/assets/ui_cursor.png) 2 2, pointer; }
 
 /* nine-slice washi frame; the image overlaps the padding so the content can sit on the paper */
 .panel, .challenge, .dialogue, .msgbox:not(.small), .cg-caption, .battle-question, .quiz-box, .choice-box {
