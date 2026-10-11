@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AFFINITY_INFO, IDLE_SPRITES, ITEMS, MOVES, SPECIES } from '../content/creatures';
+import { AFFINITY_INFO, ATTACK_SPRITES, IDLE_SPRITES, ITEMS, MOVES, SPECIES } from '../content/creatures';
 import { store } from '../core/store';
 import { battleExercise, recordAnswer, type Exercise, type Option } from '../core/learning';
 import { enemyDamage, enemyMaxHp, makeEnemy, playerDamage, recruitSucceeds, xpReward, type BattleSetup } from '../core/battle';
@@ -89,6 +89,7 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
   const [queue, setQueue] = useState<string[]>([]);
   const after = useRef<() => void>(() => setPhase({ k: 'menu' }));
   const [shake, setShake] = useState<'enemy' | 'me' | null>(null);
+  const [enemyAtk, setEnemyAtk] = useState(false);
   // battle theme (boss fights get their own); the map music returns afterwards
   useEffect(() => {
     const prev = currentMusic();
@@ -157,6 +158,8 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
       st.team[active].hp = Math.max(0, st.team[active].hp - hit.dmg);
     }, 'battle');
     setShake('me');
+    setEnemyAtk(true);
+    setTimeout(() => setEnemyAtk(false), 650);
     playFx(FX_BY_AFFINITY[hit.move.affinity], 'me');
     sfx('hit');
     setTimeout(() => setShake(null), 400);
@@ -283,7 +286,7 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
         <div className="arena-shade" />
         {fx && <div key={fx.k} className={`fx fx-on-${fx.on}`} style={{ backgroundImage: `url(assets/fx_${fx.name}.png)` }} />}
         <InfoBox c={enemy} max={enemyMax} />
-        <img className={`px enemy-sprite ${shake === 'enemy' ? 'shake' : ''} ${enemy.hp <= 0 ? 'fade' : ''}`} src={IDLE_SPRITES.includes(esp.sprite) ? `assets/idle_${esp.sprite}_${idleFrame}.png` : `assets/${esp.sprite}.png`} alt={esp.name} />
+        <img className={`px enemy-sprite ${shake === 'enemy' ? 'shake' : ''} ${enemy.hp <= 0 ? 'fade' : ''}`} src={enemyAtk && ATTACK_SPRITES.includes(esp.sprite) ? `assets/atk_${esp.sprite}.png` : IDLE_SPRITES.includes(esp.sprite) ? `assets/idle_${esp.sprite}_${idleFrame}.png` : `assets/${esp.sprite}.png`} alt={esp.name} />
         <img
           key={me.speciesId}
           className={`px my-sprite back ${shake === 'me' ? 'shake' : ''}`}

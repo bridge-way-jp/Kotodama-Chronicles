@@ -249,4 +249,7 @@ export const ITEMS: Record<string, ItemDef> = {
 export const DECO_CATALOG = ['deco_poster', 'deco_worldmap', 'deco_aquarium', 'deco_cactus', 'deco_bonsai', 'deco_lights', 'deco_cushion', 'deco_beanbag', 'deco_shelf', 'deco_books', 'deco_manekineko', 'deco_furin', 'deco_tv', 'deco_lamp', 'deco_laundry'];
 
 /** sprites that have idle_<sprite>_0/_1 frames */
-export const IDLE_SPRITES = ['k_fox_blue', 'k_fox_pink', 'k_leaf1', 'k_leaf2', 'k_leaf3', 'k_bird1', 'k_bird2', 'k_fire2', 'k_fox_black', 'k_fox_winged', 'k_fire3'];
+/** sprites with a 2-frame idle animation (tools/build_kotodama.py) */
+export const IDLE_SPRITES = ['k_fox_blue', 'k_fox_winged', 'k_bird1', 'k_bird2', 'k_bird3', 'k_leaf1', 'k_leaf2', 'k_leaf3', 'k_fire1', 'k_fire2', 'k_fire3', 'k_puff', 'k_fox_pink', 'k_cat_black'];
+/** sprites with an action pose (atk_<key>.png), shown when the creature attacks */
+export const ATTACK_SPRITES = IDLE_SPRITES;
