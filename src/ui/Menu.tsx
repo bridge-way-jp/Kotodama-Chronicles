@@ -307,7 +307,7 @@ function NotebookTab() {
         <button className={`btn small ${kind === 'g' ? 'primary' : ''}`} onClick={() => setKind('g')}>文法 Grammar</button>
         <button className={`btn small ${kind === 'k' ? 'primary' : ''}`} onClick={() => setKind('k')}>漢字 Kanji</button>
         <button className={`btn small ${kind === 'w' ? 'primary' : ''}`} onClick={() => setKind('w')}>語形成 Affixe</button>
-        <button className={`btn small ${kind === 'c' ? 'primary' : ''}`} onClick={() => setKind('c')}>比較 Verwechslungen</button>
+        <button className={`btn small ${kind === 'c' ? 'primary' : ''}`} onClick={() => setKind('c')}>比較 Confusables</button>
         {kind !== 'w' && kind !== 'c' && <label className="note">
           <input type="checkbox" checked={showAll} onChange={(e) => setShowAll(e.target.checked)} /> show whole chapter curriculum
         </label>}
@@ -377,7 +377,7 @@ function ConfusionList() {
           </ul>
         </div>
       ))}
-      <p className="note">Diese Gruppen kommen auch im Training 文法形式の判断 und im Probetest vor.</p>
+      <p className="note">These groups also appear in 文法形式の判断 practice and in the mock exam.</p>
     </div>
   );
 }
