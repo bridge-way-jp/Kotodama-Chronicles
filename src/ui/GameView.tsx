@@ -13,6 +13,7 @@ import type { BattleSetup } from '../core/battle';
 import { ScriptRunner } from './Dialogue';
 import { Battle } from './Battle';
 import { Menu, type MenuTab } from './Menu';
+import { JobSession } from './Job';
 import { ReviewSession, ExamRunner } from './Study';
 import { GlossPopup } from './Cards';
 import { Hud, MapBanner, Toasts, TouchControls } from './Hud';
@@ -23,6 +24,7 @@ type Overlay =
   | { id: number; kind: 'battle'; setup: BattleSetup }
   | { id: number; kind: 'menu'; tab?: MenuTab }
   | { id: number; kind: 'review' }
+  | { id: number; kind: 'job'; job: string }
   | { id: number; kind: 'exam'; mode: 'practice' | 'mock' | 'diagnostic'; section?: Section };
 
 type NewOverlay = Overlay extends infer O ? (O extends Overlay ? Omit<O, 'id'> : never) : never;
@@ -71,6 +73,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
       else if (what === 'dashboard') push({ kind: 'menu', tab: 'jlpt' });
       else if (what === 'diagnostic') push({ kind: 'exam', mode: 'diagnostic' });
       else if (what === 'menu') push({ kind: 'menu' });
+      else if (what.startsWith('job:')) push({ kind: 'job', job: what.slice(4) });
     },
   };
 
@@ -181,6 +184,12 @@ export function GameView({ onExit }: { onExit: () => void }) {
               toTitle: onExit,
             }}
           />
+        );
+      case 'job':
+        return (
+          <div className="overlay-panel">
+            <JobSession id={o.job} onClose={() => remove(o.id)} />
+          </div>
         );
       case 'review':
         return (

@@ -763,6 +763,19 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       steps: [say('hayashi', 'さくらなら、北東の桃畑だ。草が深いから、気をつけてな。', 'Sakura’s in the peach grove to the north-east. The grass is deep, so be careful.')],
     },
     {
+      when: { questDone: 'mq7' },
+      steps: [
+        say('hayashi', 'おう、来たか。今日も桃の選別、手伝ってくれるか？', 'Ah, you came. Will you help sort peaches again today?'),
+        {
+          choice: [
+            { text: 'バイトする', en: 'Work: peach sorting (vocabulary, pays ¥150 per correct answer)', then: [{ do: [{ open: 'job:orchard' }] }] },
+            { text: '話す', en: 'Chat', then: [say('hayashi', '「ひのもり{金|きん}」……。いい名前だろ？ もう忘れねえよ。さくらのおかげだ。', '“Hinomori Gold”… A good name, isn’t it? I won’t forget it again. Thanks to Sakura.', 'happy')] },
+            { text: 'またこんど', en: 'Maybe later' },
+          ],
+        },
+      ],
+    },
+    {
       when: { flag: 'mq7_peach_named' },
       steps: [say('hayashi', '「ひのもり{金|きん}」……。いい名前だろ？ もう忘れねえよ。さくらのおかげだ。', '“Hinomori Gold”… A good name, isn’t it? I won’t forget it again. Thanks to Sakura.', 'happy')],
     },
@@ -803,6 +816,18 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         { do: [{ objective: 'mq8.okami' }, { rel: 'okami', points: 1 }, { learn: ['v:ryokan', 'v:motenashi', 'g:okagede'] }] },
       ],
     },
+    {
+      when: { questDone: 'mq8' },
+      steps: [
+        say('okami', 'いらっしゃいませ。今日も、フロントを手伝っていただけますか？', 'Welcome. Could you help at the front desk again today?'),
+        {
+          choice: [
+            { text: 'バイトする', en: 'Work: inn front desk (listening, pays ¥200 per correct answer)', then: [{ do: [{ open: 'job:onsen' }] }] },
+            { text: 'またこんど', en: 'Maybe later' },
+          ],
+        },
+      ],
+    },
     { steps: [say('okami', '温泉には、いつでもどうぞ。{湯加減|ゆかげん|v:yukagen}はちょうどいいですよ。', 'Please use the hot spring any time. The water is just right.')] },
   ],
   valley_ashiyu: [
@@ -837,7 +862,21 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     },
     { steps: [n('{足湯|あしゆ}だ。足を浸けると、疲れがとれる。', 'A footbath. Soaking your feet takes the tiredness away.'), { do: [{ heal: true }] }, n('言霊たちも元気になった！', 'Your Kotodama feel refreshed!')] },
   ],
-  kenji: [{ steps: [say('kenji', '今年のぶどうは{出来|でき}がいいんだ。{収穫|しゅうかく}の{季節|きせつ}になったら、手伝ってくれないか？', 'This year’s grapes are good. Would you help with the harvest when the season comes?')] }],
+  kenji: [
+    {
+      when: { questDone: 'mq7' },
+      steps: [
+        say('kenji', 'やあ、林さんのところを手伝ったんだって？ うちも{人手不足|ひとでぶそく|v:hitodebusoku}でね。ラベルのチェック、頼めないかな。', 'Hey, I heard you helped out at Mr. Hayashi’s? We’re short-handed too. Could you check our labels?'),
+        {
+          choice: [
+            { text: 'バイトする', en: 'Work: wine labels (kanji readings, pays ¥180 per correct answer)', then: [{ do: [{ open: 'job:winery' }] }] },
+            { text: 'またこんど', en: 'Maybe later' },
+          ],
+        },
+      ],
+    },
+    { steps: [say('kenji', '今年のぶどうは{出来|でき}がいいんだ。ワインの{醸造|じょうぞう|v:jouzou}は、{樽|たる|v:taru}の中で、ゆっくり時間をかけて進むんだよ。', 'This year’s grapes are good. Wine-making takes its time, slowly, inside the barrels.')] },
+  ],
   ota: [
     {
       when: { all: [{ questActive: 'mq9' }, { notObj: 'mq9.ota' }] },
