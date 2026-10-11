@@ -42,6 +42,8 @@ export const MOVES: Record<string, Move> = {
   shadow_kanji: { id: 'shadow_kanji', name: 'かげの漢字', nameEn: 'Shadow Kanji', power: 18, area: 'kanji', affinity: 'knowledge' },
   petal_dance: { id: 'petal_dance', name: 'ももの花まい', nameEn: 'Peach Petal Dance', power: 17, area: 'vocab', affinity: 'nature' },
   steam_veil: { id: 'steam_veil', name: 'ゆけむり', nameEn: 'Steam Veil', power: 16, area: 'listening', affinity: 'water' },
+  snow_flurry: { id: 'snow_flurry', name: 'ゆきのつぶて', nameEn: 'Snow Flurry', power: 17, area: 'kanji', affinity: 'water' },
+  lantern_glow: { id: 'lantern_glow', name: 'ともしびの字', nameEn: 'Lantern Script', power: 18, area: 'kanji', affinity: 'fire' },
   bloom_bond: { id: 'bloom_bond', name: 'はなのきずな', nameEn: 'Blossom Bond', power: 16, area: 'grammar', affinity: 'memory' },
 };
 
@@ -278,6 +280,73 @@ export const SPECIES: Record<string, Species> = {
     ability: { id: 'replay', name: 'こだま', desc: 'Replays listening audio at slower speed.' },
     talk: [],
   },
+  // ---- Yukimi mountain village (chapter 3)
+  yukidama: {
+    id: 'yukidama', name: 'ユキダマ', nameEn: 'Yukidama', sprite: 'k_snow1', affinity: 'water', baseHp: 30, baseAtk: 11,
+    desc: '初雪の日に、子どもたちが「わあ、雪だ！」と叫んだ声から生まれた。',
+    descEn: 'Born from children shouting “Wow, snow!” on the day of the first snowfall.',
+    personality: 'bouncy, cheerful',
+    moves: ['snow_flurry', 'ripple_read'],
+    evolvesTo: { species: 'yukiusa', level: 18 },
+    ability: { id: 'translate', name: 'ほんやく', desc: 'Shows the English meaning of the question sentence.' },
+    talk: [
+      talk('雪って、さわると冷たいけど、なんだかあったかい気持ちになるよね。', 'Snow is cold to the touch, but somehow it makes you feel warm, right?',
+        ['うん、わかる気がする。', '雪は熱いから気をつけて。', '冬は嫌いだから帰る。'],
+        'It shares a feeling (〜よね seeks agreement) — agreeing gently is natural.'),
+    ],
+  },
+  yukiusa: {
+    id: 'yukiusa', name: 'ユキウサ', nameEn: 'Yukiusa', sprite: 'k_snow2', affinity: 'water', baseHp: 42, baseAtk: 14,
+    desc: '雪うさぎの姿をした言霊。葉っぱの耳で、遠くの雪崩の音まで聞き分ける。',
+    descEn: 'A Kotodama in the shape of a snow rabbit. Its leaf ears can pick out even a distant avalanche.',
+    personality: 'shy, alert',
+    moves: ['snow_flurry', 'gust_call'],
+    evolvesTo: { species: 'mochizuki', level: 26 },
+    ability: { id: 'translate', name: 'ほんやく', desc: 'Shows the English meaning of the question sentence.' },
+    talk: [],
+  },
+  mochizuki: {
+    id: 'mochizuki', name: 'モチヅキ', nameEn: 'Mochizuki', sprite: 'k_snow3', affinity: 'water', baseHp: 56, baseAtk: 18,
+    desc: '満月の夜に餅をつく、月のうさぎ。その杵の音は、忘れた言葉を呼び戻すという。',
+    descEn: 'The moon hare that pounds mochi on full-moon nights. The sound of its mallet is said to call back forgotten words.',
+    personality: 'graceful, patient',
+    moves: ['snow_flurry', 'bloom_bond'],
+    ability: { id: 'translate', name: 'ほんやく', desc: 'Shows the English meaning of the question sentence.' },
+    talk: [],
+  },
+  tomoshibi: {
+    id: 'tomoshibi', name: 'トモシビ', nameEn: 'Tomoshibi', sprite: 'k_lantern1', affinity: 'fire', baseHp: 30, baseAtk: 12,
+    desc: '古い提灯に宿った言霊。暗い夜道で、迷った人に字を照らして見せる。',
+    descEn: 'A Kotodama living in an old paper lantern. On dark nights it lights up written words for people who are lost.',
+    personality: 'curious, a bit spooky',
+    moves: ['lantern_glow', 'flame_phrase'],
+    evolvesTo: { species: 'chagama', level: 18 },
+    ability: { id: 'reveal_reading', name: 'よみとき', desc: 'Reveals the reading of the key word in a question.' },
+    talk: [
+      talk('この字、なんて読むの？「灯」……。ぼくの名前に使われてる字なんだって。', 'How do you read this kanji? 「灯」… They say it’s used in my name.',
+        ['「ともしび」の「ともし」だね。明かりのことだよ。', '「ゆき」と読むんだよ。', '字なんて読まなくていいよ。'],
+        '灯 (ともしび / とう) means a light or lamp — fitting for a lantern spirit.'),
+    ],
+  },
+  chagama: {
+    id: 'chagama', name: 'チャガマ', nameEn: 'Chagama', sprite: 'k_lantern2', affinity: 'fire', baseHp: 44, baseAtk: 14,
+    desc: '茶釜を背負ったたぬき。お湯がわくまで、昔話をひとつ聞かせてくれる。',
+    descEn: 'A tanuki carrying a tea kettle on its back. While the water boils, it tells you an old tale.',
+    personality: 'cheeky, generous',
+    moves: ['lantern_glow', 'soft_heart'],
+    evolvesTo: { species: 'toumyou', level: 26 },
+    ability: { id: 'reveal_reading', name: 'よみとき', desc: 'Reveals the reading of the key word in a question.' },
+    talk: [],
+  },
+  toumyou: {
+    id: 'toumyou', name: 'トウミョウ', nameEn: 'Toumyou', sprite: 'k_lantern3', affinity: 'knowledge', baseHp: 56, baseAtk: 19,
+    desc: '山寺の灯明を守るたぬきの僧。杖の明かりの中に、千の漢字が浮かぶ。',
+    descEn: 'A tanuki monk guarding the temple’s votive light. A thousand kanji float in the light of its staff.',
+    personality: 'wise, playful',
+    moves: ['lantern_glow', 'shadow_kanji'],
+    ability: { id: 'reveal_reading', name: 'よみとき', desc: 'Reveals the reading of the key word in a question.' },
+    talk: [],
+  },
 };
 
 export const ENCOUNTERS: Record<string, { species: string; min: number; max: number; weight: number }[]> = {
@@ -286,6 +355,20 @@ export const ENCOUNTERS: Record<string, { species: string; min: number; max: num
     { species: 'mebuki', min: 2, max: 4, weight: 4 },
     { species: 'homura', min: 3, max: 5, weight: 2 },
     { species: 'fuwari', min: 3, max: 5, weight: 2 },
+  ],
+  mountain: [
+    { species: 'yukidama', min: 12, max: 15, weight: 3 },
+    { species: 'tomoshibi', min: 12, max: 15, weight: 3 },
+  ],
+  mountain_snow: [
+    { species: 'yukidama', min: 12, max: 16, weight: 6 },
+    { species: 'tomoshibi', min: 12, max: 14, weight: 1 },
+    { species: 'fuwari', min: 12, max: 14, weight: 1 },
+  ],
+  mountain_lantern: [
+    { species: 'tomoshibi', min: 12, max: 16, weight: 6 },
+    { species: 'yukidama', min: 12, max: 14, weight: 1 },
+    { species: 'kotori', min: 12, max: 14, weight: 1 },
   ],
   valley_grove: [
     { species: 'momotan', min: 6, max: 9, weight: 6 },
@@ -341,6 +424,7 @@ export const DECO_CATALOG = ['deco_poster', 'deco_worldmap', 'deco_aquarium', 'd
 /** sprites that have idle_<sprite>_0/_1 frames */
 /** sprites with a 2-frame idle animation (tools/build_kotodama.py) */
 export const IDLE_SPRITES = ['k_fox_blue', 'k_fox_winged', 'k_bird1', 'k_bird2', 'k_bird3', 'k_leaf1', 'k_leaf2', 'k_leaf3', 'k_fire1', 'k_fire2', 'k_fire3', 'k_puff', 'k_fox_pink', 'k_cat_black',
-  'k_peach1', 'k_peach2', 'k_peach3', 'k_steam1', 'k_steam2', 'k_steam3'];
+  'k_peach1', 'k_peach2', 'k_peach3', 'k_steam1', 'k_steam2', 'k_steam3',
+  'k_snow1', 'k_snow2', 'k_snow3', 'k_lantern1', 'k_lantern2', 'k_lantern3'];
 /** sprites with an action pose (atk_<key>.png), shown when the creature attacks */
 export const ATTACK_SPRITES = IDLE_SPRITES;

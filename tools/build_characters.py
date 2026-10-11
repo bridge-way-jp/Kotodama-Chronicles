@@ -206,6 +206,9 @@ REDRAWN = {
     # Haruto, Aoi and Satō redrawn with real right-facing views (overrides their 3-row blocks above)
     'hm_chars_main2.webp': [[('npc', 'haruto'), ('npc', 'aoi'), ('npc', 'sato')]],
     # chapter 2: people of the Hinomori valley
+    # chapter 3: the snowy mountain village (sheet has 3 rows per block: down, left, up)
+    'hm_chars_mountain.webp': [[('npc', 'tsuru'), ('npc', 'hina'), ('npc', 'fujii')],
+                               [('npc', 'kuroda'), ('npc', 'jokan'), ('npc', 'traveller')]],
     'hm_chars_valley.webp': [[('npc', 'hayashi'), ('npc', 'sakura'), ('npc', 'okami')],
                              [('npc', 'kenji'), ('npc', 'ota'), ('npc', 'busdriver')]],
     'hm_chars_more.webp': [[('npc', 'kirishima'), ('npc', 'station_staff'), ('npc', 'customer')],
@@ -215,7 +218,10 @@ REDRAWN = {
 }
 
 
-CHILDREN = {'kid'}
+# sheets whose blocks always have this many direction rows (guessing from the block height fails for bulky figures)
+ROWS_PER_BLOCK = {'hm_chars_mountain.webp': 3}
+
+CHILDREN = {'kid', 'hina'}
 CHILD_HEIGHT = 38
 
 
@@ -264,7 +270,7 @@ def redrawn_sheet(name, layout):
             prof = fg[y0:y1, x0:x1].sum(1)
             # frame rows can touch: count them from the block height (a frame is ~1.25x as tall as wide)
             col_w = sum(c1 - c0 for c0, c1 in gx) / 4
-            n = 4 if (y1 - y0) / col_w > 4.6 else 3
+            n = ROWS_PER_BLOCK.get(name) or (4 if (y1 - y0) / col_w > 4.6 else 3)
             rows = split_n(prof, n)
             imgs = [cut(a, fg, (cx0, y0 + ry0, cx1, y0 + ry1)) for ry0, ry1 in rows for cx0, cx1 in gx]
             tallest = max(i.height for i in imgs)

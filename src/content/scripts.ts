@@ -663,6 +663,33 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   // ================================================================ interiors
   station_building: [
     {
+      when: { all: [{ flag: 'chapter2_done' }, { notFlag: 'yukimi_visited' }] },
+      steps: [
+        n('日野森駅。北の山へ向かう、小さなローカル線が出ている。', 'Hinomori Station. A small local line runs north into the mountains.'),
+        say('station_staff', '雪見村行きの電車ですね。山の上は雪が深いので、暖かくしていってくださいね。', 'The train to Yukimi Village? There’s deep snow up in the mountains, so dress warmly.'),
+        {
+          choice: [
+            { text: '電車で雪見村へ', en: 'Take the train to Yukimi Village (chapter 3, in development)', then: [{ do: [{ flag: 'yukimi_visited' }, { warp: { map: 'mountain', x: 7, y: 20 } }] }] },
+            { text: 'バスで谷へ行く', en: 'Take the bus to Hinomori Valley', then: [{ do: [{ warp: { map: 'valley', x: 20, y: 24 } }] }] },
+            { text: 'やめる', en: 'Stay in town' },
+          ],
+        },
+      ],
+    },
+    {
+      when: { flag: 'yukimi_visited' },
+      steps: [
+        n('日野森駅。谷へのバスと、雪見村への電車が出ている。', 'Hinomori Station. Buses to the valley and trains to Yukimi Village leave from here.'),
+        {
+          choice: [
+            { text: '電車で雪見村へ', en: 'Take the train to Yukimi Village', then: [{ do: [{ warp: { map: 'mountain', x: 7, y: 20 } }] }] },
+            { text: 'バスで谷へ行く', en: 'Take the bus to Hinomori Valley', then: [{ do: [{ warp: { map: 'valley', x: 20, y: 24 } }] }] },
+            { text: 'やめる', en: 'Stay in town' },
+          ],
+        },
+      ],
+    },
+    {
       when: { all: [{ questActive: 'mq6' }, { obj: 'mq6.kirishima' }, { notObj: 'mq6.arrive' }] },
       steps: [
         n('谷へ行くバスが、駅前で待っている。', 'The bus to the valley is waiting in front of the station.'),
@@ -703,6 +730,30 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       ],
     },
   ],
+  // ================================================================ chapter 3: Yukimi village (story in development)
+  yukimi_station: [
+    {
+      steps: [
+        n('雪見駅。一両だけの電車が、日野森との間を行き来している。', 'Yukimi Station. A one-car train runs back and forth to Hinomori.'),
+        {
+          choice: [
+            { text: '日野森へ帰る', en: 'Ride back to Hinomori town', then: [{ do: [{ warp: { map: 'town', x: 27, y: 20 } }] }] },
+            { text: 'もう少しいる', en: 'Stay a little longer' },
+          ],
+        },
+      ],
+    },
+  ],
+  yukimi_guesthouse: [{ steps: [n('{合掌造|がっしょうづく}りの大きな{民宿|みんしゅく}。窓から{囲炉裏|いろり}の明かりがもれている。', 'A large thatched guesthouse. Firelight from the hearth glows through the windows.')] }],
+  yukimi_gassho: [{ steps: [n('{屋根|やね}に雪がどっさり{積|つ}もった、古い{合掌造|がっしょうづく}りの家。', 'An old thatched farmhouse with heaps of snow on the roof.')] }],
+  yukimi_clinic: [{ steps: [n('村の{診療所|しんりょうじょ}。「{本日|ほんじつ}の{診療|しんりょう}　九時〜十七時」', 'The village clinic. “Consultation hours today: 9:00–17:00.”')] }],
+  yukimi_temple: [{ steps: [n('山寺の{本堂|ほんどう}。{静|しず}かな空気の中、お{香|こう}の{香|かお}りがする。', 'The main hall of the mountain temple. Incense hangs in the quiet air.')] }],
+  yukimi_kamakura: [{ steps: [n('{雪|ゆき}で作った{かまくら}。中は思ったより{暖|あたた}かい。', 'A kamakura made of snow. It’s warmer inside than you’d think.')] }],
+  tsuru: [{ steps: [say('tsuru', 'まあまあ、遠いところをよう来なさったね。寒かったろう。中でお茶でもどうだい。', 'My, my, you’ve come a long way. You must be cold. How about some tea inside?')] }],
+  hina: [{ steps: [say('hina', 'ねえ、かまくら見た？ わたしが作ったんだよ！ 中であったかいお{餅|もち}食べるの。', 'Hey, did you see the kamakura? I made it! We eat warm mochi inside.')] }],
+  fujii: [{ steps: [say('fujii', 'こんにちは。村の医者の藤井です。寒い日は、{体調|たいちょう}を{崩|くず}しやすいから気をつけてね。', 'Hello, I’m Fujii, the village doctor. People fall ill easily on cold days, so take care.')] }],
+  kuroda: [{ steps: [say('kuroda', 'この先は山道だ。今は雪が深すぎて{危険|きけん}だから、{通行止|つうこうど}めにしている。', 'Beyond here is the mountain trail. The snow is too deep right now, so it’s closed.')] }],
+  jokan: [{ steps: [say('jokan', 'ほう、旅の方か。漢字というものは、一つ一つが小さな物語なのですよ。', 'Oh, a traveller. Each kanji, you know, is a little story of its own.')] }],
   valley_garden: [
     {
       when: { questDone: 'mq7' },

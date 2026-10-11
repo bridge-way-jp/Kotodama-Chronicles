@@ -25,7 +25,7 @@ const DETAIL_KEYS = [
   'tp_pot_flower', 'tp_planter_y', 'tp_planter_p', 'tp_mirror', 'tp_sign', 'tp_trash', 'tp_barrel', 'tp_torii',
   'tile_bridge_n', 'tile_bridge_s',
 ];
-const NPC_SHEETS = ['mori', 'kaede', 'haruto', 'aoi', 'sato', 'kirishima', 'station_staff', 'customer', 'hayashi', 'sakura', 'okami', 'kenji', 'ota', 'busdriver'];
+const NPC_SHEETS = ['mori', 'kaede', 'haruto', 'aoi', 'sato', 'kirishima', 'station_staff', 'customer', 'hayashi', 'sakura', 'okami', 'kenji', 'ota', 'busdriver', 'tsuru', 'hina', 'fujii', 'kuroda', 'jokan', 'traveller'];
 
 export const ASSET_KEYS = [
   // player walk cycle: hero_<dir>_<frame>, frames 0/2 standing, 1/3 stepping
@@ -47,6 +47,8 @@ export const ASSET_KEYS = [
   'bx_apartment', 'bx_konbini', 'bx_cafe', 'bx_library', 'bx_station', 'bx_ramen', 'bx_shrine', 'bx_lab',
   // Hinomori valley, chapter 2 (tools/build_valley.py)
   'wgs_peach_3', 'wgs_grape_3', 'wgs_sunflower_3', 'wgs_rice_2', 'wgs_asagao_3', 'wgs_sakura_2', 'wgs_tag',
+  // Yukimi mountain village, chapter 3 (tools/build_mountain.py)
+  'map_mountain', 'bx_guesthouse', 'bx_gassho', 'bx_clinic', 'bx_temple', 'bx_yukimi_station', 'bx_kamakura',
   'map_valley', 'bx_farmhouse', 'bx_winery', 'bx_stand', 'bx_workshop', 'bx_busstop', 'bx_ryokan',
   ...Object.values(ROOMS_GEN).flatMap((r) => [r.image, ...r.objects.flatMap((o) => (o.sprite ? [o.sprite] : []))]),
 ];
@@ -194,6 +196,7 @@ export class WorldScene extends Phaser.Scene {
       if (!this.map.image) this.placeScenery();
       this.spawnButterflies();
       this.spawnSteam();
+      if (this.map.snow) this.spawnSnow();
     }
     if (this.map.image && this.textures.exists(this.map.image)) {
       // pre-drawn room: the tile layer only provides collision
@@ -322,6 +325,29 @@ export class WorldScene extends Phaser.Scene {
     if (!this.textures.exists(key)) return;
     const py = y * TILE + TILE;
     this.add.image(x * TILE + TILE / 2, py, key).setOrigin(0.5, 1).setFlipX(flip).setDepth(py - 4);
+  }
+
+  /** gentle snowfall drifting across the camera view (map.snow) */
+  spawnSnow() {
+    const cam = this.cameras.main;
+    this.time.addEvent({
+      delay: 90,
+      loop: true,
+      callback: () => {
+        const v = cam.worldView;
+        const flake = this.add
+          .circle(v.x + Phaser.Math.Between(-40, v.width + 40), v.y - 8, Phaser.Math.FloatBetween(1, 2.4), 0xffffff, Phaser.Math.FloatBetween(0.55, 0.95))
+          .setDepth(100002);
+        this.tweens.add({
+          targets: flake,
+          y: flake.y + v.height + 20,
+          x: flake.x + Phaser.Math.Between(-60, 30),
+          duration: Phaser.Math.Between(5000, 9000),
+          ease: 'Linear',
+          onComplete: () => flake.destroy(),
+        });
+      },
+    });
   }
 
   /** soft steam puffs rising from hot springs (map.steam) */

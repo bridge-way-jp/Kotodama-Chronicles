@@ -11,7 +11,7 @@ import sys
 from scipy import ndimage
 
 sys.path.insert(0, os.path.dirname(__file__))
-from build_characters import runs  # noqa: E402
+from build_characters import runs, split_n  # noqa: E402
 from build_rooms import strict_bg  # noqa: E402
 from extract_sheets import OUT, load, magenta_mask, resize_px, to_rgba, trim  # noqa: E402
 
@@ -19,6 +19,7 @@ SHEETS = {
     'portraits_p1.webp': ['hero', 'mori', 'kaede', 'haruto', 'aoi'],
     'portraits_p2.webp': ['sato', 'kirishima', 'station_staff', 'customer'],
     'portraits_valley.webp': ['hayashi', 'sakura', 'okami', 'kenji', 'ota'],
+    'portraits_mountain.webp': ['tsuru', 'hina', 'fujii', 'kuroda', 'jokan', 'traveller'],
 }
 EXPR = ['neutral', 'happy', 'surprised', 'worried']
 HEIGHT = 104
@@ -29,7 +30,9 @@ def main():
         a = load(name)
         fg = ndimage.binary_opening(~magenta_mask(a), iterations=2)
         rows = runs(fg.sum(1), 60)
-        assert len(rows) == len(people), (name, rows)
+        if len(rows) != len(people):  # rows touch (hats, shoulders): split the content evenly at the emptiest lines
+            y0, y1 = rows[0][0], rows[-1][1]
+            rows = [(y0 + r0, y0 + r1) for r0, r1 in split_n(fg[y0:y1].sum(1), len(people))]
         for who, (y0, y1) in zip(people, rows):
             cols = runs(fg[y0:y1].sum(0), 60)
             assert len(cols) == 4, (name, who, cols)

@@ -2,6 +2,7 @@ import type { Cond } from '../core/script';
 import { ROOMS_GEN } from './rooms.gen';
 import { FOREST_GEN } from './forest.gen';
 import { VALLEY_GEN } from './valley.gen';
+import { MOUNTAIN_GEN } from './mountain.gen';
 import type { Dir } from '../core/types';
 
 /**
@@ -69,6 +70,8 @@ export interface MapDef {
   zones?: { x0: number; y0: number; x1: number; y1: number; encounters?: string; bg?: string }[];
   /** world positions (px) where steam rises, with the depth to draw it at */
   steam?: { x: number; y: number; w: number; depth?: number }[];
+  /** gentle snowfall over the map */
+  snow?: boolean;
   /** wandering townsfolk: FOLK id, home tile, wander radius in tiles */
   wanderers?: { id: string; x: number; y: number; r: number }[];
 }
@@ -256,6 +259,30 @@ export const MAPS: Record<string, MapDef> = {
       { x: 1085, y: 300, w: 30, depth: 470 },
       { x: 1205, y: 270, w: 70 }, // hot-spring falls
       { x: 1240, y: 336, w: 50 }, // footbath on the onsen square
+    ],
+  },
+  mountain: {
+    id: 'mountain', name: 'Yukimi Village', nameJa: '雪見村', tiles: MOUNTAIN_GEN, image: 'map_mountain', encounters: 'mountain', snow: true,
+    // footprints match tools/build_mountain.py BUILDINGS
+    objects: [
+      { id: 'yukimi_guesthouse', sprite: 'bx_guesthouse', x: 32, y: 15, w: 6, h: 2 },
+      { id: 'yukimi_gassho', sprite: 'bx_gassho', x: 24, y: 14, w: 5, h: 2 },
+      { id: 'yukimi_clinic', sprite: 'bx_clinic', x: 25, y: 20, w: 5, h: 2 },
+      { id: 'yukimi_temple', sprite: 'bx_temple', x: 18, y: 2, w: 6, h: 2, interactAt: [{ x: 20, y: 4 }, { x: 21, y: 4 }] },
+      { id: 'yukimi_station', sprite: 'bx_yukimi_station', x: 1, y: 19, w: 4, h: 2, interactAt: [{ x: 5, y: 19 }, { x: 6, y: 20 }, { x: 3, y: 18 }, { x: 4, y: 18 }] },
+      { id: 'yukimi_kamakura', sprite: 'bx_kamakura', x: 17, y: 15, w: 3, h: 1 },
+    ],
+    npcs: [
+      { id: 'tsuru', x: 34, y: 17, facing: 'down' },
+      { id: 'hina', x: 19, y: 16, facing: 'down' },
+      { id: 'fujii', x: 27, y: 22, facing: 'down' },
+      { id: 'kuroda', x: 22, y: 24, facing: 'up' },
+      { id: 'jokan', x: 21, y: 4, facing: 'down' },
+    ],
+    warps: [],
+    zones: [
+      { x0: 2, y0: 11, x1: 7, y1: 13, encounters: 'mountain_snow' },
+      { x0: 37, y0: 10, x1: 40, y1: 13, encounters: 'mountain_lantern' },
     ],
   },
   apartment: {

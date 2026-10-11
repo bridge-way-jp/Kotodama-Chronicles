@@ -29,5 +29,12 @@ export const NPCS: Record<string, NpcDef> = {
   okami: { id: 'okami', name: '女将さん', nameEn: 'Okami-san', role: 'Onsen inn owner', sprite: 'npc_okami', portrait: 'portrait_okami', color: '#6b3f7a' },
   kenji: { id: 'kenji', name: '健二', nameEn: 'Kenji', role: 'Winemaker', sprite: 'npc_kenji', portrait: 'portrait_kenji', color: '#3f7a4a' },
   ota: { id: 'ota', name: '太田先生', nameEn: 'Mr. Ōta', role: 'Calligrapher, master of words', sprite: 'npc_ota', portrait: 'portrait_ota', color: '#2f4a7a' },
+  // chapter 3: Yukimi, the snowy mountain village
+  tsuru: { id: 'tsuru', name: 'つるさん', nameEn: 'Grandma Tsuru', role: 'Guesthouse owner', sprite: 'npc_tsuru', portrait: 'portrait_tsuru', color: '#3b4a7a' },
+  hina: { id: 'hina', name: 'ひな', nameEn: 'Hina', role: 'Village girl', sprite: 'npc_hina', portrait: 'portrait_hina', color: '#c8463c' },
+  fujii: { id: 'fujii', name: '藤井先生', nameEn: 'Dr. Fujii', role: 'Village doctor', sprite: 'npc_fujii', portrait: 'portrait_fujii', color: '#5a8fb8' },
+  kuroda: { id: 'kuroda', name: '黒田さん', nameEn: 'Mr. Kuroda', role: 'Mountain guide', sprite: 'npc_kuroda', portrait: 'portrait_kuroda', color: '#d0662a' },
+  jokan: { id: 'jokan', name: '定観和尚', nameEn: 'Jōkan-oshō', role: 'Head priest, master of kanji', sprite: 'npc_jokan', portrait: 'portrait_jokan', color: '#8a6a22' },
+  traveller: { id: 'traveller', name: '旅の人', nameEn: 'Traveller', role: '???', sprite: 'npc_traveller', portrait: 'portrait_traveller', color: '#3f6a4a' },
   busdriver: { id: 'busdriver', name: '運転手さん', nameEn: 'Bus driver', role: 'Bus driver', sprite: 'npc_busdriver', portrait: 'npc_busdriver_down', color: '#4a86b5' },
 };
