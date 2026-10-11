@@ -1,5 +1,6 @@
 import type { VocabEntry } from '../core/types';
 import { CORE_VOCAB } from './vocab_core';
+import { VALLEY_VOCAB } from './vocab_valley';
 
 /**
  * Chapter 1 vocabulary. Levels are approximate and based on common N2 study
@@ -137,6 +138,7 @@ export const VOCAB: VocabEntry[] = [
   V({ id: 'kinchou', word: '緊張', reading: 'きんちょう', en: 'nervousness, tension', de: 'Nervosität, Anspannung', pos: 'noun', level: 'N3',
     example: '人前で話すと、どうしても緊張してしまう。', exampleEn: "I can't help getting nervous when I speak in front of people.", tags: ['university', 'emotion'] }),
   ...CORE_VOCAB,
+  ...VALLEY_VOCAB,
 ];
 
 /** near-synonyms (shared `syn:` tag) must never be offered as wrong answers for each other */

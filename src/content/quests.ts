@@ -75,6 +75,58 @@ export const QUESTS: Record<string, QuestDef> = {
     learning: ['v:kioku', 'v:usureru', 'v:kizamu', 'g:nichigainai', 'g:nitsurete', 'g:kanenai'],
     onComplete: 'chapter1_done',
   },
+  // ================================================================ chapter 2: Hinomori valley
+  mq6: {
+    id: 'mq6', kind: 'main', chapter: 2,
+    title: '忘れられた名前', titleEn: 'The Forgotten Name',
+    description: 'Ms. Mori could not remember your name. Dr. Kirishima may know what is happening.',
+    objectives: [
+      { id: 'mori', text: 'Talk to Ms. Mori in front of the apartment' },
+      { id: 'kirishima', text: 'Ask Dr. Kirishima about the forgetting', hint: 'His lab is east, across the river.' },
+      { id: 'arrive', text: 'Take the bus to Hinomori Valley', hint: 'The bus leaves from the station building.' },
+    ],
+    rewards: { xp: 120, items: { onigiri: 3 } },
+    learning: ['v:wasureppoi', 'v:kotozuke', 'g:uchini'],
+    next: 'mq7',
+  },
+  mq7: {
+    id: 'mq7', kind: 'main', chapter: 2,
+    title: '桃の谷のはたらき手', titleEn: 'Helping Hands in the Peach Valley',
+    description: 'Mr. Hayashi, an old peach farmer, has more fruit than hands. His granddaughter Sakura is worried about him.',
+    objectives: [
+      { id: 'hayashi', text: 'Talk to Mr. Hayashi at the farmhouse (north-west)' },
+      { id: 'harvest', text: 'Help with the peach harvest' },
+      { id: 'sakura', text: 'Find Sakura in the peach grove (north-east)' },
+    ],
+    rewards: { xp: 160, money: 2500, items: { peach: 3 } },
+    learning: ['v:kajuen', 'v:shuukaku', 'v:jukusu', 'v:hinshu', 'v:shukka', 'v:hitodebusoku', 'g:tatotan', 'g:tabini'],
+    next: 'mq8',
+  },
+  mq8: {
+    id: 'mq8', kind: 'main', chapter: 2,
+    title: '湯けむりの記憶', titleEn: 'Memories in the Steam',
+    description: 'Okami-san runs the old hot-spring inn “Yunoka”. Something is troubling her, too.',
+    objectives: [
+      { id: 'okami', text: 'Talk to Okami-san in front of the inn (east)' },
+      { id: 'onsen', text: 'Rest at the footbath on the onsen square', hint: 'The stone square north-east of the inn.' },
+    ],
+    rewards: { xp: 180, items: { onsen_tamago: 3 } },
+    learning: ['v:ryokan', 'v:yuge', 'v:motenashi', 'v:tsukaru', 'g:okagede', 'g:amari'],
+    next: 'mq9',
+  },
+  mq9: {
+    id: 'mq9', kind: 'main', chapter: 2,
+    title: '名前を書く人', titleEn: 'The One Who Writes Names',
+    description: 'Mr. Ōta, the old calligrapher, is said to have known “K”. He is also the valley’s master of words.',
+    objectives: [
+      { id: 'ota', text: 'Visit Mr. Ōta at his calligraphy workshop' },
+      { id: 'calligraphy', text: 'Write a name with Mr. Ōta' },
+      { id: 'master', text: 'Pass Mr. Ōta’s trial of words (vocabulary)' },
+    ],
+    rewards: { xp: 300, money: 5000, items: { grape_juice: 2 } },
+    learning: ['v:shodou', 'v:fude', 'v:sumi', 'v:nazukeru', 'v:nagori', 'g:karaniwa'],
+    onComplete: 'chapter2_done',
+  },
   sq_aoi: {
     id: 'sq_aoi', kind: 'character', chapter: 1,
     title: 'アオイの発表', titleEn: "Aoi's Presentation",

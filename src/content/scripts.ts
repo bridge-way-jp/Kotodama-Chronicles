@@ -1,4 +1,4 @@
-import type { DialogueRule, Step } from '../core/script';
+import type { DialogueRule, Mood, Step } from '../core/script';
 import { GRAMMAR_BY_ID } from './grammar';
 import { DECO_CATALOG, SPECIES } from './creatures';
 
@@ -8,7 +8,7 @@ import { DECO_CATALOG, SPECIES } from './creatures';
  * Dialogue is in Japanese with optional English (shown on demand).
  */
 
-const say = (who: string | undefined, text: string, en?: string): Step => ({ say: text, who, en });
+const say = (who: string | undefined, text: string, en?: string, mood?: Mood): Step => (mood ? { say: text, who, en, mood } : { say: text, who, en });
 const n = (text: string, en?: string): Step => say(undefined, text, en);
 
 /** a grammar fill-in quiz built from the grammar entry's own exercise */
@@ -128,6 +128,46 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         say('mori', 'みどりの森へ行くの？ 最近、森の奥で光るものを見たって人がいるのよ。', 'You’re going to Midori Forest? Someone said they saw something glowing deep inside.'),
         say('mori', '{慌て|あわて|v:awateru}なくていいから、気をつけてね。はい、おにぎり。{遠慮|えんりょ|v:enryo}しないで持っていって。', 'No need to rush — just be careful. Here, take these rice balls. Don’t be shy.'),
         { do: [{ give: 'onigiri', n: 2 }, { flag: 'mori_gift' }, { rel: 'mori', points: 1 }, { learn: ['v:awateru'] }] },
+      ],
+    },
+    {
+      when: { all: [{ flag: 'chapter1_done' }, { questNotStarted: 'mq6' }] },
+      steps: [
+        say('mori', 'あら、おかえりなさい。えっと……あなた、お名前は……。', 'Oh, welcome back. Um… your name is…', 'surprised'),
+        n('森さんは、困ったように笑った。いつも「@nameちゃん」と呼んでくれていたのに。', 'Ms. Mori smiled awkwardly. She has always called you “@name”.'),
+        {
+          choice: [
+            { text: '@nameです。', en: 'It’s @name.' },
+            { text: '大丈夫ですか？', en: 'Are you all right?' },
+          ],
+        },
+        say('mori', 'そうそう、@nameちゃん！ ごめんなさいね。最近、{忘れっぽく|わすれっぽく|v:wasureppoi}なっちゃって。', 'Yes, of course, @name! I’m sorry. I’ve become so forgetful lately.', 'worried'),
+        say('mori', '昨日は、亡くなった主人の名前も、すぐに出てこなかったの。……おかしいわね。', 'Yesterday, even my late husband’s name didn’t come to me right away… Strange, isn’t it.', 'worried'),
+        {
+          quiz: {
+            q: '森さんについて、正しいものはどれか。',
+            qEn: 'Which statement about Ms. Mori is correct?',
+            options: ['大切な人の名前が、すぐに思い出せないことがある', 'マリアの名前を一度も聞いたことがない', 'わざと名前を言わなかった', '主人の名前を新しく覚えた'],
+            answer: 0,
+            why: '忘れっぽい = forgetful; she could not recall your name or her husband’s name right away.',
+          },
+          keys: ['v:wasureppoi'], area: 'reading', retry: true,
+        },
+        n('町で起きている「忘却」が、森さんにも……。霧島博士に相談しよう。', 'The “forgetting” in town is reaching Ms. Mori too… You should talk to Dr. Kirishima.'),
+        { do: [{ startQuest: 'mq6' }, { chapter: 2 }, { objective: 'mq6.mori' }, { rel: 'mori', points: 1, memory: 'forgot_name' }, { learn: ['v:wasureppoi'] }] },
+      ],
+    },
+    {
+      when: { all: [{ item: 'name_scroll' }, { notFlag: 'mori_scroll' }] },
+      steps: [
+        n('森さんに、谷で書いた書を渡した。', 'You give Ms. Mori the calligraphy you wrote in the valley.'),
+        say('mori', 'これは……「森」。わたしの名前ね。', 'This is… “Mori”. My name.', 'surprised'),
+        say('mori', '上手じゃないけど、一画一画、ていねいに書いてある。……あなたが書いてくれたのね、@nameちゃん。', 'It isn’t perfect, but every stroke is careful… You wrote this for me, @name.', 'happy'),
+        say('mori', '不思議ね。これを見ていると、忘れかけていたことが、少しずつ戻ってくるみたい。主人の名前も……そう、「{健一|けんいち}」。', 'Strange. Looking at this, the things I was forgetting seem to come back little by little. My husband’s name too… yes, “Ken’ichi”.', 'happy'),
+        say('mori', '部屋に{飾|かざ}っておくわ。忘れそうになったら、毎朝これを見るの。ありがとう。', 'I’ll hang it in my room. Whenever I start to forget, I’ll look at it every morning. Thank you.', 'happy'),
+        { do: [{ take: 'name_scroll' }, { flag: 'mori_scroll' }, { rel: 'mori', points: 3, memory: 'name_scroll' }] },
+        { cg: 'cg_ending', say: '名前は、呼ばれるたびに強くなる。\n― 第二章「桃と湯けむりの谷」完 ―', en: 'A name grows stronger every time it is called.\n— End of Chapter 2: “The Valley of Peaches and Steam” —' },
+        n('Chapter 2 complete! The valley stays open: help out with jobs, befriend the valley Kotodama and keep reviewing. Chapter 3 is in development.'),
       ],
     },
     {
@@ -564,8 +604,29 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         say('kirishima', '君に届いた手紙。もしかすると、計画はまだ終わっていないのかもしれない。', 'The letter you received… perhaps the project isn’t over yet.'),
         { do: [{ take: 'kakera' }, { objective: 'mq5.report' }, { rel: 'kirishima', points: 3, memory: 'archive_project' }, { learn: ['g:wokikkakeni', 'v:kakera'] }] },
         { cg: 'cg_ending', say: '夕暮れの研究所。欠片の光は、まだ消えていなかった。\n― 第一章「日野森の夏」完 ―', en: 'Dusk at the research facility. The fragment’s light had not gone out yet.\n— End of Chapter 1: “Summer in Hinomori” —' },
-        { cg: 'cg_chapter2', say: '次章予告 ― 第二章「線路の向こうの街」（準備中）', en: 'Next time — Chapter 2: “The City Beyond the Tracks” (in development)' },
-        n('Chapter 1 complete! Hinomori stays open: keep befriending Kotodama in Midori Forest, finish side quests, and use your desk to review and track your N2 readiness. Chapter 2 is in development.'),
+        { cg: 'cg_valley_arrival', say: '次章予告 ― 第二章「桃と湯けむりの谷」', en: 'Next time — Chapter 2: “The Valley of Peaches and Steam”' },
+        n('Chapter 1 complete! Talk to Ms. Mori in front of the apartment to begin Chapter 2. Hinomori stays open: keep befriending Kotodama in Midori Forest and use your desk to review.'),
+      ],
+    },
+    {
+      when: { all: [{ questActive: 'mq6' }, { notObj: 'mq6.kirishima' }] },
+      steps: [
+        say('kirishima', '森さんが、君の名前を……？ そうか。ついに、人の名前まで消え始めたか。', 'Ms. Mori forgot your name…? I see. So now even people’s names are starting to fade.', 'worried'),
+        say('kirishima', '実は、あの欠片が毎晩、同じ方角を指して光るんだ。南の山の向こう……日野森の谷だ。', 'Actually, the fragment glows every night, pointing in the same direction: beyond the southern hills… Hinomori Valley.'),
+        say('kirishima', '谷には、太田という書道家がいる。昔、Kと一緒に仕事をしていたと聞いたことがある。', 'There is a calligrapher in the valley named Ōta. I heard he once worked with K.'),
+        say('kirishima', '森さんの記憶が消えない{うちに||g:uchini}、できることをしよう。駅前から谷へのバスが出ている。', 'Let’s do what we can while Ms. Mori still remembers. A bus to the valley leaves from the station.'),
+        { teach: 'g:uchini' },
+        {
+          quiz: {
+            q: '「森さんの記憶が消えないうちに」の意味に一番近いものはどれか。',
+            qEn: 'Which is closest in meaning to 森さんの記憶が消えないうちに?',
+            options: ['森さんの記憶がまだ残っている間に', '森さんの記憶が消えてから', '森さんの記憶が消えたとしても', '森さんの記憶が消えるたびに'],
+            answer: 0,
+            why: 'ないうちに = before something (unwanted) happens, while the current state still lasts.',
+          },
+          keys: ['g:uchini'], area: 'grammar', retry: true,
+        },
+        { do: [{ objective: 'mq6.kirishima' }, { rel: 'kirishima', points: 1 }, { learn: ['g:uchini'] }] },
       ],
     },
     {
@@ -598,6 +659,16 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
 
   // ================================================================ interiors
   station_building: [
+    {
+      when: { all: [{ questActive: 'mq6' }, { obj: 'mq6.kirishima' }, { notObj: 'mq6.arrive' }] },
+      steps: [
+        n('谷へ行くバスが、駅前で待っている。', 'The bus to the valley is waiting in front of the station.'),
+        say('busdriver', '日野森の谷行き、まもなく発車しまーす。', 'The bus to Hinomori Valley is about to depart!'),
+        { cg: 'cg_valley_arrival', say: 'バスを降りると、甘い桃の香りがした。山に囲まれた谷に、川の音が響いている。', en: 'Stepping off the bus, you smell sweet peaches. The sound of the river echoes through the valley ringed by mountains.' },
+        { cg: 'cg_valley_arrival', say: '……ここに、Kを知る人がいる。', en: '…Somewhere here is someone who knew K.' },
+        { do: [{ objective: 'mq6.arrive' }, { warp: { map: 'valley', x: 20, y: 24 } }] },
+      ],
+    },
     {
       when: { flag: 'chapter1_done' },
       steps: [
@@ -634,11 +705,233 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   valley_stand: [{ steps: [n('{無人販売所|むじんはんばいじょ}だ。「桃 一{袋|ふくろ} 三百円。お金は{箱|はこ}に入れてください」', 'An unmanned stand: “Peaches, 300 yen a bag. Please put the money in the box.”')] }],
   valley_workshop: [{ steps: [n('{書道|しょどう}の{工房|こうぼう}。{入口|いりぐち}に、大きな{掛け軸|かけじく}がかかっている。', 'A calligraphy workshop. A large hanging scroll hangs by the entrance.')] }],
   valley_ryokan: [{ steps: [n('{温泉旅館|おんせんりょかん}「ゆのか」。のれんの{奥|おく}から、湯けむりが{立|た}ちのぼっている。', 'The hot-spring inn “Yunoka”. Steam rises from behind the noren curtain.')] }],
-  hayashi: [{ steps: [say('hayashi', 'おう、見ない{顔|かお}だな。この谷は桃とぶどうと温泉しかないが、いいところだぞ。', 'Oh, a new face. This valley has nothing but peaches, grapes and hot springs, but it’s a good place.')] }],
-  sakura_hayashi: [{ steps: [say('sakura_hayashi', 'こんにちは！ {桃畑|ももばたけ}の{奥|おく}は{草|くさ}が{深|ふか}いから、言霊がよく出るよ。気をつけてね！', 'Hi! The grass is deep at the back of the peach orchard, so Kotodama show up a lot. Be careful!')] }],
-  okami: [{ steps: [say('okami', 'ようこそお{越|こ}しくださいました。温泉にはいつでもどうぞ。', 'Welcome. Please use the hot spring any time.')] }],
+  hayashi: [
+    {
+      when: { all: [{ questActive: 'mq7' }, { notObj: 'mq7.hayashi' }] },
+      steps: [
+        say('hayashi', 'おう、見ない顔だな。町から来たのか？ 悪いが、今は話してる{暇|ひま}がない。', 'Oh, a new face. From town? Sorry, no time to chat right now.'),
+        say('hayashi', '桃ってのはな、{熟した|じゅくした|v:jukusu}{とたん||g:tatotan}、あっという間に落ちちまうんだ。今日のうちにとらないと、売り物にならねえ。', 'Peaches fall the moment they ripen. If I don’t pick them today, they can’t be sold.'),
+        { teach: 'g:tatotan' },
+        say('hayashi', '若いのはみんな町へ出ていっちまって、谷はずっと{人手不足|ひとでぶそく|v:hitodebusoku}だ。……ん？ 手伝ってくれるのか？', 'All the young people left for the city; the valley has been short of hands for years. …Hm? You’ll help?', 'surprised'),
+        {
+          quiz: {
+            q: '林さんが急いでいるのはなぜか。',
+            qEn: 'Why is Mr. Hayashi in a hurry?',
+            options: ['桃は熟すとすぐに落ちてしまうから', '桃がまだ全然熟していないから', '町へ出かける約束があるから', '手伝ってくれる人が多すぎるから'],
+            answer: 0,
+            why: 'たとたん = right at the moment: as soon as peaches ripen, they fall.',
+          },
+          keys: ['g:tatotan'], area: 'grammar', retry: true,
+        },
+        { do: [{ objective: 'mq7.hayashi' }, { rel: 'hayashi', points: 1 }, { learn: ['v:jukusu', 'v:hitodebusoku', 'g:tatotan'] }] },
+      ],
+    },
+    {
+      when: { all: [{ questActive: 'mq7' }, { notObj: 'mq7.harvest' }] },
+      steps: [
+        say('hayashi', 'よし、まずは{収穫|しゅうかく|v:shuukaku}だ。熟した実だけを、そっとひねってとるんだぞ。', 'Right, the harvest first. Only the ripe ones — twist them off gently.'),
+        n('あなたは林さんと一緒に、{果樹園|かじゅえん|v:kajuen}で桃をとった。', 'You pick peaches with Mr. Hayashi in the orchard.'),
+        say('hayashi', 'とった桃は、明日の朝{出荷|しゅっか|v:shukka}する。箱に「{品種|ひんしゅ|v:hinshu}」を書いてくれ。', 'We ship them tomorrow morning. Write the variety on the boxes.'),
+        {
+          quiz: {
+            q: '箱に「白桃」「黄金桃」と書いた。これは桃の何か。',
+            qEn: 'You wrote “white peach” and “golden peach” on the boxes. What are these?',
+            options: ['品種', '収穫', '出荷', '果樹園'],
+            answer: 0,
+            why: '品種 = variety/breed. 収穫 = harvest, 出荷 = shipping, 果樹園 = orchard.',
+          },
+          keys: ['v:hinshu'], area: 'vocab', retry: true,
+        },
+        {
+          quiz: {
+            q: '「朝とった桃は、その日のうちに＿＿される。」',
+            qEn: 'Peaches picked in the morning are ＿＿ the same day.',
+            options: ['出荷', '収穫', '栽培', '品種'],
+            answer: 0,
+            why: '出荷 = sending produce to market. They were already picked (収穫) in the morning.',
+          },
+          keys: ['v:shukka'], area: 'vocab', retry: true,
+        },
+        say('hayashi', 'この黄色いのは、わしが{名付けた|なづけた|v:nazukeru}品種でな。名前は……ええと……。', 'This yellow one is a variety I named myself. It’s called… um…', 'worried'),
+        say('hayashi', '……出てこねえ。何十年も育ててきたのに。……まあいい、今日はご苦労さん。', '…It won’t come. I’ve grown it for decades… Never mind. Thanks for today.', 'worried'),
+        { do: [{ objective: 'mq7.harvest' }, { give: 'peach', n: 2 }, { money: 800 }, { rel: 'hayashi', points: 2 }, { learn: ['v:shuukaku', 'v:kajuen', 'v:shukka', 'v:hinshu', 'v:nazukeru'] }] },
+        n('林さんの孫のさくらが、北東の桃畑にいるらしい。', 'Mr. Hayashi’s granddaughter Sakura seems to be in the peach grove to the north-east.'),
+      ],
+    },
+    {
+      when: { all: [{ questActive: 'mq7' }, { notObj: 'mq7.sakura' }] },
+      steps: [say('hayashi', 'さくらなら、北東の桃畑だ。草が深いから、気をつけてな。', 'Sakura’s in the peach grove to the north-east. The grass is deep, so be careful.')],
+    },
+    {
+      when: { flag: 'mq7_peach_named' },
+      steps: [say('hayashi', '「ひのもり{金|きん}」……。いい名前だろ？ もう忘れねえよ。さくらのおかげだ。', '“Hinomori Gold”… A good name, isn’t it? I won’t forget it again. Thanks to Sakura.', 'happy')],
+    },
+    { steps: [say('hayashi', '谷は桃とぶどうと温泉しかないが、いいところだぞ。', 'This valley has nothing but peaches, grapes and hot springs, but it’s a good place.')] },
+  ],
+  sakura_hayashi: [
+    {
+      when: { all: [{ questActive: 'mq7' }, { obj: 'mq7.harvest' }, { notObj: 'mq7.sakura' }] },
+      steps: [
+        say('sakura_hayashi', 'あなたが、おじいちゃんを手伝ってくれた人？ ありがとう！ わたし、さくら。', 'Are you the one who helped Grandpa? Thank you! I’m Sakura.', 'happy'),
+        say('sakura_hayashi', '……おじいちゃん、最近、桃の名前を忘れる{たびに||g:tabini}、すごくさびしそうな顔をするの。', '…Lately, every time Grandpa forgets a peach’s name, he looks so lonely.', 'worried'),
+        { teach: 'g:tabini' },
+        say('sakura_hayashi', 'それに、名前を忘れられた木は、だんだん元気がなくなっていくみたい。……あっ！', 'And the trees whose names are forgotten seem to lose their strength… Oh!', 'surprised'),
+        n('桃の木の根元から、小さな言霊が転がり出てきた！', 'A small Kotodama tumbles out from the roots of a peach tree!'),
+        {
+          battle: { species: 'momotan', level: 7, recruitable: true, bg: 'bg_valley_orchard.webp' },
+          win: [
+            say('sakura_hayashi', 'この子、モモタン！ おじいちゃんの黄色い桃から生まれたんだ。……そうだ、思い出した！ あの桃の名前は「ひのもり金」！', 'It’s a Momotan! Born from Grandpa’s yellow peaches… That’s it, I remember! That peach is called “Hinomori Gold”!', 'happy'),
+            say('sakura_hayashi', '名前を呼んであげたら、木がまた元気になった気がする。おじいちゃんに教えてくるね！', 'When I called its name, the tree seemed to perk up again. I’ll go tell Grandpa!', 'happy'),
+            { do: [{ objective: 'mq7.sakura' }, { flag: 'mq7_peach_named' }, { rel: 'sakura_hayashi', points: 2 }, { seen: 'momotan' }, { learn: ['g:tabini'] }] },
+            n('名前を呼ぶと、言葉は戻ってくる……？ 旅館の女将さんにも、話を聞いてみよう。', 'Calling a name brings the words back…? Let’s talk to the proprietress of the inn, too.'),
+          ],
+          lose: [say('sakura_hayashi', '大丈夫？ 少し休んでから、また来てね。', 'Are you okay? Rest a bit and come back.', 'worried')],
+        },
+      ],
+    },
+    { steps: [say('sakura_hayashi', '桃畑の奥は草が深いから、言霊がよく出るよ。気をつけてね！', 'The grass is deep at the back of the peach grove, so Kotodama show up a lot. Be careful!')] },
+  ],
+  okami: [
+    {
+      when: { all: [{ questActive: 'mq8' }, { notObj: 'mq8.okami' }] },
+      steps: [
+        say('okami', 'ようこそお越しくださいました。温泉{旅館|りょかん|v:ryokan}「ゆのか」の女将でございます。', 'Welcome. I am the proprietress of the hot-spring inn “Yunoka”.'),
+        say('okami', 'この宿は、亡くなった主人と二人で始めました。ここまで続けてこられたのは、お客様の{おかげ||g:okagede}です。', 'My late husband and I started this inn together. We’ve come this far thanks to our guests.'),
+        { teach: 'g:okagede' },
+        say('okami', '……ですが最近、常連のお客様まで、宿の名前を思い出せないとおっしゃるのです。', '…But lately even our regulars say they can’t remember the inn’s name.', 'worried'),
+        say('okami', 'よろしければ、広場の{足湯|あしゆ}でひと休みなさってください。お話は、そちらで。', 'If you like, please rest at the footbath on the square. We can talk there.'),
+        { do: [{ objective: 'mq8.okami' }, { rel: 'okami', points: 1 }, { learn: ['v:ryokan', 'v:motenashi', 'g:okagede'] }] },
+      ],
+    },
+    { steps: [say('okami', '温泉には、いつでもどうぞ。{湯加減|ゆかげん|v:yukagen}はちょうどいいですよ。', 'Please use the hot spring any time. The water is just right.')] },
+  ],
+  valley_ashiyu: [
+    {
+      when: { all: [{ questActive: 'mq8' }, { obj: 'mq8.okami' }, { notObj: 'mq8.onsen' }] },
+      steps: [
+        { cg: 'cg_valley_onsen', say: '足をお湯に{浸|つ}けると、体の{芯|しん}まで温かくなった。白い{湯気|ゆげ}が、夕空にとけていく。', en: 'As you soak your feet, warmth spreads through your whole body. White steam melts into the evening sky.' },
+        say('okami', '主人は、とても声のやさしい人でした。でも最近、その声が思い出せないのです。', 'My husband had a very gentle voice. But lately I can’t remember it.', 'worried'),
+        say('okami', '忘れるのがこわい{あまり||g:amari}、毎晩、主人との思い出を日記に書いています。', 'I’m so afraid of forgetting that I write my memories of him in a diary every night.', 'worried'),
+        { teach: 'g:amari' },
+        {
+          quiz: {
+            q: '女将さんが毎晩日記を書いているのはなぜか。',
+            qEn: 'Why does Okami-san write in her diary every night?',
+            options: ['忘れることがとてもこわいから', '日記を書くのが仕事だから', '主人に頼まれたから', '声を出す練習をしているから'],
+            answer: 0,
+            why: 'こわいあまり = because she is so (excessively) afraid — strong emotion leading to the action.',
+          },
+          keys: ['g:amari'], area: 'grammar', retry: true,
+        },
+        n('そのとき、湯気が{渦|うず}を巻いて、小さな言霊の形になった！', 'Just then, the steam swirls and takes the shape of a small Kotodama!'),
+        {
+          battle: { species: 'yukemuri', level: 8, recruitable: true, bg: 'bg_valley_onsen.webp' },
+          win: [
+            say('okami', '「ああ、いい湯だ」……。主人の口ぐせでした。今、その声が、はっきり聞こえた気がします。', '“Ah, what a nice bath”… That was my husband’s favourite phrase. Just now I feel I heard his voice clearly.', 'happy'),
+            say('okami', '名前や言葉を書いて残す……。それなら、書道の太田先生をお訪ねなさい。広場の西の工房です。', 'Writing names and words down to keep them… Then you should visit Mr. Ōta, the calligrapher. His workshop is west of the square.'),
+            { do: [{ objective: 'mq8.onsen' }, { rel: 'okami', points: 2, memory: 'husband_voice' }, { seen: 'yukemuri' }, { heal: true }, { learn: ['v:yuge', 'v:tsukaru', 'g:amari'] }] },
+          ],
+          lose: [n('湯気に包まれて、何も見えなくなった……。少し休んで、また来よう。', 'The steam wraps around you and you can’t see a thing… Rest and try again.')],
+        },
+      ],
+    },
+    { steps: [n('{足湯|あしゆ}だ。足を浸けると、疲れがとれる。', 'A footbath. Soaking your feet takes the tiredness away.'), { do: [{ heal: true }] }, n('言霊たちも元気になった！', 'Your Kotodama feel refreshed!')] },
+  ],
   kenji: [{ steps: [say('kenji', '今年のぶどうは{出来|でき}がいいんだ。{収穫|しゅうかく}の{季節|きせつ}になったら、手伝ってくれないか？', 'This year’s grapes are good. Would you help with the harvest when the season comes?')] }],
-  ota: [{ steps: [say('ota', '……言葉は、書いて初めて{形|かたち}になる。また来なさい。', '…Words only take shape once you write them. Come again.')] }],
+  ota: [
+    {
+      when: { all: [{ questActive: 'mq9' }, { notObj: 'mq9.ota' }] },
+      steps: [
+        say('ota', '……何の用だ。弟子なら取らんぞ。', '…What do you want? I don’t take students.'),
+        n('あなたは、森さんのこと、町で消えていく言葉のこと、そして「K」の手紙のことを話した。', 'You tell him about Ms. Mori, the words vanishing in town, and the letter signed “K”.'),
+        say('ota', 'Kか……。霧島くんから聞いたのだな。', 'K… So you heard it from Kirishima.', 'surprised'),
+        say('ota', 'あの人は、言葉を失っていく人たちを救おうとした。そして、自分の言葉を失った。……わしは、止められなかった。', 'That person tried to save people who were losing their words — and lost their own words instead. …I couldn’t stop it.', 'worried'),
+        say('ota', 'ここまで来た{からには||g:karaniwa}、覚悟はできているのだろうな。入りなさい。', 'Now that you’ve come this far, I trust you’re prepared. Come in.'),
+        { teach: 'g:karaniwa' },
+        { do: [{ objective: 'mq9.ota' }, { rel: 'ota', points: 1 }, { learn: ['g:karaniwa'] }] },
+      ],
+    },
+    {
+      when: { all: [{ questActive: 'mq9' }, { notObj: 'mq9.calligraphy' }] },
+      steps: [
+        { cg: 'cg_valley_calligraphy', say: '工房の中は、{墨|すみ|v:sumi}の香りがした。太田先生は、一本の{筆|ふで|v:fude}を差し出した。', en: 'The workshop smells of ink. Mr. Ōta holds out a brush.' },
+        { cg: 'cg_valley_calligraphy', say: '「忘れたくない人の名前を、一つ書きなさい。上手でなくていい。心をこめて書くことだ」', en: '“Write the name of someone you don’t want to forget. It needn’t be beautiful. What matters is that you put your heart into it.”' },
+        {
+          choice: [
+            { text: '「森」と書く', en: 'Write “Mori” (森)' },
+            { text: '「森」と、ていねいにもう一度書く', en: 'Write “Mori” again, more carefully' },
+          ],
+        },
+        say('ota', '……いい字だ。名前というのは、呼ばれるたびに強くなる。書かれれば、もっと強くなる。', '…Good. A name grows stronger every time it is called. Written down, it grows stronger still.', 'happy'),
+        {
+          quiz: {
+            q: '「書道」の「道」と同じ読み方をするものはどれか。',
+            qEn: 'Which word reads 道 the same way as in 書道 (しょどう)?',
+            options: ['柔道', '近道', '坂道', '道端'],
+            answer: 0,
+            why: '書道・柔道 read 道 as どう. 近道（ちかみち）・坂道（さかみち）・道端（みちばた）use the kun reading みち.',
+          },
+          keys: ['v:shodou'], area: 'kanji', retry: true,
+        },
+        say('ota', 'その書は、森さんに持っていくといい。だが、その前に……。', 'Take that scroll to Ms. Mori. But first…'),
+        say('ota', 'わしは、この谷の言葉を守る者だ。言葉を守る力があるかどうか、試させてもらう。準備ができたら、声をかけなさい。', 'I am the guardian of this valley’s words. Let me test whether you have the strength to protect words. Speak to me when you’re ready.'),
+        { do: [{ objective: 'mq9.calligraphy' }, { give: 'name_scroll' }, { rel: 'ota', points: 2, memory: 'name_written' }, { learn: ['v:shodou', 'v:fude', 'v:sumi'] }] },
+      ],
+    },
+    {
+      when: { all: [{ questActive: 'mq9' }, { notObj: 'mq9.master' }] },
+      steps: [
+        say('ota', '試験は二つ。まずは言葉の意味だ。', 'The trial has two parts. First, the meaning of words.'),
+        {
+          quiz: {
+            q: '「若い人が減り、村は＿＿に悩んでいる。」',
+            qEn: 'Young people are leaving, and the village is troubled by ＿＿.',
+            options: ['人手不足', '品種', '手入れ', '名残'],
+            answer: 0,
+            why: '人手不足 = shortage of workers, which follows from young people leaving.',
+          },
+          keys: ['v:hitodebusoku'], area: 'vocab', retry: true,
+        },
+        {
+          quiz: {
+            q: '「毎日の努力が＿＿、試験に合格した。」',
+            qEn: 'My daily effort ＿＿ and I passed the exam.',
+            options: ['実って', '熟して', '浸かって', '名付けて'],
+            answer: 0,
+            why: '実る is also used figuratively: effort “bears fruit”. 熟す is only literal ripening.',
+          },
+          keys: ['v:minoru'], area: 'vocab', retry: true,
+        },
+        {
+          quiz: {
+            q: '「もてなし」の使い方として、正しいものはどれか。',
+            qEn: 'Which sentence uses もてなし correctly?',
+            options: ['この旅館は、心のこもったもてなしで有名だ。', '桃をもてなしてから、箱に入れた。', '駅でバスをもてなしている。', '筆でもてなしを書いた。'],
+            answer: 0,
+            why: 'もてなし = hospitality towards guests.',
+          },
+          keys: ['v:motenashi'], area: 'vocab', retry: true,
+        },
+        say('ota', 'ふむ。では最後だ。わしの言霊と向き合ってみなさい。', 'Hm. Then the last part. Face my Kotodama.'),
+        {
+          battle: { species: 'tougenkyo', level: 13, boss: true, bg: 'bg_valley_river.webp' },
+          win: [
+            say('ota', '……見事だ。お前の言葉には、人を思う力がある。', '…Splendid. Your words carry the strength of caring for others.', 'happy'),
+            say('ota', 'この筆を持っていきなさい。谷の試験に通った{証|あかし}だ。', 'Take this brush. It is proof that you passed the valley’s trial.'),
+            say('ota', 'Kは、北の山の村へ向かったと聞いた。……あの人に会ったら、伝えてくれ。「太田は、まだ待っている」と。', 'I heard K went north, to a mountain village. …If you meet them, tell them: “Ōta is still waiting.”', 'worried'),
+            { do: [{ objective: 'mq9.master' }, { give: 'ota_fude' }, { rel: 'ota', points: 3, memory: 'trial_passed' }, { learn: ['v:minoru', 'v:motenashi', 'v:nagori'] }] },
+            n('名前の書を、森さんに届けよう。（バス停から町へ帰れる）', 'Bring the name scroll to Ms. Mori. (You can ride back to town from the bus stop.)'),
+          ],
+          lose: [say('ota', 'まだ早かったようだな。言葉をもっと育ててから、また来なさい。', 'Too early, it seems. Grow your words further and come back.')],
+        },
+      ],
+    },
+    {
+      when: { questDone: 'mq9' },
+      steps: [say('ota', '名前は、呼ばれるたびに強くなる。忘れるなよ。', 'A name grows stronger every time it is called. Don’t forget.')],
+    },
+    { steps: [say('ota', '……言葉は、書いて初めて形になる。', '…Words only take shape once you write them.')] },
+  ],
   busdriver: [{ steps: [say('busdriver', '町行きのバスは、そこのバス停から出ますよ。', 'The bus to town leaves from that stop over there.')] }],
   konbini_fridge: [
     {

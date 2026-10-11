@@ -226,6 +226,8 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'valley_workshop', sprite: 'bx_workshop', x: 16, y: 14, w: 3, h: 1 },
       { id: 'valley_busstop', sprite: 'bx_busstop', x: 22, y: 19, w: 3, h: 1, interactAt: [{ x: 22, y: 20 }, { x: 23, y: 20 }, { x: 24, y: 20 }, { x: 21, y: 19 }] },
       { id: 'valley_ryokan', sprite: 'bx_ryokan', x: 29, y: 13, w: 7, h: 2 },
+      // the footbath on the onsen square: talk to it from the square, facing north
+      { id: 'valley_ashiyu', x: 35, y: 8, w: 6, h: 1, solid: false, interactAt: [35, 36, 37, 38, 39, 40].map((x) => ({ x, y: 9 })) },
     ],
     npcs: [
       { id: 'hayashi', x: 7, y: 6, facing: 'down' },

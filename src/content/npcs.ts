@@ -29,5 +29,5 @@ export const NPCS: Record<string, NpcDef> = {
   okami: { id: 'okami', name: '女将さん', nameEn: 'Okami-san', role: 'Onsen inn owner', sprite: 'npc_okami', portrait: 'portrait_okami', color: '#6b3f7a' },
   kenji: { id: 'kenji', name: '健二', nameEn: 'Kenji', role: 'Winemaker', sprite: 'npc_kenji', portrait: 'portrait_kenji', color: '#3f7a4a' },
   ota: { id: 'ota', name: '太田先生', nameEn: 'Mr. Ōta', role: 'Calligrapher, master of words', sprite: 'npc_ota', portrait: 'portrait_ota', color: '#2f4a7a' },
-  busdriver: { id: 'busdriver', name: '運転手さん', nameEn: 'Bus driver', role: 'Bus driver', sprite: 'npc_busdriver', color: '#4a86b5' },
+  busdriver: { id: 'busdriver', name: '運転手さん', nameEn: 'Bus driver', role: 'Bus driver', sprite: 'npc_busdriver', portrait: 'npc_busdriver_down', color: '#4a86b5' },
 };
