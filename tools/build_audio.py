@@ -2,7 +2,7 @@
 Music and jingles from the originals in art/audio (*.flac) to public/audio/*.mp3.
 
 Loops get their last LOOP_XFADE seconds faded into their beginning, so the seam is inaudible
-when the browser repeats the file. Jingles are converted as they are.
+when the browser repeats the file. Tracks that already fade in and out, and jingles, are converted as they are.
 
 Run: python3 tools/build_audio.py
 """
@@ -16,7 +16,8 @@ import numpy as np
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, 'art', 'audio')
 OUT = os.path.join(ROOT, 'public', 'audio')
-LOOPS = ['onsen', 'memory']
+LOOPS = ['onsen', 'memory', 'valley']
+PLAIN_LOOPS = ['title']  # already fade in and out, loop as they are
 JINGLES = ['evolve', 'newfriend']
 LOOP_XFADE = 1.5
 
@@ -55,7 +56,7 @@ if __name__ == '__main__':
     for name in LOOPS:
         a, sr = read(os.path.join(SRC, name + '.flac'))
         write_mp3(seamless(a, sr), sr, name)
-    for name in JINGLES:
+    for name in PLAIN_LOOPS + JINGLES:
         a, sr = read(os.path.join(SRC, name + '.flac'))
         write_mp3(a, sr, name)
     print('ok')

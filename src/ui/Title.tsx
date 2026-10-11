@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { playMusic } from '../core/audio';
 import type { LoadResult } from '../core/save';
 import { exportToJson } from '../core/save';
 import { ExportBox, ImportBox } from './Backup';
@@ -29,6 +30,16 @@ export function Title({
   const [confirmText, setConfirmText] = useState('');
   const [box, setBox] = useState<'import' | 'raw' | 'current' | 'account' | null>(null);
   const c = useCloud();
+  // browsers block autoplay: start the title theme with the first click or key press
+  useEffect(() => {
+    const start = () => playMusic('title');
+    window.addEventListener('pointerdown', start, { once: true });
+    window.addEventListener('keydown', start, { once: true });
+    return () => {
+      window.removeEventListener('pointerdown', start);
+      window.removeEventListener('keydown', start);
+    };
+  }, []);
   const remote = c.user ? c.remote : null;
   const hasSave = load.kind === 'ok' || !!remote;
   const local = load.kind === 'ok' ? load.env : null;

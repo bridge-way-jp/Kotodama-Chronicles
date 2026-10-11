@@ -149,8 +149,8 @@ export function GameView({ onExit }: { onExit: () => void }) {
             hooks={hooks}
             onEnd={() => {
               remove(o.id);
-              // an emotional scene's music ends with the scene
-              if (currentMusic() === 'memory') playMusic(MAP_MUSIC[store.s.map] ?? 'town');
+              // a scene's own music (memory, onsen) ends with the scene
+              if (currentMusic() === 'memory' || currentMusic() === 'onsen') playMusic(MAP_MUSIC[store.s.map] ?? 'town');
               void saveNow();
             }}
           />
