@@ -214,7 +214,7 @@ function grammarExercise(id: string, mode: string, r: () => number): Exercise {
   const expl = `**${g.pattern}** — ${g.meaning}\n${g.explanation}\n${g.examples[0]?.jp ?? ''}\n${g.examples[0]?.en ?? ''}`;
   if (mode === 'meaning' || !g.exercises.length) {
     // meanings of imported items are German, built-in ones English: only compare like with like
-    const others = pickN(GRAMMAR.filter((x) => x.id !== id && x.source === g.source), 3, r);
+    const others = pickN(GRAMMAR.filter((x) => x.id !== id && (x.source === 'anki') === (g.source === 'anki')), 3, r);
     return {
       id: `${key}:meaning:${Math.floor(r() * 1e6)}`, key, area: 'grammar', mode: 'meaning', context: false,
       instruction: 'What does this pattern express?', prompt: g.pattern,
@@ -326,13 +326,14 @@ function chapterOf(key: string): number {
 }
 
 /**
- * Story items unlock with the story chapter. The imported N2 curriculum is available from the start
- * and comes region by region (N3 review words only when met); its kanji follow once one of their
+ * Story items unlock with the story chapter. The N2 course (imported words, course grammar) is available
+ * from the start and comes region by region (N3 review words only when met); its kanji follow once one of their
  * words has been introduced.
  */
 function isNewCandidate(s: GameState, key: string): boolean {
   const [t, id] = key.split(':');
   if (t === 'v' && VOCAB_BY_ID[id]?.source === 'jlpt') return VOCAB_BY_ID[id].chapter > 0;
+  if (t === 'g' && GRAMMAR_BY_ID[id]?.source === 'n2course') return true;
   if (t === 'k' && KANJI_BY_ID[id]?.source === 'jlpt') return KANJI_BY_ID[id].words.some((w) => s.cards['v:' + w]?.introduced);
   return chapterOf(key) <= s.chapter;
 }

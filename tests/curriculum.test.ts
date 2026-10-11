@@ -5,6 +5,7 @@ import { registerCurriculum, curriculumInfo } from '../src/core/curriculum';
 import { buildReviewSession, exerciseFor, queueInfo, recordAnswer } from '../src/core/learning';
 import { VOCAB, VOCAB_BY_ID } from '../src/content/vocab';
 import { KANJI } from '../src/content/kanji';
+import { GRAMMAR, GRAMMAR_BY_ID } from '../src/content/grammar';
 
 registerCurriculum(JSON.parse(readFileSync('public/data/jlpt.json', 'utf8')));
 
@@ -55,5 +56,37 @@ describe('N2 curriculum', () => {
     expect(session.length).toBeGreaterThan(50);
     for (const ex of session) recordAnswer(s, ex, true, 2000, ex.options?.find((o) => o.correct));
     expect(queueInfo(s).newAvailable.some((k) => k.startsWith('k:k2_'))).toBe(true);
+  });
+});
+
+
+describe('N2 course grammar', () => {
+  it('every entry is complete and its exercises are well-formed', () => {
+    const ids = GRAMMAR.map((g) => g.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    const course = GRAMMAR.filter((g) => g.source === 'n2course');
+    expect(course.length).toBeGreaterThanOrEqual(20);
+    for (const g of course) {
+      expect(g.meaning && g.formation && g.explanation && g.nuance && g.mistakes, g.id).toBeTruthy();
+      expect(g.examples.length, g.id).toBeGreaterThanOrEqual(2);
+      expect(g.exercises.length, g.id).toBeGreaterThanOrEqual(2);
+      for (const s of g.similar) expect(GRAMMAR_BY_ID[s], `${g.id} similar ${s}`).toBeTruthy();
+      for (const ex of g.exercises) {
+        expect(ex.sentence.split('＿＿').length - 1, ex.sentence).toBe(1);
+        expect(ex.options.length).toBe(4);
+        expect(new Set(ex.options.map((o) => o.text)).size, ex.sentence).toBe(4);
+        expect(ex.options[ex.answer].grammar, ex.sentence).toBe(g.id);
+        for (const o of ex.options) if (o.grammar) expect(GRAMMAR_BY_ID[o.grammar], `${g.id}: ${o.grammar}`).toBeTruthy();
+        expect(ex.why.length).toBeGreaterThan(20);
+      }
+    }
+  });
+
+  it('course grammar is available from the start, after chapter-1 story grammar', () => {
+    const s = createInitialState('T');
+    const q = queueInfo(s).newAvailable.filter((k) => k.startsWith('g:'));
+    const firstCourse = q.findIndex((k) => GRAMMAR_BY_ID[k.slice(2)].source === 'n2course');
+    expect(firstCourse).toBeGreaterThan(0);
+    expect(q.slice(0, firstCourse).every((k) => GRAMMAR_BY_ID[k.slice(2)].chapter === 1)).toBe(true);
   });
 });

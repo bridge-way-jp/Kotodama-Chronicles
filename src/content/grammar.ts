@@ -1,4 +1,5 @@
 import type { GrammarEntry } from '../core/types';
+import { GRAMMAR_R2 } from './grammar_n2_r2';
 
 /** Chapter 1 grammar. Original example sentences and exercises (not official JLPT material). */
 export const GRAMMAR: GrammarEntry[] = [
@@ -382,5 +383,8 @@ export const GRAMMAR: GrammarEntry[] = [
     chapter: 1,
   },
 ];
+
+// N2 course grammar, region by region (docs/CURRICULUM.md)
+GRAMMAR.push(...GRAMMAR_R2);
 
 export const GRAMMAR_BY_ID: Record<string, GrammarEntry> = Object.fromEntries(GRAMMAR.map((g) => [g.id, g]));
