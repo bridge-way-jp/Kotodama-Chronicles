@@ -387,9 +387,9 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
-  /** a few butterflies drifting over outdoor maps */
+  /** a few butterflies drifting over outdoor maps (not in the snow) */
   spawnButterflies() {
-    if (this.map.interior || !this.textures.exists('g_butterfly_0')) return;
+    if (this.map.interior || this.map.snow || !this.textures.exists('g_butterfly_0')) return;
     const W = this.map.tiles[0].length * TILE;
     const H = this.map.tiles.length * TILE;
     for (let i = 0; i < 4; i++) {

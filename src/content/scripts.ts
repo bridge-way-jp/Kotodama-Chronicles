@@ -32,6 +32,23 @@ const talkQuiz = (species: string, idx = 0): Step => {
   };
 };
 
+/** Grandma Tsuru's guesthouse: a free bed in Yukimi once you have met her */
+const TSURU_STAY: Step[] = [
+  {
+    choice: [
+      {
+        text: '泊めてもらう', en: 'Stay the night (heals your team, starts a new day)',
+        then: [
+          say('tsuru', '遠慮せんでええ。{囲炉裏|いろり}のそばに布団を敷いとくでね。', 'Don’t be shy. I’ll lay out a futon by the hearth.', 'happy'),
+          { do: [{ sleep: true }] },
+          n('囲炉裏の火の音を聞きながら、ぐっすり眠った。言霊たちも元気になった！', 'Listening to the crackling hearth, you sleep soundly. Your Kotodama are fully healed!'),
+        ],
+      },
+      { text: 'お茶だけいただく', en: 'Just have some tea' },
+    ],
+  },
+];
+
 export const SCRIPTS: Record<string, DialogueRule[]> = {
   // ================================================================ apartment
   desk: [
@@ -689,7 +706,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         say('station_staff', '雪見村行きですね。山の上は雪が深いので、暖かくしていってくださいね。', 'To Yukimi Village? The snow is deep up there, so keep warm.'),
         { cg: 'cg_mountain_arrival', say: '電車を降りると、空気が{凍|こお}るように冷たかった。夕焼けの中、雪に埋もれた村に、ぽつぽつと明かりがともる。', en: 'Stepping off the train, the air is freezing. In the sunset glow, lights flicker on one by one in the village buried in snow.' },
         { cg: 'cg_mountain_arrival', say: 'ここが雪見村……。字が消えていく村。', en: 'So this is Yukimi Village… the village where characters are fading.' },
-        { do: [{ objective: 'mq10.arrive' }, { flag: 'yukimi_visited' }, { warp: { map: 'mountain', x: 7, y: 20 } }] },
+        { do: [{ objective: 'mq10.arrive' }, { flag: 'yukimi_visited' }, { warp: { map: 'mountain', x: 9, y: 19 } }] },
       ],
     },
     {
@@ -698,7 +715,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         n('日野森駅。谷へのバスと、雪見村への電車が出ている。', 'Hinomori Station. Buses to the valley and trains to Yukimi Village leave from here.'),
         {
           choice: [
-            { text: '電車で雪見村へ', en: 'Take the train to Yukimi Village', then: [{ do: [{ warp: { map: 'mountain', x: 7, y: 20 } }] }] },
+            { text: '電車で雪見村へ', en: 'Take the train to Yukimi Village', then: [{ do: [{ warp: { map: 'mountain', x: 9, y: 19 } }] }] },
             { text: 'バスで谷へ行く', en: 'Take the bus to Hinomori Valley', then: [{ do: [{ warp: { map: 'valley', x: 20, y: 24 } }] }] },
             { text: 'やめる', en: 'Stay in town' },
           ],
@@ -825,8 +842,9 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     },
     {
       when: { questDone: 'mq13' },
-      steps: [say('tsuru', '息子の手紙、毎晩読み返しとるんよ。字は、読むたびに{温|あった}かくなるねえ。', 'I read my son’s letter again every night. Characters get warmer every time you read them.', 'happy')],
+      steps: [say('tsuru', '息子の手紙、毎晩読み返しとるんよ。字は、読むたびに{温|あった}かくなるねえ。', 'I read my son’s letter again every night. Characters get warmer every time you read them.', 'happy'), ...TSURU_STAY],
     },
+    { when: { obj: 'mq10.tsuru' }, steps: [say('tsuru', 'まあまあ、寒かったろう。中でお茶でもどうだい。', 'My, you must be cold. How about some tea inside?'), ...TSURU_STAY] },
     { steps: [say('tsuru', 'まあまあ、寒かったろう。中でお茶でもどうだい。', 'My, you must be cold. How about some tea inside?')] },
   ],
   hina: [
@@ -1179,6 +1197,19 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         {
           choice: [
             { text: 'バイトする', en: 'Work: inn front desk (listening, pays ¥200 per correct answer)', then: [{ do: [{ open: 'job:onsen' }] }] },
+            {
+              text: '泊まる（¥800）', en: 'Stay the night (¥800: heals your team, starts a new day)',
+              then: [
+                {
+                  if: { money: 800 },
+                  then: [
+                    { do: [{ money: -800 }, { sleep: true }] },
+                    n('温泉につかって、ふかふかの{布団|ふとん}でぐっすり眠った。言霊たちも元気になった！', 'You soak in the hot spring and sleep soundly on a soft futon. Your Kotodama are fully healed!'),
+                  ],
+                  else: [say('okami', 'あいにく、お{代|だい}が少し足りないようでございます。', 'I’m afraid that isn’t quite enough, I’m sorry.', 'worried')],
+                },
+              ],
+            },
             { text: 'またこんど', en: 'Maybe later' },
           ],
         },

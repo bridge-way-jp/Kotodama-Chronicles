@@ -180,12 +180,15 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
   };
 
   useEffect(() => {
+    // a Kotodama you don't have yet could become a friend: say so before the fight, not after
+    const canBefriend = setup.recruitable && !setup.boss && store.s.dex[enemy.speciesId] !== 'caught';
     store.update((st) => {
       if (!st.dex[enemy.speciesId]) st.dex[enemy.speciesId] = 'seen';
     }, 'dex');
     say(
       [
         setup.boss ? `${esp.name}が立ちはだかった！` : `野生の${esp.name}が現れた！`,
+        ...(canBefriend ? [`（まだ仲間にいない言霊だ。「はなす」で仲間にできるかもしれない）`] : []),
         me ? `行け、${SPECIES[me.speciesId].name}！` : '……',
       ],
       () => setPhase({ k: 'menu' }),
