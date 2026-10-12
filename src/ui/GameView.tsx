@@ -71,6 +71,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
   const hooks: ActionHooks = {
     warp: (map, x, y) => bus.emit('warp', { map, x, y }),
     music: (key) => playMusic(key === 'map' ? MAP_MUSIC[store.s.map] ?? 'town' : key),
+    bus: (mode) => bus.emit('bus', { mode }),
     open: (what) => {
       if (what === 'review') push({ kind: 'review' });
       else if (what === 'dashboard') push({ kind: 'menu', tab: 'jlpt' });
@@ -164,8 +165,8 @@ export function GameView({ onExit }: { onExit: () => void }) {
             hooks={hooks}
             onEnd={() => {
               remove(o.id);
-              // a scene's own music (memory, onsen, festival) ends with the scene
-              if (['memory', 'onsen', 'festival'].includes(currentMusic())) playMusic(MAP_MUSIC[store.s.map] ?? 'town');
+              // a scene's own music (memory, onsen, festival, lighthouse) ends with the scene
+              if (['memory', 'onsen', 'festival', 'lighthouse'].includes(currentMusic())) playMusic(MAP_MUSIC[store.s.map] ?? 'town');
               void saveNow();
             }}
           />

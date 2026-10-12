@@ -131,6 +131,8 @@ export const TRACKS: Record<string, string> = {
   title: 'audio/title.mp3',
   snow: 'audio/snow.mp3',
   festival: 'audio/festival.mp3',
+  harbor: 'audio/harbor.mp3',
+  lighthouse: 'audio/lighthouse.mp3',
 };
 
 export const MAP_MUSIC: Record<string, string> = {

@@ -57,7 +57,9 @@ export type Action =
   | { open: 'review' | 'dashboard' | 'diagnostic' | 'shop' | 'menu' | 'garden' | `job:${string}` }
   | { chapter: number }
   /** switch the music for a scene: a track key, or 'map' for the current map's track (memory ends with the scene) */
-  | { music: string };
+  | { music: string }
+  /** the bus pulls up at this map's stop, or (before a warp) drives off from the stop on the next map */
+  | { bus: 'arrive' | 'leave' };
 
 export type Mood = 'neutral' | 'happy' | 'surprised' | 'worried';
 

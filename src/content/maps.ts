@@ -71,6 +71,8 @@ export interface MapDef {
   zones?: { x0: number; y0: number; x1: number; y1: number; encounters?: string; bg?: string }[];
   /** world positions (px) where steam rises, with the depth to draw it at */
   steam?: { x: number; y: number; w: number; depth?: number }[];
+  /** where the bus stops: x is the tile line under its middle, y the tile row of its front bumper; it comes down the road from the north */
+  busStop?: { x: number; y: number };
   /** gentle snowfall over the map */
   snow?: boolean;
   /** wandering townsfolk: FOLK id, home tile, wander radius in tiles */
@@ -119,6 +121,7 @@ const TOWN = [
 export const MAPS: Record<string, MapDef> = {
   town: {
     id: 'town', name: 'Hinomori Town', nameJa: '日野森町', tiles: TOWN, image: 'map_town',
+    busStop: { x: 21, y: 20 },
     wanderers: [
       { id: 'schoolgirl', x: 12, y: 11, r: 6 },
       { id: 'salaryman', x: 26, y: 12, r: 6 },
@@ -228,13 +231,14 @@ export const MAPS: Record<string, MapDef> = {
   },
   valley: {
     id: 'valley', name: 'Hinomori Valley', nameJa: '日野森の谷', tiles: VALLEY_GEN, image: 'map_valley', encounters: 'valley', bg: 'bg_valley_orchard.webp',
+    busStop: { x: 21, y: 20 },
     // footprints match tools/build_valley.py BUILDINGS
     objects: [
       { id: 'valley_farmhouse', sprite: 'bx_farmhouse', x: 4, y: 4, w: 5, h: 2 },
       { id: 'valley_winery', sprite: 'bx_winery', x: 22, y: 13, w: 4, h: 2 },
       { id: 'valley_stand', sprite: 'bx_stand', x: 15, y: 19, w: 3, h: 1 },
       { id: 'valley_workshop', sprite: 'bx_workshop', x: 16, y: 14, w: 3, h: 1 },
-      { id: 'valley_busstop', sprite: 'bx_busstop', x: 22, y: 19, w: 3, h: 1, interactAt: [{ x: 22, y: 20 }, { x: 23, y: 20 }, { x: 24, y: 20 }, { x: 21, y: 19 }] },
+      { id: 'valley_busstop', sprite: 'bx_busstop', x: 22, y: 17, w: 3, h: 1, interactAt: [{ x: 22, y: 18 }, { x: 23, y: 18 }, { x: 24, y: 18 }, { x: 21, y: 17 }] },
       { id: 'valley_ryokan', sprite: 'bx_ryokan', x: 29, y: 13, w: 7, h: 2 },
       // the word garden next to the farmhouse (Mr. Hayashi lends Maria a bed after the harvest)
       ...(['peach_3', 'grape_3', 'sunflower_3', 'rice_2', 'asagao_3', 'sakura_2'] as const).map((p, i) => ({
@@ -250,9 +254,9 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'okami', x: 32, y: 15, facing: 'down' },
       { id: 'kenji', x: 24, y: 15, facing: 'down' },
       { id: 'ota', x: 17, y: 15, facing: 'down' },
-      { id: 'busdriver', x: 23, y: 21, facing: 'up' },
+      { id: 'busdriver', x: 22, y: 19, facing: 'up' },
     ],
-    warps: [19, 20, 21].map((x) => ({ x, y: 27, to: { map: 'town', x: 18, y: 20, facing: 'down' as const } })),
+    warps: [20, 21].map((x) => ({ x, y: 27, to: { map: 'town', x: 18, y: 20, facing: 'down' as const } })),
     zones: [
       { x0: 25, y0: 1, x1: 32, y1: 4, encounters: 'valley_grove', bg: 'bg_valley_orchard.webp' },
       { x0: 2, y0: 15, x1: 7, y1: 17, encounters: 'valley_river', bg: 'bg_valley_river.webp' },

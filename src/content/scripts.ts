@@ -794,11 +794,12 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     {
       when: { all: [{ questActive: 'mq6' }, { obj: 'mq6.kirishima' }, { notObj: 'mq6.arrive' }] },
       steps: [
-        n('駅前のバス停に、谷へ行くバスが止まっている。', 'At the bus stop in front of the station, the bus to the valley is waiting.'),
+        { do: [{ bus: 'arrive' }] },
+        n('駅前のバス停に、谷へ行くバスがやってきた。', 'The bus to the valley pulls up at the stop in front of the station.'),
         say('busdriver', '日野森の谷行き、まもなく発車しまーす。', 'The bus to Hinomori Valley is about to depart!'),
         { cg: 'cg_valley_arrival', say: 'バスを降りると、甘い桃の香りがした。山に囲まれた谷に、川の音が響いている。', en: 'Stepping off the bus, you smell sweet peaches. The sound of the river echoes through the valley ringed by mountains.' },
         { cg: 'cg_valley_arrival', say: '……ここに、Kを知る人がいる。', en: '…Somewhere here is someone who knew K.' },
-        { do: [{ objective: 'mq6.arrive' }, { warp: { map: 'valley', x: 20, y: 24 } }] },
+        { do: [{ objective: 'mq6.arrive' }, { bus: 'leave' }, { warp: { map: 'valley', x: 22, y: 18 } }] },
       ],
     },
     {
@@ -809,7 +810,11 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
           choice: [
             {
               text: 'バスで谷へ行く', en: 'Take the bus to Hinomori Valley',
-              then: [n('バスは山道をのぼっていく。窓の外に、{桃|もも}の花が見えてきた。', 'The bus climbs the mountain road. Peach blossoms appear outside the window.'), { do: [{ warp: { map: 'valley', x: 20, y: 24 } }] }],
+              then: [
+                { do: [{ bus: 'arrive' }] },
+                n('バスがやってきた。乗りこむと、バスは山道をのぼっていく。窓の外に、{桃|もも}の花が見えてきた。', 'The bus pulls up. You get on, and it climbs the mountain road. Peach blossoms appear outside the window.'),
+                { do: [{ bus: 'leave' }, { warp: { map: 'valley', x: 22, y: 18 } }] },
+              ],
             },
             { text: 'やめる', en: 'Stay in town' },
           ],
@@ -1106,7 +1111,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     {
       when: { all: [{ questActive: 'mq17' }, { obj: 'mq17.master' }, { notObj: 'mq17.lighthouse' }] },
       steps: [
-        { do: [{ music: 'memory' }] },
+        { do: [{ music: 'lighthouse' }] },
         { cg: 'cg_harbor_lighthouse', say: '灯台の光が、星の多い夜の海を、ゆっくりとなでていく。手すりのそばに、帳面を抱えた女の人が立っていた。', en: 'The lighthouse beam slowly sweeps the starry night sea. By the railing stands a woman holding a notebook.' },
         { cg: 'cg_harbor_lighthouse', say: '女の人は、今度は消えなかった。ゆっくりとふり返って、@nameを見た。', en: 'This time the woman does not vanish. She slowly turns around and looks at @name.' },
         say('traveller', '……雪見村でも、会ったわね。手紙を、読んでくれたのね。', '…We met in Yukimi Village too. You read my letter, didn’t you.'),
@@ -1205,7 +1210,14 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         n('バス停だ。{時刻表|じこくひょう}によると、町へのバスは一時間に一本。', 'A bus stop. According to the timetable, there is one bus an hour to town.'),
         {
           choice: [
-            { text: '町へ帰る', en: 'Ride back to Hinomori town', then: [{ do: [{ warp: { map: 'town', x: 18, y: 20 } }] }] },
+            {
+              text: '町へ帰る', en: 'Ride back to Hinomori town',
+              then: [
+                { do: [{ bus: 'arrive' }] },
+                n('町へ行くバスがやってきた。', 'The bus to town pulls up.'),
+                { do: [{ bus: 'leave' }, { warp: { map: 'town', x: 18, y: 20 } }] },
+              ],
+            },
             { text: 'もう少しいる', en: 'Stay a little longer' },
           ],
         },

@@ -50,10 +50,14 @@ export const ASSET_KEYS = [
   // Yukimi mountain village, chapter 3 (tools/build_mountain.py)
   'map_mountain', 'bx_guesthouse', 'bx_gassho', 'bx_clinic', 'bx_temple', 'bx_yukimi_station', 'bx_kamakura',
   // Shiomi harbour town, chapter 4 (tools/build_harbor.py)
+  'bus_front', 'bus_side',
   'map_harbor', 'bx_lighthouse', 'bx_diner', 'bx_harbor_office', 'bx_seaside_inn', 'bx_townhouse', 'bx_shiomi_station',
   'map_valley', 'bx_farmhouse', 'bx_winery', 'bx_stand', 'bx_workshop', 'bx_busstop', 'bx_ryokan',
   ...Object.values(ROOMS_GEN).flatMap((r) => [r.image, ...r.objects.flatMap((o) => (o.sprite ? [o.sprite] : []))]),
 ];
+
+/** set when the player rides the bus to another map: the bus drives off once the new map is shown */
+let busLeavingOnEnter = false;
 
 const DIRS: Record<Dir, [number, number]> = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 const STEP_MS = 170;
@@ -160,6 +164,16 @@ export class WorldScene extends Phaser.Scene {
     this.time.addEvent({ delay: 550, loop: true, callback: () => this.animateTiles() });
     this.unsub.push(store.subscribe(() => this.refreshVisibility()));
     this.unsub.push(bus.on('warp', (p) => this.warpTo(p.map, p.x, p.y, p.facing ?? 'down')));
+    this.unsub.push(
+      bus.on('bus', ({ mode }) => {
+        if (mode === 'arrive') this.busArrive();
+        else busLeavingOnEnter = true;
+      }),
+    );
+    if (busLeavingOnEnter) {
+      busLeavingOnEnter = false;
+      this.busLeave();
+    }
     this.events.once('shutdown', () => {
       this.unsub.forEach((u) => u());
       this.unsub = [];
@@ -388,6 +402,26 @@ export class WorldScene extends Phaser.Scene {
         },
       });
     }
+  }
+
+  /** the bus comes down the road from the north and stops at the bus stop */
+  busArrive() {
+    const stop = this.map.busStop;
+    if (!stop || !this.textures.exists('bus_front')) return;
+    const x = stop.x * TILE;
+    const y = (stop.y + 1) * TILE;
+    const b = this.add.image(x, y - 9 * TILE, 'bus_front').setOrigin(0.5, 1).setDepth(y).setAlpha(0);
+    this.tweens.add({ targets: b, y, alpha: 1, duration: 1600, ease: 'Sine.easeOut' });
+  }
+
+  /** arriving by bus: it waits at the stop for a moment, then drives off down the road */
+  busLeave() {
+    const stop = this.map.busStop;
+    if (!stop || !this.textures.exists('bus_front')) return;
+    const x = stop.x * TILE;
+    const y = (stop.y + 1) * TILE;
+    const b = this.add.image(x, y, 'bus_front').setOrigin(0.5, 1).setDepth(y);
+    this.tweens.add({ targets: b, y: y + 8 * TILE, alpha: 0, delay: 1100, duration: 1800, ease: 'Sine.easeIn', onComplete: () => b.destroy() });
   }
 
   /** a few butterflies drifting over outdoor maps (not in the snow) */

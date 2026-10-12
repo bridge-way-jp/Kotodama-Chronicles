@@ -143,6 +143,7 @@ export interface ActionHooks {
   warp?: (map: string, x: number, y: number) => void;
   open?: (what: string) => void;
   music?: (key: string) => void;
+  bus?: (mode: 'arrive' | 'leave') => void;
 }
 
 export function runAction(s: GameState, a: Action, hooks: ActionHooks = {}) {
@@ -189,4 +190,5 @@ export function runAction(s: GameState, a: Action, hooks: ActionHooks = {}) {
   else if ('open' in a) hooks.open?.(a.open);
   else if ('chapter' in a) s.chapter = a.chapter;
   else if ('music' in a) hooks.music?.(a.music);
+  else if ('bus' in a) hooks.bus?.(a.bus);
 }

@@ -32,52 +32,53 @@ def rect(ch, x0, y0, x1, y1):
             g[y][x] = ch
 
 
+# re-read from the painted ground on a 40 px grid (the first grid was drawn for an older draft)
 # --- north bank: farm plot, vineyard paths, peach grove
-rect('.', 2, 2, 11, 7)          # farm plot with its grass border
+rect('.', 2, 2, 11, 6)          # farm plot with its grass border
 rect('H', 8, 7, 9, 7)           # stairs down from the farm
-rect('.', 12, 1, 13, 7)         # path west of the vineyard
-rect('.', 18, 1, 19, 8)         # path between the vineyards
-rect('.', 24, 1, 24, 6)         # path east of the vineyard
+rect('.', 12, 0, 13, 8)         # path west of the vineyard
+rect('.', 18, 0, 19, 8)         # path between the vineyards
+rect('.', 24, 0, 24, 5)         # path east of the vineyard
+rect('H', 24, 6, 24, 7)         # stairs down to the river bank
 rect('"', 25, 1, 32, 4)         # peach grove (tall grass)
-rect('.', 8, 8, 18, 8)          # path along the north bank
-rect('.', 11, 9, 15, 9)
+rect('.', 13, 1, 24, 1)         # lane along the top fence of the vineyards
+rect('.', 17, 8, 19, 8)         # from the vineyard path down to the bridge
+rect('.', 8, 8, 13, 8)          # path along the north bank
+rect('.', 10, 9, 15, 9)         # to the bridge
 # --- bridge and river
-rect('~', 20, 6, 33, 9)         # upper river
-rect('~', 34, 0, 39, 8)         # hot-spring falls
-rect('~', 9, 10, 17, 13)        # river under the bridge, flowing west
-rect('~', 1, 14, 9, 21)         # lower river and falls
 rect('b', 16, 9, 17, 10)
 rect('b', 18, 10, 19, 11)
 # --- west peninsula between the river arms
-rect('.', 10, 11, 12, 13)
-rect('H', 11, 10, 11, 10)
-rect('.', 6, 12, 9, 13)
-rect('H', 5, 14, 5, 14)
-rect('"', 2, 15, 7, 17)
+rect('H', 11, 10, 11, 11)
+rect('.', 9, 12, 11, 12)
+rect('.', 6, 13, 10, 13)
+rect('H', 5, 14, 6, 14)
+rect('"', 2, 15, 7, 17)         # riverside meadow (tall grass)
 # --- village centre
-rect('.', 20, 11, 21, 27)       # main road down to the bus road
-rect('.', 22, 11, 27, 12)       # road east along the river
-rect('.', 28, 10, 33, 11)
-rect('H', 34, 10, 34, 11)
+rect('.', 20, 10, 33, 10)       # road east along the river
+rect('.', 20, 11, 22, 13)       # down from the bridge to the square
+rect('H', 33, 11, 34, 12)       # stairs up to the onsen square
 rect('.', 35, 9, 40, 11)        # footbath and onsen square
-rect('.', 14, 13, 26, 21)       # square, plots and lawns
-rect('T', 19, 17, 21, 18)       # the big tree in the middle of the square
-rect('.', 25, 16, 28, 17)       # path to the inn
-rect('.', 28, 12, 38, 17)       # inn plot
-rect('.', 27, 17, 28, 22)       # path down to the paddies
-rect('.', 22, 21, 27, 21)
-rect('~', 29, 19, 40, 24)       # rice paddies
-rect('.', 34, 19, 34, 22)       # walkway between the paddies
+rect('.', 27, 11, 28, 17)       # path down to the inn
+rect('.', 29, 12, 38, 17)       # inn plot and lawn
+rect('.', 15, 14, 26, 19)       # the paved square and its plots
+rect('T', 20, 17, 21, 18)       # the big tree in the middle of the square
+rect('H', 24, 16, 25, 17)       # stairs from the square to the inn lawn
+rect('.', 26, 16, 26, 17)
+rect('H', 27, 18, 28, 18)       # stairs down from the inn lawn
+rect('.', 27, 19, 28, 21)       # path down to the bus road
+rect('.', 22, 21, 26, 21)
+rect('T', 23, 19, 26, 19)       # the little garden with trees
+rect('T', 25, 18, 26, 18)
 # --- bus road leaves the map at the bottom
-rect('.', 19, 22, 21, 27)
-
+rect('.', 20, 19, 21, 27)
 # buildings: name -> (sheet, index or None, width px, footprint x, y, w, h)
 BUILDINGS = {
     'farmhouse': ('exterior_valley', 1, 176, 4, 4, 5, 2),
     'winery': ('exterior_valley', 2, 140, 22, 13, 4, 2),
     'stand': ('exterior_valley', 3, 104, 15, 19, 3, 1),
     'workshop': ('exterior_valley', 4, 116, 16, 14, 3, 1),
-    'busstop': ('exterior_valley', 5, 104, 22, 19, 3, 1),
+    'busstop': ('exterior_valley', 5, 104, 22, 17, 3, 1),
     'ryokan': (None, None, 232, 29, 13, 7, 2),
 }
 
