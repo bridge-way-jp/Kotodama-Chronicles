@@ -178,6 +178,8 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'trash', sprite: 'tp_trash', x: 14, y: 21, w: 1, h: 1 },
       { id: 'barrel', sprite: 'tp_barrel', x: 18, y: 16, w: 1, h: 1 },
       { id: 'station_building', sprite: 'bx_station', x: 25, y: 18, w: 5, h: 2 },
+      // buses to the valley stop by the road in front of the station
+      { id: 'town_busstop', sprite: 'bx_busstop', x: 17, y: 19, w: 3, h: 1, interactAt: [{ x: 17, y: 20 }, { x: 18, y: 20 }, { x: 19, y: 20 }, { x: 20, y: 19 }, { x: 16, y: 19 }] },
     ],
     npcs: [
       { id: 'mori', x: 6, y: 17, facing: 'down' },
@@ -249,7 +251,7 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'ota', x: 17, y: 15, facing: 'down' },
       { id: 'busdriver', x: 23, y: 21, facing: 'up' },
     ],
-    warps: [19, 20, 21].map((x) => ({ x, y: 27, to: { map: 'town', x: 27, y: 20, facing: 'down' as const } })),
+    warps: [19, 20, 21].map((x) => ({ x, y: 27, to: { map: 'town', x: 18, y: 20, facing: 'down' as const } })),
     zones: [
       { x0: 25, y0: 1, x1: 32, y1: 4, encounters: 'valley_grove', bg: 'bg_valley_orchard.webp' },
       { x0: 2, y0: 15, x1: 7, y1: 17, encounters: 'valley_river', bg: 'bg_valley_river.webp' },

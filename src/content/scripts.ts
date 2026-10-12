@@ -746,20 +746,23 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     {
       when: { flag: 'yukimi_visited' },
       steps: [
-        n('日野森駅。谷へのバスと、雪見村への電車が出ている。', 'Hinomori Station. Buses to the valley and trains to Yukimi Village leave from here.'),
+        n('日野森駅。北の山の雪見村へ、電車が出ている。谷へのバスは、駅前のバス停からだ。', 'Hinomori Station. Trains run north to Yukimi Village. Buses to the valley leave from the bus stop in front of the station.'),
         {
           choice: [
             { text: '電車で雪見村へ', en: 'Take the train to Yukimi Village', then: [{ do: [{ warp: { map: 'mountain', x: 9, y: 19 } }] }] },
-            { text: 'バスで谷へ行く', en: 'Take the bus to Hinomori Valley', then: [{ do: [{ warp: { map: 'valley', x: 20, y: 24 } }] }] },
             { text: 'やめる', en: 'Stay in town' },
           ],
         },
       ],
     },
+    { when: { flag: 'chapter1_done' }, steps: [n('日野森駅。今は電車が止まっている。谷へのバスは、駅前のバス停から出ている。', 'Hinomori Station. No trains are running right now. Buses to the valley leave from the bus stop in front of the station.')] },
+    { steps: [n('日野森駅。小さいが、町の人にとって大切な駅だ。', 'Hinomori Station. Small, but important to the townspeople.')] },
+  ],
+  town_busstop: [
     {
       when: { all: [{ questActive: 'mq6' }, { obj: 'mq6.kirishima' }, { notObj: 'mq6.arrive' }] },
       steps: [
-        n('谷へ行くバスが、駅前で待っている。', 'The bus to the valley is waiting in front of the station.'),
+        n('駅前のバス停に、谷へ行くバスが止まっている。', 'At the bus stop in front of the station, the bus to the valley is waiting.'),
         say('busdriver', '日野森の谷行き、まもなく発車しまーす。', 'The bus to Hinomori Valley is about to depart!'),
         { cg: 'cg_valley_arrival', say: 'バスを降りると、甘い桃の香りがした。山に囲まれた谷に、川の音が響いている。', en: 'Stepping off the bus, you smell sweet peaches. The sound of the river echoes through the valley ringed by mountains.' },
         { cg: 'cg_valley_arrival', say: '……ここに、Kを知る人がいる。', en: '…Somewhere here is someone who knew K.' },
@@ -769,7 +772,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     {
       when: { flag: 'chapter1_done' },
       steps: [
-        n('日野森駅。駅前から、谷へ行くバスが出ている。', 'Hinomori Station. A bus to the valley leaves from the station square.'),
+        n('バス停だ。「日野森の谷行き」と書いてある。', 'A bus stop. The sign says “To Hinomori Valley”.'),
         {
           choice: [
             {
@@ -781,7 +784,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         },
       ],
     },
-    { steps: [n('日野森駅。小さいが、町の人にとって大切な駅だ。', 'Hinomori Station. Small, but important to the townspeople.')] },
+    { steps: [n('バス停だ。「日野森の谷行き」……{時刻表|じこくひょう}を見ると、今日のバスはもう終わっていた。', 'A bus stop: “To Hinomori Valley”. According to the timetable, today’s last bus has already left.')] },
   ],
   // ================================================================ chapter 2: Hinomori valley
   valley_busstop: [
@@ -790,7 +793,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         n('バス停だ。{時刻表|じこくひょう}によると、町へのバスは一時間に一本。', 'A bus stop. According to the timetable, there is one bus an hour to town.'),
         {
           choice: [
-            { text: '町へ帰る', en: 'Ride back to Hinomori town', then: [{ do: [{ warp: { map: 'town', x: 27, y: 20 } }] }] },
+            { text: '町へ帰る', en: 'Ride back to Hinomori town', then: [{ do: [{ warp: { map: 'town', x: 18, y: 20 } }] }] },
             { text: 'もう少しいる', en: 'Stay a little longer' },
           ],
         },

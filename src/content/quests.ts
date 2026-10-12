@@ -83,7 +83,7 @@ export const QUESTS: Record<string, QuestDef> = {
     objectives: [
       { id: 'mori', text: 'Talk to Ms. Mori in front of the apartment' },
       { id: 'kirishima', text: 'Ask Dr. Kirishima about the forgetting', hint: 'His lab is east, across the river.' },
-      { id: 'arrive', text: 'Take the bus to Hinomori Valley', hint: 'The bus leaves from the station building.' },
+      { id: 'arrive', text: 'Take the bus to Hinomori Valley', hint: 'The bus stop is by the road in front of the station.' },
     ],
     rewards: { xp: 120, items: { onigiri: 3 } },
     learning: ['v:wasureppoi', 'v:kotozuke', 'g:uchini'],
