@@ -254,7 +254,7 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'okami', x: 32, y: 15, facing: 'down' },
       { id: 'kenji', x: 24, y: 15, facing: 'down' },
       { id: 'ota', x: 17, y: 15, facing: 'down' },
-      { id: 'busdriver', x: 22, y: 19, facing: 'up' },
+      { id: 'busdriver', x: 26, y: 17, facing: 'left' },
     ],
     warps: [20, 21].map((x) => ({ x, y: 27, to: { map: 'town', x: 18, y: 20, facing: 'down' as const } })),
     zones: [
