@@ -138,11 +138,12 @@ NPC placement is valid.
 
 ## Status
 
-**Playable now:** title / new game / continue, Hinomori town + apartment + café + Midori Forest, 8 NPCs, 5 main and 3 side quests,
-reading & listening challenges, grammar teaching cards, glossary, SRS reviews, 10 Kotodama species (3 evolution lines),
-turn-based battles with recruitment, items and shop, relationships with remembered events, JLPT dashboard,
-diagnostic, section practice, timed mock exam, autosave and backups, touch controls.
+**Playable now:** chapters 1–3 (Hinomori town and Midori Forest, Hinomori Valley, Yukimi mountain village) with 13 main
+and 3 side quests, two region masters (vocabulary, kanji), bus and train travel, 26 Kotodama species, turn-based battles
+where every move is a Japanese question, befriending with はなす, part-time jobs, the word garden, overnight stays,
+reading & listening challenges, grammar teaching cards (about 90 N2 patterns), the N2 word and kanji lists, SRS reviews,
+JLPT dashboard, diagnostic, section practice, timed mock exam, nine hidden secrets (ひみつ), autosave and backups,
+touch controls.
 
-**Not yet:** chapters 2+ and further regions (city, mountain village, coast, university district), train travel,
-seasonal events, walking NPCs, recorded native audio, kanji stroke-order data, broader N2 coverage (the full N2 scope is several thousand
-words), FSRS.
+**Not yet:** chapters 4–7 (coast, old capital, university city, capital) and the grammar for regions 5–7, seasons,
+walking NPCs, recorded native audio, kanji stroke-order data, FSRS.
