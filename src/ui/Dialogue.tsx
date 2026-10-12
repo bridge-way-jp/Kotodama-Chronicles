@@ -75,7 +75,7 @@ export function ScriptRunner({ steps, onEnd, hooks }: { steps: Step[]; onEnd: ()
           {step.choice.map((c, i) => (
             <button key={i} className="btn choice" autoFocus={i === 0} onClick={() => (sfx('blip'), advance(c.then))}>
               <Jp text={c.text} />
-              {c.en && <small>{c.en}</small>}
+              {c.en && <small>{withName(c.en)}</small>}
             </button>
           ))}
         </div>

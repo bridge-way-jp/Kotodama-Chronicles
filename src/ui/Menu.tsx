@@ -609,11 +609,12 @@ function SettingsTab({ actions }: { actions: MenuActions }) {
 
 // ------------------------------------------------------------------ region map
 const PLACES: { id: string; ja: string; en: string; x: number; y: number; open: (s: typeof store.s) => boolean; maps?: string[] }[] = [
-  { id: 'town', ja: '日野森町', en: 'Hinomori Town', x: 55, y: 44, open: () => true, maps: ['town', 'apartment', 'cafe', 'konbini', 'library', 'station'] },
+  { id: 'town', ja: '日野森町', en: 'Hinomori Town', x: 55, y: 44, open: () => true, maps: ['town', 'apartment', 'cafe', 'konbini', 'library', 'station', 'ramen'] },
   { id: 'forest', ja: 'みどりの森', en: 'Midori Forest', x: 63, y: 16, open: (s) => !!s.flags.forest_open, maps: ['forest'] },
-  { id: 'lab', ja: '日野森言語研究所', en: 'Language Research Facility', x: 82, y: 24, open: () => true },
+  { id: 'lab', ja: '日野森言語研究所', en: 'Language Research Facility', x: 82, y: 24, open: () => true, maps: ['lab'] },
+  { id: 'valley', ja: '日野森の谷', en: 'Hinomori Valley', x: 70, y: 56, open: (s) => !!s.quests.mq6?.objectives.arrive, maps: ['valley'] },
+  { id: 'village', ja: '雪見村', en: 'Yukimi Village', x: 18, y: 14, open: (s) => !!s.quests.mq10?.objectives.arrive, maps: ['mountain'] },
   { id: 'city', ja: 'さくら市', en: 'Sakura City', x: 12, y: 33, open: () => false },
-  { id: 'village', ja: '山の村', en: 'Mountain village', x: 18, y: 14, open: () => false },
   { id: 'univ', ja: '大学の街', en: 'University district', x: 18, y: 68, open: () => false },
   { id: 'coast', ja: '港町', en: 'Harbour town', x: 52, y: 84, open: () => false },
 ];
@@ -634,7 +635,7 @@ function MapTab() {
         ))}
       </div>
       <p className="note">
-        You are in <b lang="ja">{here?.ja ?? '日野森町'}</b>. Places marked ？？？ open up as the story continues — the railway west leads to the city in chapter 2.
+        You are in <b lang="ja">{here?.ja ?? '日野森町'}</b>. Places marked ？？？ open up as the story continues.
       </p>
     </div>
   );

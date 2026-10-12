@@ -71,7 +71,7 @@ export function giveCreatureXp(s: GameState, c: CreatureInstance, amount: number
     const before = maxHp(c);
     c.level++;
     c.hp += maxHp(c) - before;
-    msgs.push(`${SPECIES[c.speciesId].name} grew to Lv. ${c.level}!`);
+    msgs.push(`${SPECIES[c.speciesId].name}のレベルが ${c.level} に上がった！`);
     const evo = SPECIES[c.speciesId].evolvesTo;
     if (evo && c.level >= evo.level) {
       const fromId = c.speciesId;
@@ -81,7 +81,7 @@ export function giveCreatureXp(s: GameState, c: CreatureInstance, amount: number
       c.hp = Math.max(1, Math.round(maxHp(c) * ratio));
       s.dex[evo.species] = 'caught';
       evolutions?.push({ from: fromId, to: evo.species });
-      msgs.push(`${from} evolved into ${SPECIES[evo.species].name}!`);
+      msgs.push(`${from}は${SPECIES[evo.species].name}に進化した！`);
     }
   }
   return msgs;

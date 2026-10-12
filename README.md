@@ -5,7 +5,7 @@ You move to the small town of Hinomori, people are forgetting words, and creatur
 born from language and memory — start to appear. Understanding Japanese is the core mechanic: it unlocks
 clues, solves people's problems, powers your Kotodama in battle, and drives the story forward.
 
-> Phase 1 (playable vertical slice) — Chapter 1 “Summer in Hinomori”, roughly 30–60 minutes of play.
+> Phase 1 (playable vertical slice) — Chapter 1 “Spring in Hinomori”, roughly 30–60 minutes of play.
 
 ## Run it
 

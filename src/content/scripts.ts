@@ -626,7 +626,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         say('kirishima', '計画の中心にいた研究者のイニシャルは……「K」だ。', 'The initial of the lead researcher of the project was… “K”.'),
         say('kirishima', '君に届いた手紙。もしかすると、計画はまだ終わっていないのかもしれない。', 'The letter you received… perhaps the project isn’t over yet.'),
         { do: [{ take: 'kakera' }, { objective: 'mq5.report' }, { rel: 'kirishima', points: 3, memory: 'archive_project' }, { learn: ['g:wokikkakeni', 'v:kakera'] }] },
-        { cg: 'cg_ending', say: '夕暮れの研究所。欠片の光は、まだ消えていなかった。\n― 第一章「日野森の夏」完 ―', en: 'Dusk at the research facility. The fragment’s light had not gone out yet.\n— End of Chapter 1: “Summer in Hinomori” —' },
+        { cg: 'cg_ending', say: '夕暮れの研究所。欠片の光は、まだ消えていなかった。\n― 第一章「日野森の春」完 ―', en: 'Dusk at the research facility. The fragment’s light had not gone out yet.\n— End of Chapter 1: “Spring in Hinomori” —' },
         { cg: 'cg_valley_arrival', say: '次章予告 ― 第二章「桃と湯けむりの谷」', en: 'Next time — Chapter 2: “The Valley of Peaches and Steam”' },
         n('Chapter 1 complete! Talk to Ms. Mori in front of the apartment to begin Chapter 2. Hinomori stays open: keep befriending Kotodama in Midori Forest and use your desk to review.'),
       ],

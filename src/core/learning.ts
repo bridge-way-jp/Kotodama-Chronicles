@@ -371,6 +371,10 @@ export function buildReviewSession(s: GameState, size = 12, now = Date.now(), r 
 }
 
 /** Picks one exercise for a battle move of the given area, preferring due items. */
+/** keys asked in the last few battle questions, so the same item doesn't come back every turn */
+const recentBattleKeys: string[] = [];
+const RECENT_BATTLE = 6;
+
 export function battleExercise(s: GameState, area: 'vocab' | 'grammar' | 'kanji' | 'listening', r = Math.random): Exercise {
   const now = Date.now();
   const prefix = area === 'grammar' ? 'g:' : area === 'kanji' ? 'k:' : 'v:';
@@ -379,12 +383,21 @@ export function battleExercise(s: GameState, area: 'vocab' | 'grammar' | 'kanji'
   const studied = cards.filter((c) => c.introduced);
   const met = cards.filter((c) => !c.introduced);
   let pool: Card[] = due.length ? due : met.length && r() < 0.5 ? met : studied.length ? studied : met;
+  // with only a few items due, mix in other studied ones so battles don't drill one word
+  if (due.length && due.length < 4 && studied.length > due.length && r() < 0.5) pool = studied;
+  const fresh = (list: Card[]) => list.filter((c) => !recentBattleKeys.includes(c.key));
+  if (fresh(pool).length) pool = fresh(pool);
+  else if (fresh(cards).length) pool = fresh(cards);
   let key: string;
   if (pool.length) key = pool[Math.floor(r() * pool.length)].key;
   else {
     const all = allKeys().filter((k) => k.startsWith(prefix) && chapterOf(k) <= s.chapter);
-    key = all[Math.floor(r() * all.length)];
+    const unseen = all.filter((k) => !recentBattleKeys.includes(k));
+    const from = unseen.length ? unseen : all;
+    key = from[Math.floor(r() * from.length)];
   }
+  recentBattleKeys.push(key);
+  if (recentBattleKeys.length > RECENT_BATTLE) recentBattleKeys.shift();
   return exerciseFor(s, key, { prefer: area === 'listening' ? 'listen' : undefined, r });
 }
 

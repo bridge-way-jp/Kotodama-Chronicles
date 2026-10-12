@@ -21,13 +21,65 @@ type Phase =
   | { k: 'switch'; forced?: boolean }
   | { k: 'end'; result: BattleResult };
 
-const GENERIC_TALK: Question = {
-  q: '……（言霊は、じっとこちらを見ている）',
-  qEn: '…(The Kotodama is staring at you.)',
-  options: ['こわくないよ。いっしょに来ない？', 'じっと見ないでよ。', 'あっちへ行って！'],
-  answer: 0,
-  why: 'A calm, friendly invitation is the most natural way to approach it.',
-};
+/** talk questions any Kotodama can ask; used once its own lines are spent */
+const GENERIC_TALK: Question[] = [
+  {
+    q: '……（言霊は、じっとこちらを見ている）',
+    qEn: '…(The Kotodama is staring at you.)',
+    options: ['こわくないよ。いっしょに来ない？', 'じっと見ないでよ。', 'あっちへ行って！'],
+    answer: 0,
+    why: 'A calm, friendly invitation is the most natural way to approach it.',
+  },
+  {
+    q: 'だれ……？ わたしの言葉、とりに来たの？',
+    qEn: 'Who are you…? Did you come to take my words?',
+    options: ['ううん、とらないよ。あなたの言葉を聞きに来たの。', 'そうだよ。全部もらっていくね。', '言葉なんて、どうでもいいでしょ。'],
+    answer: 0,
+    why: 'Reassure it: you came to listen, not to take anything away.',
+  },
+  {
+    q: '……おなか、すいた。',
+    qEn: '…I’m hungry.',
+    options: ['おにぎり、半分食べる？', '知らないよ、そんなこと。', 'がまんしなさい。'],
+    answer: 0,
+    why: 'Offering to share your food is the kind, natural reply.',
+  },
+  {
+    q: 'ここ、さむい……。ひとりは、もういや。',
+    qEn: 'It’s cold here… I don’t want to be alone any more.',
+    options: ['じゃあ、いっしょに行こうか。', 'ひとりのほうが気楽でしょ。', 'さむいなら、帰れば？'],
+    answer: 0,
+    why: 'It tells you it is lonely; inviting it along answers exactly that.',
+  },
+  {
+    q: 'わたしの名前、だれも呼んでくれなくなったの。',
+    qEn: 'Nobody calls my name any more.',
+    options: ['じゃあ、これからはわたしが呼ぶよ。', '名前なんて、なくてもいいじゃない。', 'それは、しかたがないね。'],
+    answer: 0,
+    why: 'In this world, calling someone’s name is what keeps their words alive.',
+  },
+  {
+    q: 'ほんとうに、こわいことしない……？',
+    qEn: 'You really won’t do anything scary…?',
+    options: ['しないよ。約束する。', 'さあ、どうかな。', 'こわがるほうが悪いよ。'],
+    answer: 0,
+    why: '約束する (I promise) answers its fear directly.',
+  },
+  {
+    q: 'ねえ、どうして日本語を勉強してるの？',
+    qEn: 'Hey, why are you studying Japanese?',
+    options: ['日本で、ちゃんと生きていきたいから。', '別に、理由なんてないけど。', 'あなたには関係ないでしょ。'],
+    answer: 0,
+    why: 'An honest, open answer builds trust; the others shut the conversation down.',
+  },
+  {
+    q: '……つかれちゃった。少し、休んでもいい？',
+    qEn: '…I’m tired. Can I rest for a bit?',
+    options: ['もちろん。ゆっくり休んでね。', 'だめ。まだ戦うよ。', '勝手にすれば。'],
+    answer: 0,
+    why: 'もちろん (of course) plus a gentle ゆっくり休んでね is the caring reply.',
+  },
+];
 
 function HpBar({ hp, max }: { hp: number; max: number }) {
   const pct = Math.max(0, Math.min(100, (hp / max) * 100));
@@ -116,6 +168,7 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
   const [tools, setTools] = useState<ExerciseTools>({});
   const usedAbility = useRef(new Set<string>());
   const bond = useRef(0);
+  const usedTalk = useRef(new Set<string>());
   const enemy = enemyRef.current;
   const me = s.team[active];
   const esp = SPECIES[enemy.speciesId];
@@ -222,7 +275,7 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
     if (hit.aff < 1) msgs.push('効果はいまひとつのようだ……');
     if (enemy.hp <= 0) {
       msgs.push(setup.boss ? `${esp.name}は力を失い、姿を消した……！` : `${esp.name}はおとなしくなった。`);
-      if (setup.recruitable && !setup.boss) msgs.push(`今なら「はなす」で仲間にできたかもしれない……。${esp.name}は森の奥へ帰っていった。`);
+      if (setup.recruitable && !setup.boss) msgs.push(`今なら「はなす」で仲間にできたかもしれない……。${esp.name}は、どこかへ帰っていった。`);
       say(msgs, () => finish('win'));
       return;
     }
@@ -313,7 +366,7 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
             <div className="msgbox small">{SPECIES[me.speciesId].name}はどうする？</div>
             <div className="cmds">
               <button className="btn cmd" autoFocus onClick={() => setPhase({ k: 'moves' })}>⚔ たたかう</button>
-              <button className="btn cmd" disabled={!setup.recruitable || setup.boss} onClick={() => setPhase({ k: 'talk', q: pickTalk(enemy.speciesId) })}>💬 はなす</button>
+              <button className="btn cmd" disabled={!setup.recruitable || setup.boss} onClick={() => setPhase({ k: 'talk', q: pickTalk(enemy.speciesId, usedTalk.current) })}>💬 はなす</button>
               <button className="btn cmd" onClick={() => setPhase({ k: 'items' })}>🎒 どうぐ</button>
               <button className="btn cmd" disabled={store.s.team.length < 2} onClick={() => setPhase({ k: 'switch' })}>🔁 いれかえ</button>
               <button className="btn cmd" disabled={setup.boss} onClick={() => say(['うまく逃げきれた！'], () => setPhase({ k: 'end', result: 'run' }))}>🏃 にげる</button>
@@ -436,9 +489,16 @@ function bgFile(bg?: string) {
   return name.includes('.') ? name : `${name}.png`;
 }
 
-function pickTalk(speciesId: string): Question {
-  const t = SPECIES[speciesId].talk;
-  if (!t.length) return GENERIC_TALK;
-  const x = t[Math.floor(Math.random() * t.length)];
-  return { q: x.line, qEn: x.en, options: x.options, answer: x.answer, why: x.why };
+function pickTalk(speciesId: string, used: Set<string>): Question {
+  // its own lines first, then the shared ones; nothing repeats until all have been asked
+  const own: Question[] = SPECIES[speciesId].talk.map((x) => ({ q: x.line, qEn: x.en, options: x.options, answer: x.answer, why: x.why }));
+  const fresh = (list: Question[]) => list.filter((x) => !used.has(x.q));
+  let pool = fresh(own).length ? fresh(own) : fresh(GENERIC_TALK);
+  if (!pool.length) {
+    used.clear();
+    pool = own.length ? own : GENERIC_TALK;
+  }
+  const q = pool[Math.floor(Math.random() * pool.length)];
+  used.add(q.q);
+  return q;
 }

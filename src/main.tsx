@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import { App } from './ui/App';
+import { ErrorBoundary } from './ui/ErrorBoundary';
 import { store } from './core/store';
 import { bus } from './core/events';
 import { input } from './game/input';
@@ -21,4 +22,8 @@ if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.
   });
 }
 
-createRoot(document.getElementById('root')!).render(<App />);
+createRoot(document.getElementById('root')!).render(
+  <ErrorBoundary>
+    <App />
+  </ErrorBoundary>,
+);

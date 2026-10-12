@@ -131,6 +131,17 @@ describe('learning', () => {
     }
   });
 
+  it('battle questions do not repeat within a few turns', () => {
+    const s = createInitialState('T');
+    // one item due right now and a few others already studied: the due one must not come every turn
+    for (const ex of [exerciseFor(s, 'v:tegakari'), exerciseFor(s, 'v:chien'), exerciseFor(s, 'v:sanpai'), exerciseFor(s, 'v:fuutou'), exerciseFor(s, 'v:atesaki')])
+      recordAnswer(s, ex, true, 3000);
+    s.cards['v:tegakari'].due = 0;
+    const keys = Array.from({ length: 5 }, () => battleExercise(s, 'vocab').key);
+    for (let i = 1; i < keys.length; i++) expect(keys[i]).not.toBe(keys[i - 1]);
+    expect(keys.filter((k) => k === 'v:tegakari').length).toBeLessThanOrEqual(1);
+  });
+
   it('exam sets are well-formed', () => {
     for (const items of [buildMockExam(), buildDiagnostic()]) {
       for (const it of items) {
@@ -153,7 +164,7 @@ describe('creatures', () => {
     const c = addCreature(s, 'kotori', 6);
     const msgs = giveCreatureXp(s, c, 500);
     expect(c.speciesId).toBe('haneuta');
-    expect(msgs.some((m) => m.includes('evolved'))).toBe(true);
+    expect(msgs.some((m) => m.includes('進化した'))).toBe(true);
   });
 
   it('recruit action adds to the team and dex', () => {
