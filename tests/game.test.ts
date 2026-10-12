@@ -287,3 +287,58 @@ describe('content packs', () => {
     }
   });
 });
+
+describe('easter eggs', () => {
+  it('counters, real dates, hours, names and yearly flags work as conditions', () => {
+    const s = createInitialState('K');
+    expect(check(s, { count: ['cat_talks', 2] })).toBe(false);
+    runAction(s, { add: 'cat_talks' });
+    runAction(s, { add: 'cat_talks' });
+    expect(check(s, { count: ['cat_talks', 2] })).toBe(true);
+    expect(check(s, { name: ['K', 'ケイ'] })).toBe(true);
+    expect(check(s, { name: ['マリア'] })).toBe(false);
+    const d = new Date();
+    const today = `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    expect(check(s, { date: [today] })).toBe(true);
+    expect(check(s, { date: ['13-40'] })).toBe(false);
+    const h = d.getHours();
+    expect(check(s, { hours: [h, h + 1] })).toBe(true);
+    expect(check(s, { hours: [(h + 1) % 24, (h + 2) % 24] })).toBe(false);
+    expect(check(s, { hours: [(h + 1) % 24, h === 0 ? 24 : h] })).toBe(false); // wraps past midnight
+    expect(check(s, { notYearFlag: 'otoshidama' })).toBe(true);
+    runAction(s, { yearFlag: 'otoshidama' });
+    expect(check(s, { notYearFlag: 'otoshidama' })).toBe(false);
+  });
+
+  it('every secret used in a script is listed, and finding one counts once', async () => {
+    const { SECRETS, foundSecrets } = await import('../src/content/secrets');
+    const used = new Set<string>();
+    const walk = (x: unknown): void => {
+      if (!x || typeof x !== 'object') return;
+      if (Array.isArray(x)) return x.forEach(walk);
+      const o = x as Record<string, unknown>;
+      if (typeof o.secret === 'string') used.add(o.secret);
+      Object.values(o).forEach(walk);
+    };
+    walk(SCRIPTS);
+    for (const id of used) expect(SECRETS[id], id).toBeTruthy();
+    expect(used.size).toBe(Object.keys(SECRETS).length);
+    const s = createInitialState('T');
+    runAction(s, { secret: 'neko' });
+    runAction(s, { secret: 'neko' });
+    expect(foundSecrets(s)).toBe(1);
+  });
+
+  it('the calico cat gives its coin on the tenth visit', () => {
+    const s = createInitialState('T');
+    for (let i = 0; i < 9; i++) {
+      const steps = pickRule(s, SCRIPTS.folk_cat)!;
+      for (const st of steps) if ('do' in st) st.do.forEach((a) => runAction(s, a));
+    }
+    expect(s.inventory.koban).toBeUndefined();
+    const tenth = pickRule(s, SCRIPTS.folk_cat)!;
+    for (const st of tenth) if ('do' in st) st.do.forEach((a) => runAction(s, a));
+    expect(s.inventory.koban).toBe(1);
+    expect(s.flags.secret_neko).toBe(true);
+  });
+});

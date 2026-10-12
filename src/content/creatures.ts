@@ -398,6 +398,7 @@ export const ITEMS: Record<string, ItemDef> = {
   cake: { id: 'cake', name: '手作りケーキ', nameEn: 'Homemade cake', desc: 'Kaede’s cake. A nice gift. Restores 30 HP.', icon: 'i_cake', kind: 'heal', heal: 30, price: 350 },
   peach: { id: 'peach', name: '日野森の桃', nameEn: 'Hinomori peach', desc: 'A ripe peach from Mr. Hayashi’s orchard. Restores 25 HP.', icon: 'i_peach', kind: 'heal', heal: 25, price: 200 },
   onsen_tamago: { id: 'onsen_tamago', name: '温泉たまご', nameEn: 'Onsen egg', desc: 'An egg slow-cooked in the hot spring. Restores 35 HP.', icon: 'i_onsen_tamago', kind: 'heal', heal: 35, price: 250 },
+  koban: { id: 'koban', name: '小判', nameEn: 'Koban (gold coin)', desc: 'An old gold coin the calico cat brought you. “Neko ni koban” — but this cat knew its worth.', icon: 'i_koban', kind: 'key' },
   grape_juice: { id: 'grape_juice', name: 'ぶどうジュース', nameEn: 'Grape juice', desc: 'Kenji’s grape juice from the valley. Restores 50 HP.', icon: 'i_grape_juice', kind: 'heal', heal: 50, price: 450 },
   ota_fude: { id: 'ota_fude', name: '太田先生の筆', nameEn: 'Mr. Ōta’s brush', desc: 'The brush Mr. Ōta gave you. Proof that you passed the valley’s trial of words.', icon: 'i_fude', kind: 'key' },
   name_scroll: { id: 'name_scroll', name: '名前の書', nameEn: 'Name scroll', desc: 'Ms. Mori’s name, written by your own hand. Bring it to her.', icon: 'i_washi', kind: 'key' },

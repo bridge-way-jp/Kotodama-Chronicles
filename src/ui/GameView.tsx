@@ -123,6 +123,21 @@ export function GameView({ onExit }: { onExit: () => void }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // ↑↑↓↓←→←→ B A while walking around: an old spell still works here
+  useEffect(() => {
+    const code = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
+    let at = 0;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.repeat) return;
+      at = e.code === code[at] ? at + 1 : e.code === code[0] ? 1 : 0;
+      if (at < code.length) return;
+      at = 0;
+      if (!overlays.length && !store.s.flags.secret_konami) bus.emit('interact', { id: 'egg_konami', kind: 'object' });
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [overlays]);
+
   // Esc closes the topmost closable overlay
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

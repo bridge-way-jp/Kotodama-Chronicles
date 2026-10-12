@@ -15,6 +15,18 @@ export type Cond =
       item?: string;
       time?: 'morning' | 'evening';
       money?: number; // at least this much
+      /** a counter (numeric flag) has reached at least this value: [name, n] */
+      count?: [string, number];
+      /** today's real date is one of these 'MM-DD' days */
+      date?: string[];
+      /** the real local hour is in [from, to) — wraps past midnight, e.g. [0, 4] */
+      hours?: [number, number];
+      /** the player's name is one of these */
+      name?: string[];
+      /** not yet done this real year (see the yearFlag action) */
+      notYearFlag?: string;
+      /** random chance 0–1; only use inside an `if` step, never in a rule's `when` */
+      chance?: number;
     }
   | { all: Cond[] }
   | { any: Cond[] }
@@ -22,6 +34,12 @@ export type Cond =
 
 export type Action =
   | { flag: string; value?: boolean | number }
+  /** count up a numeric flag */
+  | { add: string; n?: number }
+  /** set a flag that only holds for the current real year */
+  | { yearFlag: string }
+  /** the player found a secret (content/secrets.ts) */
+  | { secret: string }
   | { startQuest: string }
   | { objective: string }
   | { give: string; n?: number }
@@ -86,6 +104,19 @@ export function check(s: GameState, c: Cond | undefined): boolean {
   if (c.item && !(s.inventory[c.item] > 0)) return false;
   if (c.time && s.timeOfDay !== c.time) return false;
   if (c.money !== undefined && s.money < c.money) return false;
+  if (c.count && (Number(s.flags[c.count[0]]) || 0) < c.count[1]) return false;
+  if (c.notYearFlag && s.flags[`${c.notYearFlag}_${new Date().getFullYear()}`]) return false;
+  if (c.date) {
+    const d = new Date();
+    if (!c.date.includes(`${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`)) return false;
+  }
+  if (c.hours) {
+    const h = new Date().getHours();
+    const [a, b] = c.hours;
+    if (a <= b ? h < a || h >= b : h < a && h >= b) return false;
+  }
+  if (c.name && !c.name.includes(s.playerName.trim())) return false;
+  if (c.chance !== undefined && Math.random() >= c.chance) return false;
   return true;
 }
 

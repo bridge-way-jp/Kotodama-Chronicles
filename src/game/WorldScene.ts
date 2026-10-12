@@ -109,6 +109,7 @@ export class WorldScene extends Phaser.Scene {
   tint?: Phaser.GameObjects.Rectangle;
   unsub: (() => void)[] = [];
   lastStepEncounter = 0;
+  manpoShown = false;
   stepCount = 0;
 
   constructor() {
@@ -694,6 +695,10 @@ export class WorldScene extends Phaser.Scene {
 
   afterStep() {
     const s = store.s;
+    if (s.stats.steps >= 10000 && !s.flags.secret_manpo && !this.manpoShown) {
+      this.manpoShown = true;
+      bus.emit('interact', { id: 'egg_manpo', kind: 'object' });
+    }
     if (this.tileAt(this.px, this.py) === '"' && this.map.encounters && s.team.length > 0) {
       if (s.stats.steps - this.lastStepEncounter > 3 && Math.random() < 0.12) {
         this.lastStepEncounter = s.stats.steps;
@@ -725,6 +730,11 @@ export class WorldScene extends Phaser.Scene {
       const back: Record<Dir, Dir> = { up: 'down', down: 'up', left: 'right', right: 'left' };
       folk.dir = back[this.facing];
       folk.sprite.setTexture(`folk_${folk.def.sprite}_${folk.dir}_0`);
+      // some townsfolk have a script of their own (easter eggs), the rest say a random line
+      if (SCRIPTS['folk_' + folk.def.id]) {
+        bus.emit('interact', { id: 'folk_' + folk.def.id, kind: 'npc' });
+        return;
+      }
       const line = folk.def.lines[Math.floor(Math.random() * folk.def.lines.length)];
       bus.emit('message', { text: `${folk.def.name}：「${line.jp}」`, en: line.en });
       return;

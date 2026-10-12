@@ -18,6 +18,7 @@ import { exportToJson, makeEnvelope } from '../core/save';
 import { ExportBox, ImportBox } from './Backup';
 import { CloudSettings, PackSettings } from './CloudPanel';
 import { saveNow, saveStatus } from '../core/persistence';
+import { SECRETS, foundSecrets } from '../content/secrets';
 import { setSfx, setMusicVolume, hasJapaneseVoice, ttsAvailable } from '../core/audio';
 import { ItemDetail, MASTERY_LABEL } from './Cards';
 import type { Settings } from '../core/types';
@@ -116,6 +117,22 @@ function StatusTab() {
           {rel.memories.length > 0 && <div className="note">Remembers: {rel.memories.map(memoryText).join(' · ')}</div>}
         </div>
       ))}
+      <h3>
+        ひみつ Secrets <small className="note">{foundSecrets(s)} / {Object.keys(SECRETS).length}</small>
+      </h3>
+      <ul className="secret-list">
+        {Object.entries(SECRETS).map(([id, x]) =>
+          s.flags['secret_' + id] ? (
+            <li key={id} className="found">
+              ✦ <b lang="ja">{x.name}</b> <small>{x.nameEn}</small>
+            </li>
+          ) : (
+            <li key={id} className="hidden">
+              ？？？ <small className="note">{x.hint}</small>
+            </li>
+          ),
+        )}
+      </ul>
     </div>
   );
 }
@@ -126,6 +143,8 @@ function memoryText(m: string) {
       first_meeting: 'your first meeting', helped_customer: 'you helped with the regular customer', letter: 'the unsigned letter',
       presentation: 'you helped with the presentation', homework: 'you did the わけ homework', archive_project: 'you found the word fragment',
       lab_past: 'stories about the facility', university_rumour: 'the university rumour',
+      forgot_name: 'the day she forgot your name', name_scroll: 'the name you wrote for her', husband_voice: 'her husband’s voice in the steam',
+      name_written: 'the name you wrote with the brush', trial_passed: 'you passed the trial', hearth: 'the evening by the hearth', letter_read: 'reading the letter together',
     }[m] ?? m
   );
 }

@@ -110,6 +110,15 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   // ================================================================ Ms. Mori
   mori: [
     {
+      when: { all: [{ date: ['01-01', '01-02', '01-03'] }, { notYearFlag: 'otoshidama' }, { questDone: 'mq1' }] },
+      steps: [
+        say('mori', 'あけましておめでとう、@nameちゃん！ 今年もよろしくね。', 'Happy New Year, @name! Let’s have another good year together.', 'happy'),
+        say('mori', 'はい、これ。少ないけど、お{年玉|としだま}よ。日本では、お正月に子どもや若い人にあげるの。', 'Here, it isn’t much, but it’s otoshidama. In Japan we give it to children and young people at New Year.', 'happy'),
+        { do: [{ money: 2000 }, { yearFlag: 'otoshidama' }, { secret: 'shogatsu' }] },
+        n('「{初詣|はつもうで}」は、もう行った？ 神社でおみくじを引くと、一年の運がわかるらしい。', 'Have you done hatsumōde, the first shrine visit of the year? A fortune slip at the shrine tells your luck for the year.'),
+      ],
+    },
+    {
       when: { notObj: 'mq1.letter' },
       steps: [say('mori', 'あら、@nameさん！ 机の上の手紙、もう読んだ？ まずは読んでみてね。', 'Oh, @name! Have you read the letter on your desk yet? Read it first.')],
     },
@@ -325,6 +334,15 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       ],
     },
     {
+      when: { all: [{ questDone: 'mq3' }, { name: ['K', 'Ｋ', 'ケイ', 'けい', 'Kei', 'kei', 'KEI'] }, { notFlag: 'secret_name_k' }] },
+      steps: [
+        say('kaede', 'そういえば、あなたの名前……@name、なのね。', 'Come to think of it, your name… it’s @name, isn’t it.', 'surprised'),
+        say('kaede', '手紙の「K」も、まさかあなたが自分で……？ ふふ、なんてね。冗談よ。', 'The “K” on that letter… you didn’t write it to yourself, did you? Heh, just kidding.', 'happy'),
+        n('楓さんは笑っているけれど、カップを持つ手が、少しだけふるえていた。', 'Kaede is smiling, but the hand holding her cup trembles slightly.'),
+        { do: [{ secret: 'name_k' }] },
+      ],
+    },
+    {
       when: { flag: 'chapter1_done' },
       steps: [
         say('kaede', '研究所の話、霧島さんから聞いたわ。……Kのこと、いつかあなたに話さなきゃいけないわね。', 'I heard about the facility from Mr. Kirishima… Someday I’ll have to tell you about K.'),
@@ -461,6 +479,21 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
 
   // ================================================================ shrine
   shrine: [
+    {
+      when: { all: [{ date: ['07-07'] }, { notYearFlag: 'tanabata' }] },
+      steps: [
+        n('今日は{七夕|たなばた}。境内の{笹|ささ}に、色とりどりの{短冊|たんざく}が下がっている。', 'Today is Tanabata. Colourful paper strips hang from the bamboo in the shrine grounds.'),
+        n('織姫と{彦星|ひこぼし}が、年に一度だけ会える夜。短冊に願いを書くと、かなうと言われている。', 'The one night a year when Orihime and Hikoboshi may meet. A wish written on a strip is said to come true.'),
+        {
+          choice: [
+            { text: '「N2に合格できますように」', en: '“May I pass the N2”', then: [n('きっと、毎日の{積み重ね|つみかさね}が届くはず。', 'Surely all those days of practice will reach the stars.')] },
+            { text: '「森さんが、大切な名前を忘れませんように」', en: '“May Ms. Mori never forget the names she loves”', then: [n('笹が風にゆれて、短冊がそっと光った……気がした。', 'The bamboo sways in the wind, and the strip seems to glow softly.')] },
+            { text: '「Kさんに会えますように」', en: '“May I meet K”', then: [n('天の川のどこかで、だれかが帳面を閉じる音がした……ような気がした。', 'Somewhere along the Milky Way, you seem to hear someone close a notebook.')] },
+          ],
+        },
+        { do: [{ yearFlag: 'tanabata' }, { secret: 'tanabata' }, { xp: 50 }] },
+      ],
+    },
     {
       when: { questNotStarted: 'sq_shrine' },
       steps: [
@@ -1459,6 +1492,13 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
                   then: [
                     { do: [{ money: -150 }, { give: 'greentea' }] },
                     n('ガコン！ お茶が出てきた。……コンビニでは{品切れ|しなぎれ|v:shinagire}なのに、ここにはあった。', 'Clunk! A bottle drops out. …Sold out at the konbini, but here it is.'),
+                    {
+                      if: { chance: 0.05 },
+                      then: [
+                        n('ピピピピ……「７７７７」！ {当たり|あたり}！ もう一本！', 'Beep-beep-beep… “7777”! A winner! One more drink!'),
+                        { do: [{ give: 'greentea' }, { secret: 'atari' }] },
+                      ],
+                    },
                   ],
                   else: [n('お金が足りない……。', 'Not enough money…')],
                 },
@@ -1478,6 +1518,16 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   torii: [{ steps: [n('{鳥居|とりい}だ。ここから先は神様の{領域|りょういき}だと言われている。', 'A torii gate. Beyond it is said to be the realm of the gods.')] }],
   town_hokora: [
     {
+      when: { hours: [0, 4] },
+      steps: [
+        n('真夜中の祠。昼間とちがって、ろうそくの火がともっている。', 'The shrine at midnight. Unlike in the daytime, a candle is burning.'),
+        n('？？？「……こんな夜中まで、勉強かい。えらいねえ。」', '???: “…Studying this late at night? Good for you.”'),
+        n('？？？「でもね、言葉は寝ているあいだに、頭の中で{根|ね}をはるんだよ。早くおやすみ。」', '???: “But words put down their roots while you sleep, you know. Off to bed with you.”'),
+        n('ふり返っても、だれもいない。言霊たちが、すっかり元気になっている。', 'You turn around, but no one is there. Your Kotodama feel completely refreshed.'),
+        { do: [{ heal: true }, { secret: 'yofukashi' }] },
+      ],
+    },
+    {
       steps: [
         n('道ばたの小さな{祠|ほこら}だ。お{供|そな}えの花が新しい。', 'A tiny roadside shrine. The offering flowers are fresh.'),
         n('「言葉を大切に」と、かすれた文字で書いてある。', 'In faded letters: “Treasure your words.”'),
@@ -1494,7 +1544,60 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     },
   ],
   planter: [{ steps: [n('{花壇|かだん}にきれいな花が咲いている。町の人が手入れしているようだ。', 'Pretty flowers in a planter. The townspeople seem to look after them.')] }],
-  mirror: [{ steps: [n('カーブミラーだ。自分の顔が少しゆがんで映っている。', 'A traffic mirror. Your reflection looks a little warped.')] }],
+  mirror: [
+    {
+      when: { all: [{ count: ['mirror_looks', 12] }, { notFlag: 'secret_mirror' }] },
+      steps: [
+        n('カーブミラーをのぞきこむ。……十三回目。', 'You peer into the traffic mirror. …For the thirteenth time.'),
+        n('ミラーの中で、小さな青いきつねが、こちらに手をふった。', 'Inside the mirror, a small blue fox waves at you.'),
+        n('ふり返ると、ユキツネはちゃんと足もとにいる。きょとんとした顔で。', 'You turn around, and Yukitsune is right at your feet, looking puzzled.'),
+        { do: [{ secret: 'mirror' }, { add: 'mirror_looks' }] },
+      ],
+    },
+    { steps: [n('カーブミラーだ。自分の顔が少しゆがんで映っている。', 'A traffic mirror. Your reflection looks a little warped.'), { do: [{ add: 'mirror_looks' }] }] },
+  ],
+  /** the calico cat (a wandering townsfolk animal): be patient with it ten times */
+  folk_cat: [
+    {
+      when: { flag: 'secret_neko' },
+      steps: [n('三毛猫：「にゃ。」（{小判|こばん}のお礼を待っているような顔だ）', 'Calico cat: “Mya.” (It looks like it’s waiting to be thanked for the coin.)')],
+    },
+    {
+      when: { count: ['cat_talks', 9] },
+      steps: [
+        n('三毛猫が、くわえていた何かを、あなたの足もとにぽとりと落とした。', 'The calico cat drops something it was carrying at your feet.'),
+        n('ぴかぴかの{小判|こばん}だ！ どこで拾ってきたんだろう。', 'A shiny gold koban coin! Where did it find that?'),
+        n('「猫に小判」：価値のわからない人に、よいものをあげてもむだだ、ということわざ。……でもこの猫は、ちゃんと価値をわかっていたみたいだ。', '“Neko ni koban” (a gold coin to a cat): a proverb meaning that giving something valuable to someone who can’t appreciate it is wasted. …But this cat seems to know its worth.'),
+        { do: [{ give: 'koban' }, { secret: 'neko' }, { add: 'cat_talks' }] },
+      ],
+    },
+    {
+      when: { count: ['cat_talks', 5] },
+      steps: [n('三毛猫：「にゃあ。」（あなたの足に、すりすりしてくる）', 'Calico cat: “Nyaa.” (It rubs against your legs.)'), { do: [{ add: 'cat_talks' }] }],
+    },
+    { steps: [n('三毛猫：「にゃーん。」（のんびりしている）', 'Calico cat: “Meow.” (It looks relaxed.)'), { do: [{ add: 'cat_talks' }] }] },
+  ],
+  /** ↑↑↓↓←→←→ B A anywhere in the world */
+  egg_konami: [
+    {
+      steps: [
+        n('……どこからか、古いゲーム機の音が聞こえた気がする。', '…From somewhere, you seem to hear the sound of an old game console.'),
+        n('ユキツネ：「いまの、なに？ 昔の人の{呪文|じゅもん}？」', 'Yukitsune: “What was that? A spell from the old days?”'),
+        n('{裏技|うらわざ}を見つけた！ ことのはの{栞|しおり}をもらった。', 'You found a secret trick (urawaza)! You got Kotonoha bookmarks.'),
+        { do: [{ give: 'shiori', n: 3 }, { secret: 'konami' }] },
+      ],
+    },
+  ],
+  /** after 10,000 steps */
+  egg_manpo: [
+    {
+      steps: [
+        n('ピピッ！ スマホの{万歩計|まんぽけい}が鳴った。今日までに、なんと一万歩！', 'Beep! The pedometer (manpokei) on your phone goes off: ten thousand steps so far!'),
+        n('「千里の道も一歩から」。どんなに長い道も、一歩ずつ進めば、いつか着く。', '“A journey of a thousand miles begins with one step.” However long the road, step by step you will get there.'),
+        { do: [{ give: 'onigiri', n: 3 }, { xp: 80 }, { secret: 'manpo' }] },
+      ],
+    },
+  ],
   nosign: [
     {
       steps: [

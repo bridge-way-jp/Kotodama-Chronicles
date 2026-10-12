@@ -1,5 +1,6 @@
 import { QUESTS } from '../content/quests';
 import { ITEMS, SPECIES } from '../content/creatures';
+import { SECRETS, foundSecrets } from '../content/secrets';
 import { encounter, labelOfKey } from './learning';
 import { toast } from './events';
 import type { Action } from './script';
@@ -146,6 +147,14 @@ export interface ActionHooks {
 
 export function runAction(s: GameState, a: Action, hooks: ActionHooks = {}) {
   if ('flag' in a) s.flags[a.flag] = a.value ?? true;
+  else if ('add' in a) s.flags[a.add] = (Number(s.flags[a.add]) || 0) + (a.n ?? 1);
+  else if ('yearFlag' in a) s.flags[`${a.yearFlag}_${new Date().getFullYear()}`] = true;
+  else if ('secret' in a) {
+    if (!s.flags['secret_' + a.secret]) {
+      s.flags['secret_' + a.secret] = true;
+      toast(`✦ ひみつ発見！ Secret found: ${SECRETS[a.secret]?.name ?? a.secret} (${foundSecrets(s)}/${Object.keys(SECRETS).length})`, 'level');
+    }
+  }
   else if ('startQuest' in a) startQuest(s, a.startQuest);
   else if ('objective' in a) completeObjective(s, a.objective);
   else if ('give' in a) {

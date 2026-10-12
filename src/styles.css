@@ -809,3 +809,17 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
   max-width: 420px;
   text-align: center;
 }
+
+/* ステータス: easter eggs found so far */
+.secret-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.secret-list li {
+  padding: 4px 0;
+  border-bottom: 1px dashed rgba(120, 80, 40, 0.2);
+}
+.secret-list li.found b {
+  color: #b5651d;
+}
