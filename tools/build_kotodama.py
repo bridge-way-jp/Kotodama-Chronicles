@@ -32,6 +32,7 @@ SHEETS = {
     'kd_redesign_2.webp': [('k_leaf1', 1), ('k_leaf2', 2), ('k_leaf3', 3), ('k_fire1', 1), ('k_fire2', 2), ('k_fire3', 3)],
     'kd_redesign_3.webp': [('k_puff', 0), ('k_fox_pink', 0), ('k_cat_black', 0)],
     'kd_redesign_4.webp': [('k_peach1', 1), ('k_peach2', 2), ('k_peach3', 3), ('k_steam1', 1), ('k_steam2', 2), ('k_steam3', 3)],
+    'kd_harbor.webp': [('k_shell1', 1), ('k_shell2', 2), ('k_shell3', 3), ('k_gull1', 1), ('k_gull2', 2), ('k_gull3', 3)],
     'kd_redesign_5.webp': [('k_snow1', 1), ('k_snow2', 2), ('k_snow3', 3), ('k_lantern1', 1), ('k_lantern2', 2), ('k_lantern3', 3)],
 }
 

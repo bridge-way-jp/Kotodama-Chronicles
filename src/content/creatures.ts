@@ -44,6 +44,9 @@ export const MOVES: Record<string, Move> = {
   steam_veil: { id: 'steam_veil', name: 'ゆけむり', nameEn: 'Steam Veil', power: 16, area: 'listening', affinity: 'water' },
   snow_flurry: { id: 'snow_flurry', name: 'ゆきのつぶて', nameEn: 'Snow Flurry', power: 17, area: 'kanji', affinity: 'water' },
   lantern_glow: { id: 'lantern_glow', name: 'ともしびの字', nameEn: 'Lantern Script', power: 18, area: 'kanji', affinity: 'fire' },
+  wave_song: { id: 'wave_song', name: 'なみのうた', nameEn: 'Wave Song', power: 18, area: 'listening', affinity: 'water' },
+  letter_wind: { id: 'letter_wind', name: 'ふみのかぜ', nameEn: 'Letter Wind', power: 17, area: 'vocab', affinity: 'wind' },
+  tide_grammar: { id: 'tide_grammar', name: 'しおのぶんぽう', nameEn: 'Tide Grammar', power: 19, area: 'grammar', affinity: 'water' },
   bloom_bond: { id: 'bloom_bond', name: 'はなのきずな', nameEn: 'Blossom Bond', power: 16, area: 'grammar', affinity: 'memory' },
 };
 
@@ -347,6 +350,73 @@ export const SPECIES: Record<string, Species> = {
     ability: { id: 'reveal_reading', name: 'よみとき', desc: 'Reveals the reading of the key word in a question.' },
     talk: [],
   },
+  // ---- Shiomi harbour town (chapter 4)
+  yadone: {
+    id: 'yadone', name: 'ヤドネ', nameEn: 'Yadone', sprite: 'k_shell1', affinity: 'water', baseHp: 34, baseAtk: 13,
+    desc: '音符もようの貝に住むヤドカリ。浜辺で聞いた歌を、貝の中にしまっておく。',
+    descEn: 'A hermit crab living in a shell with music-note patterns. It keeps the songs it hears on the beach inside its shell.',
+    personality: 'shy, musical',
+    moves: ['wave_song', 'ripple_read'],
+    evolvesTo: { species: 'namitsuzumi', level: 24 },
+    ability: { id: 'replay', name: 'こだま', desc: 'Replays listening audio at slower speed.' },
+    talk: [
+      talk('この貝の中にね、むかしの歌がひとつだけ残ってるの。聞きたい？', 'Inside this shell, just one old song is left. Do you want to hear it?',
+        ['うん、ぜひ聞かせて。', 'うるさいから、いらない。', '歌なんて、どうでもいいよ。'],
+        'It offers to share something precious — accepting warmly (ぜひ) is the kind reply.'),
+    ],
+  },
+  namitsuzumi: {
+    id: 'namitsuzumi', name: 'ナミツヅミ', nameEn: 'Namitsuzumi', sprite: 'k_shell2', affinity: 'water', baseHp: 46, baseAtk: 16,
+    desc: '貝の太鼓をたたくラッコ。波のリズムに合わせて、漁師たちの掛け声をまねする。',
+    descEn: 'A sea otter drumming on a shell. It imitates the fishermen’s calls in time with the waves.',
+    personality: 'playful, rhythmical',
+    moves: ['wave_song', 'soft_heart'],
+    evolvesTo: { species: 'utakujira', level: 32 },
+    ability: { id: 'replay', name: 'こだま', desc: 'Replays listening audio at slower speed.' },
+    talk: [],
+  },
+  utakujira: {
+    id: 'utakujira', name: 'ウタクジラ', nameEn: 'Utakujira', sprite: 'k_shell3', affinity: 'water', baseHp: 60, baseAtk: 20,
+    desc: '海に消えた歌を、すべて覚えている白いクジラ。その歌声は、何百キロ先まで届くという。',
+    descEn: 'A white whale that remembers every song lost to the sea. Its voice is said to carry hundreds of kilometres.',
+    personality: 'calm, ancient',
+    moves: ['wave_song', 'tide_grammar'],
+    ability: { id: 'replay', name: 'こだま', desc: 'Replays listening audio at slower speed.' },
+    talk: [],
+  },
+  funedori: {
+    id: 'funedori', name: 'フネドリ', nameEn: 'Funedori', sprite: 'k_gull1', affinity: 'wind', baseHp: 32, baseAtk: 13,
+    desc: '紙の舟に乗ったカモメのひな。だれかが海に流した手紙から生まれた。',
+    descEn: 'A seagull chick riding a paper boat. It was born from a letter someone set adrift on the sea.',
+    personality: 'brave, a little clumsy',
+    moves: ['letter_wind', 'gust_call'],
+    evolvesTo: { species: 'fumikamome', level: 24 },
+    ability: { id: 'translate', name: 'ほんやく', desc: 'Shows the English meaning of the question sentence.' },
+    talk: [
+      talk('この紙の舟、手紙でできてるんだ。でも、字がにじんで読めないの……。', 'This paper boat is made from a letter. But the ink has run and I can’t read it…',
+        ['いっしょに読んでみよう。少しずつなら、わかるかも。', '読めないなら、捨てちゃえば？', 'ぼくには関係ないよ。'],
+        'Offering to read it together answers its worry; the others brush it off.'),
+    ],
+  },
+  fumikamome: {
+    id: 'fumikamome', name: 'フミカモメ', nameEn: 'Fumikamome', sprite: 'k_gull2', affinity: 'wind', baseHp: 44, baseAtk: 16,
+    desc: '手紙のかばんを下げたカモメ。宛先がわからなくなった手紙を、あきらめずに届けつづける。',
+    descEn: 'A seagull carrying a satchel of letters. It never gives up delivering letters whose addresses have been lost.',
+    personality: 'dutiful, proud',
+    moves: ['letter_wind', 'sky_verse'],
+    evolvesTo: { species: 'umiakari', level: 32 },
+    ability: { id: 'translate', name: 'ほんやく', desc: 'Shows the English meaning of the question sentence.' },
+    talk: [],
+  },
+  umiakari: {
+    id: 'umiakari', name: 'ウミアカリ', nameEn: 'Umiakari', sprite: 'k_gull3', affinity: 'wind', baseHp: 60, baseAtk: 21,
+    desc: '胸に灯台の光を宿すアホウドリ。夜の海で迷った言葉を、港まで連れて帰る。',
+    descEn: 'An albatross with a lighthouse lamp glowing on its chest. It guides words lost on the night sea back to the harbour.',
+    personality: 'noble, stern but kind',
+    moves: ['letter_wind', 'tide_grammar'],
+    ability: { id: 'translate', name: 'ほんやく', desc: 'Shows the English meaning of the question sentence.' },
+    talk: [],
+  },
 };
 
 export const ENCOUNTERS: Record<string, { species: string; min: number; max: number; weight: number }[]> = {
@@ -369,6 +439,20 @@ export const ENCOUNTERS: Record<string, { species: string; min: number; max: num
     { species: 'tomoshibi', min: 12, max: 16, weight: 6 },
     { species: 'yukidama', min: 12, max: 14, weight: 1 },
     { species: 'kotori', min: 12, max: 14, weight: 1 },
+  ],
+  harbor: [
+    { species: 'yadone', min: 18, max: 21, weight: 3 },
+    { species: 'funedori', min: 18, max: 21, weight: 3 },
+  ],
+  harbor_dunes: [
+    { species: 'yadone', min: 18, max: 22, weight: 6 },
+    { species: 'funedori', min: 18, max: 20, weight: 1 },
+    { species: 'yukemuri', min: 18, max: 20, weight: 1 },
+  ],
+  harbor_cliff: [
+    { species: 'funedori', min: 19, max: 23, weight: 6 },
+    { species: 'yadone', min: 18, max: 20, weight: 1 },
+    { species: 'kotori', min: 18, max: 20, weight: 1 },
   ],
   valley_grove: [
     { species: 'momotan', min: 6, max: 9, weight: 6 },
@@ -407,6 +491,18 @@ export const ITEMS: Record<string, ItemDef> = {
   hoshigaki: { id: 'hoshigaki', name: '干し柿', nameEn: 'Dried persimmon', desc: 'Sweet and chewy, dried under the eaves all autumn. Restores 30 HP.', icon: 'i_hoshigaki', kind: 'heal', heal: 30, price: 260 },
   sealed_letter: { id: 'sealed_letter', name: '封をされた手紙', nameEn: 'Sealed letter', desc: 'Left behind by the traveller at the festival. A red seal with a single kanji.', icon: 'i_sealed_letter', kind: 'key' },
   kanji_stamp: { id: 'kanji_stamp', name: '定観和尚の印', nameEn: 'Jōkan’s seal stamp', desc: 'Proof that you passed the mountain temple’s trial of kanji.', icon: 'i_stamp', kind: 'key' },
+  lemon: { id: 'lemon', name: '瀬戸内レモン', nameEn: 'Setouchi lemon', desc: 'A bright lemon from the island orchards. Sour enough to wake anyone up. Restores 30 HP.', icon: 'i_lemon', kind: 'heal', heal: 30, price: 200 },
+  ikayaki: { id: 'ikayaki', name: 'いか焼き', nameEn: 'Grilled squid', desc: 'Squid grilled with sweet soy sauce at Mrs. Hamada’s diner. Restores 55 HP.', icon: 'i_ikayaki', kind: 'heal', heal: 55, price: 500 },
+  takosen: { id: 'takosen', name: 'たこせんべい', nameEn: 'Octopus cracker', desc: 'A whole octopus pressed into a crisp rice cracker. Restores 40 HP.', icon: 'i_takosen', kind: 'heal', heal: 40, price: 300 },
+  sea_salt: { id: 'sea_salt', name: '潮見の塩', nameEn: 'Shiomi sea salt', desc: 'Salt dried from the sea in front of the town. Gen-san swears by it. Restores 20 HP.', icon: 'i_sea_salt', kind: 'heal', heal: 20, price: 150 },
+  ferry_ticket: { id: 'ferry_ticket', name: '定期船の切符', nameEn: 'Ferry ticket', desc: 'An old ticket for the ferry that no longer runs. Nagisa kept it as a lucky charm.', icon: 'i_ferry_ticket', kind: 'key' },
+  pink_shell: { id: 'pink_shell', name: 'さくら貝', nameEn: 'Pink spiral shell', desc: 'Kaito’s treasure. Hold it to your ear and you hear the sea… and something like a song.', icon: 'i_pink_shell', kind: 'key' },
+  glass_float: { id: 'glass_float', name: 'ガラスの浮き玉', nameEn: 'Glass fishing float', desc: 'A blue-green float from Gen-san’s old nets. It catches the light like the sea.', icon: 'i_glass_float', kind: 'key' },
+  message_bottle: { id: 'message_bottle', name: '手紙入りの瓶', nameEn: 'Message in a bottle', desc: 'Washed up on the beach. The letter inside is signed with a single “K”.', icon: 'i_message_bottle', kind: 'key' },
+  lighthouse_key: { id: 'lighthouse_key', name: '灯台の鍵', nameEn: 'Lighthouse key', desc: 'Mr. Umino’s old brass key. Proof that you passed the harbour’s trial of grammar.', icon: 'i_lighthouse_key', kind: 'key' },
+  hachimaki: { id: 'hachimaki', name: '漁師のはちまき', nameEn: 'Fisherman’s head towel', desc: 'Gen-san tied it around your head himself. “Now you’re one of us.”', icon: 'i_hachimaki', kind: 'key' },
+  uchiwa: { id: 'uchiwa', name: '波もようのうちわ', nameEn: 'Wave-pattern fan', desc: 'A paper fan from the tourist office. Summer in Shiomi is hot.', icon: 'i_uchiwa', kind: 'key' },
+  song_sheet: { id: 'song_sheet', name: '舟歌の歌詞', nameEn: 'Boat-song lyrics', desc: 'The words of Shiomi’s old fishermen’s song, written down at dawn on the quay.', icon: 'i_song_sheet', kind: 'key' },
   usagi_charm: { id: 'usagi_charm', name: '雪うさぎのお守り', nameEn: 'Snow-rabbit charm', desc: 'Hina made it for you. Your Kotodama won’t freeze on the mountain.', icon: 'i_usagi_charm', kind: 'key' },
   deco_poster: { id: 'deco_poster', name: 'アニメのポスター', nameEn: 'Anime poster', desc: 'A poster of your favourite anime heroine.', icon: 'deco_poster', kind: 'deco', price: 800 },
   deco_worldmap: { id: 'deco_worldmap', name: '世界地図', nameEn: 'World map', desc: 'A map to remember where you came from.', icon: 'deco_worldmap', kind: 'deco', price: 900 },
@@ -432,6 +528,7 @@ export const DECO_CATALOG = ['deco_poster', 'deco_worldmap', 'deco_aquarium', 'd
 /** sprites with a 2-frame idle animation (tools/build_kotodama.py) */
 export const IDLE_SPRITES = ['k_fox_blue', 'k_fox_winged', 'k_bird1', 'k_bird2', 'k_bird3', 'k_leaf1', 'k_leaf2', 'k_leaf3', 'k_fire1', 'k_fire2', 'k_fire3', 'k_puff', 'k_fox_pink', 'k_cat_black',
   'k_peach1', 'k_peach2', 'k_peach3', 'k_steam1', 'k_steam2', 'k_steam3',
-  'k_snow1', 'k_snow2', 'k_snow3', 'k_lantern1', 'k_lantern2', 'k_lantern3'];
+  'k_snow1', 'k_snow2', 'k_snow3', 'k_lantern1', 'k_lantern2', 'k_lantern3',
+  'k_shell1', 'k_shell2', 'k_shell3', 'k_gull1', 'k_gull2', 'k_gull3'];
 /** sprites with an action pose (atk_<key>.png), shown when the creature attacks */
 export const ATTACK_SPRITES = IDLE_SPRITES;

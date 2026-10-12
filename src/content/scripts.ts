@@ -221,6 +221,15 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       ],
     },
     {
+      when: { all: [{ flag: 'chapter3_done' }, { questNotStarted: 'mq14' }] },
+      steps: [
+        say('mori', '@nameちゃん、おかえり！ つるさんから電話があったのよ。字が読めるようになったって、すごく喜んでたわ。', 'Welcome back, @name! Tsuru called me. She was so happy she can read again.', 'happy'),
+        say('mori', '「海の見える町」……。それなら、潮見町かもしれないわね。瀬戸内海の小さな港町よ。主人と、新婚旅行で行ったの。', '“A town where you can see the sea”… Then it might be Shiomi. A little harbour town on the Inland Sea. My husband and I went there on our honeymoon.'),
+        say('mori', '日野森駅から、海へ向かう電車が出ているわ。……今度は、わたしも名前を忘れずに待ってるからね。', 'A train to the sea leaves from Hinomori station. …This time I’ll be waiting, without forgetting your name.', 'happy'),
+        { do: [{ startQuest: 'mq14' }, { objective: 'mq14.mori' }, { chapter: 4 }, { rel: 'mori', points: 1 }] },
+      ],
+    },
+    {
       when: { flag: 'chapter1_done' },
       steps: [
         say('mori', '霧島さんと話したの？ あの研究所、昔はにぎやかだったのよ。子どもの頃、よく門の前で遊んだ{ものだ||g:monoda}わ。', 'You talked to Mr. Kirishima? That facility used to be lively. When I was a kid I often played in front of the gate.'),
@@ -744,6 +753,29 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       ],
     },
     {
+      when: { all: [{ questActive: 'mq14' }, { notObj: 'mq14.arrive' }] },
+      steps: [
+        n('日野森駅。南の海へ向かう電車が、ホームで待っている。', 'Hinomori Station. A train bound for the southern sea is waiting at the platform.'),
+        say('station_staff', '潮見行きですね。海はいいですよ。いか焼き、食べてきてください！', 'To Shiomi? The sea is lovely. Do try the grilled squid!', 'happy'),
+        { cg: 'cg_harbor_arrival', say: '山のトンネルを抜けると、窓いっぱいに青い海が広がった。小さな駅に降りると、潮のにおいがした。', en: 'Out of the mountain tunnel, the blue sea fills the whole window. Stepping off at the little station, you smell the salt air.' },
+        { cg: 'cg_harbor_arrival', say: '石段の下に、瓦屋根と港と、白い灯台が見える。……ここに、Kがいる。', en: 'Below the stone steps you can see tiled roofs, the harbour and a white lighthouse. …K is here.' },
+        { do: [{ objective: 'mq14.arrive' }, { flag: 'shiomi_visited' }, { learn: ['v:gyokou'] }, { warp: { map: 'harbor', x: 10, y: 2 } }] },
+      ],
+    },
+    {
+      when: { flag: 'shiomi_visited' },
+      steps: [
+        n('日野森駅。北の山の雪見村と、南の海の潮見町へ、電車が出ている。谷へのバスは、駅前のバス停からだ。', 'Hinomori Station. Trains run north to Yukimi Village and south to Shiomi by the sea. Buses to the valley leave from the bus stop in front of the station.'),
+        {
+          choice: [
+            { text: '電車で潮見町へ', en: 'Take the train to Shiomi', then: [{ do: [{ warp: { map: 'harbor', x: 10, y: 2 } }] }] },
+            { text: '電車で雪見村へ', en: 'Take the train to Yukimi Village', then: [{ do: [{ warp: { map: 'mountain', x: 9, y: 19 } }] }] },
+            { text: 'やめる', en: 'Stay in town' },
+          ],
+        },
+      ],
+    },
+    {
       when: { flag: 'yukimi_visited' },
       steps: [
         n('日野森駅。北の山の雪見村へ、電車が出ている。谷へのバスは、駅前のバス停からだ。', 'Hinomori Station. Trains run north to Yukimi Village. Buses to the valley leave from the bus stop in front of the station.'),
@@ -786,6 +818,386 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     },
     { steps: [n('バス停だ。「日野森の谷行き」……{時刻表|じこくひょう}を見ると、今日のバスはもう終わっていた。', 'A bus stop: “To Hinomori Valley”. According to the timetable, today’s last bus has already left.')] },
   ],
+  // ================================================================ chapter 4: Shiomi harbour town
+  nagisa: [
+    {
+      when: { all: [{ questActive: 'mq14' }, { obj: 'mq14.arrive' }, { notObj: 'mq14.nagisa' }] },
+      steps: [
+        say('nagisa', 'こんにちは！ 潮見町観光案内所のなぎさです。ようこそ、海の見える町へ！', 'Hello! I’m Nagisa from the Shiomi tourist office. Welcome to the town by the sea!', 'happy'),
+        say('nagisa', '{観光客|かんこうきゃく|v:kankoukyaku}の方ですか？ この町の{名物|めいぶつ|v:meibutsu}は、いか焼きとレモン、それから……夏祭りの舟歌！', 'Are you a tourist? This town’s specialities are grilled squid, lemons and… the boat song at the summer festival!'),
+        say('nagisa', '……だったんですけど。', '…Or at least, they used to be.', 'worried'),
+        say('nagisa', '町と{いっても||g:toittemo}、住んでいるのは三百人くらい。若い人はみんな出ていっちゃって、島への{定期船|ていきせん|v:teikisen}もなくなりました。', 'I say “town”, but only about three hundred people live here. The young people have all left, and the ferry to the island stopped running.'),
+        { teach: 'g:toittemo' },
+        say('nagisa', 'それに最近、おかしいんです。夏祭りで歌う舟歌を、だれも思い出せなくて。町の人みんなが、同じところで歌がとぎれちゃうんです。', 'And lately something strange is happening. Nobody can remember the boat song we sing at the summer festival. Everyone stops singing at the same place.', 'worried'),
+        {
+          quiz: {
+            q: 'なぎさが「町といっても、住んでいるのは三百人くらい」と言ったのはなぜか。',
+            qEn: 'Why does Nagisa say “I say town, but only about three hundred people live here”?',
+            options: ['「町」という言葉から想像するより、ずっと小さいから', '三百人は、町としてはとても多いから', '観光客が三百人来るから', '町の名前を説明したかったから'],
+            answer: 0,
+            why: '〜といっても corrects the image a word creates: it is called a town, but it is really small.',
+          },
+          keys: ['g:toittemo'], area: 'grammar', retry: true,
+        },
+        say('nagisa', '舟歌をいちばんよく知っているのは、源さんです。東の桟橋で、毎日海を見ています。……あ、これ、案内所のうちわです。どうぞ！', 'The one who knows the boat song best is Gen-san. He watches the sea from the east pier every day. …Oh, here’s a fan from the tourist office!', 'happy'),
+        { do: [{ objective: 'mq14.nagisa' }, { give: 'uchiwa' }, { rel: 'nagisa', points: 1, memory: 'first_meeting' }, { learn: ['v:kankoukyaku', 'v:meibutsu', 'v:teikisen', 'g:toittemo'] }] },
+      ],
+    },
+    {
+      when: { all: [{ questActive: 'mq15' }, { notObj: 'mq15.hamada' }] },
+      steps: [say('nagisa', '浜田さんの食堂、お昼はすごく混むんです。手伝ってあげたら、きっと喜びますよ！', 'Mrs. Hamada’s diner gets really busy at lunchtime. She’d be thrilled if you helped!')],
+    },
+    {
+      when: { flag: 'chapter4_done' },
+      steps: [
+        say('nagisa', '今年の夏祭り、舟歌がちゃんと歌えそうなんです！ 観光客の人たちにも、聞いてもらえたらいいな。', 'This year at the summer festival we’ll actually be able to sing the boat song! I hope the tourists get to hear it too.', 'happy'),
+        say('nagisa', '島へ渡る飛び石は、潮が引いているときなら歩けますよ。小さな祠があるんです。', 'You can walk across the stepping stones to the island when the tide is out. There’s a little shrine there.'),
+      ],
+    },
+    { steps: [say('nagisa', '潮見町へようこそ！ 困ったことがあったら、案内所のなぎさに何でも聞いてくださいね。', 'Welcome to Shiomi! If you need anything, just ask Nagisa at the tourist office.', 'happy')] },
+  ],
+  gen: [
+    {
+      when: { all: [{ questActive: 'mq15' }, { notObj: 'mq15.gen' }] },
+      steps: [
+        say('gen', '……なんだ、観光客か。写真なら、あっちの灯台でも撮りな。', '…What, a tourist? If you want photos, go take them at the lighthouse over there.'),
+        n('源さんは、海を見たまま動かない。足もとには、古い{網|あみ|v:ami}が置いてある。', 'Gen-san doesn’t move, his eyes on the sea. An old net lies at his feet.'),
+        say('gen', '舟歌のことか。……わしは六十年、{漁師|りょうし|v:ryoushi}をやってきた。{引退|いんたい|v:intai}した{ものの||g:monono}、毎朝ここに来てしまう。体が、海を忘れんのだ。', 'The boat song, is it. …I was a fisherman for sixty years. I may have retired, but I still end up here every morning. My body won’t forget the sea.'),
+        { teach: 'g:monono' },
+        say('gen', '舟歌は、目をつぶっても歌えた。……それが今は、二番の途中から、どうしても出てこん。歌おうとすると、波の音しか聞こえんのだ。', 'I could sing the boat song with my eyes closed. …Now, from the middle of the second verse, it just won’t come. When I try to sing, all I hear is the waves.', 'worried'),
+        {
+          quiz: {
+            q: '「引退したものの、毎朝ここに来てしまう」の意味に一番近いものはどれか。',
+            qEn: 'Which is closest in meaning to “I retired, but I still come here every morning”?',
+            options: ['引退したが、それでも毎朝ここに来る', '引退したので、毎朝ここに来られる', '引退する前は、毎朝ここに来ていた', '引退したら、毎朝ここに来るつもりだ'],
+            answer: 0,
+            why: '〜ものの = “although / but” (formal). The second part goes against what the first would make you expect.',
+          },
+          keys: ['g:monono'], area: 'grammar', retry: true,
+        },
+        say('gen', '……浜田の食堂へ行ってみな。あいつも昔は、祭りでよく歌っとった。', '…Try Hamada’s diner. She used to sing at the festival a lot, too.'),
+        { do: [{ objective: 'mq15.gen' }, { rel: 'gen', points: 1, memory: 'first_meeting' }, { learn: ['v:ryoushi', 'v:intai', 'v:ami', 'g:monono'] }] },
+      ],
+    },
+    {
+      when: { all: [{ questActive: 'mq16' }, { obj: 'mq16.shiraishi' }, { notObj: 'mq16.dawn' }] },
+      steps: [
+        n('次の朝。まだ暗いうちに、源さんの舟が{出港|しゅっこう|v:shukkou}の準備をしていた。', 'The next morning. While it is still dark, Gen-san’s boat is getting ready to leave port.'),
+        say('gen', '……白石先生から聞いた。カイトの貝に、歌が残っとるそうだな。', '…I heard from Dr. Shiraishi. Kaito’s shell still holds the song, they say.'),
+        n('さくら貝を源さんに渡した。源さんは、それをそっと耳に当てた。', 'You hand the pink shell to Gen-san. He gently holds it to his ear.'),
+        { do: [{ music: 'memory' }] },
+        { cg: 'cg_harbor_song', say: '{夜明け|よあけ|v:yoake}の光が、海を金色にそめていく。源さんは目をつぶって、ゆっくりと口を開いた。', en: 'The light of dawn dyes the sea gold. Gen-san closes his eyes and slowly opens his mouth.' },
+        { cg: 'cg_harbor_song', say: '「♪ 沖の{鴎|かもめ}に　潮どき問えば　わたしゃ立つ鳥　波に聞け……」', en: '“♪ Ask the gulls out at sea when the tide will turn — I’m a bird about to fly, ask the waves…”' },
+        { cg: 'cg_harbor_song', say: '低い声が、静かな港に{響|ひび|v:hibiku}いた。二番も、三番も。とぎれることなく、最後まで。', en: 'His low voice echoes across the quiet harbour. The second verse, the third. Without a break, all the way to the end.' },
+        say('gen', '……出た。全部、出た。', '…It came. All of it came back.', 'surprised'),
+        say('gen', '思い出す{どころか||g:dokoroka}、昔より声が出とる気がするわ。はっはっは！', 'Far from just remembering it, I think my voice is better than it used to be. Ha ha ha!', 'happy'),
+        { teach: 'g:dokoroka' },
+        {
+          quiz: {
+            q: '「思い出すどころか、昔より声が出ている」の意味に一番近いものはどれか。',
+            qEn: 'Which is closest in meaning to “far from just remembering, my voice is better than before”?',
+            options: ['思い出しただけでなく、昔よりよく歌えている', '思い出せなかったので、声が出なかった', '思い出したが、昔ほどは歌えない', '思い出すために、声を出している'],
+            answer: 0,
+            why: 'A どころか B: not just A — something stronger (B) is true. Here B goes well beyond merely remembering.',
+          },
+          keys: ['g:dokoroka'], area: 'grammar', retry: true,
+        },
+        say('gen', 'この歌は、わしの親父も、そのまた親父も{歌|うた}い{継|つ|v:utaitsugu}いできた。わしで終わらせるわけには、いかんな。', 'My father sang this song, and his father before him. I can’t let it end with me.'),
+        say('gen', '歌詞を書いておいてくれ。あんたの字でな。……それから、灯台の海野にも見せてやってくれんか。あいつは、昔この町の学校で先生をしとった。', 'Write the words down for me. In your handwriting. …And would you show them to Umino at the lighthouse? He used to be a teacher at the school here.'),
+        n('源さんの舟歌を、一字一字ていねいに書き留めた。', 'You carefully write down Gen-san’s boat song, character by character.'),
+        say('gen', 'これは礼だ。……今日から、あんたも潮見の漁師の仲間だ。', 'This is my thanks. …From today, you’re one of Shiomi’s fishermen too.', 'happy'),
+        { do: [{ objective: 'mq16.dawn' }, { take: 'pink_shell' }, { give: 'song_sheet' }, { give: 'hachimaki' }, { rel: 'gen', points: 3, memory: 'boat_song' }, { learn: ['v:yoake', 'v:hibiku', 'v:utaitsugu', 'v:shukkou', 'g:dokoroka'] }] },
+        n('そのとき、波の間から、貝のような言霊が顔を出した！', 'Just then, a shell-like Kotodama peeks out between the waves!'),
+        {
+          battle: { species: 'yadone', level: 19, recruitable: true, bg: 'bg_harbor_quay.webp' },
+          win: [n('ヤドネは、源さんの歌に合わせて、貝をカラカラと鳴らしていた。', 'Yadone rattles its shell in time with Gen-san’s song.'), { do: [{ seen: 'yadone' }] }],
+          lose: [n('ヤドネは、波の向こうへ帰っていった。でも、歌はもう消えない。', 'Yadone goes back beyond the waves. But the song won’t vanish again.')],
+        },
+      ],
+    },
+    {
+      when: { flag: 'chapter4_done' },
+      steps: [say('gen', '今朝も歌いながら網を直したわ。カイトのやつ、二番まで覚えたぞ。', 'I mended the nets singing again this morning. That Kaito’s learned it up to the second verse.', 'happy')],
+    },
+    {
+      when: { questDone: 'mq16' },
+      steps: [say('gen', '灯台の海野には、もう会ったか？ あいつは口はきびしいが、字にはもっときびしい。はっはっは。', 'Have you met Umino at the lighthouse yet? He’s strict with his words, and even stricter with writing. Ha ha.')],
+    },
+    { steps: [say('gen', '……海はな、毎日ちがう顔をしとる。人の言葉と同じだ。', '…The sea shows a different face every day. Just like people’s words.')] },
+  ],
+  hamada: [
+    {
+      when: { all: [{ questActive: 'mq15' }, { obj: 'mq15.gen' }, { notObj: 'mq15.hamada' }] },
+      steps: [
+        say('hamada', 'いらっしゃい！ ……あら、源さんに言われて来たの？ ちょうどよかった、お昼の注文がたまっちゃって！', 'Welcome! …Oh, Gen-san sent you? Perfect timing — the lunch orders are piling up!', 'happy'),
+        say('hamada', '注文は最後まで聞くのよ。小さな言葉ひとつで、意味がぜんぜん変わるんだから。', 'Listen to the order right to the end. One little word changes the whole meaning.'),
+        {
+          quiz: {
+            q: 'お客さん：「この店、値段のわりに量が多いね。」――お客さんは何と言っているか。',
+            qEn: 'Customer: “This place gives big portions for the price.” — What is the customer saying?',
+            options: ['値段から考えると、量が多い', '値段が高いので、量が多い', '量が多いので、値段が高い', '値段も量も、ふつうだ'],
+            answer: 0,
+            why: '〜わりに: compared with what you would expect from the price, the portion is big.',
+          },
+          keys: ['g:warini'], area: 'grammar', retry: true,
+        },
+        {
+          quiz: {
+            q: 'お客さん：「子ども（　　）、よく食べるねえ。」――一番いいのはどれか。',
+            qEn: 'Customer: “For a child, he really eats a lot!” — which fits best?',
+            options: ['にしては', 'にもかかわらず', 'どころか', 'ものの'],
+            answer: 0,
+            why: 'Noun + にしては: “for a …” (considering it is a child, eating that much is surprising).',
+          },
+          keys: ['g:nishitewa'], area: 'grammar', retry: true,
+        },
+        {
+          quiz: {
+            q: 'お客さん：「雨（　　）、わざわざ来たんだよ。名物のいか焼き、二本ね！」',
+            qEn: 'Customer: “I came all this way despite the rain. Two of your famous grilled squid!”',
+            options: ['にもかかわらず', 'わりに', 'にしては', 'といっても'],
+            answer: 0,
+            why: '〜にもかかわらず: “in spite of”. They came even though it was raining.',
+          },
+          keys: ['g:nimokakawarazu'], area: 'grammar', retry: true,
+        },
+        say('hamada', 'あんた、耳がいいねえ！ 助かったわ。', 'You’ve got good ears! What a help.', 'happy'),
+        say('hamada', '……舟歌ね。あたしも毎年、祭りで歌ってた。なのに、今年は二番から先が、真っ白なのよ。', '…The boat song. I sang it at the festival every year too. But this year everything after the second verse is just blank.', 'worried'),
+        say('hamada', 'そういえば、孫のカイトが「貝から歌が聞こえる」って言ってたわ。西の浜辺で遊んでるはずよ。', 'Now that I think of it, my grandson Kaito said he “hears a song from a shell”. He should be playing on the beach to the west.'),
+        { do: [{ objective: 'mq15.hamada' }, { rel: 'hamada', points: 1, memory: 'first_meeting' }, { learn: ['g:warini', 'g:nishitewa', 'g:nimokakawarazu'] }] },
+      ],
+    },
+    {
+      when: { obj: 'mq15.hamada' },
+      steps: [
+        say('hamada', 'いらっしゃい！ 今日も手伝ってくれるの？', 'Welcome! Here to help again today?', 'happy'),
+        {
+          choice: [
+            { text: 'バイトする', en: 'Work: diner orders (grammar, pays ¥220 per correct answer)', then: [{ do: [{ open: 'job:diner' }] }] },
+            { text: '何か買う', en: 'Buy something', then: [{ shop: ['ikayaki', 'takosen', 'lemon', 'sea_salt'] }] },
+            { text: 'またこんど', en: 'Maybe later' },
+          ],
+        },
+      ],
+    },
+    { steps: [say('hamada', 'いらっしゃい！ 潮見の名物、いか焼きはいかが？', 'Welcome! How about Shiomi’s speciality, grilled squid?', 'happy'), { shop: ['ikayaki', 'takosen', 'lemon', 'sea_salt'] }] },
+  ],
+  kaito: [
+    {
+      when: { all: [{ questActive: 'mq15' }, { obj: 'mq15.hamada' }, { notObj: 'mq15.kaito' }] },
+      steps: [
+        say('kaito', 'ねえねえ、聞いて！ この{貝殻|かいがら|v:kaigara}、耳に当てると歌が聞こえるんだ！', 'Hey, hey, listen! When I hold this shell to my ear, I can hear a song!', 'happy'),
+        n('さくら貝を耳に当ててみた。波の音の向こうに、かすかに、だれかが歌を{口|くち|v:kuchizusamu}ずさんでいる。', 'You hold the pink shell to your ear. Beyond the sound of the waves, someone is faintly humming a song.'),
+        say('kaito', 'ばあちゃんの舟歌と、同じ歌だよ。でも、続きはぼくも知らないんだ……。', 'It’s the same song as Grandma’s boat song. But I don’t know how it goes on either…', 'worried'),
+        n('そのとき、浜辺に打ち上げられた紙の舟が、ぱたぱたと動きだした！', 'Just then, a paper boat washed up on the beach starts flapping about!'),
+        {
+          battle: { species: 'funedori', level: 18, recruitable: true, bg: 'bg_harbor_beach.webp' },
+          win: [
+            n('紙の舟は、ぬれた手紙でできていた。にじんだ字の中に、「K」という字だけが読める。', 'The paper boat is made from a wet letter. In the smudged ink, only the letter “K” can be read.'),
+            say('kaito', 'この貝、あげる！ 歌の続き、見つけてね。約束だよ！', 'You can have this shell! Find the rest of the song, okay? Promise!', 'happy'),
+            { do: [{ objective: 'mq15.kaito' }, { give: 'pink_shell' }, { give: 'message_bottle' }, { seen: 'funedori' }, { rel: 'kaito', points: 2, memory: 'shell' }, { learn: ['v:kaigara', 'v:kuchizusamu', 'v:hamabe'] }] },
+          ],
+          lose: [say('kaito', 'あっ、逃げちゃった！ ……また来てね！', 'Ah, it got away! …Come back again!')],
+        },
+      ],
+    },
+    {
+      when: { flag: 'chapter4_done' },
+      steps: [say('kaito', '♪ 沖の鴎に　潮どき問えば……。じいちゃんに教わったんだ。上手でしょ！', '♪ Ask the gulls out at sea when the tide will turn… Gen-san taught me. I’m good, right?', 'happy')],
+    },
+    { steps: [say('kaito', '{干潮|かんちょう|v:kanchou}のときはね、島まで歩いて行けるんだよ！ {満潮|まんちょう|v:manchou}になったら、すぐ戻らないとだめだけど。', 'At low tide you can walk all the way to the island! But at high tide you have to come straight back.'), { do: [{ learn: ['v:kanchou', 'v:manchou'] }] }] },
+  ],
+  shiraishi: [
+    {
+      when: { all: [{ questActive: 'mq16' }, { notObj: 'mq16.shiraishi' }] },
+      steps: [
+        say('shiraishi', 'あら、その貝……。ちょっと見せてくれる？ わたしは白石。海の生き物の「声」を研究しているの。', 'Oh, that shell… may I see it? I’m Shiraishi. I study the “voices” of sea creatures.', 'surprised'),
+        say('shiraishi', 'クジラはね、仲間に歌で話しかけるの。何百キロも離れた仲間に、同じ歌が伝わっていくのよ。', 'Whales talk to each other in songs, you know. The same song travels to whales hundreds of kilometres away.'),
+        say('shiraishi', '{防波堤|ぼうはてい|v:boukatei}に録音機を置いて、毎晩海の音を録っているんだけど……最近、聞いたことのないメロディーが入るの。', 'I leave a recorder on the breakwater and record the sea every night… and lately a melody I’ve never heard keeps showing up.'),
+        {
+          listening: 'l_harbor_recording',
+        },
+        say('shiraishi', '海は、人が忘れた歌まで覚えているのかもしれない。……研究者としては、そう言わ{ざるを得ない||g:zaruoenai}わね。', 'Maybe the sea remembers even the songs people forget. …As a researcher, I have to admit that.'),
+        { teach: 'g:zaruoenai' },
+        say('shiraishi', 'その貝を、歌を知っている人のところへ持っていって。夜明けの静かな海なら、きっと歌が戻ってくるわ。', 'Take that shell to someone who knows the song. On the quiet sea at dawn, the song will surely come back.'),
+        { do: [{ objective: 'mq16.shiraishi' }, { rel: 'shiraishi', points: 1, memory: 'whale_song' }, { learn: ['v:boukatei', 'v:kakegoe', 'g:zaruoenai'] }] },
+      ],
+    },
+    { steps: [say('shiraishi', '今夜も録音機を置いておくわ。海の歌、また聞こえるかしら。', 'I’ll leave the recorder out again tonight. I wonder if we’ll hear the sea’s song again.')] },
+  ],
+  umino: [
+    {
+      when: { all: [{ questActive: 'mq17' }, { notObj: 'mq17.umino' }] },
+      steps: [
+        say('umino', '……何の用かね。灯台は見学できんよ。', '…What do you want? The lighthouse is not open to visitors.'),
+        n('源さんの舟歌の歌詞を見せた。海野さんは眼鏡を押し上げて、紙をじっと見た。', 'You show him the lyrics of Gen-san’s boat song. Mr. Umino pushes up his glasses and studies the paper.'),
+        say('umino', 'ほう……源の歌か。字はまだ固いが、ていねいに書いてある。', 'Hm… Gen’s song. Your handwriting is still stiff, but it is careful.', 'surprised'),
+        say('umino', 'わたしは四十年、この町の学校で国語を教えた。生徒がいなくなって、学校は閉じた。今は、この灯台を守る{しかない||g:shikanai}。', 'I taught Japanese at this town’s school for forty years. The pupils left, and the school closed. Now all I can do is keep this lighthouse.'),
+        { teach: 'g:shikanai' },
+        say('umino', '……毎晩、灯台の下に、帳面を持った女の人が来る。だれかを待っているようだ。わたしが声をかけても、首をふるだけだ。', '…Every night a woman with a notebook comes to the foot of the lighthouse. She seems to be waiting for someone. When I speak to her, she only shakes her head.'),
+        say('umino', 'あの人に会いたいのなら、言葉の力を見せてもらおう。言葉を正しく使えん者に、人の心はつかめんからな。準備ができたら来なさい。', 'If you want to meet her, show me the power of your words. Someone who cannot use words correctly cannot reach a person’s heart. Come back when you are ready.'),
+        { do: [{ objective: 'mq17.umino' }, { rel: 'umino', points: 1, memory: 'first_meeting' }, { learn: ['g:shikanai', 'v:toudai'] }] },
+      ],
+    },
+    {
+      when: { all: [{ questActive: 'mq17' }, { obj: 'mq17.umino' }, { notObj: 'mq17.master' }] },
+      steps: [
+        say('umino', 'では、始めよう。言葉の流れを読む問題だ。', 'Then let us begin. Questions on reading the flow of a sentence.'),
+        {
+          quiz: {
+            q: '練習した（　　）、本番ではうまく話せなかった。',
+            qEn: 'Although I practised, I couldn’t speak well on the day.',
+            options: ['ものの', 'からこそ', 'おかげで', 'うえに'],
+            answer: 0,
+            why: '〜ものの: the result goes against what the first part would lead you to expect.',
+          },
+          keys: ['g:monono'], area: 'grammar', retry: true,
+        },
+        {
+          quiz: {
+            q: '彼は謝る（　　）、わたしのせいだと言い出した。',
+            qEn: 'Far from apologising, he started saying it was my fault.',
+            options: ['どころか', 'にしては', 'わりに', 'としても'],
+            answer: 0,
+            why: 'A どころか B: not A at all — the opposite (B) happened.',
+          },
+          keys: ['g:dokoroka'], area: 'grammar', retry: true,
+        },
+        {
+          quiz: {
+            q: '台風で船が出ないので、今日は島へ行くのをあきらめる（　　）。',
+            qEn: 'The boats aren’t running because of the typhoon, so I have no choice but to give up going to the island today.',
+            options: ['しかない', 'わけがない', 'どころではない', 'に越したことはない'],
+            answer: 0,
+            why: '〜しかない: there is no other option. わけがない = it can’t be; に越したことはない = it is best to.',
+          },
+          keys: ['g:shikanai'], area: 'grammar', retry: true,
+        },
+        {
+          quiz: {
+            q: 'たとえ全部は思い出せない（　　）、歌い続けることに意味がある。',
+            qEn: 'Even if we can’t remember all of it, there is meaning in carrying on singing.',
+            options: ['としても', 'からには', 'ものの', 'にしては'],
+            answer: 0,
+            why: 'たとえ〜としても: “even if (it were so)”. A hypothetical concession, unlike ものの (a real fact).',
+          },
+          keys: ['g:toshitemo'], area: 'grammar', retry: true,
+        },
+        say('umino', '……よろしい。最後に、この灯台の光を守る言霊と向き合いなさい。', '…Very well. Lastly, face the Kotodama that guards this lighthouse’s light.'),
+        {
+          battle: { species: 'umiakari', level: 25, boss: true, bg: 'bg_harbor_cliff.webp' },
+          win: [
+            say('umino', '見事だ。……生徒にこんな顔をさせられたのは、何年ぶりかな。', 'Splendid. …How many years has it been since a pupil made me feel like this.', 'happy'),
+            say('umino', 'この鍵を持っていきなさい。灯台の上まで行ける鍵だ。わたしの最後の生徒の、合格の証だよ。', 'Take this key. It opens the way to the top of the lighthouse. Proof that my last pupil passed.'),
+            say('umino', '夜になった。……ほら、今夜も来ている。手すりのところだ。', 'Night has fallen. …Look, she has come again tonight. Over by the railing.'),
+            { do: [{ objective: 'mq17.master' }, { give: 'lighthouse_key' }, { time: 'evening' }, { rel: 'umino', points: 3, memory: 'trial_passed' }, { learn: ['g:monono', 'g:dokoroka', 'g:shikanai', 'g:toshitemo'] }] },
+          ],
+          lose: [say('umino', '言葉は、焦ると逃げていく。落ち着いて、また来なさい。', 'Words run away when you hurry. Calm down, and come again.')],
+        },
+      ],
+    },
+    {
+      when: { flag: 'chapter4_done' },
+      steps: [say('umino', '夏祭りの舟歌、わたしも歌うことにした。……音痴だと笑うんじゃないぞ。', 'I have decided to sing the boat song at the summer festival too. …Don’t you laugh at my singing.', 'happy')],
+    },
+    { steps: [say('umino', '灯台の光は、遠くの船のためにある。言葉も同じだ。届けたい相手がいてこそ、意味を持つ。', 'A lighthouse beam exists for distant ships. Words are the same: they only mean something when there is someone you want them to reach.')] },
+  ],
+  traveller: [
+    {
+      when: { all: [{ questActive: 'mq17' }, { obj: 'mq17.master' }, { notObj: 'mq17.lighthouse' }] },
+      steps: [
+        { do: [{ music: 'memory' }] },
+        { cg: 'cg_harbor_lighthouse', say: '灯台の光が、星の多い夜の海を、ゆっくりとなでていく。手すりのそばに、帳面を抱えた女の人が立っていた。', en: 'The lighthouse beam slowly sweeps the starry night sea. By the railing stands a woman holding a notebook.' },
+        { cg: 'cg_harbor_lighthouse', say: '女の人は、今度は消えなかった。ゆっくりとふり返って、@nameを見た。', en: 'This time the woman does not vanish. She slowly turns around and looks at @name.' },
+        say('traveller', '……雪見村でも、会ったわね。手紙を、読んでくれたのね。', '…We met in Yukimi Village too. You read my letter, didn’t you.'),
+        say('traveller', 'わたしは昔、霧島さんたちと一緒に、言葉を保存する研究をしていた。消えていく言葉を、全部この帳面に集めれば、だれも忘れなくてすむと思っていたの。', 'Long ago I worked with Dr. Kirishima and the others on research to preserve words. I thought that if I gathered every vanishing word in this notebook, nobody would have to forget.'),
+        say('traveller', 'でも、言葉は集めて閉じこめるものじゃなかった。人が使わなくなった言葉は、帳面の中で、少しずつ色をなくしていった。……わたしの名前も。', 'But words aren’t things you collect and lock away. Words people stopped using slowly lost their colour inside the notebook. …My own name too.', 'worried'),
+        {
+          choice: [
+            { text: '「あなたの名前を、いっしょに探させてください。」', en: '“Please let me help you find your name.”' },
+            { text: '「源さんの舟歌、戻ってきましたよ。」', en: '“Gen-san’s boat song has come back.”' },
+          ],
+        },
+        say('traveller', '……あなたは、言葉を閉じこめるんじゃなくて、人に返しているのね。名前を呼んで、歌を歌わせて、手紙を読んで。', '…You don’t lock words away. You give them back to people. You call their names, let them sing their songs, read their letters.', 'happy'),
+        say('traveller', 'わたしの最初の帳面は、古い都のお寺に預けてあるの。そこに、わたしの名前が、まだ残っているかもしれない。', 'My very first notebook is kept at a temple in the old capital. My name might still be there.'),
+        say('traveller', '……もし、そこまで来てくれるなら。今度は、わたしが待っているわ。', '…If you come that far. This time, I’ll be the one waiting.', 'happy'),
+        n('女の人は、灯台の光の中を歩いて、坂道を下りていった。帳面から、一枚の紙がひらりと落ちた。', 'The woman walks through the lighthouse beam and goes down the slope. A single sheet slips out of her notebook.'),
+        n('紙には、ていねいな字で一つだけ書いてあった。「香」。', 'On it, in careful handwriting, is a single character: 香.'),
+        {
+          quiz: {
+            q: '女の人の名前が消えていったのはなぜか。',
+            qEn: 'Why did the woman’s name fade away?',
+            options: ['言葉を帳面に閉じこめて、使わなくなったから', '灯台の光が強すぎたから', '舟歌を歌わなかったから', '雪見村に帳面を忘れたから'],
+            answer: 0,
+            why: '人が使わなくなった言葉は、帳面の中で色をなくしていった — words that are no longer used lose their colour.',
+          },
+          keys: ['v:toudai'], area: 'reading', retry: true,
+        },
+        { do: [{ objective: 'mq17.lighthouse' }, { learn: ['v:suiheisen', 'v:toudai', 'g:toshitemo'] }, { seen: 'umiakari' }] },
+        { cg: 'cg_harbor_arrival', say: '言葉は、閉じこめるものじゃない。歌えば、海の向こうまで届く。\n― 第四章「潮見町の舟歌」完 ―', en: 'Words are not meant to be locked away. Sing them, and they reach beyond the sea.\n— End of Chapter 4: “The Boat Song of Shiomi” —' },
+        n('Chapter 4 complete! Shiomi stays open: help at the diner, befriend the shell and gull Kotodama and keep reviewing. Chapter 5 (the old capital) is in development.'),
+      ],
+    },
+  ],
+  shiomi_station: [
+    {
+      steps: [
+        n('潮見駅。単線の線路が、山の向こうの日野森までつながっている。', 'Shiomi Station. A single-track line runs over the hills to Hinomori.'),
+        {
+          choice: [
+            { text: '電車で日野森へ帰る', en: 'Take the train back to Hinomori', then: [{ do: [{ warp: { map: 'town', x: 27, y: 20 } }] }] },
+            { text: 'もう少しいる', en: 'Stay a little longer' },
+          ],
+        },
+      ],
+    },
+  ],
+  harbor_diner: [{ steps: [n('港食堂「はまだ」。のれんに、魚の絵が三つ描いてある。いいにおいがする。', 'The harbour diner “Hamada”. Three fish are painted on the noren curtain. Something smells good.')] }],
+  harbor_inn: [
+    {
+      steps: [
+        n('海の見える宿「しおさい」。二階のベランダから、水平線が見える。', 'The seaside inn “Shiosai”. From the first-floor balcony you can see the horizon.'),
+        {
+          choice: [
+            {
+              text: '泊まる（¥700）', en: 'Stay the night (¥700: heals your team, starts a new day)',
+              then: [
+                {
+                  if: { money: 700 },
+                  then: [
+                    { do: [{ money: -700 }, { sleep: true }, { learn: ['v:suiheisen'] }] },
+                    n('波の音を聞きながら、ぐっすり眠った。言霊たちも元気になった！', 'Listening to the waves, you sleep soundly. Your Kotodama are fully healed!'),
+                  ],
+                  else: [n('お金が足りない……。', 'Not enough money…')],
+                },
+              ],
+            },
+            { text: 'やめる', en: 'Leave' },
+          ],
+        },
+      ],
+    },
+  ],
+  harbor_office: [{ steps: [n('漁協の事務所。「本日の水温　二十二度　波　おだやか」と書いてある。', 'The fishing cooperative office. “Water temperature today: 22°C. Waves: calm.”')] }],
+  harbor_genhouse: [{ steps: [n('源さんの家だ。玄関に、使いこまれた網とガラスの浮き玉がつるしてある。', 'Gen-san’s house. A well-used net and a glass fishing float hang by the door.')] }],
+  harbor_lighthouse: [
+    { when: { item: 'lighthouse_key' }, steps: [n('灯台の扉は、海野さんの鍵で開くようになった。上の窓から、町全体と海が見える。', 'The lighthouse door now opens with Mr. Umino’s key. From the window at the top you can see the whole town and the sea.')] },
+    { steps: [n('白い灯台だ。扉には鍵がかかっている。「関係者以外立入禁止」。', 'A white lighthouse. The door is locked: “Authorised personnel only.”')] },
+  ],
+  harbor_lemon: [{ steps: [n('レモンの木がならぶ小さな畑。潮風で、葉っぱが少ししょっぱい気がする。', 'A small field of lemon trees. The leaves seem a little salty from the sea breeze.')] }],
+  harbor_bottle: [
+    { when: { item: 'message_bottle' }, steps: [n('砂浜に、波が静かに寄せている。', 'Waves lap quietly on the sand.')] },
+    { steps: [n('{浜辺|はまべ|v:hamabe}に、きれいな貝殻がたくさん落ちている。', 'Lots of pretty shells lie on the beach.'), { do: [{ learn: ['v:hamabe'] }] }] },
+  ],
+  harbor_hokora: [
+    {
+      steps: [
+        n('島の小さな祠。海の安全を祈って、だれかがお{神酒|みき}を供えている。', 'The little shrine on the island. Someone has left an offering of sake to pray for safety at sea.'),
+        n('ここからは、町と灯台と、遠くの島々が全部見える。', 'From here you can see the town, the lighthouse and the distant islands all at once.'),
+      ],
+    },
+  ],
+  harbor_light: [{ steps: [n('防波堤の先の、赤い灯台。夜になると、船に港の入り口を知らせる。', 'The red harbour light at the end of the breakwater. At night it shows ships the way into the harbour.')] }],
   // ================================================================ chapter 2: Hinomori valley
   valley_busstop: [
     {
@@ -874,7 +1286,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         { teach: 'g:kotoni' },
         { do: [{ objective: 'mq13.tsuru' }, { rel: 'tsuru', points: 3, memory: 'letter_read' }, { learn: ['v:tsutaeru', 'g:kotoni'] }] },
         { cg: 'cg_mountain_arrival', say: '雪の下で、言葉は春を待っている。\n― 第三章「雪見村の手紙」完 ―', en: 'Beneath the snow, words are waiting for spring.\n— End of Chapter 3: “Letters from Yukimi Village” —' },
-        n('Chapter 3 complete! Yukimi stays open: help at the clinic, befriend the snow and lantern Kotodama and keep reviewing. Chapter 4 (the town by the sea) is in development.'),
+        n('Chapter 3 complete! Talk to Ms. Mori in front of the apartment to begin Chapter 4. Yukimi stays open: help at the clinic, befriend the snow and lantern Kotodama and keep reviewing.'),
       ],
     },
     {

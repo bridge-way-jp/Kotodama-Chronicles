@@ -64,6 +64,16 @@ export const JOBS: Record<string, JobDef> = {
     task: 'カルテ・薬の袋', taskEn: 'Chart / medicine bag',
     thanks: 'ありがとう、助かったわ。あなたがいると、村のみんなも安心ね。', thanksEn: 'Thank you, that was a great help. With you here, the whole village feels safer.',
   },
+  diner: {
+    id: 'diner', title: '港食堂の注文', titleEn: 'Harbour diner orders (grammar)', npc: 'hamada', area: 'grammar',
+    theme: ['g:monono', 'g:nimokakawarazu', 'g:nishitewa', 'g:warini', 'g:toittemo', 'g:dokoroka', 'g:zaruoenai', 'g:shikanai'],
+    rounds: 6, payPer: 220, bonus: 'ikayaki',
+    when: { obj: 'mq15.hamada' },
+    intro: 'お客さんの注文は、最後までちゃんと聞いてね。「〜ものの」と「〜のに」じゃ、意味がぜんぜん違うんだから！',
+    introEn: 'Listen to the customers’ orders to the very end. “〜ものの” and “〜のに” mean completely different things!',
+    task: 'お客さんの注文', taskEn: 'A customer says',
+    thanks: 'お疲れさま！ あんたがいると、店が明るくなるねえ。いか焼き、持っていきな。', thanksEn: 'Good work! The place feels brighter with you around. Take some grilled squid.',
+  },
 };
 
 /** the game day on which the job was last done (flags store numbers) */

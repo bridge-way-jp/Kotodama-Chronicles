@@ -209,6 +209,9 @@ REDRAWN = {
     # chapter 3: the snowy mountain village (sheet has 3 rows per block: down, left, up)
     'hm_chars_mountain.webp': [[('npc', 'tsuru'), ('npc', 'hina'), ('npc', 'fujii')],
                                [('npc', 'kuroda'), ('npc', 'jokan'), ('npc', 'traveller')]],
+    # chapter 4: the harbour town (top row 4 direction rows, bottom row only down / left / up)
+    'hm_chars_harbor.webp': [[('npc', 'gen'), ('npc', 'nagisa'), ('npc', 'hamada')],
+                             [('npc', 'kaito'), ('npc', 'umino'), ('npc', 'shiraishi')]],
     'hm_chars_valley.webp': [[('npc', 'hayashi'), ('npc', 'sakura'), ('npc', 'okami')],
                              [('npc', 'kenji'), ('npc', 'ota'), ('npc', 'busdriver')]],
     'hm_chars_more.webp': [[('npc', 'kirishima'), ('npc', 'station_staff'), ('npc', 'customer')],
@@ -219,9 +222,9 @@ REDRAWN = {
 
 
 # sheets whose blocks always have this many direction rows (guessing from the block height fails for bulky figures)
-ROWS_PER_BLOCK = {'hm_chars_mountain.webp': 3}
+ROWS_PER_BLOCK = {'hm_chars_mountain.webp': 3, 'hm_chars_harbor.webp': [4, 3]}  # a list: per block row
 
-CHILDREN = {'kid', 'hina'}
+CHILDREN = {'kid', 'hina', 'kaito'}
 CHILD_HEIGHT = 38
 
 
@@ -263,7 +266,7 @@ def redrawn_sheet(name, layout):
             cur = b
     blocks_y.append(cur)
     assert len(blocks_y) == len(layout), (name, blocks_y)
-    for (y0, y1), row in zip(blocks_y, layout):
+    for bi, ((y0, y1), row) in enumerate(zip(blocks_y, layout)):
         for gi, (kind, who) in enumerate(row):
             gx = cols[gi * 4:gi * 4 + 4]
             x0, x1 = gx[0][0], gx[-1][1]
@@ -271,6 +274,8 @@ def redrawn_sheet(name, layout):
             # frame rows can touch: count them from the block height (a frame is ~1.25x as tall as wide)
             col_w = sum(c1 - c0 for c0, c1 in gx) / 4
             n = ROWS_PER_BLOCK.get(name) or (4 if (y1 - y0) / col_w > 4.6 else 3)
+            if isinstance(n, list):
+                n = n[bi]
             rows = split_n(prof, n)
             imgs = [cut(a, fg, (cx0, y0 + ry0, cx1, y0 + ry1)) for ry0, ry1 in rows for cx0, cx1 in gx]
             tallest = max(i.height for i in imgs)

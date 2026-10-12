@@ -35,6 +35,12 @@ export const NPCS: Record<string, NpcDef> = {
   fujii: { id: 'fujii', name: '藤井先生', nameEn: 'Dr. Fujii', role: 'Village doctor', sprite: 'npc_fujii', portrait: 'portrait_fujii', color: '#5a8fb8' },
   kuroda: { id: 'kuroda', name: '黒田さん', nameEn: 'Mr. Kuroda', role: 'Mountain guide', sprite: 'npc_kuroda', portrait: 'portrait_kuroda', color: '#d0662a' },
   jokan: { id: 'jokan', name: '定観和尚', nameEn: 'Jōkan-oshō', role: 'Head priest, master of kanji', sprite: 'npc_jokan', portrait: 'portrait_jokan', color: '#8a6a22' },
+  gen: { id: 'gen', name: '源さん', nameEn: 'Gen-san', role: 'Old fisherman', sprite: 'npc_gen', portrait: 'portrait_gen', color: '#2e4a7a' },
+  nagisa: { id: 'nagisa', name: 'なぎさ', nameEn: 'Nagisa', role: 'Tourist office', sprite: 'npc_nagisa', portrait: 'portrait_nagisa', color: '#4a8fd0' },
+  hamada: { id: 'hamada', name: '浜田さん', nameEn: 'Mrs. Hamada', role: 'Harbour diner', sprite: 'npc_hamada', portrait: 'portrait_hamada', color: '#c8463c' },
+  kaito: { id: 'kaito', name: 'カイト', nameEn: 'Kaito', role: 'Harbour boy', sprite: 'npc_kaito', portrait: 'portrait_kaito', color: '#d0a040' },
+  umino: { id: 'umino', name: '海野さん', nameEn: 'Mr. Umino', role: 'Lighthouse keeper, master of grammar', sprite: 'npc_umino', portrait: 'portrait_umino', color: '#2f3f6a' },
+  shiraishi: { id: 'shiraishi', name: '白石博士', nameEn: 'Dr. Shiraishi', role: 'Marine researcher', sprite: 'npc_shiraishi', portrait: 'portrait_shiraishi', color: '#6a7a3a' },
   traveller: { id: 'traveller', name: '旅の人', nameEn: 'Traveller', role: '???', sprite: 'npc_traveller', portrait: 'portrait_traveller', color: '#3f6a4a' },
   busdriver: { id: 'busdriver', name: '運転手さん', nameEn: 'Bus driver', role: 'Bus driver', sprite: 'npc_busdriver', portrait: 'npc_busdriver_down', color: '#4a86b5' },
 };

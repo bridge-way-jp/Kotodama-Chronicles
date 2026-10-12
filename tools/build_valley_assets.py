@@ -72,6 +72,19 @@ MOUNTAIN_ITEMS = ['i_amazake', 'i_oyaki', 'i_kairo', 'i_mittens', 'i_yukigutsu',
                   'i_hoshigaki', 'i_usagi_charm', 'i_chochin', 'i_stamp', 'i_sealed_letter', 'i_train_ticket']
 MOUNTAIN_CGS = ['cg_mountain_arrival', 'cg_mountain_hearth', 'cg_mountain_festival']
 
+# chapter 4: Shiomi harbour town (art/PROMPTS_REGION4.md)
+HARBOR_BGS = ['bg_harbor_quay', 'bg_harbor_beach', 'bg_harbor_cliff']
+HARBOR_ITEMS = ['i_lemon', 'i_ikayaki', 'i_takosen', 'i_sea_salt', 'i_ferry_ticket', 'i_pink_shell',
+                'i_glass_float', 'i_message_bottle', 'i_lighthouse_key', 'i_hachimaki', 'i_uchiwa', 'i_song_sheet']
+HARBOR_CGS = ['cg_harbor_arrival', 'cg_harbor_song', 'cg_harbor_lighthouse']
+
+
+def harbor():
+    bgs('battle_bgs_harbor.webp', HARBOR_BGS)
+    grid_items('hm_items_harbor.webp', HARBOR_ITEMS)
+    cgs(HARBOR_CGS)
+
+
 # easter eggs (art/PROMPTS_EASTER_EGGS.md)
 EGG_CGS = ['cg_egg_newyear', 'cg_egg_tanabata', 'cg_egg_midnight', 'cg_egg_mirror']
 
@@ -97,6 +110,7 @@ if __name__ == '__main__':
     bgs()
     grid_items('hm_items_valley.webp', ITEMS)
     eggs()
+    harbor()
     cgs()
     bgs('battle_bgs_mountain.webp', MOUNTAIN_BGS)
     grid_items('hm_items_mountain.webp', MOUNTAIN_ITEMS)

@@ -262,6 +262,26 @@ export const LISTENING: Record<string, ListeningItem> = {
       },
     ],
   },
+  l_harbor_recording: {
+    id: 'l_harbor_recording',
+    title: '防波堤の録音',
+    lines: [
+      { who: '白石', jp: 'これが、ゆうべの録音よ。波の音の間に、何か聞こえるでしょう。', voice: 'f' },
+      { who: '白石', jp: '最初はクジラの声だと思ったの。でも、よく聞くと、人の歌い方に似ているのよ。', voice: 'f' },
+      { who: '白石', jp: '同じメロディーが、毎晩夜明けの少し前にだけ聞こえるの。風のない、静かな朝にね。', voice: 'f' },
+    ],
+    en: 'Shiraishi: This is last night’s recording. You can hear something between the waves, can’t you. At first I thought it was a whale. But if you listen closely, it sounds like the way people sing. The same melody can be heard every night, only shortly before dawn — on still mornings without wind.',
+    vocab: ['boukatei', 'yoake'],
+    questions: [
+      {
+        q: '録音のメロディーは、いつ聞こえますか。',
+        qEn: 'When can the melody on the recording be heard?',
+        options: ['夜明けの少し前', '風の強い夜', '昼の満潮のとき', '一日中ずっと'],
+        answer: 0,
+        why: '毎晩夜明けの少し前にだけ聞こえる — only shortly before dawn, on still mornings.',
+      },
+    ],
+  },
   l_cafe_talk: {
     id: 'l_cafe_talk',
     title: 'カフェでの会話',

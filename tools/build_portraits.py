@@ -20,6 +20,7 @@ SHEETS = {
     'portraits_p2.webp': ['sato', 'kirishima', 'station_staff', 'customer'],
     'portraits_valley.webp': ['hayashi', 'sakura', 'okami', 'kenji', 'ota'],
     'portraits_mountain.webp': ['tsuru', 'hina', 'fujii', 'kuroda', 'jokan', 'traveller'],
+    'portraits_harbor.webp': ['gen', 'nagisa', 'hamada', 'kaito', 'umino', 'shiraishi'],
 }
 EXPR = ['neutral', 'happy', 'surprised', 'worried']
 HEIGHT = 104

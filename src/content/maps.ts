@@ -3,6 +3,7 @@ import { ROOMS_GEN } from './rooms.gen';
 import { FOREST_GEN } from './forest.gen';
 import { VALLEY_GEN } from './valley.gen';
 import { MOUNTAIN_GEN } from './mountain.gen';
+import { HARBOR_GEN } from './harbor.gen';
 import type { Dir } from '../core/types';
 
 /**
@@ -287,6 +288,36 @@ export const MAPS: Record<string, MapDef> = {
     zones: [
       { x0: 2, y0: 11, x1: 7, y1: 13, encounters: 'mountain_snow', bg: 'bg_mountain_trail.webp' },
       { x0: 37, y0: 10, x1: 40, y1: 13, encounters: 'mountain_lantern', bg: 'bg_mountain_trail.webp' },
+    ],
+  },
+  harbor: {
+    id: 'harbor', name: 'Shiomi', nameJa: '潮見町', tiles: HARBOR_GEN, image: 'map_harbor', encounters: 'harbor', bg: 'bg_harbor_quay.webp',
+    // footprints match tools/build_harbor.py BUILDINGS
+    objects: [
+      { id: 'shiomi_station', sprite: 'bx_shiomi_station', x: 5, y: 1, w: 5, h: 2, interactAt: [{ x: 10, y: 2 }, { x: 10, y: 1 }] },
+      { id: 'harbor_diner', sprite: 'bx_diner', x: 14, y: 11, w: 6, h: 2 },
+      { id: 'harbor_inn', sprite: 'bx_seaside_inn', x: 24, y: 11, w: 7, h: 2, interactAt: [{ x: 24, y: 13 }, { x: 29, y: 13 }, { x: 30, y: 13 }] },
+      { id: 'harbor_office', sprite: 'bx_harbor_office', x: 25, y: 13, w: 4, h: 2 },
+      { id: 'harbor_genhouse', sprite: 'bx_townhouse', x: 25, y: 4, w: 3, h: 2 },
+      { id: 'harbor_lighthouse', sprite: 'bx_lighthouse', x: 38, y: 3, w: 3, h: 2, interactAt: [{ x: 37, y: 3 }, { x: 37, y: 4 }] },
+      { id: 'harbor_lemon', x: 15, y: 4, w: 5, h: 2, solid: false },
+      { id: 'harbor_bottle', x: 3, y: 15, w: 1, h: 1, solid: false },
+      { id: 'harbor_hokora', sprite: 'tp_hokora', x: 40, y: 21, w: 1, h: 1 },
+      { id: 'harbor_light', x: 23, y: 20, w: 1, h: 1 },
+    ],
+    npcs: [
+      { id: 'nagisa', x: 21, y: 14, facing: 'down' },
+      { id: 'gen', x: 29, y: 19, facing: 'left' },
+      { id: 'hamada', x: 18, y: 13, facing: 'down' },
+      { id: 'kaito', x: 6, y: 15, facing: 'down' },
+      { id: 'shiraishi', x: 22, y: 20, facing: 'up', when: { questDone: 'mq15' } },
+      { id: 'umino', x: 36, y: 4, facing: 'up' },
+      { id: 'traveller', x: 36, y: 2, facing: 'down', when: { all: [{ obj: 'mq17.master' }, { notObj: 'mq17.lighthouse' }] } },
+    ],
+    warps: [],
+    zones: [
+      { x0: 0, y0: 7, x1: 8, y1: 11, encounters: 'harbor_dunes', bg: 'bg_harbor_beach.webp' },
+      { x0: 37, y0: 9, x1: 40, y1: 12, encounters: 'harbor_cliff', bg: 'bg_harbor_cliff.webp' },
     ],
   },
   apartment: {

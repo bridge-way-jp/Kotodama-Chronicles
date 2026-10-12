@@ -25,7 +25,7 @@ const DETAIL_KEYS = [
   'tp_pot_flower', 'tp_planter_y', 'tp_planter_p', 'tp_mirror', 'tp_sign', 'tp_trash', 'tp_barrel', 'tp_torii',
   'tile_bridge_n', 'tile_bridge_s',
 ];
-const NPC_SHEETS = ['mori', 'kaede', 'haruto', 'aoi', 'sato', 'kirishima', 'station_staff', 'customer', 'hayashi', 'sakura', 'okami', 'kenji', 'ota', 'busdriver', 'tsuru', 'hina', 'fujii', 'kuroda', 'jokan', 'traveller'];
+const NPC_SHEETS = ['mori', 'kaede', 'haruto', 'aoi', 'sato', 'kirishima', 'station_staff', 'customer', 'hayashi', 'sakura', 'okami', 'kenji', 'ota', 'busdriver', 'tsuru', 'hina', 'fujii', 'kuroda', 'jokan', 'traveller', 'gen', 'nagisa', 'hamada', 'kaito', 'umino', 'shiraishi'];
 
 export const ASSET_KEYS = [
   // player walk cycle: hero_<dir>_<frame>, frames 0/2 standing, 1/3 stepping
@@ -49,6 +49,8 @@ export const ASSET_KEYS = [
   'wgs_peach_3', 'wgs_grape_3', 'wgs_sunflower_3', 'wgs_rice_2', 'wgs_asagao_3', 'wgs_sakura_2', 'wgs_tag',
   // Yukimi mountain village, chapter 3 (tools/build_mountain.py)
   'map_mountain', 'bx_guesthouse', 'bx_gassho', 'bx_clinic', 'bx_temple', 'bx_yukimi_station', 'bx_kamakura',
+  // Shiomi harbour town, chapter 4 (tools/build_harbor.py)
+  'map_harbor', 'bx_lighthouse', 'bx_diner', 'bx_harbor_office', 'bx_seaside_inn', 'bx_townhouse', 'bx_shiomi_station',
   'map_valley', 'bx_farmhouse', 'bx_winery', 'bx_stand', 'bx_workshop', 'bx_busstop', 'bx_ryokan',
   ...Object.values(ROOMS_GEN).flatMap((r) => [r.image, ...r.objects.flatMap((o) => (o.sprite ? [o.sprite] : []))]),
 ];

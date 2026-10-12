@@ -69,7 +69,10 @@ const script = (w: string) => (hasKanji(w) ? 'kanji' : /^[ァ-ヿー]+$/.test(w)
  */
 export function similarWords(v: VocabEntry, pool: VocabEntry[], n: number, r = Math.random): VocabEntry[] {
   const sc = script(v.word);
-  const cands = pool.filter((x) => !!x.affix === !!v.affix);
+  let cands = pool.filter((x) => !!x.affix === !!v.affix);
+  // the script must match whenever there are enough such words (a kana option among kanji is a giveaway)
+  const sameScript = cands.filter((x) => script(x.word) === sc);
+  if (sameScript.length >= n * 3) cands = sameScript;
   const score = (x: VocabEntry) =>
     (x.pos === v.pos ? 0 : 2) + (script(x.word) === sc ? 0 : 3) + Math.min(3, Math.abs(x.word.length - v.word.length)) + (x.affix && x.affix !== v.affix ? 2 : 0);
   const ranked = shuffle(cands, r).sort((a, b) => score(a) - score(b));

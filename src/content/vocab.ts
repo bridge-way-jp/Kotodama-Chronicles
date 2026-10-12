@@ -2,6 +2,7 @@ import type { VocabEntry } from '../core/types';
 import { CORE_VOCAB } from './vocab_core';
 import { VALLEY_VOCAB } from './vocab_valley';
 import { MOUNTAIN_VOCAB } from './vocab_mountain';
+import { HARBOR_VOCAB } from './vocab_harbor';
 
 /**
  * Chapter 1 vocabulary. Levels are approximate and based on common N2 study
@@ -141,6 +142,7 @@ export const VOCAB: VocabEntry[] = [
   ...CORE_VOCAB,
   ...VALLEY_VOCAB,
   ...MOUNTAIN_VOCAB,
+  ...HARBOR_VOCAB,
 ];
 
 /** near-synonyms (shared `syn:` tag) must never be offered as wrong answers for each other */

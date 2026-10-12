@@ -144,6 +144,7 @@ function memoryText(m: string) {
       presentation: 'you helped with the presentation', homework: 'you did the わけ homework', archive_project: 'you found the word fragment',
       lab_past: 'stories about the facility', university_rumour: 'the university rumour',
       forgot_name: 'the day she forgot your name', name_scroll: 'the name you wrote for her', husband_voice: 'her husband’s voice in the steam',
+      boat_song: 'the boat song at dawn', shell: 'the singing shell', whale_song: 'the song in the recording',
       name_written: 'the name you wrote with the brush', trial_passed: 'you passed the trial', hearth: 'the evening by the hearth', letter_read: 'reading the letter together',
     }[m] ?? m
   );
@@ -635,7 +636,7 @@ const PLACES: { id: string; ja: string; en: string; x: number; y: number; open: 
   { id: 'village', ja: '雪見村', en: 'Yukimi Village', x: 18, y: 14, open: (s) => !!s.quests.mq10?.objectives.arrive, maps: ['mountain'] },
   { id: 'city', ja: 'さくら市', en: 'Sakura City', x: 12, y: 33, open: () => false },
   { id: 'univ', ja: '大学の街', en: 'University district', x: 18, y: 68, open: () => false },
-  { id: 'coast', ja: '港町', en: 'Harbour town', x: 52, y: 84, open: () => false },
+  { id: 'coast', ja: '潮見町', en: 'Shiomi', x: 52, y: 84, open: (s) => !!s.quests.mq14?.objectives.arrive, maps: ['harbor'] },
 ];
 
 function MapTab() {
