@@ -113,6 +113,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       when: { all: [{ date: ['01-01', '01-02', '01-03'] }, { notYearFlag: 'otoshidama' }, { questDone: 'mq1' }] },
       steps: [
         say('mori', 'あけましておめでとう、@nameちゃん！ 今年もよろしくね。', 'Happy New Year, @name! Let’s have another good year together.', 'happy'),
+        { cg: 'cg_egg_newyear', say: '森さんは、かわいい{袋|ふくろ}を両手で差し出してくれた。', en: 'Ms. Mori holds out a pretty little envelope with both hands.' },
         say('mori', 'はい、これ。少ないけど、お{年玉|としだま}よ。日本では、お正月に子どもや若い人にあげるの。', 'Here, it isn’t much, but it’s otoshidama. In Japan we give it to children and young people at New Year.', 'happy'),
         { do: [{ money: 2000 }, { yearFlag: 'otoshidama' }, { secret: 'shogatsu' }] },
         n('「{初詣|はつもうで}」は、もう行った？ 神社でおみくじを引くと、一年の運がわかるらしい。', 'Have you done hatsumōde, the first shrine visit of the year? A fortune slip at the shrine tells your luck for the year.'),
@@ -482,8 +483,8 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     {
       when: { all: [{ date: ['07-07'] }, { notYearFlag: 'tanabata' }] },
       steps: [
-        n('今日は{七夕|たなばた}。境内の{笹|ささ}に、色とりどりの{短冊|たんざく}が下がっている。', 'Today is Tanabata. Colourful paper strips hang from the bamboo in the shrine grounds.'),
-        n('織姫と{彦星|ひこぼし}が、年に一度だけ会える夜。短冊に願いを書くと、かなうと言われている。', 'The one night a year when Orihime and Hikoboshi may meet. A wish written on a strip is said to come true.'),
+        { cg: 'cg_egg_tanabata', say: '今日は{七夕|たなばた}。境内の{笹|ささ}に、色とりどりの{短冊|たんざく}が下がっている。', en: 'Today is Tanabata. Colourful paper strips hang from the bamboo in the shrine grounds.' },
+        { cg: 'cg_egg_tanabata', say: '織姫と{彦星|ひこぼし}が、年に一度だけ会える夜。短冊に願いを書くと、かなうと言われている。', en: 'The one night a year when Orihime and Hikoboshi may meet. A wish written on a strip is said to come true.' },
         {
           choice: [
             { text: '「N2に合格できますように」', en: '“May I pass the N2”', then: [n('きっと、毎日の{積み重ね|つみかさね}が届くはず。', 'Surely all those days of practice will reach the stars.')] },
@@ -1520,10 +1521,10 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     {
       when: { hours: [0, 4] },
       steps: [
-        n('真夜中の祠。昼間とちがって、ろうそくの火がともっている。', 'The shrine at midnight. Unlike in the daytime, a candle is burning.'),
-        n('？？？「……こんな夜中まで、勉強かい。えらいねえ。」', '???: “…Studying this late at night? Good for you.”'),
-        n('？？？「でもね、言葉は寝ているあいだに、頭の中で{根|ね}をはるんだよ。早くおやすみ。」', '???: “But words put down their roots while you sleep, you know. Off to bed with you.”'),
-        n('ふり返っても、だれもいない。言霊たちが、すっかり元気になっている。', 'You turn around, but no one is there. Your Kotodama feel completely refreshed.'),
+        { cg: 'cg_egg_midnight', say: '真夜中の祠。昼間とちがって、ろうそくの火がともっている。', en: 'The shrine at midnight. Unlike in the daytime, a candle is burning.' },
+        { cg: 'cg_egg_midnight', say: '？？？「……こんな夜中まで、勉強かい。えらいねえ。」', en: '???: “…Studying this late at night? Good for you.”' },
+        { cg: 'cg_egg_midnight', say: '？？？「でもね、言葉は寝ているあいだに、頭の中で{根|ね}をはるんだよ。早くおやすみ。」', en: '???: “But words put down their roots while you sleep, you know. Off to bed with you.”' },
+        { cg: 'cg_egg_midnight', say: 'ふり返っても、だれもいない。言霊たちが、すっかり元気になっている。', en: 'You turn around, but no one is there. Your Kotodama feel completely refreshed.' },
         { do: [{ heal: true }, { secret: 'yofukashi' }] },
       ],
     },
@@ -1548,9 +1549,9 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     {
       when: { all: [{ count: ['mirror_looks', 12] }, { notFlag: 'secret_mirror' }] },
       steps: [
-        n('カーブミラーをのぞきこむ。……十三回目。', 'You peer into the traffic mirror. …For the thirteenth time.'),
-        n('ミラーの中で、小さな青いきつねが、こちらに手をふった。', 'Inside the mirror, a small blue fox waves at you.'),
-        n('ふり返ると、ユキツネはちゃんと足もとにいる。きょとんとした顔で。', 'You turn around, and Yukitsune is right at your feet, looking puzzled.'),
+        { cg: 'cg_egg_mirror', say: 'カーブミラーをのぞきこむ。……十三回目。', en: 'You peer into the traffic mirror. …For the thirteenth time.' },
+        { cg: 'cg_egg_mirror', say: 'ミラーの中で、小さな青いきつねが、こちらに手をふった。', en: 'Inside the mirror, a small blue fox waves at you.' },
+        { cg: 'cg_egg_mirror', say: 'ふり返ると、ユキツネはちゃんと足もとにいる。きょとんとした顔で。', en: 'You turn around, and Yukitsune is right at your feet, looking puzzled.' },
         { do: [{ secret: 'mirror' }, { add: 'mirror_looks' }] },
       ],
     },

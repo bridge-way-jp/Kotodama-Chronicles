@@ -72,9 +72,31 @@ MOUNTAIN_ITEMS = ['i_amazake', 'i_oyaki', 'i_kairo', 'i_mittens', 'i_yukigutsu',
                   'i_hoshigaki', 'i_usagi_charm', 'i_chochin', 'i_stamp', 'i_sealed_letter', 'i_train_ticket']
 MOUNTAIN_CGS = ['cg_mountain_arrival', 'cg_mountain_hearth', 'cg_mountain_festival']
 
+# easter eggs (art/PROMPTS_EASTER_EGGS.md)
+EGG_CGS = ['cg_egg_newyear', 'cg_egg_tanabata', 'cg_egg_midnight', 'cg_egg_mirror']
+
+
+def single_item(file, name):
+    """One icon alone on a magenta sheet."""
+    a = load(file)
+    fg = ndimage.binary_opening(~magenta_mask(a), iterations=1) & ~strict_bg(a)
+    lab, n = ndimage.label(fg)
+    if n > 1:  # keep the icon, drop specks
+        sizes = ndimage.sum(fg, lab, range(1, n + 1))
+        fg = np.isin(lab, [i + 1 for i, sz in enumerate(sizes) if sz >= 0.02 * sizes.max()])
+    p = trim(to_rgba(a, fg))
+    resize_px(p, 32 if p.height >= p.width else round(32 * p.height / p.width)).save(os.path.join(OUT, name + '.png'))
+
+
+def eggs():
+    single_item('hm_item_koban.webp', 'i_koban')
+    cgs(EGG_CGS)
+
+
 if __name__ == '__main__':
     bgs()
     grid_items('hm_items_valley.webp', ITEMS)
+    eggs()
     cgs()
     bgs('battle_bgs_mountain.webp', MOUNTAIN_BGS)
     grid_items('hm_items_mountain.webp', MOUNTAIN_ITEMS)

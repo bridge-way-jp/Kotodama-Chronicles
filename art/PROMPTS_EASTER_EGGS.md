@@ -1,8 +1,7 @@
 # Images for the easter eggs (ひみつ)
 Same procedure as before: one section = one message to GPT.
-All nine secrets already work in the game without these pictures. Once the pictures are in
-`art/sheets/`, I add them to the scenes (a test makes sure every story picture exists, so they
-are only wired in after delivery).
+All pictures are delivered and in the game (sources in `art/sheets/`: hm_item_koban.webp,
+cg_egg_*.webp; `python3 tools/build_valley_assets.py` rebuilds them).
 
 | Secret | How to find it | Picture |
 | --- | --- | --- |
