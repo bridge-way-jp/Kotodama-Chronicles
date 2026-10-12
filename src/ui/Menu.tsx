@@ -3,7 +3,7 @@ import { store, DEFAULT_SETTINGS } from '../core/store';
 import { QUESTS } from '../content/quests';
 import { AFFINITY_INFO, ITEMS, MOVES, SPECIES } from '../content/creatures';
 import { NPCS } from '../content/npcs';
-import { VOCAB } from '../content/vocab';
+import { VOCAB, wordForm } from '../content/vocab';
 import { GRAMMAR } from '../content/grammar';
 import { KANJI } from '../content/kanji';
 import { AFFIXES } from '../content/wordformation';
@@ -295,7 +295,7 @@ function NotebookTab() {
   const [showAll, setShowAll] = useState(false);
   const items =
     kind === 'v'
-      ? VOCAB.map((v) => ({ k: 'v:' + v.id, label: v.word, sub: v.reading }))
+      ? VOCAB.map((v) => ({ k: 'v:' + v.id, label: wordForm(v), sub: v.reading }))
       : kind === 'g'
         ? GRAMMAR.map((g) => ({ k: 'g:' + g.id, label: g.pattern, sub: g.meaning }))
         : KANJI.map((x) => ({ k: 'k:' + x.id, label: x.char, sub: x.meaning }));

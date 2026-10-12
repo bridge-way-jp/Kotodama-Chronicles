@@ -134,6 +134,8 @@ export interface VocabEntry {
   collocations?: string[];
   related?: string[];
   chapter: number;
+  /** a bound prefix or suffix such as ～館: shown with ～, never used as a whole word in a sentence */
+  affix?: 'prefix' | 'suffix';
 }
 
 export interface GrammarExercise {

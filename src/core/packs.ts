@@ -74,7 +74,7 @@ function toGrammar(g: PackGrammar, all: PackGrammar[]): GrammarEntry {
 /** Adds the pack's items to the curriculum (idempotent). Words the game already has are skipped. */
 export function registerPack(p: Pack) {
   if (packInfo.loaded?.id === p.id) return;
-  const byWord = new Map(VOCAB.map((v) => [v.word, v.id]));
+  const byWord = new Map(VOCAB.filter((v) => !v.affix).map((v) => [v.word, v.id]));
   for (const v of p.vocab) {
     const existing = byWord.get(v.word);
     if (existing) {

@@ -4,7 +4,7 @@ import { LISTENING } from '../content/texts';
 import { ORDERING, PARAPHRASE, PRACTICE_LISTENING, PRACTICE_READING } from '../content/practice';
 import { AFFIXES } from '../content/wordformation';
 import { CONFUSIONS } from '../content/confusions';
-import { readingDistractors, shuffle } from './learning';
+import { readingDistractors, shuffle, similarWords } from './learning';
 import type { ListeningItem, SkillArea } from './types';
 
 /**
@@ -63,10 +63,10 @@ export function contextItems(n: number, r = Math.random, levels = ['N2', 'N1']):
   const pool = VOCAB.filter((v) => levels.includes(v.level) && v.example.includes(v.word));
   return shuffle(pool, r).slice(0, n).map((v) => {
     // distinct distractors of the same part of speech, topped up from the whole list
-    const others = [...new Set(shuffle(VOCAB.filter((x) => x.word !== v.word && x.pos === v.pos && !confusable(v, x)), r).map((x) => x.word))].slice(0, 3);
+    const others = [...new Set(similarWords(v, VOCAB.filter((x) => x.word !== v.word && !confusable(v, x)), 6, r).map((x) => x.word))].slice(0, 3);
     for (const x of shuffle(VOCAB, r)) {
       if (others.length >= 3) break;
-      if (x.word !== v.word && !confusable(v, x) && !others.includes(x.word)) others.push(x.word);
+      if (x.word !== v.word && !x.affix && !confusable(v, x) && !others.includes(x.word)) others.push(x.word);
     }
     return {
       id: `cx:${v.id}`, section: '文脈規定', area: 'vocab',

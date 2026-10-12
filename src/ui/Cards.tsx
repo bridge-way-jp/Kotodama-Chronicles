@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { VOCAB_BY_ID } from '../content/vocab';
+import { VOCAB_BY_ID, wordForm } from '../content/vocab';
 import { GRAMMAR_BY_ID } from '../content/grammar';
 import { KANJI_BY_ID } from '../content/kanji';
 import { bus } from '../core/events';
@@ -33,7 +33,7 @@ export function ItemDetail({ k }: { k: string }) {
       <div className="item-detail">
         <div className="big-word" lang="ja">
           <ruby>
-            {v.word}
+            {wordForm(v)}
             <rt>{v.reading}</rt>
           </ruby>
         </div>

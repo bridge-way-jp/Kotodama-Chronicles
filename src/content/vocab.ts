@@ -150,4 +150,7 @@ export function confusable(a: VocabEntry, b: VocabEntry): boolean {
 
 export const hasKanji = (w: string) => /[一-龯々]/.test(w);
 
+/** how a word is written for the player: affixes carry their ～ (～館, 再～) */
+export const wordForm = (v: Pick<VocabEntry, 'word' | 'affix'>) => (v.affix === 'suffix' ? '～' + v.word : v.affix === 'prefix' ? v.word + '～' : v.word);
+
 export const VOCAB_BY_ID: Record<string, VocabEntry> = Object.fromEntries(VOCAB.map((v) => [v.id, v]));
