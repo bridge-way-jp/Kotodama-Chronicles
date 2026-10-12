@@ -15,7 +15,7 @@ from PIL import Image
 sys.path.insert(0, os.path.dirname(__file__))
 from scipy import ndimage  # noqa: E402
 
-from build_rooms import piece, sheet, strict_bg  # noqa: E402
+from build_rooms import strict_bg  # noqa: E402
 from extract_sheets import OUT, ROOT, load, magenta_mask, resize_px, to_rgba, trim  # noqa: E402
 
 SHEETS = os.path.join(ROOT, 'art', 'sheets')
@@ -42,13 +42,6 @@ def bgs(sheet='battle_bgs_valley.webp', names=BGS):
         band.save(os.path.join(OUT, name + '.webp'), quality=88)
 
 
-def items(key='items_valley', names=ITEMS):
-    sheet(key)
-    for i, name in enumerate(names):
-        p = piece(key, i, scale=1)
-        resize_px(p, 32 if p.height >= p.width else round(32 * p.height / p.width)).save(os.path.join(OUT, name + '.png'))
-
-
 def grid_items(file, names, cols=4, rows=3):
     """Items on a regular grid; each cell keeps all its parts (e.g. steam above a cup)."""
     a = load(file)
@@ -57,7 +50,12 @@ def grid_items(file, names, cols=4, rows=3):
     for i, name in enumerate(names):
         r, c = divmod(i, cols)
         y0, y1, x0, x1 = r * h // rows, (r + 1) * h // rows, c * w // cols, (c + 1) * w // cols
-        p = trim(to_rgba(a[y0:y1, x0:x1], fg[y0:y1, x0:x1] & ~strict_bg(a[y0:y1, x0:x1])))
+        m = fg[y0:y1, x0:x1] & ~strict_bg(a[y0:y1, x0:x1])
+        lab, n = ndimage.label(m)
+        if n > 1:  # drop stray specks from the neighbouring cells, keep real parts like steam
+            sizes = ndimage.sum(m, lab, range(1, n + 1))
+            m = np.isin(lab, [i + 1 for i, sz in enumerate(sizes) if sz >= 0.02 * sizes.max()])
+        p = trim(to_rgba(a[y0:y1, x0:x1], m))
         resize_px(p, 32 if p.height >= p.width else round(32 * p.height / p.width)).save(os.path.join(OUT, name + '.png'))
 
 
@@ -76,7 +74,7 @@ MOUNTAIN_CGS = ['cg_mountain_arrival', 'cg_mountain_hearth', 'cg_mountain_festiv
 
 if __name__ == '__main__':
     bgs()
-    items()
+    grid_items('hm_items_valley.webp', ITEMS)
     cgs()
     bgs('battle_bgs_mountain.webp', MOUNTAIN_BGS)
     grid_items('hm_items_mountain.webp', MOUNTAIN_ITEMS)
