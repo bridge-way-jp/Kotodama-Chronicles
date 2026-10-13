@@ -221,13 +221,16 @@ def main():
             shutil.copy(src, d)
         md += [f'## {folder}', f'**Attach:** {", ".join(attach) or "-"}  ·  {hint}', '', '```', prompt, '```', '']
     open(os.path.join(ROOT, 'art', 'PROMPTS_REGION5.md'), 'w', encoding='utf-8').write('\n'.join(md))
-    zp = pkg + '.zip'
-    with zipfile.ZipFile(zp, 'w', zipfile.ZIP_DEFLATED) as z:
-        for base, _, files in os.walk(pkg):
-            for f in files:
-                p = os.path.join(base, f)
-                z.write(p, os.path.relpath(p, out))
-    print(zp, len(FOLDERS), 'folders', round(os.path.getsize(zp) / 1e6, 1), 'MB')
+    # three ZIPs (the chat upload limit is 30 MB): maps, people/items/story, interiors
+    for name, pick in (('Kotodama_Kapitel5_A_Karten', lambda f: f.startswith('1') and not f.startswith('10')), ('Kotodama_Kapitel5_B_Figuren_Items_Story', lambda f: f[0] in '23456789'), ('Kotodama_Kapitel5_C_Innenraeume', lambda f: f.startswith('10'))):
+        zp = os.path.join(out, name + '.zip')
+        with zipfile.ZipFile(zp, 'w', zipfile.ZIP_DEFLATED) as z:
+            z.write(os.path.join(pkg, 'LIESMICH.txt'), 'Kotodama_Kapitel5/LIESMICH.txt')
+            for folder in sorted(os.listdir(pkg)):
+                if os.path.isdir(os.path.join(pkg, folder)) and pick(folder):
+                    for f in os.listdir(os.path.join(pkg, folder)):
+                        z.write(os.path.join(pkg, folder, f), f'Kotodama_Kapitel5/{folder}/{f}')
+        print(zp, round(os.path.getsize(zp) / 1e6, 1), 'MB')
 
 
 if __name__ == '__main__':
