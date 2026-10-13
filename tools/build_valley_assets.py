@@ -85,6 +85,16 @@ def harbor():
     cgs(HARBOR_CGS)
 
 
+# chapter 5: Kyoto (art/PROMPTS_REGION5.md)
+KYOTO_BGS = ['bg_kyoto_gion', 'bg_kyoto_river', 'bg_kyoto_fushimi']
+KYOTO_CGS = ['cg_kyoto_arrival', 'cg_kyoto_tea', 'cg_kyoto_fushimi']
+
+
+def kyoto():
+    bgs('battle_bgs_kyoto.webp', KYOTO_BGS)
+    cgs(KYOTO_CGS)
+
+
 # easter eggs (art/PROMPTS_EASTER_EGGS.md)
 EGG_CGS = ['cg_egg_newyear', 'cg_egg_tanabata', 'cg_egg_midnight', 'cg_egg_mirror']
 
@@ -111,6 +121,7 @@ if __name__ == '__main__':
     grid_items('hm_items_valley.webp', ITEMS)
     eggs()
     harbor()
+    kyoto()
     cgs()
     bgs('battle_bgs_mountain.webp', MOUNTAIN_BGS)
     grid_items('hm_items_mountain.webp', MOUNTAIN_ITEMS)

@@ -138,6 +138,7 @@ export const TRACKS: Record<string, string> = {
 export const MAP_MUSIC: Record<string, string> = {
   town: 'town', apartment: 'home', cafe: 'cafe', konbini: 'town', library: 'home', station: 'town', forest: 'forest', valley: 'valley', mountain: 'snow', harbor: 'harbor',
   ryokan: 'onsen', werkstatt: 'valley', tsuru: 'snow', klinik: 'snow', kneipe: 'harbor', leuchtturm: 'lighthouse',
+  k_station: 'town', k_nishiki: 'festival', k_kamo: 'valley', k_gion: 'memory', k_fushimi: 'forest',
 };
 
 let music: HTMLAudioElement | null = null;

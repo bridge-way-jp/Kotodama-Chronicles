@@ -42,5 +42,11 @@ export const NPCS: Record<string, NpcDef> = {
   umino: { id: 'umino', name: '海野さん', nameEn: 'Mr. Umino', role: 'Lighthouse keeper, master of grammar', sprite: 'npc_umino', portrait: 'portrait_umino', color: '#2f3f6a' },
   shiraishi: { id: 'shiraishi', name: '白石博士', nameEn: 'Dr. Shiraishi', role: 'Marine researcher', sprite: 'npc_shiraishi', portrait: 'portrait_shiraishi', color: '#6a7a3a' },
   traveller: { id: 'traveller', name: '旅の人', nameEn: 'Traveller', role: '???', sprite: 'npc_traveller', portrait: 'portrait_traveller', color: '#3f6a4a' },
+  sumie: { id: 'sumie', name: '澄江さん', nameEn: 'Sumie-san', role: 'Tea-house mistress, master of reading between the lines', sprite: 'npc_sumie', portrait: 'portrait_sumie', color: '#2f6a46' },
+  matsuo: { id: 'matsuo', name: '松尾さん', nameEn: 'Ms. Matsuo', role: 'Machiya guesthouse host', sprite: 'npc_matsuo', portrait: 'portrait_matsuo', color: '#3b4a7a' },
+  rin: { id: 'rin', name: '凛さん', nameEn: 'Rin', role: 'Kimono-rental student', sprite: 'npc_rin', portrait: 'portrait_rin', color: '#c04a5a' },
+  ikeda: { id: 'ikeda', name: '池田さん', nameEn: 'Mr. Ikeda', role: 'Station attendant', sprite: 'npc_ikeda', portrait: 'portrait_ikeda', color: '#2f3f6a' },
+  sakamoto: { id: 'sakamoto', name: '坂本さん', nameEn: 'Mr. Sakamoto', role: 'Business traveller', sprite: 'npc_sakamoto', portrait: 'portrait_sakamoto', color: '#5a5a66' },
+  emma: { id: 'emma', name: 'エマ', nameEn: 'Emma', role: 'Backpacker', sprite: 'npc_emma', portrait: 'portrait_emma', color: '#d0a040' },
   busdriver: { id: 'busdriver', name: '運転手さん', nameEn: 'Bus driver', role: 'Bus driver', sprite: 'npc_busdriver', portrait: 'npc_busdriver_down', color: '#4a86b5' },
 };

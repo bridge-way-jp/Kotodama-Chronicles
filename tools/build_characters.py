@@ -297,6 +297,7 @@ def redrawn_sheet(name, layout):
 # sheets on a fixed grid (cell px): 3 blocks of 4 x 4 cells per block row, rows down / left / right / up
 GRID_NPC_SHEETS = {
     'hm_chars_harbor.webp': (128, [['gen', 'nagisa', 'hamada'], ['kaito', 'umino', 'shiraishi']]),
+    'hm_chars_kyoto.webp': (128, [['sumie', 'matsuo', 'rin'], ['ikeda', 'sakamoto', 'emma']]),
 }
 
 

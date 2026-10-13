@@ -33,6 +33,23 @@ const talkQuiz = (species: string, idx = 0): Step => {
 };
 
 /** Grandma Tsuru's guesthouse: a free bed in Yukimi once you have met her */
+/** the guesthouse in Gion: a free bed once you have met Ms. Matsuo */
+const MATSUO_STAY: Step[] = [
+  {
+    choice: [
+      {
+        text: '泊めてもらう', en: 'Stay the night (heals your team, starts a new day)',
+        then: [
+          say('matsuo', 'どうぞ、ごゆっくり。{朝|あさ}ごはんも、用意しておきますね。', 'Please, make yourself at home. I’ll have breakfast ready, too.', 'happy'),
+          { do: [{ sleep: true }] },
+          n('町家の二階で、ぐっすり眠った。{格子|こうし}の{向|む}こうから、朝の光がさしている。言霊たちも元気になった！', 'You sleep soundly upstairs in the machiya. Morning light comes through the lattice. Your Kotodama are fully healed!'),
+        ],
+      },
+      { text: 'お茶だけいただく', en: 'Just have some tea' },
+    ],
+  },
+];
+
 const TSURU_STAY: Step[] = [
   {
     choice: [
@@ -227,6 +244,15 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         say('mori', '「海の見える町」……。それなら、潮見町かもしれないわね。瀬戸内海の小さな港町よ。主人と、新婚旅行で行ったの。', '“A town where you can see the sea”… Then it might be Shiomi. A little harbour town on the Inland Sea. My husband and I went there on our honeymoon.'),
         say('mori', '日野森駅から、海へ向かう電車が出ているわ。……今度は、わたしも名前を忘れずに待ってるからね。', 'A train to the sea leaves from Hinomori station. …This time I’ll be waiting, without forgetting your name.', 'happy'),
         { do: [{ startQuest: 'mq14' }, { objective: 'mq14.mori' }, { chapter: 4 }, { rel: 'mori', points: 1 }] },
+      ],
+    },
+    {
+      when: { all: [{ flag: 'chapter4_done' }, { questNotStarted: 'mq18' }] },
+      steps: [
+        say('mori', '@nameちゃん、おかえり！ 潮見の{灯台|とうだい}の話、{聞|き}いたわよ。……手がかり、また{見|み}つかったのね。', 'Welcome back, @name! I heard about the lighthouse in Shiomi. …You found another clue.', 'happy'),
+        say('mori', '「{古|ふる}いものと{新|あたら}しいものが、並んで歩く町」……それは、{京都|きょうと}かもしれないわ。{町家|まちや|v:ky_machiya}の{宿|やど}をやっている{友|とも}だちがいるの。', '“A city where old and new walk side by side”… that may be Kyoto. I have a friend who runs a guesthouse in a machiya.'),
+        say('mori', '{日野森駅|ひのもりえき}から、{京都|きょうと}へ行けるわよ。……大きな町だから、{迷|まよ}わないようにね。', 'You can reach Kyoto from Hinomori Station. …It’s a big city, so don’t get lost.'),
+        { do: [{ startQuest: 'mq18' }, { objective: 'mq18.mori' }, { chapter: 5 }, { rel: 'mori', points: 1 }] },
       ],
     },
     {
@@ -763,6 +789,29 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       ],
     },
     {
+      when: { all: [{ questActive: 'mq18' }, { obj: 'mq18.mori' }, { notObj: 'mq18.arrive' }] },
+      steps: [
+        n('日野森駅。大きな町へ向かう電車が、ホームで待っている。乗り換えをして、京都までは二時間ほどだ。', 'Hinomori Station. A train bound for the big city waits at the platform. With a change, Kyoto is about two hours away.'),
+        say('station_staff', '京都行きですね。向こうは、人でいっぱいですよ。おみやげの八つ橋、よろしくお願いします！', 'To Kyoto? It will be packed with people. And please bring back some yatsuhashi!', 'happy'),
+        { cg: 'cg_kyoto_arrival', say: '新幹線から降りると、天井の高い大きな駅に、たくさんの人が行き交っていた。いろいろな言葉の案内が、あちこちから聞こえる。', en: 'Stepping off the Shinkansen, a huge station with a high ceiling, crowds streaming past. Announcements in many languages come from all directions.' },
+        { do: [{ objective: 'mq18.arrive' }, { flag: 'kyoto_visited' }, { learn: ['v:ky_annai'] }, { warp: { map: 'k_station', x: 20, y: 9 } }] },
+      ],
+    },
+    {
+      when: { flag: 'kyoto_visited' },
+      steps: [
+        n('日野森駅。京都、潮見町、雪見村へ、電車が出ている。谷へのバスは、駅前のバス停からだ。', 'Hinomori Station. Trains run to Kyoto, Shiomi and Yukimi Village. Buses to the valley leave from the bus stop in front.'),
+        {
+          choice: [
+            { text: '電車で京都へ', en: 'Take the train to Kyoto', then: [{ do: [{ warp: { map: 'k_station', x: 20, y: 9 } }] }] },
+            { text: '電車で潮見町へ', en: 'Take the train to Shiomi', then: [{ do: [{ warp: { map: 'harbor', x: 10, y: 2 } }] }] },
+            { text: '電車で雪見村へ', en: 'Take the train to Yukimi Village', then: [{ do: [{ warp: { map: 'mountain', x: 9, y: 19 } }] }] },
+            { text: 'やめる', en: 'Stay in town' },
+          ],
+        },
+      ],
+    },
+    {
       when: { flag: 'shiomi_visited' },
       steps: [
         n('日野森駅。北の山の雪見村と、南の海の潮見町へ、電車が出ている。谷へのバスは、駅前のバス停からだ。', 'Hinomori Station. Trains run north to Yukimi Village and south to Shiomi by the sea. Buses to the valley leave from the bus stop in front of the station.'),
@@ -1140,11 +1189,24 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         },
         { do: [{ objective: 'mq17.lighthouse' }, { learn: ['v:suiheisen', 'v:toudai', 'g:toshitemo'] }, { seen: 'umiakari' }] },
         { cg: 'cg_harbor_arrival', say: '言葉は、閉じこめるものじゃない。歌えば、海の向こうまで届く。\n― 第四章「潮見町の舟歌」完 ―', en: 'Words are not meant to be locked away. Sing them, and they reach beyond the sea.\n— End of Chapter 4: “The Boat Song of Shiomi” —' },
-        n('Chapter 4 complete! Shiomi stays open: help at the diner, befriend the shell and gull Kotodama and keep reviewing. Chapter 5 (the old capital) is in development.'),
+        n('Chapter 4 complete! Shiomi stays open: help at the diner, befriend the shell and gull Kotodama and keep reviewing. Chapter 5 (Kyoto) is open: talk to Ms. Mori in Hinomori.'),
       ],
     },
   ],
   shiomi_station: [
+    {
+      when: { flag: 'kyoto_visited' },
+      steps: [
+        n('潮見駅。単線の線路が、山の向こうの日野森までつながっている。乗り換えれば、京都にも行ける。', 'Shiomi Station. A single-track line runs over the hills to Hinomori. With a change you can reach Kyoto too.'),
+        {
+          choice: [
+            { text: '電車で京都へ', en: 'Take the train to Kyoto', then: [{ do: [{ warp: { map: 'k_station', x: 20, y: 9 } }] }] },
+            { text: '電車で日野森へ帰る', en: 'Take the train back to Hinomori', then: [{ do: [{ warp: { map: 'town', x: 27, y: 20 } }] }] },
+            { text: 'もう少しいる', en: 'Stay a little longer' },
+          ],
+        },
+      ],
+    },
     {
       steps: [
         n('潮見駅。単線の線路が、山の向こうの日野森までつながっている。', 'Shiomi Station. A single-track line runs over the hills to Hinomori.'),
@@ -2119,6 +2181,279 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   turm_globe: [{ steps: [n('{地球儀|ちきゅうぎ}だ。{指|ゆび}で{回す|まわす}と、{海|うみ}の{青|あお}がぐるりとまわる。', 'A globe. Spin it with a finger and the blue of the sea turns round.')] }],
   turm_telescope: [{ steps: [n('{望遠鏡|ぼうえんきょう}をのぞくと、{水平線|すいへいせん|v:suiheisen}の{向こう|むこう}に、{小さな|ちいさな}{島|しま}が見える。', 'Through the telescope you see a small island beyond the horizon.'), { do: [{ learn: ['v:suiheisen'] }] }] }],
   turm_schooldesk: [{ steps: [n('{椅子|いす}の{付いた|ついた}{古い|ふるい}{学校|がっこう}の{机|つくえ}だ。{机|つくえ}に、{生徒|せいと}の{落書き|らくがき}が{残って|のこって}いる。', 'An old school desk with attached seat. A pupil’s doodle is still carved into it.')] }],
+
+  // ================================================================ Kyoto (chapter 5)
+  kyoto_station: [
+    {
+      when: { all: [{ questActive: 'mq21' }, { notObj: 'mq21.fushimi' }] },
+      steps: [
+        n('京都駅。構内は、朝から{大勢|おおぜい}の人でごった返している。伏見稲荷へは、{奈良線|ならせん}の{各駅停車|かくえきていしゃ}で、二つ目の駅だ。', 'Kyoto Station, crowded from early morning. Fushimi Inari is two stops away on the local Nara Line.'),
+        {
+          choice: [
+            { text: '伏見稲荷へ行く', en: 'Take the local train to Fushimi Inari', then: [{ do: [{ objective: 'mq21.fushimi' }, { flag: 'fushimi_visited' }, { warp: { map: 'k_fushimi', x: 20, y: 26 } }] }] },
+            { text: 'やめる', en: 'Not yet' },
+          ],
+        },
+      ],
+    },
+    {
+      steps: [
+        n('京都駅。新幹線のホームは上、地下鉄とバスは下だ。{乗り換え|のりかえ|v:norikae}の{案内|あんない|v:ky_annai}が、何か国語もで書いてある。', 'Kyoto Station. The Shinkansen platforms are upstairs, the subway and buses below. Transfer signs are written in several languages.'),
+        {
+          choice: [
+            { text: '伏見稲荷へ行く', en: 'Take the local train to Fushimi Inari', then: [{ do: [{ flag: 'fushimi_visited' }, { warp: { map: 'k_fushimi', x: 20, y: 26 } }] }] },
+            { text: '日野森へ帰る', en: 'Take the train back to Hinomori', then: [{ do: [{ warp: { map: 'town', x: 27, y: 20 } }] }] },
+            { text: '潮見町へ行く', en: 'Take the train to Shiomi', then: [{ do: [{ warp: { map: 'harbor', x: 10, y: 2 } }] }] },
+            { text: 'やめる', en: 'Stay in Kyoto' },
+          ],
+        },
+      ],
+    },
+  ],
+  ikeda: [
+    {
+      when: { all: [{ questActive: 'mq18' }, { obj: 'mq18.arrive' }, { notObj: 'mq18.ikeda' }] },
+      steps: [
+        say('ikeda', 'いらっしゃいませ。京都駅へ、ようこそ。……初めてですか。', 'Welcome to Kyoto Station. …Is this your first time?'),
+        say('ikeda', '本日は、{紅葉|こうよう}の{季節|きせつ}で、{構内|こうない}がたいへん{混雑|こんざつ}しております。お{急|いそ}ぎのところ、ご{迷惑|めいわく}をおかけします。', 'It is autumn-leaf season, so the station is very crowded. We apologise to those in a hurry.'),
+        say('ikeda', '{ご案内|ごあんない}に{先立って|さきだって|g:nisakidatte}、ひとつお願いです。ホームでも{路地|ろじ}でも、立ち止まって写真を撮るのは、お{控|ひか}えくださいね。', 'Before I guide you, one request: please refrain from stopping to take photos, on the platforms or in the lanes.'),
+        { teach: 'g:nisakidatte' },
+        {
+          quiz: {
+            q: '「ご案内に先立って、お願いです」とは、どんな意味か。',
+            qEn: 'What does 「ご案内に先立って、お願いです」 mean?',
+            options: ['案内を始める前に、まずお願いがある', '案内をしたあとで、お願いする', '案内はしないが、お願いはある', '案内と同じ時に、お願いする'],
+            answer: 0,
+            why: '〜に先立って = prior to ~, before starting: the request comes before the guidance.',
+          },
+          keys: ['g:nisakidatte'], area: 'grammar', retry: true,
+        },
+        say('ikeda', '宿は、{祇園|ぎおん}の{松尾|まつお}さんのお{宅|たく}ですね。駅を出て、{錦市場|にしきいちば}を{通じて|つうじて|g:wotsujite}、{東|ひがし}へ行くのが{早|はや}いですよ。ICカードがあれば、バスも楽です。', 'Your inn is Ms. Matsuo’s house in Gion. Going through Nishiki Market and east is quickest. With an IC card, buses are easy too.'),
+        { do: [{ objective: 'mq18.ikeda' }, { rel: 'ikeda', points: 1, memory: 'first_meeting' }, { note: 'ic_card' }, { learn: ['g:nisakidatte', 'g:wotsujite', 'v:ky_annai'] }] },
+      ],
+    },
+    { when: { flag: 'chapter5_done' }, steps: [say('ikeda', '伏見の朝は、いいでしょう？ あそこの{夜明け|よあけ}が、一番静かなんです。', 'Fushimi in the morning is lovely, isn’t it? Dawn is the quietest time there.', 'happy')] },
+    { steps: [say('ikeda', '乗り換えは、あちらの{階段|かいだん}を下りて、左です。お気をつけて。', 'Transfers: go down those stairs and turn left. Take care.')] },
+  ],
+  emma: [
+    {
+      when: { all: [{ questActive: 'mq19' }, { notObj: 'mq19.emma' }] },
+      steps: [
+        say('emma', 'あの、すみません！ この{看板|かんばん}、読めなくて……。「ご{遠慮|えんりょ|v:enryo}ください」って、書いてありますよね。何を？', 'Excuse me! I can’t read this sign… it says “go-enryo kudasai”, right? What does it want from me?', 'worried'),
+        n('{看板|かんばん}には、こう書いてある。「路地での写真撮影は、ご遠慮ください」。', 'The sign reads: “Please refrain from taking photographs in the lanes.”'),
+        {
+          quiz: {
+            q: '「ご遠慮ください」は、どんな意味か。',
+            qEn: 'What does 「ご遠慮ください」 mean?',
+            options: ['しないでください', 'どうぞ、してください', 'あとでしてください', 'ゆっくりしてください'],
+            answer: 0,
+            why: '遠慮 = holding back. 「ご遠慮ください」 is a polite way to say “please don’t”.',
+          },
+          keys: ['v:enryo'], area: 'vocab', retry: true,
+        },
+        say('emma', 'えっ、写真はだめなんですか！ わたしは、ただの{旅行者|りょこうしゃ}{にすぎない||g:nisugimai}のに……。', 'What, no photos! I’m nothing more than a tourist…', 'surprised'),
+        { teach: 'g:nisugimai' },
+        n('エマは、{肩|かた}をすぼめた。「ただの旅行者」でも、{路地|ろじ}に住む人にとっては、{毎日|まいにち}{何十人|なんじゅうにん}もの旅行者の一人だ。', 'Emma shrugs. “Just one tourist” — but for the people who live in the lane, she is one of dozens every day.'),
+        say('emma', '……そうか。住んでいる人の{迷惑|めいわく}に、なっていたんですね。ありがとう。気をつけます！', '…I see. I had been a bother to the people who live here. Thank you. I’ll be careful!', 'happy'),
+        { do: [{ objective: 'mq19.emma' }, { rel: 'emma', points: 1, memory: 'first_meeting' }, { note: 'overtourism' }, { learn: ['v:enryo', 'g:nisugimai', 'v:ky_roji'] }] },
+      ],
+    },
+    { steps: [say('emma', '京都、すごいですね！ ……でも、人がいっぱいで、ちょっと{疲|つか}れました。', 'Kyoto is amazing! …But so many people. I’m a little tired.')] },
+  ],
+  sakamoto: [
+    {
+      when: { all: [{ questActive: 'mq19' }, { notObj: 'mq19.sakamoto' }] },
+      steps: [
+        say('sakamoto', 'ああ、君は旅行者かね。……少し、{相談|そうだん}に乗ってくれないか。', 'Ah, you’re a traveller? …Could you give me a bit of advice?', 'worried'),
+        say('sakamoto', '京都の取引先に、新しい商品を{提案|ていあん}したんだ。そうしたら、「{前向|まえむ}きに{検討|けんとう}させていただきます」と、{笑顔|えがお}で言われた。', 'I proposed a new product to a client in Kyoto. And they said with a smile: “We’ll consider it positively.”'),
+        say('sakamoto', 'これは、いい{返事|へんじ}だろう？ だが、{部下|ぶか}は「期待しないほうがいい」と言うんだ。', 'That’s a good answer, isn’t it? But my subordinate says I shouldn’t get my hopes up.'),
+        {
+          quiz: {
+            q: '「前向きに検討させていただきます」は、京都の取引先の{返事|へんじ}として、どう考えられるか。',
+            qEn: 'How might 「前向きに検討させていただきます」 be understood as a reply from a Kyoto client?',
+            options: ['はっきり断らない、遠回しな断りかもしれない', '必ず買うという、はっきりした約束だ', '商品が悪いという、ていねいな説明だ', '値段を下げてほしいという、お願いだ'],
+            answer: 0,
+            why: 'A smiling “we will consider it” can be a polite, indirect no (tatemae). Context and tone tell you the honne.',
+          },
+          keys: ['v:ky_tatemae'], area: 'reading', retry: true,
+        },
+        say('sakamoto', '……やはり、そうか。{社長|しゃちょう}ともなると、はっきり断れないものだな。', '…So that’s how it is. When you reach a president’s level, you can’t say no outright.'),
+        { teach: 'g:tomonaruto' },
+        say('sakamoto', '{相手|あいて}は、まるで{何|なに}も{気|き}にしていない{かのように||g:kanoyouda}笑っていた。……あれが、{空気|くうき}を読む、ということか。', 'The other side smiled as if nothing mattered. …Is that what “reading the air” means?'),
+        { teach: 'g:kanoyouda' },
+        { do: [{ objective: 'mq19.sakamoto' }, { rel: 'sakamoto', points: 1, memory: 'first_meeting' }, { note: 'honne_tatemae' }, { learn: ['v:ky_honne', 'v:ky_tatemae', 'v:ky_kuuki', 'g:tomonaruto', 'g:kanoyouda'] }] },
+      ],
+    },
+    { steps: [say('sakamoto', '次の会議までに、頭を冷やさないとな。……{遠回|とおまわ}しな返事は、{難|むずか}しい。', 'I need to cool my head before the next meeting. …Indirect replies are hard.')] },
+  ],
+  matsuo: [
+    {
+      when: { all: [{ questActive: 'mq18' }, { obj: 'mq18.ikeda' }, { notObj: 'mq18.matsuo' }] },
+      steps: [
+        say('matsuo', 'まあ、遠いところ、ようこそ。{森|もり}さんから、聞いていますよ。ゲストハウス「まつお」の松尾です。', 'Well, welcome from so far away. Ms. Mori told me about you. I’m Matsuo of the guesthouse “Matsuo”.', 'happy'),
+        n('この{町家|まちや|v:ky_machiya}は、{松尾|まつお}さんの{家族|かぞく}が{百年|ひゃくねん}以上住んできた家だ。{今|いま}は、一階を{宿|やど}にしている。', 'This machiya was home to Ms. Matsuo’s family for over a hundred years. Now the ground floor is a guesthouse.'),
+        say('matsuo', 'ご近所の{皆|みな}さんと{話|はな}し{合|あ}って、{決|き}まりを作ったんです。{夜|よる}は静かに、{路地|ろじ}では写真を撮らない。……お客さんが増えて、近所の{意見|いけん}も{分|わ}かれていてね。', 'We talked with the neighbours and made rules: be quiet at night, no photos in the lane. …With more guests, the neighbours’ opinions are divided.'),
+        say('matsuo', '{町|まち}の{将来|しょうらい}を{めぐって||g:womeguratte}、いろいろな声があるのよ。この{宿|やど}のルールは、{皆|みな}さんの{意見|いけん}に{基づいて||g:nimotozuite}作ったんです。', 'There are all kinds of voices about the town’s future. The rules of this inn are based on everyone’s opinions.'),
+        { teach: 'g:womeguratte' },
+        { teach: 'g:nimotozuite' },
+        { do: [{ objective: 'mq18.matsuo' }, { rel: 'matsuo', points: 1, memory: 'first_meeting' }, { note: 'machiya_stay' }, { learn: ['v:ky_machiya', 'g:womeguratte', 'g:nimotozuite'] }] },
+        say('matsuo', '二階に、お部屋を用意してあります。疲れたら、いつでも泊まっていってね。', 'I have a room ready upstairs. Whenever you’re tired, do stay the night.'),
+      ],
+    },
+    { when: { obj: 'mq18.matsuo' }, steps: [say('matsuo', 'おかえりなさい。今日は、どんな一日だった？', 'Welcome back. How was your day?', 'happy'), ...MATSUO_STAY] },
+    { steps: [say('matsuo', 'いらっしゃいませ。ゲストハウス「まつお」へ、ようこそ。', 'Welcome to the guesthouse “Matsuo”.')] },
+  ],
+  rin: [
+    {
+      when: { all: [{ questActive: 'mq19' }, { notObj: 'mq19.rin' }] },
+      steps: [
+        say('rin', 'いらっしゃいませ！ 着物の{貸衣装|かしいしょう}は、いかがですか。……あ、{今|いま}、お客さんが{多|おお}くて、ばたばたしてて。', 'Welcome! How about renting a kimono? …Sorry, we’re rushed — so many customers.', 'happy'),
+        say('rin', 'わたし、北海道から来た{学生|がくせい}なんです。アルバイトで、ここで{働|はたら}いて{三|さん}か{月|げつ}。', 'I’m a student from Hokkaido. I’ve been working here part-time for three months.'),
+        say('rin', '着物で歩く{観光客|かんこうきゃく}は、みんな楽しそう。{とはいえ||g:tohaie}、お店の前を通る近所の人は、ちょっと{困|こま}った顔をするんです。', 'The tourists walking in kimono all look happy. Even so, neighbours passing the shop sometimes look a bit troubled.'),
+        { teach: 'g:tohaie' },
+        {
+          quiz: {
+            q: '「楽しそうだ。とはいえ、近所の人は困った顔をする」の意味に、一番近いものはどれか。',
+            qEn: 'Which is closest to “They look happy. Even so, the neighbours look troubled”?',
+            options: ['観光客は喜んでいるが、近所の人は少し困っている', '観光客も近所の人も、みんな楽しんでいる', '近所の人は喜んでいるが、観光客は困っている', '観光客は少ないので、近所の人は困っている'],
+            answer: 0,
+            why: 'とはいえ = admitting the first fact but contrasting it: tourists are happy, yet neighbours are a bit troubled.',
+          },
+          keys: ['g:tohaie'], area: 'grammar', retry: true,
+        },
+        say('rin', 'わたしは、どっちの{気持|きも}ちも{分|わ}かる。……だから、{澄江|すみえ}さんに、{相談|そうだん}してみたら？ 島のお茶室にいる{先生|せんせい}。ヒントをくれるって、{町|まち}で{有名|ゆうめい}なの。', 'I understand both feelings. …So why not ask Sumie-san? The teacher at the tea room on the island. She’s famous in town for giving hints.'),
+        { do: [{ objective: 'mq19.rin' }, { rel: 'rin', points: 1, memory: 'first_meeting' }, { note: 'kimono_rental' }, { learn: ['g:tohaie', 'v:ky_kimono'] }] },
+      ],
+    },
+    { when: { flag: 'chapter5_done' }, steps: [say('rin', '伏見に行ったんですね！ わたしも、今度の朝、行ってみようかな。', 'You went to Fushimi! Maybe I’ll go one morning, too.', 'happy')] },
+    { steps: [say('rin', '着物、{似合|にあ}いますよ。……なんて、お客さんには、みんなにそう言うんですけどね。', 'It suits you. …Well, that’s what I tell all the customers.', 'happy')] },
+  ],
+  sumie: [
+    {
+      when: { all: [{ questActive: 'mq20' }, { notObj: 'mq20.sumie' }] },
+      steps: [
+        { do: [{ music: 'memory' }] },
+        { cg: 'cg_kyoto_tea', say: '{静|しず}かな{茶室|ちゃしつ}に、{炭|すみ}の{音|おと}だけが{響|ひび}いている。{澄江|すみえ}さんは、ゆっくりとお茶をたてた。', en: 'In the quiet tea room only the sound of charcoal can be heard. Sumie-san whisks the tea slowly.' },
+        say('sumie', 'ようこそ。……お{茶|ちゃ}は、お好きですか。それとも、お急ぎですか。', 'Welcome. …Do you like tea? Or are you in a hurry?'),
+        say('sumie', 'ぶぶ漬けでも、いかがどすか。……なんて、{京都|きょうと}の{人|ひと}はそう言って、帰ってほしい{意味|いみ}だと、よく{言|い}われますなあ。', 'Would you like some ochazuke?… That’s what Kyoto people supposedly say when they mean “please go home”, or so the story goes.', 'happy'),
+        n('{澄江|すみえ}さんは、{楽|たの}しそうに{目|め}を{細|ほそ}めた。これは、よく知られた「{京都人|きょうとじん}の{話|はなし}」だ。{本当|ほんとう}にそうなのかは、{人|ひと}と{場面|ばめん}による。', 'Sumie-san narrows her eyes with amusement. It’s a well-known “story about Kyoto people”. Whether it’s really so depends on the person and the situation.'),
+        say('sumie', '{大事|だいじ}なのは、{言葉|ことば}の{裏|うら}を{察|さっ|v:ky_sassuru}すること。……けれど、{察|さっ}するだけでは、足りません。{相手|あいて}の{気持|きも}ちに{気配|きくば}りができて{こそ||g:tekoso}、{本当|ほんとう}に{伝|つた}わるのです。', 'What matters is sensing what lies behind words. …But sensing is not enough. Only when you can be considerate of the other person’s feelings does it truly get through.'),
+        { teach: 'g:tekoso' },
+        say('sumie', '三つ、ヒントを出しましょう。{答|こた}えられたら、お話ししましょう。……{準備|じゅんび}ができたら、また{来|き}てください。', 'I’ll give you three hints. If you can answer them, we will talk. …Come back when you’re ready.'),
+        { do: [{ objective: 'mq20.sumie' }, { rel: 'sumie', points: 1, memory: 'first_meeting' }, { learn: ['v:ky_sassuru', 'v:ky_toomawashi', 'v:ky_kikubari', 'g:tekoso'] }] },
+      ],
+    },
+    {
+      when: { all: [{ questActive: 'mq20' }, { obj: 'mq20.sumie' }, { notObj: 'mq20.master' }] },
+      steps: [
+        say('sumie', 'では、一つめ。……お客様が、「このお茶、とてもおいしいですね」と{言|い}いながら、{お茶|おちゃ}を{少|すこ}ししか{飲|の}んでいません。どう{思|おも}いますか。', 'First: a guest says, “This tea is very delicious,” but drinks only a little. What do you think?'),
+        {
+          quiz: {
+            q: 'お客さんが「おいしいですね」と言いながら、少ししか飲まないとき、考えられることは何か。',
+            qEn: 'When a guest says “delicious” but drinks only a little, what might be going on?',
+            options: ['お茶が{口|くち}に{合|あ}わないが、{言|い}いにくいのかもしれない', 'とても気に入って、ゆっくり味わっている', 'のどがかわいていて、もっと欲しい', '急いでいて、すぐ帰りたい'],
+            answer: 0,
+            why: 'A polite compliment with actions that don’t match can mean the real feeling (honne) is different; you read the gap.',
+          },
+          keys: ['v:ky_honne'], area: 'reading', retry: true,
+        },
+        say('sumie', 'よろしい。二つめ。……「{考|かんが}えておきます」は、どんな{時|とき}に、どんな{意味|いみ}ですか。', 'Good. Second: when does “I’ll think about it” mean what?'),
+        {
+          quiz: {
+            q: '「考えておきます」の言い方について、正しいものはどれか。',
+            qEn: 'Which is correct about the way of saying 「考えておきます」?',
+            options: ['声の調子や{場面|ばめん}によって、「はい」にも「だめ」にもなる', '必ず「はい」という意味だ', '必ず「だめ」という意味だ', '何の意味もない、ただの挨拶だ'],
+            answer: 0,
+            why: 'Indirect replies depend on tone and context. The skill is to listen to the whole situation, not only the words.',
+          },
+          keys: ['v:ky_toomawashi'], area: 'reading', retry: true,
+        },
+        say('sumie', '最後に、三つめ。……{町|まち}の{人|ひと}も、{旅人|たびびと}も、{傷|きず}つけない言い方を、{見|み}つけられますか。', 'Last, the third: can you find a way of speaking that hurts neither the townspeople nor the travellers?'),
+        grammarQuiz('hatomokaku', 0),
+        grammarQuiz('dakenokotohaaru', 0),
+        say('sumie', '……お見事です。{十年|じゅうねん}お{茶|ちゃ}を{習|なら}っている{だけのことはある||g:dakenokotohaaru}、とお{世辞|せじ}を言うつもりでしたが、あなたは、{初|はじ}めてのお{客様|きゃくさま}の{割|わり}に、{よく聞|よくき}きました。', 'Splendid. I was going to flatter you by saying “no wonder, having studied tea for ten years”, but for a first-time guest you listened very well.'),
+        { teach: 'g:dakenokotohaaru' },
+        say('sumie', '最後に、{言霊|ことだま}と{向|む}き合ってください。……お茶の{湯気|ゆげ}から{生|う}まれた、{町|まち}の{声|こえ}です。', 'Lastly, face a Kotodama. …A voice of the town, born from the steam of tea.'),
+        {
+          battle: { species: 'bunbuku', level: 26, recruitable: true, bg: 'bg_kyoto_gion.webp' },
+          win: [
+            { cg: 'cg_kyoto_tea', say: 'ブンブクの{湯気|ゆげ}の中から、いくつもの{声|こえ}が{聞|き}こえた。{町|まち}の人の{本音|ほんね}と{旅|たび}の人の{本音|ほんね}。どちらも、{本当|ほんとう}の声だった。', en: 'From Bunbuku’s steam many voices rose: the townspeople’s honne and the travellers’ honne. Both were true.' },
+            say('sumie', '{言葉|ことば}は、{言|い}われたことだけでなく、{言|い}われなかったことも、運びます。……あなたなら、その{両方|りょうほう}を、聞けるでしょう。', 'Words carry not only what is said but also what is not. …You will be able to hear both.', 'happy'),
+            say('sumie', 'あの{方|かた}に会いたいのなら、{夜明|よあ}けの{伏見|ふしみ}へ行きなさい。{千|せん}の{鳥居|とりい}の{道|みち}を、{一人|ひとり}で歩いている人がいます。', 'If you want to meet her, go to Fushimi at dawn. Someone walks the path of a thousand gates alone.'),
+            { do: [{ objective: 'mq20.master' }, { give: 'sumie_cup' }, { rel: 'sumie', points: 3, memory: 'trial_passed' }, { learn: ['g:hatomokaku', 'g:tekoso', 'g:dakenokotohaaru', 'g:narini'] }] },
+          ],
+          lose: [say('sumie', '{焦|あせ}ると、{言葉|ことば}の{裏|うら}は見えなくなります。{落|お}ち着いて、またどうぞ。', 'When you hurry, what lies behind words becomes invisible. Calm down and come again.')],
+        },
+      ],
+    },
+    { when: { flag: 'chapter5_done' }, steps: [say('sumie', '{朝|あさ}の{鳥居|とりい}は、いかがでしたか。……言わなくても、お顔に{書|か}いてありますね。', 'How were the gates in the morning? …You needn’t say; it’s written on your face.', 'happy')] },
+    { steps: [say('sumie', 'お茶を、一服。……急がなくても、{言葉|ことば}は逃げません。', 'Have a cup of tea. …Words don’t run away if you don’t hurry.')] },
+  ],
+  k_guesthouse: [
+    { when: { obj: 'mq18.matsuo' }, steps: [n('ゲストハウス「まつお」の玄関だ。松尾さんが、中から手を振っている。', 'The entrance of the guesthouse “Matsuo”. Ms. Matsuo waves from inside.'), ...MATSUO_STAY] },
+    { steps: [n('{町家|まちや|v:ky_machiya}を{改装|かいそう}した{宿|やど}だ。{格子戸|こうしど}の{向|む}こうで、{灯|あか}りがやさしくゆれている。', 'A guesthouse in a renovated machiya. Beyond the latticed door a light flickers gently.')] },
+  ],
+  k_teahouse: [
+    { when: { all: [{ questActive: 'mq20' }, { notObj: 'mq20.sumie' }] }, steps: [n('島の{茶室|ちゃしつ}。{澄江|すみえ}さんが、{入口|いりぐち}の{前|まえ}でお{待|ま}ちのようだ。', 'The tea house on the island. Sumie-san seems to be waiting at the entrance.')] },
+    { steps: [n('小さな{庭|にわ}のある{茶室|ちゃしつ}。{石灯籠|いしどうろう}に、{紅葉|もみじ}が{一枚|いちまい}{落|お}ちている。', 'A tea house with a small garden. A maple leaf has fallen on the stone lantern.')] },
+  ],
+  k_kimono_shop: [{ steps: [n('{着物|きもの|v:ky_kimono}の{貸衣装|かしいしょう}のお店。色とりどりの着物が、{窓|まど}いっぱいにかかっている。', 'A kimono rental shop. Colourful kimono hang across the whole window.'), { do: [{ note: 'kimono_rental' }] }] }],
+  k_izakaya: [{ steps: [n('{居酒屋|いざかや}の{前|まえ}だ。{夜|よる}になると、{赤|あか}い{提灯|ちょうちん}に{灯|ひ}がともる。{今|いま}は、{準備中|じゅんびちゅう}の{札|ふだ}が{下|さ}がっている。', 'In front of an izakaya. At night its red lantern lights up. For now a “preparing” sign hangs.')] }],
+  k_kamo_cafe: [{ steps: [n('川を見下ろす、小さな{茶|ちゃ}カフェ。{抹茶|まっちゃ|v:ky_matcha}と{和菓子|わがし}のセットが、{人気|にんき}らしい。', 'A small tea café overlooking the river. The matcha and Japanese-sweet set seems popular.')] }],
+  k_shop_veg: [{ steps: [n('{漬物|つけもの}や{野菜|やさい}を{売|う}る{店|みせ}。{試食|ししょく}の{皿|さら}が{並|なら}んでいる。「{食|た}べ{歩|ある}きは、ご{遠慮|えんりょ}ください」の{札|ふだ}も。', 'A shop selling pickles and vegetables, with sample plates. A sign asks: “Please refrain from eating while walking.”'), { do: [{ note: 'tabearuki' }] }] }],
+  k_shop_old: [{ steps: [n('{老舗|しにせ|v:ky_shinise}の{店|みせ}。{包丁|ほうちょう}や{器|うつわ}が、{静|しず}かに{並|なら}んでいる。{店|みせ}の{人|ひと}は、{奥|おく}で{忙|いそが}しそうだ。', 'A long-established shop with knives and tableware lined up quietly. The staff look busy in the back.')] }],
+  k_nishiki_sign: [
+    {
+      when: { all: [{ questActive: 'mq19' }, { obj: 'mq19.emma' }, { obj: 'mq19.sakamoto' }, { obj: 'mq19.rin' }, { notObj: 'mq19.nishiki' }] },
+      steps: [
+        n('{錦市場|にしきいちば}の{入口|いりぐち}で、{看板|かんばん}がちかちか{光|ひか}っている。「ようこそ！ Welcome! 欢迎！」。……{何|なに}かが、{看板|かんばん}の{文字|もじ}の{陰|かげ}で、{騒|さわ}いでいる。', 'At the entrance of Nishiki Market a sign flickers: “Youkoso! Welcome! 欢迎!” …Something is making a racket behind the letters.'),
+        {
+          battle: { species: 'chatama', level: 23, recruitable: true, bg: 'bg_kyoto_gion.webp' },
+          win: [
+            n('{騒|さわ}いでいたのは、チャタマだった。たくさんの{言葉|ことば}に{囲|かこ}まれて、{自分|じぶん}の{声|こえ}が{聞|き}こえなくなっていたのだ。', 'It was Chatama. Surrounded by so many words, it could no longer hear its own voice.'),
+            n('{看板|かんばん}の{光|ひかり}が、{少|すこ}しやさしくなった。「ようこそ」の{文字|もじ}が、ゆっくりと{落|お}ち{着|つ}く。', 'The sign’s light softens a little. The letters of “Welcome” settle slowly.'),
+            { do: [{ objective: 'mq19.nishiki' }, { note: 'tabearuki' }, { seen: 'chatama' }, { learn: ['v:ky_honne', 'v:ky_kuuki'] }] },
+          ],
+          lose: [n('{看板|かんばん}の{光|ひかり}が、まぶしくてよく見えない。……{少|すこ}し{休|やす}んで、また{来|き}よう。', 'The sign is too bright to see clearly. …Rest a bit and try again.')],
+        },
+      ],
+    },
+    { when: { questActive: 'mq19' }, steps: [n('{看板|かんばん}がちかちか光っている。{先|さき}に、{駅|えき}や{祇園|ぎおん}で、{人|ひと}の{話|はなし}を{聞|き}いてみよう。', 'The sign flickers. First, let’s listen to people at the station and in Gion.')] },
+    { steps: [n('{錦市場|にしきいちば}の{入口|いりぐち}。「ようこそ」の{看板|かんばん}が、{静|しず}かに{光|ひか}っている。', 'The entrance of Nishiki Market. The “Welcome” sign glows quietly.')] },
+  ],
+  k_gion_hokora: [{ steps: [n('{石段|いしだん}の{上|うえ}の、小さなお{社|やしろ}。{町|まち}の人が、{毎朝|まいあさ}{手|て}を{合|あ}わせるのだろう。', 'A small shrine at the top of the stone steps. Townspeople probably pray here every morning.')] }],
+  k_gion_lantern: [{ steps: [n('{広場|ひろば}の{真|ま}ん{中|なか}の{大|おお}きな{石灯籠|いしどうろう}。{夜|よる}になると、ほんのり{灯|あか}りがともる。', 'A big stone lantern in the middle of the square. At night it glows softly.')] }],
+  k_shrine: [
+    { steps: [n('{稲荷|いなり}{神社|じんじゃ}の{本殿|ほんでん}。{左右|さゆう}に、{赤い|あかい}前かけをした{石|いし}のきつねが{座|すわ}っている。', 'The main hall of the Inari shrine. A stone fox in a red bib sits on each side.'), n('お{賽銭|さいせん}を{入|い}れて、{手|て}を{合|あ}わせた。{朝|あさ}の{空気|くうき}が、すっと{静|しず}まる。', 'You drop in a coin and press your hands together. The morning air quietens.'), { do: [{ note: 'inari_torii' }] }] },
+  ],
+  k_shrine_office: [{ steps: [n('{社務所|しゃむしょ}だ。お{守|まも}りや{絵馬|えま}が{並|なら}んでいる。{絵馬|えま}には、{小|ちい}さなきつねの{絵|え}がかいてある。', 'The shrine office. Charms and ema plaques are lined up. The ema have a little fox drawn on them.')] }],
+  k_souvenir: [{ steps: [n('{土産物|みやげもの}の{店|みせ}。きつねの{形|かたち}の{お菓子|おかし}や、{小|ちい}さな{鳥居|とりい}が{並|なら}んでいる。', 'A souvenir stand with fox-shaped sweets and little torii on display.')] }],
+  k_fushimi_summit: [
+    {
+      when: { all: [{ questActive: 'mq21' }, { obj: 'mq21.fushimi' }, { notObj: 'mq21.summit' }] },
+      steps: [
+        { do: [{ music: 'lighthouse' }] },
+        { cg: 'cg_kyoto_fushimi', say: '{千本|せんぼん}の{鳥居|とりい}のトンネルに、{朝|あさ}の{光|ひかり}が{差|さ}し{込|こ}んでいる。……{遠|とお}くに、{帳面|ちょうめん}を{抱|かか}えた女の人が、{歩|ある}いていく。', en: 'Morning light streams through the tunnel of a thousand torii. …Far ahead, a woman with a notebook walks away.' },
+        { cg: 'cg_kyoto_fushimi', say: '@nameは、思わず{手|て}を{伸|の}ばした。けれど、{女|おんな}の{人|ひと}は、{振|ふ}り{返|かえ}らなかった。{鳥居|とりい}の{向|む}こうの{光|ひかり}の中へ、{少|すこ}しずつ{消|き}えていく。', en: '@name reaches out. But the woman does not turn around. She fades little by little into the light beyond the gates.' },
+        n('{道|みち}に、{一枚|いちまい}の{紙|かみ}が{落|お}ちていた。ていねいな{字|じ}で、こう{書|か}いてある。「{言葉|ことば}は、{人|ひと}の{多|おお}い{町|まち}ほど、{聞|き}こえなくなる」。', 'A sheet of paper lies on the path. In careful handwriting it says: “Words become harder to hear in busy towns.”'),
+        n('その下に、{一字|いちじ}だけ。「{阪|さか}」。', 'Beneath it, a single character: 阪.'),
+        {
+          quiz: {
+            q: '{女|おんな}の人は、なぜ振り返らなかったと{考|かんが}えられるか。',
+            qEn: 'Why might the woman not have turned around?',
+            options: ['まだ、会うための言葉を探している途中だから', '@nameの顔を、知らなかったから', '朝の光がまぶしかったから', '道を急いでいたから'],
+            answer: 0,
+            why: 'Sumie-san’s hint: she is still “searching for the words”. Words not yet found cannot be said — you read it between the lines.',
+          },
+          keys: ['v:ky_sassuru'], area: 'reading', retry: true,
+        },
+        { do: [{ objective: 'mq21.summit' }, { note: 'inari_torii' }, { seen: 'senbon' }, { learn: ['v:ky_sassuru', 'g:nihokanaranai', 'g:tsutsuaru', 'g:wotowazu'] }] },
+        { cg: 'cg_kyoto_arrival', say: '言葉は、{聞|き}こえなくなっても、なくなりはしない。{察|さっ}して、{待|ま}って、また{届|とど}ける。\n― 第五章「京都」完 ―', en: 'Words may become hard to hear but they do not vanish. Sense them, wait, and deliver them again.\n— Chapter 5 “Kyoto” complete —' },
+        n('Chapter 5 complete! Kyoto stays open: tea with Sumie-san, the Kotodama of the river and Fushimi, and your Japan notes. Chapter 6 (Osaka) is in development.'),
+      ],
+    },
+    { steps: [n('{頂上|ちょうじょう}の{広場|ひろば}。{京都|きょうと}の{町|まち}と、{遠|とお}い{山|やま}が{霞|かす}んで{見|み}える。', 'The summit clearing. Kyoto and the distant mountains lie hazy below.')] },
+  ],
 
   trash: [{ steps: [n('駅のゴミ箱だ。「カン・ビン」「ペットボトル」「その他」に分かれている。', 'The station bins: “cans & bottles”, “PET bottles”, “other”.'), { do: [{ note: 'bunbetsu' }] }] }],
   barrel: [{ steps: [n('ラーメン屋の裏の{雨水|あまみず}をためる{樽|たる}だ。', 'A rain barrel behind the ramen shop.')] }],

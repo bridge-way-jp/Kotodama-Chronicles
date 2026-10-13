@@ -151,6 +151,43 @@ export const NOTES: Record<string, JapanNote> = {
     en: 'In the countryside buses and ferries run less and less, and some lines have been stopped altogether. Without a car you are quickly limited, which hits older people especially when they should not or do not want to drive any more.',
     words: '定期船・路線バス・廃止',
   },
+  // --- chapter 5: Kyoto
+  overtourism: {
+    chapter: 5, title: 'オーバーツーリズム', titleEn: 'Overtourism',
+    de: 'In beliebten Orten wie Kyoto kann es zu viele Besucher auf einmal geben: volle Busse, Gedränge in schmalen Gassen, Fotografieren vor privaten Häusern. Anwohner leiden darunter, viele Geschäfte leben aber von den Gästen. Gemeinden bitten deshalb um Rücksicht und lenken Besucherströme.',
+    en: 'Popular places like Kyoto can get too many visitors at once: crowded buses, jostling in narrow lanes, photos in front of private homes. Residents suffer from it, yet many shops live off the guests. Towns therefore ask for consideration and try to steer the crowds.',
+    words: 'オーバーツーリズム・混雑・迷惑',
+  },
+  honne_tatemae: {
+    chapter: 5, title: '本音と建前', titleEn: 'Honne and tatemae',
+    de: 'Tatemae ist, was man offiziell oder höflich sagt, honne das, was man wirklich denkt. Oft sagt man etwas Unverbindliches, um Streit zu vermeiden. Das ist keine Lüge, sondern Rücksicht, und man lernt, zwischen den Zeilen zu lesen (空気を読む). Nicht jeder Japaner redet gleich indirekt; es hängt von Person und Situation ab.',
+    en: 'Tatemae is what you say officially or politely, honne what you really think. People often say something non-committal to avoid conflict. It is not lying but consideration, and you learn to read between the lines (kūki o yomu). Not every Japanese person is equally indirect; it depends on the person and the situation.',
+    words: '本音・建前・空気を読む・遠回し',
+  },
+  machiya_stay: {
+    chapter: 5, title: '町家の宿', titleEn: 'Machiya guesthouses',
+    de: 'Viele alte Holzhäuser (町家) in Kyoto werden zu kleinen Gästehäusern, Cafés oder Läden umgebaut. So bleibt das Haus erhalten, aber das Viertel verändert sich: Weniger Nachbarn wohnen dort. Manche Städte haben Regeln für Gästehäuser aufgestellt.',
+    en: 'Many old wooden houses (machiya) in Kyoto are converted into small guesthouses, cafés and shops. That keeps the house standing but changes the neighbourhood: fewer neighbours live there. Some cities have set rules for guesthouses.',
+    words: '町家・景観・住民',
+  },
+  kimono_rental: {
+    chapter: 5, title: '着物レンタル', titleEn: 'Kimono rental',
+    de: 'In Touristenorten kann man Kimono leihen und darin spazieren gehen. Das ist bei vielen beliebt, wird aber unterschiedlich gesehen: Einige freuen sich, andere sorgen sich um Rücksicht auf Anwohner. Verleihläden sind oft ein Job für Studenten.',
+    en: 'In tourist towns you can rent a kimono and stroll in it. It is popular, but seen in different ways: some are glad, others worry about consideration for residents. Rental shops are often a student part-time job.',
+    words: '着物・貸衣装・アルバイト',
+  },
+  tabearuki: {
+    chapter: 5, title: '食べ歩き', titleEn: 'Eating while walking',
+    de: 'In Japan gilt es oft als unhöflich, beim Gehen zu essen. In manchen Markt- und Touristengassen bitten Schilder deshalb darum, das Essen am Stand oder an einem Platz zu essen. Grund sind Gedränge, Abfall und Flecken auf Kleidung.',
+    en: 'In Japan it is often considered impolite to eat while walking. In some market and tourist lanes, signs therefore ask you to eat at the stall or in a designated spot. The reasons are crowding, litter and stains on clothes.',
+    words: '食べ歩き・ごみ・マナー',
+  },
+  inari_torii: {
+    chapter: 5, title: '稲荷と鳥居', titleEn: 'Inari and torii',
+    de: 'Inari-Schreine sind dem Gott der Ernte und des Geschäfts gewidmet; Füchse gelten als seine Boten. Die vielen roten Tore wurden von Menschen und Firmen gespendet; ihre Namen stehen auf den Pfosten. Viele Besucher gehen den Weg früh am Morgen, wenn es ruhiger ist.',
+    en: 'Inari shrines are dedicated to the god of harvest and business; foxes are seen as his messengers. The many red gates were donated by people and companies, and their names are written on the posts. Many visitors walk the path early in the morning, when it is quieter.',
+    words: '稲荷・鳥居・参拝',
+  },
 };
 
 export function foundNotes(s: GameState): number {

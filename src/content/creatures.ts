@@ -47,6 +47,12 @@ export const MOVES: Record<string, Move> = {
   wave_song: { id: 'wave_song', name: 'なみのうた', nameEn: 'Wave Song', power: 18, area: 'listening', affinity: 'water' },
   letter_wind: { id: 'letter_wind', name: 'ふみのかぜ', nameEn: 'Letter Wind', power: 17, area: 'vocab', affinity: 'wind' },
   tide_grammar: { id: 'tide_grammar', name: 'しおのぶんぽう', nameEn: 'Tide Grammar', power: 19, area: 'grammar', affinity: 'water' },
+  matcha_mist: { id: 'matcha_mist', name: 'ちゃせんのかすみ', nameEn: 'Whisk Mist', power: 17, area: 'vocab', affinity: 'nature' },
+  kettle_tale: { id: 'kettle_tale', name: 'ゆのみばなし', nameEn: 'Kettle Tale', power: 18, area: 'listening', affinity: 'fire' },
+  crane_steam: { id: 'crane_steam', name: 'ゆげのつる', nameEn: 'Steam Crane', power: 20, area: 'listening', affinity: 'wind' },
+  fox_flame: { id: 'fox_flame', name: 'きつねび', nameEn: 'Fox Fire', power: 17, area: 'kanji', affinity: 'fire' },
+  torii_path: { id: 'torii_path', name: 'とりいのみち', nameEn: 'Torii Path', power: 19, area: 'grammar', affinity: 'knowledge' },
+  rice_prayer: { id: 'rice_prayer', name: 'いなほのいのり', nameEn: 'Rice Prayer', power: 18, area: 'vocab', affinity: 'nature' },
   bloom_bond: { id: 'bloom_bond', name: 'はなのきずな', nameEn: 'Blossom Bond', power: 16, area: 'grammar', affinity: 'memory' },
 };
 
@@ -417,6 +423,73 @@ export const SPECIES: Record<string, Species> = {
     ability: { id: 'translate', name: 'ほんやく', desc: 'Shows the English meaning of the question sentence.' },
     talk: [],
   },
+  // ---- Kyoto (chapter 5)
+  chatama: {
+    id: 'chatama', name: 'チャタマ', nameEn: 'Chatama', sprite: 'k_chatama', affinity: 'nature', baseHp: 36, baseAtk: 14,
+    desc: '茶せんのしっぽを持つ、まるい抹茶わん。お客さんの心が静まるまで、じっと待っている。',
+    descEn: 'A round matcha bowl with a whisk for a tail. It waits patiently until the guest’s mind is calm.',
+    personality: 'patient, polite',
+    moves: ['matcha_mist', 'soft_heart'],
+    evolvesTo: { species: 'bunbuku', level: 28 },
+    ability: { id: 'highlight', name: 'ひかりの筆', desc: 'Highlights the grammar structure in a question.' },
+    talk: [
+      talk('どうぞ、おかけください。……お茶は、いかがですか。', 'Please take a seat… Would you like some tea?',
+        ['ありがとうございます。いただきます。', 'いらないよ。急いでるから。', '茶わんがしゃべってる！'],
+        'A polite invitation calls for a polite acceptance: ありがとうございます、いただきます.'),
+    ],
+  },
+  bunbuku: {
+    id: 'bunbuku', name: 'ブンブク', nameEn: 'Bunbuku', sprite: 'k_bunbuku', affinity: 'fire', baseHp: 48, baseAtk: 17,
+    desc: '茶がまを背負ったたぬき。湯気の中から、昔の町の話をいくつも聞かせてくれる。',
+    descEn: 'A tanuki with a tea kettle on its back. From the steam it tells many tales of the old town.',
+    personality: 'jovial, talkative',
+    moves: ['kettle_tale', 'matcha_mist'],
+    evolvesTo: { species: 'yugetsuru', level: 36 },
+    ability: { id: 'reveal_reading', name: 'よみとき', desc: 'Reveals the reading of the key word in a question.' },
+    talk: [],
+  },
+  yugetsuru: {
+    id: 'yugetsuru', name: 'ユゲヅル', nameEn: 'Yugezuru', sprite: 'k_yugetsuru', affinity: 'wind', baseHp: 62, baseAtk: 21,
+    desc: '湯気でできた白いつる。言葉にならなかった気持ちを、羽の模様にのせて運ぶ。',
+    descEn: 'A white crane made of steam. It carries unspoken feelings on the patterns of its wings.',
+    personality: 'graceful, reserved',
+    moves: ['crane_steam', 'kettle_tale'],
+    ability: { id: 'eliminate', name: 'えだわけ', desc: 'Removes one wrong answer.' },
+    talk: [],
+  },
+  inariko: {
+    id: 'inariko', name: 'イナリコ', nameEn: 'Inariko', sprite: 'k_inariko', affinity: 'fire', baseHp: 34, baseAtk: 15,
+    desc: '赤いマフラーと小さな鳥居のしるしを持つ子ぎつね。鈴を鳴らして、迷った人を呼ぶ。',
+    descEn: 'A fox kit with a red scarf and a tiny torii mark. It rings its bell to call people who are lost.',
+    personality: 'bright, curious',
+    moves: ['fox_flame', 'soft_heart'],
+    evolvesTo: { species: 'inahogi', level: 28 },
+    ability: { id: 'eliminate', name: 'えだわけ', desc: 'Removes one wrong answer.' },
+    talk: [
+      talk('ここ、道がいっぱいあって、迷っちゃったの。……どっちに行けばいいかな。', 'There are so many paths here and I got lost… Which way should I go?',
+        ['いっしょに探そう。鈴の音のほうへ行ってみようか。', 'さあ、わからない。', '自分で考えたら？'],
+        'Offering to look together answers a lost child kindly; the others brush it off.'),
+    ],
+  },
+  inahogi: {
+    id: 'inahogi', name: 'イナホギ', nameEn: 'Inahogi', sprite: 'k_inahogi', affinity: 'nature', baseHp: 46, baseAtk: 18,
+    desc: '二本のしっぽを持つ、稲穂をくわえたきつね。実りと、約束を守る心の守り神。',
+    descEn: 'A two-tailed fox carrying an ear of rice. A guardian of harvests and of keeping one’s word.',
+    personality: 'faithful, proud',
+    moves: ['rice_prayer', 'fox_flame'],
+    evolvesTo: { species: 'senbon', level: 36 },
+    ability: { id: 'highlight', name: 'ひかりの筆', desc: 'Highlights the grammar structure in a question.' },
+    talk: [],
+  },
+  senbon: {
+    id: 'senbon', name: 'センボン', nameEn: 'Senbon', sprite: 'k_senbon', affinity: 'knowledge', baseHp: 60, baseAtk: 22,
+    desc: '三本のしっぽと千の鳥居をまとう、気高いきつねの守り神。鳥居をくぐるたび、言葉は一つ深くなる。',
+    descEn: 'A noble guardian fox with three tails and a thousand torii. With every gate you pass, a word grows deeper.',
+    personality: 'dignified, wise',
+    moves: ['torii_path', 'rice_prayer'],
+    ability: { id: 'translate', name: 'ほんやく', desc: 'Shows the English meaning of the question sentence.' },
+    talk: [],
+  },
 };
 
 export const ENCOUNTERS: Record<string, { species: string; min: number; max: number; weight: number }[]> = {
@@ -453,6 +526,16 @@ export const ENCOUNTERS: Record<string, { species: string; min: number; max: num
     { species: 'funedori', min: 19, max: 23, weight: 6 },
     { species: 'yadone', min: 18, max: 20, weight: 1 },
     { species: 'kotori', min: 18, max: 20, weight: 1 },
+  ],
+  kyoto_river: [
+    { species: 'chatama', min: 22, max: 25, weight: 5 },
+    { species: 'inariko', min: 22, max: 24, weight: 2 },
+    { species: 'funedori', min: 22, max: 24, weight: 1 },
+  ],
+  fushimi: [
+    { species: 'inariko', min: 24, max: 27, weight: 6 },
+    { species: 'chatama', min: 24, max: 26, weight: 2 },
+    { species: 'bunbuku', min: 26, max: 28, weight: 1 },
   ],
   valley_grove: [
     { species: 'momotan', min: 6, max: 9, weight: 6 },
@@ -503,6 +586,7 @@ export const ITEMS: Record<string, ItemDef> = {
   hachimaki: { id: 'hachimaki', name: '漁師のはちまき', nameEn: 'Fisherman’s head towel', desc: 'Gen-san tied it around your head himself. “Now you’re one of us.”', icon: 'i_hachimaki', kind: 'key' },
   uchiwa: { id: 'uchiwa', name: '波もようのうちわ', nameEn: 'Wave-pattern fan', desc: 'A paper fan from the tourist office. Summer in Shiomi is hot.', icon: 'i_uchiwa', kind: 'key' },
   song_sheet: { id: 'song_sheet', name: '舟歌の歌詞', nameEn: 'Boat-song lyrics', desc: 'The words of Shiomi’s old fishermen’s song, written down at dawn on the quay.', icon: 'i_song_sheet', kind: 'key' },
+  sumie_cup: { id: 'sumie_cup', name: '澄江さんの茶わん', nameEn: 'Sumie-san’s tea bowl', desc: 'A small tea bowl from the island tea house. Proof that you passed Sumie-san’s trial of hints.', icon: 'i_greentea', kind: 'key' },
   usagi_charm: { id: 'usagi_charm', name: '雪うさぎのお守り', nameEn: 'Snow-rabbit charm', desc: 'Hina made it for you. Your Kotodama won’t freeze on the mountain.', icon: 'i_usagi_charm', kind: 'key' },
   deco_poster: { id: 'deco_poster', name: 'アニメのポスター', nameEn: 'Anime poster', desc: 'A poster of your favourite anime heroine.', icon: 'deco_poster', kind: 'deco', price: 800 },
   deco_worldmap: { id: 'deco_worldmap', name: '世界地図', nameEn: 'World map', desc: 'A map to remember where you came from.', icon: 'deco_worldmap', kind: 'deco', price: 900 },
@@ -529,6 +613,7 @@ export const DECO_CATALOG = ['deco_poster', 'deco_worldmap', 'deco_aquarium', 'd
 export const IDLE_SPRITES = ['k_fox_blue', 'k_fox_winged', 'k_bird1', 'k_bird2', 'k_bird3', 'k_leaf1', 'k_leaf2', 'k_leaf3', 'k_fire1', 'k_fire2', 'k_fire3', 'k_puff', 'k_fox_pink', 'k_cat_black',
   'k_peach1', 'k_peach2', 'k_peach3', 'k_steam1', 'k_steam2', 'k_steam3',
   'k_snow1', 'k_snow2', 'k_snow3', 'k_lantern1', 'k_lantern2', 'k_lantern3',
-  'k_shell1', 'k_shell2', 'k_shell3', 'k_gull1', 'k_gull2', 'k_gull3'];
+  'k_shell1', 'k_shell2', 'k_shell3', 'k_gull1', 'k_gull2', 'k_gull3',
+  'k_chatama', 'k_bunbuku', 'k_yugetsuru', 'k_inariko', 'k_inahogi', 'k_senbon'];
 /** sprites with an action pose (atk_<key>.png), shown when the creature attacks */
 export const ATTACK_SPRITES = IDLE_SPRITES;

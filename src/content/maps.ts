@@ -4,6 +4,7 @@ import { FOREST_GEN } from './forest.gen';
 import { VALLEY_GEN } from './valley.gen';
 import { MOUNTAIN_GEN } from './mountain.gen';
 import { HARBOR_GEN } from './harbor.gen';
+import { KYOTO_GEN } from './kyoto.gen';
 import type { Dir } from '../core/types';
 
 /**
@@ -334,6 +335,82 @@ export const MAPS: Record<string, MapDef> = {
       { x0: 0, y0: 7, x1: 8, y1: 11, encounters: 'harbor_dunes', bg: 'bg_harbor_beach.webp' },
       { x0: 37, y0: 9, x1: 40, y1: 12, encounters: 'harbor_cliff', bg: 'bg_harbor_cliff.webp' },
     ],
+  },
+  // ---- Kyoto (chapter 5); footprints match tools/build_kyoto.py
+  k_station: {
+    id: 'k_station', name: 'Kyoto Station', nameJa: '京都駅前', tiles: KYOTO_GEN.bahnhof, image: 'map_bahnhof',
+    objects: [
+      { id: 'k_station', sprite: 'bx_k_bahnhof_station', x: 15, y: 5, w: 12, h: 2, script: 'kyoto_station' },
+      { id: 'k_kiosk', sprite: 'bx_k_bahnhof_kiosk', x: 4, y: 17, w: 5, h: 2, solid: false },
+      { id: 'k_konbini', sprite: 'bx_k_bahnhof_konbini', x: 35, y: 12, w: 6, h: 2, solid: false },
+    ],
+    npcs: [
+      { id: 'ikeda', x: 18, y: 9, facing: 'down' },
+      { id: 'emma', x: 13, y: 9, facing: 'right', when: { not: { obj: 'mq19.emma' } } },
+      { id: 'sakamoto', x: 25, y: 9, facing: 'left' },
+    ],
+    warps: [19, 20, 21].map((x) => ({ x, y: 27, to: { map: 'k_nishiki', x: 20, y: 2, facing: 'down' as const } })),
+  },
+  k_nishiki: {
+    id: 'k_nishiki', name: 'Nishiki Market', nameJa: '錦市場', tiles: KYOTO_GEN.nishiki, image: 'map_nishiki',
+    objects: [
+      ...[7, 11, 15, 22, 27, 31].flatMap((x, i) => [
+        { id: `k_shop_t${i}`, sprite: `bx_k_nishiki_shop_t${i}`, x, y: 8, w: 4, h: 2, script: i % 2 === 0 ? 'k_shop_veg' : 'k_shop_old' },
+        { id: `k_shop_b${i}`, sprite: `bx_k_nishiki_shop_b${i}`, x, y: 17, w: 4, h: 2, script: i % 2 === 0 ? 'k_shop_veg' : 'k_shop_old' },
+      ]),
+      { id: 'k_nishiki_sign', x: 20, y: 11, w: 2, h: 1, solid: false, interactAt: [{ x: 20, y: 12 }, { x: 21, y: 12 }], script: 'k_nishiki_sign' },
+    ],
+    npcs: [],
+    warps: [
+      ...[20, 21].map((x) => ({ x, y: 0, to: { map: 'k_station', x: 20, y: 25, facing: 'up' as const } })),
+      ...[11, 12, 13].map((y) => ({ x: 0, y, to: { map: 'k_kamo', x: 40, y: 14, facing: 'left' as const } })),
+      ...[11, 12, 13].map((y) => ({ x: 41, y, to: { map: 'k_gion', x: 1, y: 17, facing: 'right' as const } })),
+    ],
+  },
+  k_kamo: {
+    id: 'k_kamo', name: 'Kamo River', nameJa: '鴨川', tiles: KYOTO_GEN.kamogawa, image: 'map_kamogawa', encounters: 'kyoto_river', bg: 'bg_kyoto_river.webp',
+    objects: [
+      { id: 'k_kamo_cafe', sprite: 'bx_k_kamogawa_tea_house', x: 6, y: 14, w: 4, h: 2, script: 'k_kamo_cafe' },
+      { id: 'k_izakaya', sprite: 'bx_k_kamogawa_machiya', x: 5, y: 19, w: 3, h: 3, script: 'k_izakaya' },
+      { id: 'k_kamo_shop', sprite: 'bx_k_kamogawa_market_shop', x: 9, y: 19, w: 4, h: 3, script: 'k_shop_veg' },
+      { id: 'k_kamo_kimono', sprite: 'bx_k_kamogawa_kimono_shop', x: 18, y: 19, w: 5, h: 3, script: 'k_kimono_shop' },
+      { id: 'k_kamo_house', sprite: 'bx_k_kamogawa_machiya2', x: 30, y: 19, w: 3, h: 3, script: 'k_izakaya' },
+    ],
+    npcs: [],
+    warps: [14, 15].map((y) => ({ x: 41, y, to: { map: 'k_nishiki', x: 1, y: 12, facing: 'right' as const } })),
+  },
+  k_gion: {
+    id: 'k_gion', name: 'Gion', nameJa: '祇園', tiles: KYOTO_GEN.gion, image: 'map_gion', bg: 'bg_kyoto_gion.webp',
+    objects: [
+      { id: 'k_guesthouse', sprite: 'bx_k_gion_guesthouse', x: 31, y: 9, w: 6, h: 2, script: 'k_guesthouse', interactAt: [{ x: 33, y: 11 }, { x: 34, y: 11 }] },
+      { id: 'k_teahouse', sprite: 'bx_k_gion_tea_house', x: 26, y: 18, w: 6, h: 2, script: 'k_teahouse' },
+      { id: 'k_kimono', sprite: 'bx_k_gion_kimono_shop', x: 5, y: 15, w: 5, h: 2, script: 'k_kimono_shop' },
+      { id: 'k_machiya1', sprite: 'bx_k_gion_machiya', x: 3, y: 6, w: 3, h: 2, solid: false },
+      { id: 'k_machiya2', sprite: 'bx_k_gion_machiya2', x: 6, y: 6, w: 3, h: 2, solid: false },
+      { id: 'k_machiya3', sprite: 'bx_k_gion_machiya3', x: 3, y: 12, w: 3, h: 2, solid: false },
+      { id: 'k_machiya4', sprite: 'bx_k_gion_machiya4', x: 6, y: 12, w: 3, h: 2, solid: false },
+      { id: 'k_machiya5', sprite: 'bx_k_gion_machiya5', x: 25, y: 4, w: 3, h: 2, solid: false },
+      { id: 'k_gion_hokora', x: 20, y: 2, w: 3, h: 1, solid: false, script: 'k_gion_hokora' },
+      { id: 'k_gion_lantern', x: 20, y: 9, w: 2, h: 3, solid: false, script: 'k_gion_lantern' },
+    ],
+    npcs: [
+      { id: 'matsuo', x: 34, y: 12, facing: 'up' },
+      { id: 'rin', x: 4, y: 18, facing: 'right' },
+      { id: 'sumie', x: 29, y: 20, facing: 'down' },
+    ],
+    warps: [17, 18].map((y) => ({ x: 0, y, to: { map: 'k_nishiki', x: 40, y: 12, facing: 'left' as const } })),
+  },
+  k_fushimi: {
+    id: 'k_fushimi', name: 'Fushimi Inari', nameJa: '伏見稲荷', tiles: KYOTO_GEN.fushimi, image: 'map_fushimi', encounters: 'fushimi', bg: 'bg_kyoto_fushimi.webp',
+    objects: [
+      { id: 'k_shrine', sprite: 'bx_k_fushimi_shrine', x: 21, y: 15, w: 4, h: 2, script: 'k_shrine' },
+      { id: 'k_shrine_office', sprite: 'bx_k_fushimi_tea_house', x: 11, y: 18, w: 4, h: 2, script: 'k_shrine_office' },
+      { id: 'k_souvenir', sprite: 'bx_k_fushimi_market_shop', x: 27, y: 18, w: 4, h: 2, script: 'k_souvenir' },
+      { id: 'k_fushimi_summit', x: 28, y: 1, w: 6, h: 1, solid: false, script: 'k_fushimi_summit' },
+    ],
+    npcs: [],
+    zones: [{ x0: 17, y0: 3, x1: 26, y1: 10, encounters: 'fushimi', bg: 'bg_kyoto_fushimi.webp' }],
+    warps: [19, 20, 21, 22].map((x) => ({ x, y: 27, to: { map: 'k_station', x: 20, y: 9, facing: 'up' as const } })),
   },
   apartment: {
     id: 'apartment', name: 'Your apartment', nameJa: 'アパート', tiles: ROOMS_GEN.apartment.tiles, interior: true, image: ROOMS_GEN.apartment.image,
