@@ -52,6 +52,18 @@ export const NOTES: Record<string, JapanNote> = {
     en: 'With an IC card you just touch the sensor at the station gate and the fare is deducted automatically. In many cities it also works on buses and in shops. In the countryside the network is thinner.',
     words: '改札・乗り換え・運賃',
   },
+  landlord: {
+    chapter: 1, title: '大家さんと部屋探し', titleEn: 'Landlords and flat-hunting',
+    de: 'Beim Mieten zahlt man oft mehr als Miete im Voraus, etwa Kaution und „Dankesgeld“ (敷金・礼金), und häufig braucht man einen Bürgen. Für Ausländer kann die Wohnungssuche manchmal schwieriger sein. Ein freundlicher Kontakt zur Vermieterin (大家さん) hilft im Alltag sehr.',
+    en: 'Renting often means paying more than rent up front, such as a deposit and “key money” (shikikin, reikin), and you frequently need a guarantor. Flat-hunting can sometimes be harder for foreigners. A friendly relationship with the landlord(lady) helps a lot in daily life.',
+    words: '大家・敷金・礼金',
+  },
+  newyear: {
+    chapter: 1, title: 'お正月', titleEn: 'New Year',
+    de: 'Neujahr ist einer der wichtigsten Feiertage. Man besucht zum ersten Mal im Jahr den Schrein (初詣), isst besonderes Essen (おせち) und Kinder bekommen Geldgeschenke im kleinen Umschlag (お年玉). Viele Geschäfte sind an den ersten Tagen geschlossen.',
+    en: 'New Year is one of the most important holidays. People make the first shrine visit of the year (hatsumōde), eat special food (osechi) and children get money gifts in small envelopes (otoshidama). Many shops are closed during the first days.',
+    words: 'お正月・初詣・お年玉',
+  },
   // --- chapter 2: the valley
   farm_successor: {
     chapter: 2, title: '農家の後継ぎ', titleEn: 'Who takes over the farm?',
@@ -96,6 +108,18 @@ export const NOTES: Record<string, JapanNote> = {
     en: 'Japan has one of the oldest populations in the world; almost a third of people are over 65. In some villages it is even more; people speak of “marginal villages” (genkai shūraku) that may die out without newcomers.',
     words: '高齢化・限界集落・過疎',
   },
+  akiya: {
+    chapter: 3, title: '空き家', titleEn: 'Empty houses',
+    de: 'In Japan stehen viele Häuser leer, vor allem auf dem Land, weil Besitzer weggezogen oder gestorben sind und Erben nicht einziehen wollen. Manche Gemeinden vermitteln solche Häuser günstig an Zuzügler (空き家バンク).',
+    en: 'Many houses in Japan stand empty, especially in the countryside, because owners moved away or died and heirs do not want to move in. Some municipalities offer such houses cheaply to newcomers (akiya banks).',
+    words: '空き家・移住・過疎',
+  },
+  matsuri: {
+    chapter: 3, title: '祭りと担い手', titleEn: 'Festivals need people',
+    de: 'Dorffeste (祭り) leben von Freiwilligen, die Wochen vorher vorbereiten, tragen und aufräumen. Wenn weniger junge Leute im Dorf leben, wird es schwer, solche Bräuche weiterzugeben; manchmal helfen Besucher oder Zugezogene mit.',
+    en: 'Village festivals (matsuri) depend on volunteers who prepare, carry and clean up. When fewer young people live in the village it becomes hard to pass such customs on; sometimes visitors or newcomers help.',
+    words: '祭り・伝統・行事',
+  },
   // --- chapter 4: Shiomi
   fishery: {
     chapter: 4, title: '漁協と漁師', titleEn: 'Fishing cooperatives',
@@ -114,6 +138,18 @@ export const NOTES: Record<string, JapanNote> = {
     de: 'Weil weniger Kinder geboren werden und junge Familien wegziehen, schließen besonders auf dem Land viele Schulen. Die Gebäude werden manchmal zu Cafés, Museen oder Gemeindehäusern umgebaut.',
     en: 'Because fewer children are born and young families move away, many schools close, especially in the countryside. The buildings are sometimes turned into cafés, museums or community centres.',
     words: '廃校・少子化・卒業',
+  },
+  retirement: {
+    chapter: 4, title: '引退と生きがい', titleEn: 'Retirement and ikigai',
+    de: 'Viele Ältere in Japan arbeiten über das Rentenalter hinaus weiter, aus Geldgründen oder weil die Arbeit ihrem Leben Sinn gibt (生きがい). Wenn jemand aufhört, fehlt oft nicht nur das Einkommen, sondern auch eine Aufgabe und Gemeinschaft.',
+    en: 'Many older people in Japan keep working past retirement age, for money or because work gives their life meaning (ikigai). When someone stops, what is missing is often not only income but also a role and a community.',
+    words: '引退・生きがい・定年',
+  },
+  rural_transport: {
+    chapter: 4, title: '地方の交通', titleEn: 'Rural transport',
+    de: 'Auf dem Land fahren Busse und Fähren immer seltener, manche Linien wurden ganz eingestellt. Ohne Auto ist man dort schnell eingeschränkt, was gerade Ältere trifft, die nicht mehr fahren sollten oder wollen.',
+    en: 'In the countryside buses and ferries run less and less, and some lines have been stopped altogether. Without a car you are quickly limited, which hits older people especially when they should not or do not want to drive any more.',
+    words: '定期船・路線バス・廃止',
   },
 };
 
