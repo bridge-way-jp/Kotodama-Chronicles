@@ -582,6 +582,44 @@ ROOMS = {
             ('plant2', '', 0, 9, 7, 1, 1, 'plant', dict(png='nishikiladen/potted_plant.png')),
         ],
     ),
+    # --- chapter 6 (Osaka): painted rooms only (the furniture sheets are not cut yet)
+    'buero': dict(
+        size=(14, 11), painted='room_buero.webp', clean=True, crop=(0, 0, 896, 704),
+        grid=['W' * 14] * 3 + ['WW' + 'f' * 10 + 'WW'] * 7 + ['W' * 6 + 'DD' + 'W' * 6],
+        spots=[('desks', 2, 2, 7, 1, 'buero_desks'), ('board', 4, 1, 2, 1, 'buero_board'), ('calendar', 6, 1, 1, 1, 'buero_calendar'), ('meeting', 8, 1, 4, 2, 'buero_meeting'),
+               ('cabinets', 1, 3, 1, 5, 'buero_cabinet'), ('coffee', 12, 3, 1, 2, 'buero_coffee'), ('printer', 12, 5, 1, 2, 'buero_printer'), ('plant', 12, 8, 1, 1, 'plant')],
+        furniture=[],
+    ),
+    'empfang': dict(
+        size=(12, 10), painted='room_empfang.webp', clean=True, crop=(0, 0, 768, 640),
+        grid=['W' * 12] * 3 + ['WWW' + 'c' * 6 + 'WWW'] + ['WW' + 'f' * 8 + 'WW'] * 5 + ['W' * 5 + 'DD' + 'W' * 5],
+        spots=[('desk', 3, 3, 6, 1, 'empfang_desk'), ('logo', 4, 1, 4, 1, 'empfang_logo'), ('shelf', 1, 1, 1, 3, 'empfang_shelf'), ('door', 10, 1, 1, 2, 'empfang_door'), ('umbrellas', 10, 6, 1, 1, 'empfang_umbrellas')],
+        furniture=[],
+    ),
+    'takoladen': dict(
+        size=(12, 10), painted='room_takoyaki_laden.webp', clean=True, crop=(0, 0, 768, 640),
+        grid=['W' * 12] * 3 + ['W' + 'c' * 8 + 'ffW'] + ['WW' + 'f' * 9 + 'W'] * 5 + ['W' * 5 + 'DD' + 'W' * 5],
+        spots=[('griddle', 1, 3, 4, 1, 'tako_griddle'), ('menu', 3, 1, 5, 1, 'tako_menu'), ('noren', 8, 1, 2, 1, 'tako_noren'), ('tv', 10, 1, 1, 2, 'tako_tv'), ('flour', 1, 3, 1, 2, 'tako_flour'), ('stools', 2, 4, 6, 1, 'tako_stool')],
+        furniture=[],
+    ),
+    'okonomi': dict(
+        size=(13, 10), painted='room_okonomiyaki.webp', clean=True, crop=(0, 0, 832, 640),
+        grid=['W' * 13] * 3 + ['WW' + 'c' * 9 + 'WW'] + ['WW' + 'f' * 9 + 'WW'] * 5 + ['W' * 6 + 'DD' + 'W' * 5],
+        spots=[('shelf', 1, 1, 2, 2, 'okonomi_shelf'), ('noren', 3, 1, 2, 2, 'okonomi_noren'), ('menu', 5, 1, 4, 1, 'okonomi_menu'), ('photo', 9, 1, 2, 1, 'okonomi_photo'), ('griddles', 3, 3, 6, 1, 'okonomi_griddle')],
+        furniture=[],
+    ),
+    'konbini2': dict(
+        size=(13, 10), painted='room_konbini_osaka.webp', clean=True, crop=(0, 0, 832, 640),
+        grid=['W' * 13] * 3 + ['WW' + 'c' * 5 + 'ff' + 'WWWW'] + ['WW' + 'f' * 10 + 'W'] * 5 + ['W' * 6 + 'DD' + 'W' * 5],
+        spots=[('counter', 2, 3, 5, 1, 'konbini2_counter'), ('fridges', 9, 1, 4, 3, 'konbini2_fridge'), ('boards', 3, 1, 6, 1, 'konbini2_board'), ('magazines', 1, 4, 1, 4, 'konbini2_magazines'), ('atm', 12, 6, 1, 3, 'konbini2_atm')],
+        furniture=[],
+    ),
+    'kushikatsu': dict(
+        size=(12, 10), painted='room_kushikatsu.webp', clean=True, crop=(0, 0, 768, 640),
+        grid=['W' * 12] * 3 + ['W' + 'c' * 8 + 'ffW'] + ['WW' + 'f' * 9 + 'W'] * 5 + ['W' * 5 + 'DD' + 'W' * 5],
+        spots=[('posters', 1, 1, 2, 2, 'kushi_poster'), ('fryers', 4, 1, 4, 2, 'kushi_fryer'), ('sign', 9, 1, 1, 2, 'kushi_sign'), ('racks', 7, 1, 2, 2, 'kushi_rack'), ('counter', 1, 3, 5, 1, 'kushi_counter'), ('tv', 1, 3, 1, 2, 'kushi_tv')],
+        furniture=[],
+    ),
 }
 
 

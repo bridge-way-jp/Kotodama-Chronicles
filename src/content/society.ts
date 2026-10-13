@@ -194,6 +194,49 @@ export const NOTES: Record<string, JapanNote> = {
     en: 'Inari shrines are dedicated to the god of harvest and business; foxes are seen as his messengers. The many red gates were donated by people and companies, and their names are written on the posts. Many visitors walk the path early in the morning, when it is quieter.',
     words: '稲荷・鳥居・参拝',
   },
+  // --- chapter 6: Osaka
+  overwork: {
+    chapter: 6, title: '残業と過労', titleEn: 'Overtime and overwork',
+    de: 'Lange Arbeitszeiten gelten in Japan oft als normal, auch wenn Gesetze Überstunden begrenzen sollen. Viele bleiben, solange der Chef bleibt. Es gibt ein eigenes Wort für Tod durch Überarbeitung (過労死). Firmen und Politik versuchen seit einigen Jahren, das zu ändern; wie weit das gelingt, hängt stark von der Firma ab.',
+    en: 'Long hours are often treated as normal in Japan, even though laws aim to limit overtime. Many stay as long as the boss stays. There is even a word for death from overwork (karōshi). Companies and politics have tried to change this for some years; how far it succeeds depends heavily on the company.',
+    words: '残業・過労・上司',
+  },
+  meishi_etiquette: {
+    chapter: 6, title: '名刺交換', titleEn: 'Exchanging business cards',
+    de: 'Visitenkarten werden mit beiden Händen überreicht und angenommen, mit einer kleinen Verbeugung. Man legt die erhaltene Karte während des Gesprächs sorgfältig vor sich auf den Tisch und steckt sie nicht achtlos weg. Die Reihenfolge richtet sich nach Rang und Gast/Gastgeber.',
+    en: 'Business cards are handed over and received with both hands, with a small bow. During the talk you lay the received card neatly in front of you instead of pocketing it carelessly. The order depends on rank and on who is guest and host.',
+    words: '名刺・取引先・挨拶',
+  },
+  horenso: {
+    chapter: 6, title: '報連相', titleEn: 'Hō-ren-sō',
+    de: 'Hōrensō steht für 報告 (berichten), 連絡 (informieren) und 相談 (beraten). Neue Mitarbeiter lernen, ihre Vorgesetzten früh und oft einzubinden. Das soll Fehler verhindern, kann aber auch dazu führen, dass Neulinge sich nicht trauen, selbst zu entscheiden.',
+    en: 'Hō-ren-sō stands for hōkoku (report), renraku (inform) and sōdan (consult). New employees learn to involve their superiors early and often. It is meant to prevent mistakes but can also keep newcomers from daring to decide anything themselves.',
+    words: '報連相・新入社員・上司',
+  },
+  nomikai: {
+    chapter: 6, title: '飲み会', titleEn: 'Nomikai (after-work drinks)',
+    de: 'Gemeinsames Trinken nach der Arbeit gehört in vielen Firmen zur Teamkultur. Die Teilnahme ist offiziell freiwillig, aber der soziale Druck kann hoch sein. In den letzten Jahren sagen mehr junge Leute offen ab; Alkoholfreies ist ebenso üblich.',
+    en: 'Drinking together after work is part of team culture in many companies. Taking part is officially voluntary but social pressure can be high. In recent years more young people decline openly; non-alcoholic drinks are normal too.',
+    words: '飲み会・上司・部署',
+  },
+  shinsotsu: {
+    chapter: 6, title: '新卒一括採用', titleEn: 'Hiring new graduates together',
+    de: 'Viele große Firmen stellen Absolventen gemeinsam im April ein und bilden sie intern aus. Wer diesen Zeitpunkt verpasst, hat es oft schwerer. Quereinsteiger werden aber häufiger, und manche Firmen stellen ganzjährig ein.',
+    en: 'Many large companies hire graduates together in April and train them in-house. People who miss that window often find it harder. Mid-career hires are becoming more common, though, and some companies hire all year round.',
+    words: '新入社員・就職・研修',
+  },
+  nonregular: {
+    chapter: 6, title: '非正規雇用', titleEn: 'Non-regular work',
+    de: 'Ein großer Teil der Beschäftigten arbeitet in Teilzeit, befristet oder als Leiharbeiter (非正規). Das gilt auch für viele ausländische Beschäftigte in Läden und Restaurants. Die Bezahlung und der Schutz sind oft schlechter als bei Festangestellten; Reformen versuchen, die Unterschiede zu verkleinern.',
+    en: 'A large share of workers are part-time, on fixed terms or agency workers (hiseiki). This includes many foreign workers in shops and restaurants. Pay and protection are often worse than for regular employees; reforms try to narrow the gap.',
+    words: '非正規・待遇・アルバイト',
+  },
+  kansai: {
+    chapter: 6, title: '関西と東京', titleEn: 'Kansai and Tokyo',
+    de: 'Kansai (Osaka, Kyoto, Kobe) hat einen eigenen Dialekt, eine eigene Esskultur und ein anderes Selbstbild als Tokyo. Osaka gilt als direkter, humorvoller und preisbewusster („Mōkarimakka?“ = Läuft das Geschäft?). Solche Klischees sind nur Tendenzen; es gibt innerhalb jeder Stadt große Unterschiede.',
+    en: 'Kansai (Osaka, Kyoto, Kobe) has its own dialect, food culture and self-image compared with Tokyo. Osaka is seen as more direct, funnier and price-conscious (“Mōkarimakka?” = “Making money?”). Such stereotypes are only tendencies; every city varies a lot inside.',
+    words: '関西弁・大阪・食い倒れ',
+  },
 };
 
 export function foundNotes(s: GameState): number {

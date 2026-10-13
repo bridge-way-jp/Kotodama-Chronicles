@@ -22,6 +22,7 @@ SHEETS = {
     'portraits_mountain.webp': ['tsuru', 'hina', 'fujii', 'kuroda', 'jokan', 'traveller'],
     'portraits_harbor.webp': ['gen', 'nagisa', 'hamada', 'kaito', 'umino', 'shiraishi'],
     'portraits_kyoto.webp': ['sumie', 'matsuo', 'rin', 'ikeda', 'sakamoto', 'emma'],
+    'portraits_osaka.webp': ['tachibana', 'kenta', 'okan', 'fujita', 'minh', 'porter'],
 }
 EXPR = ['neutral', 'happy', 'surprised', 'worried']
 HEIGHT = 104
