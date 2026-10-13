@@ -152,6 +152,12 @@ export const NOTES: Record<string, JapanNote> = {
     words: '定期船・路線バス・廃止',
   },
   // --- chapter 5: Kyoto
+  otoshi: {
+    chapter: 5, title: 'お通し', titleEn: 'Otoshi (table charge)',
+    de: 'In vielen Izakaya bekommt man zu Beginn ein kleines Vorgericht (お通し), das meist etwas kostet. Es dient auch als Sitzgebühr. Trinkgeld gibt es in Japan nicht; wer es trotzdem auf den Tisch legt, bekommt es manchmal nachgereicht.',
+    en: 'In many izakaya you get a small starter (otoshi) at the beginning, usually for a small fee; it also works as a seating charge. There is no tipping in Japan; if you leave one anyway it is sometimes handed back.',
+    words: 'お通し・居酒屋・チップ',
+  },
   overtourism: {
     chapter: 5, title: 'オーバーツーリズム', titleEn: 'Overtourism',
     de: 'In beliebten Orten wie Kyoto kann es zu viele Besucher auf einmal geben: volle Busse, Gedränge in schmalen Gassen, Fotografieren vor privaten Häusern. Anwohner leiden darunter, viele Geschäfte leben aber von den Gästen. Gemeinden bitten deshalb um Rücksicht und lenken Besucherströme.',

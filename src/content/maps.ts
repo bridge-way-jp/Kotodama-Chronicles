@@ -340,7 +340,7 @@ export const MAPS: Record<string, MapDef> = {
   k_station: {
     id: 'k_station', name: 'Kyoto Station', nameJa: '京都駅前', tiles: KYOTO_GEN.bahnhof, image: 'map_bahnhof',
     objects: [
-      { id: 'k_station', sprite: 'bx_k_bahnhof_station', x: 15, y: 5, w: 12, h: 2, script: 'kyoto_station' },
+      { id: 'k_station', sprite: 'bx_k_bahnhof_station', x: 15, y: 5, w: 12, h: 2, script: 'k_station_front' },
       { id: 'k_kiosk', sprite: 'bx_k_bahnhof_kiosk', x: 4, y: 17, w: 5, h: 2, solid: false },
       { id: 'k_konbini', sprite: 'bx_k_bahnhof_konbini', x: 35, y: 12, w: 6, h: 2, solid: false },
     ],
@@ -349,7 +349,11 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'emma', x: 13, y: 9, facing: 'right', when: { not: { obj: 'mq19.emma' } } },
       { id: 'sakamoto', x: 25, y: 9, facing: 'left' },
     ],
-    warps: [19, 20, 21].map((x) => ({ x, y: 27, to: { map: 'k_nishiki', x: 20, y: 2, facing: 'down' as const } })),
+    warps: [
+      ...[19, 20, 21].map((x) => ({ x, y: 27, to: { map: 'k_nishiki', x: 20, y: 2, facing: 'down' as const } })),
+      { x: 20, y: 6, to: { map: 'bahnhofinfo', x: 6, y: 9, facing: 'up' as const } },
+      { x: 21, y: 6, to: { map: 'bahnhofinfo', x: 7, y: 9, facing: 'up' as const } },
+    ],
   },
   k_nishiki: {
     id: 'k_nishiki', name: 'Nishiki Market', nameJa: '錦市場', tiles: KYOTO_GEN.nishiki, image: 'map_nishiki',
@@ -365,6 +369,7 @@ export const MAPS: Record<string, MapDef> = {
       ...[20, 21].map((x) => ({ x, y: 0, to: { map: 'k_station', x: 20, y: 25, facing: 'up' as const } })),
       ...[11, 12, 13].map((y) => ({ x: 0, y, to: { map: 'k_kamo', x: 40, y: 14, facing: 'left' as const } })),
       ...[11, 12, 13].map((y) => ({ x: 41, y, to: { map: 'k_gion', x: 1, y: 17, facing: 'right' as const } })),
+      ...[8, 9].map((x) => ({ x, y: 9, to: { map: 'nishikiladen', x: x - 3, y: 8, facing: 'up' as const } })),
     ],
   },
   k_kamo: {
@@ -377,7 +382,10 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'k_kamo_house', sprite: 'bx_k_kamogawa_machiya2', x: 30, y: 19, w: 3, h: 3, script: 'k_izakaya' },
     ],
     npcs: [],
-    warps: [14, 15].map((y) => ({ x: 41, y, to: { map: 'k_nishiki', x: 1, y: 12, facing: 'right' as const } })),
+    warps: [
+      ...[14, 15].map((y) => ({ x: 41, y, to: { map: 'k_nishiki', x: 1, y: 12, facing: 'right' as const } })),
+      ...[6, 7].map((x) => ({ x, y: 19, to: { map: 'izakaya', x: 6, y: 8, facing: 'up' as const } })),
+    ],
   },
   k_gion: {
     id: 'k_gion', name: 'Gion', nameJa: '祇園', tiles: KYOTO_GEN.gion, image: 'map_gion', bg: 'bg_kyoto_gion.webp',
@@ -393,12 +401,16 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'k_gion_hokora', x: 20, y: 2, w: 3, h: 1, solid: false, script: 'k_gion_hokora' },
       { id: 'k_gion_lantern', x: 20, y: 9, w: 2, h: 3, solid: false, script: 'k_gion_lantern' },
     ],
-    npcs: [
-      { id: 'matsuo', x: 34, y: 12, facing: 'up' },
-      { id: 'rin', x: 4, y: 18, facing: 'right' },
-      { id: 'sumie', x: 29, y: 20, facing: 'down' },
+    npcs: [],
+    warps: [
+      ...[17, 18].map((y) => ({ x: 0, y, to: { map: 'k_nishiki', x: 40, y: 12, facing: 'left' as const } })),
+      { x: 33, y: 11, to: { map: 'machiya', x: 6, y: 9, facing: 'up' as const } },
+      { x: 34, y: 11, to: { map: 'machiya', x: 7, y: 9, facing: 'up' as const } },
+      { x: 29, y: 19, to: { map: 'teehaus', x: 5, y: 8, facing: 'up' as const } },
+      { x: 30, y: 19, to: { map: 'teehaus', x: 6, y: 8, facing: 'up' as const } },
+      { x: 7, y: 16, to: { map: 'kimono', x: 6, y: 8, facing: 'up' as const } },
+      { x: 8, y: 16, to: { map: 'kimono', x: 6, y: 8, facing: 'up' as const } },
     ],
-    warps: [17, 18].map((y) => ({ x: 0, y, to: { map: 'k_nishiki', x: 40, y: 12, facing: 'left' as const } })),
   },
   k_fushimi: {
     id: 'k_fushimi', name: 'Fushimi Inari', nameJa: '伏見稲荷', tiles: KYOTO_GEN.fushimi, image: 'map_fushimi', encounters: 'fushimi', bg: 'bg_kyoto_fushimi.webp',
@@ -536,5 +548,53 @@ export const MAPS: Record<string, MapDef> = {
     objects: ROOMS_GEN.leuchtturm.objects,
     npcs: [{ id: 'umino', x: 8, y: 5, facing: 'left' }],
     warps: [5, 6].map((x) => ({ x, y: 9, to: { map: 'harbor', x: 37, y: 4, facing: 'left' as const } })),
+  },
+  machiya: {
+    id: 'machiya', name: 'Guesthouse Matsuo', nameJa: 'ゲストハウス まつお', tiles: ROOMS_GEN.machiya.tiles, interior: true, image: ROOMS_GEN.machiya.image,
+    objects: ROOMS_GEN.machiya.objects,
+    npcs: [{ id: 'matsuo', x: 5, y: 3, facing: 'left' }],
+    warps: [
+      { x: 6, y: 10, to: { map: 'k_gion', x: 33, y: 12, facing: 'down' } },
+      { x: 7, y: 10, to: { map: 'k_gion', x: 34, y: 12, facing: 'down' } },
+    ],
+  },
+  teehaus: {
+    id: 'teehaus', name: 'Tea house', nameJa: '島の茶室', tiles: ROOMS_GEN.teehaus.tiles, interior: true, image: ROOMS_GEN.teehaus.image,
+    objects: ROOMS_GEN.teehaus.objects,
+    npcs: [{ id: 'sumie', x: 6, y: 4, facing: 'down' }],
+    warps: [
+      { x: 5, y: 9, to: { map: 'k_gion', x: 29, y: 20, facing: 'down' } },
+      { x: 6, y: 9, to: { map: 'k_gion', x: 30, y: 20, facing: 'down' } },
+    ],
+  },
+  kimono: {
+    id: 'kimono', name: 'Kimono rental', nameJa: '着物レンタル', tiles: ROOMS_GEN.kimono.tiles, interior: true, image: ROOMS_GEN.kimono.image,
+    objects: ROOMS_GEN.kimono.objects,
+    npcs: [{ id: 'rin', x: 2, y: 3, facing: 'right' }],
+    warps: [{ x: 6, y: 9, to: { map: 'k_gion', x: 7, y: 17, facing: 'down' } }],
+  },
+  izakaya: {
+    id: 'izakaya', name: 'Izakaya', nameJa: '居酒屋', tiles: ROOMS_GEN.izakaya.tiles, interior: true, image: ROOMS_GEN.izakaya.image,
+    objects: ROOMS_GEN.izakaya.objects,
+    npcs: [],
+    warps: [{ x: 6, y: 9, to: { map: 'k_kamo', x: 6, y: 18, facing: 'down' } }],
+  },
+  bahnhofinfo: {
+    id: 'bahnhofinfo', name: 'Station information', nameJa: '京都駅 案内所', tiles: ROOMS_GEN.bahnhofinfo.tiles, interior: true, image: ROOMS_GEN.bahnhofinfo.image,
+    objects: ROOMS_GEN.bahnhofinfo.objects,
+    npcs: [],
+    warps: [
+      { x: 6, y: 10, to: { map: 'k_station', x: 20, y: 7, facing: 'down' } },
+      { x: 7, y: 10, to: { map: 'k_station', x: 21, y: 7, facing: 'down' } },
+    ],
+  },
+  nishikiladen: {
+    id: 'nishikiladen', name: 'Pickle shop', nameJa: '漬物屋', tiles: ROOMS_GEN.nishikiladen.tiles, interior: true, image: ROOMS_GEN.nishikiladen.image,
+    objects: ROOMS_GEN.nishikiladen.objects,
+    npcs: [],
+    warps: [
+      { x: 5, y: 9, to: { map: 'k_nishiki', x: 8, y: 10, facing: 'down' } },
+      { x: 6, y: 9, to: { map: 'k_nishiki', x: 9, y: 10, facing: 'down' } },
+    ],
   },
 };
