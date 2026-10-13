@@ -827,3 +827,20 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
 .secret-list li.found b {
   color: #b5651d;
 }
+
+.japan-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+}
+.japan-list li {
+  padding: 6px 0;
+  border-bottom: 1px dashed rgba(120, 80, 40, 0.2);
+}
+.japan-list li p {
+  margin: 4px 0;
+  line-height: 1.5;
+}
+.japan-list li.found b {
+  color: #b5651d;
+}

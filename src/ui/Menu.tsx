@@ -19,16 +19,18 @@ import { ExportBox, ImportBox } from './Backup';
 import { CloudSettings, PackSettings } from './CloudPanel';
 import { saveNow, saveStatus } from '../core/persistence';
 import { SECRETS, foundSecrets } from '../content/secrets';
+import { NOTES, foundNotes } from '../content/society';
 import { setSfx, setMusicVolume, hasJapaneseVoice, ttsAvailable } from '../core/audio';
 import { ItemDetail, MASTERY_LABEL } from './Cards';
 import type { Settings } from '../core/types';
 
-export type MenuTab = 'status' | 'quests' | 'kotodama' | 'bag' | 'notebook' | 'jlpt' | 'map' | 'settings';
+export type MenuTab = 'status' | 'quests' | 'kotodama' | 'bag' | 'notebook' | 'japan' | 'jlpt' | 'map' | 'settings';
 
 const TABS: { id: MenuTab; ja: string; en: string; icon: string }[] = [
   { id: 'quests', ja: 'クエスト', en: 'Quests', icon: 'mi_quests' },
   { id: 'kotodama', ja: 'コトダマ', en: 'Kotodama', icon: 'mi_kotodama' },
   { id: 'notebook', ja: 'ノート', en: 'Notebook', icon: 'mi_notebook' },
+  { id: 'japan', ja: '日本ノート', en: 'Japan notes', icon: 'mi_notebook' },
   { id: 'jlpt', ja: 'JLPT N2', en: 'Readiness', icon: 'mi_jlpt' },
   { id: 'bag', ja: 'もちもの', en: 'Bag', icon: 'mi_bag' },
   { id: 'status', ja: 'ステータス', en: 'Status', icon: 'mi_status' },
@@ -65,6 +67,7 @@ export function Menu({ tab: initial, onClose, actions }: { tab?: MenuTab; onClos
           {tab === 'kotodama' && <KotodamaTab />}
           {tab === 'bag' && <BagTab />}
           {tab === 'notebook' && <NotebookTab />}
+          {tab === 'japan' && <JapanTab />}
           {tab === 'jlpt' && <JlptTab actions={actions} />}
           {tab === 'map' && <MapTab />}
           {tab === 'settings' && <SettingsTab actions={actions} />}
@@ -133,6 +136,42 @@ function StatusTab() {
           ),
         )}
       </ul>
+    </div>
+  );
+}
+
+function JapanTab() {
+  const s = store.s;
+  const chapters = [...new Set(Object.values(NOTES).map((n) => n.chapter))].sort((a, b) => a - b);
+  return (
+    <div className="tab-content">
+      <h3>
+        日本ノート Japan notes <small className="note">{foundNotes(s)} / {Object.keys(NOTES).length}</small>
+      </h3>
+      <p className="note">Alltag, Gesellschaft und Probleme in Japan. Einträge schalten sich frei, wenn du die passende Stelle im Spiel erlebst. / Everyday life and society in Japan, unlocked as you meet them.</p>
+      {chapters.map((c) => (
+        <div key={c}>
+          <h4>Kapitel {c}</h4>
+          <ul className="japan-list">
+            {Object.entries(NOTES)
+              .filter(([, n]) => n.chapter === c)
+              .map(([id, n]) =>
+                s.flags['note_' + id] ? (
+                  <li key={id} className="found">
+                    <b lang="ja">{n.title}</b> <small>{n.titleEn}</small>
+                    <p>{n.de}</p>
+                    <p className="note">{n.en}</p>
+                    {n.words && <p lang="ja" className="note">{n.words}</p>}
+                  </li>
+                ) : (
+                  <li key={id} className="hidden">
+                    ？？？ <small className="note">noch nicht entdeckt / not found yet</small>
+                  </li>
+                ),
+              )}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 }

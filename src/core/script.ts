@@ -40,6 +40,8 @@ export type Action =
   | { yearFlag: string }
   /** the player found a secret (content/secrets.ts) */
   | { secret: string }
+  /** unlock a Japan-notebook entry (content/society.ts) */
+  | { note: string }
   | { startQuest: string }
   | { objective: string }
   | { give: string; n?: number }

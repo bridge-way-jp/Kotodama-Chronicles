@@ -1,6 +1,7 @@
 import { QUESTS } from '../content/quests';
 import { ITEMS, SPECIES } from '../content/creatures';
 import { SECRETS, foundSecrets } from '../content/secrets';
+import { NOTES, foundNotes } from '../content/society';
 import { encounter, labelOfKey } from './learning';
 import { toast } from './events';
 import type { Action } from './script';
@@ -154,6 +155,12 @@ export function runAction(s: GameState, a: Action, hooks: ActionHooks = {}) {
     if (!s.flags['secret_' + a.secret]) {
       s.flags['secret_' + a.secret] = true;
       toast(`✦ ひみつ発見！ Secret found: ${SECRETS[a.secret]?.name ?? a.secret} (${foundSecrets(s)}/${Object.keys(SECRETS).length})`, 'level');
+    }
+  }
+  else if ('note' in a) {
+    if (!s.flags['note_' + a.note]) {
+      s.flags['note_' + a.note] = true;
+      toast(`📖 日本ノート Japan note: ${NOTES[a.note]?.title ?? a.note} (${foundNotes(s)}/${Object.keys(NOTES).length})`, 'level');
     }
   }
   else if ('startQuest' in a) startQuest(s, a.startQuest);
