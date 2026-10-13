@@ -90,7 +90,12 @@ KYOTO_BGS = ['bg_kyoto_gion', 'bg_kyoto_river', 'bg_kyoto_fushimi']
 KYOTO_CGS = ['cg_kyoto_arrival', 'cg_kyoto_tea', 'cg_kyoto_fushimi']
 
 
+KYOTO_ITEMS = ['i_matcha', 'i_wagashi', 'i_sensu', 'i_furoshiki', 'i_omamori_k', 'i_tsukemono',
+               'i_yatsuhashi', 'i_ic_card', 'i_goshuin', 'i_incense', 'i_ema', 'i_cranes']
+
+
 def kyoto():
+    grid_items('hm_items_kyoto.webp', KYOTO_ITEMS)
     bgs('battle_bgs_kyoto.webp', KYOTO_BGS)
     cgs(KYOTO_CGS)
 

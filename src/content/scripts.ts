@@ -2381,7 +2381,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
             { cg: 'cg_kyoto_tea', say: 'ブンブクの{湯気|ゆげ}の中から、いくつもの{声|こえ}が{聞|き}こえた。{町|まち}の人の{本音|ほんね}と{旅|たび}の人の{本音|ほんね}。どちらも、{本当|ほんとう}の声だった。', en: 'From Bunbuku’s steam many voices rose: the townspeople’s honne and the travellers’ honne. Both were true.' },
             say('sumie', '{言葉|ことば}は、{言|い}われたことだけでなく、{言|い}われなかったことも、運びます。……あなたなら、その{両方|りょうほう}を、聞けるでしょう。', 'Words carry not only what is said but also what is not. …You will be able to hear both.', 'happy'),
             say('sumie', 'あの{方|かた}に会いたいのなら、{夜明|よあ}けの{伏見|ふしみ}へ行きなさい。{千|せん}の{鳥居|とりい}の{道|みち}を、{一人|ひとり}で歩いている人がいます。', 'If you want to meet her, go to Fushimi at dawn. Someone walks the path of a thousand gates alone.'),
-            { do: [{ objective: 'mq20.master' }, { give: 'sumie_cup' }, { rel: 'sumie', points: 3, memory: 'trial_passed' }, { learn: ['g:hatomokaku', 'g:tekoso', 'g:dakenokotohaaru', 'g:narini'] }] },
+            { do: [{ objective: 'mq20.master' }, { give: 'sumie_cup' }, { give: 'ema' }, { rel: 'sumie', points: 3, memory: 'trial_passed' }, { learn: ['g:hatomokaku', 'g:tekoso', 'g:dakenokotohaaru', 'g:narini'] }] },
           ],
           lose: [say('sumie', '{焦|あせ}ると、{言葉|ことば}の{裏|うら}は見えなくなります。{落|お}ち着いて、またどうぞ。', 'When you hurry, what lies behind words becomes invisible. Calm down and come again.')],
         },
@@ -2401,7 +2401,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   k_kimono_shop: [{ steps: [n('{着物|きもの|v:ky_kimono}の{貸衣装|かしいしょう}のお店。色とりどりの着物が、{窓|まど}いっぱいにかかっている。', 'A kimono rental shop. Colourful kimono hang across the whole window.'), { do: [{ note: 'kimono_rental' }] }] }],
   k_izakaya: [{ steps: [n('{居酒屋|いざかや}の{前|まえ}だ。{夜|よる}になると、{赤|あか}い{提灯|ちょうちん}に{灯|ひ}がともる。{今|いま}は、{準備中|じゅんびちゅう}の{札|ふだ}が{下|さ}がっている。', 'In front of an izakaya. At night its red lantern lights up. For now a “preparing” sign hangs.')] }],
   k_kamo_cafe: [{ steps: [n('川を見下ろす、小さな{茶|ちゃ}カフェ。{抹茶|まっちゃ|v:ky_matcha}と{和菓子|わがし}のセットが、{人気|にんき}らしい。', 'A small tea café overlooking the river. The matcha and Japanese-sweet set seems popular.')] }],
-  k_shop_veg: [{ steps: [n('{漬物|つけもの}や{野菜|やさい}を{売|う}る{店|みせ}。{試食|ししょく}の{皿|さら}が{並|なら}んでいる。「{食|た}べ{歩|ある}きは、ご{遠慮|えんりょ}ください」の{札|ふだ}も。', 'A shop selling pickles and vegetables, with sample plates. A sign asks: “Please refrain from eating while walking.”'), { do: [{ note: 'tabearuki' }] }] }],
+  k_shop_veg: [{ steps: [n('{漬物|つけもの}や{野菜|やさい}を{売|う}る{店|みせ}。{試食|ししょく}の{皿|さら}が{並|なら}んでいる。「{食|た}べ{歩|ある}きは、ご{遠慮|えんりょ}ください」の{札|ふだ}も。', 'A shop selling pickles and vegetables, with sample plates. A sign asks: “Please refrain from eating while walking.”'), { do: [{ note: 'tabearuki' }] }, { shop: ['tsukemono', 'yatsuhashi', 'wagashi'] }] }],
   k_shop_old: [{ steps: [n('{老舗|しにせ|v:ky_shinise}の{店|みせ}。{包丁|ほうちょう}や{器|うつわ}が、{静|しず}かに{並|なら}んでいる。{店|みせ}の{人|ひと}は、{奥|おく}で{忙|いそが}しそうだ。', 'A long-established shop with knives and tableware lined up quietly. The staff look busy in the back.')] }],
   k_nishiki_sign: [
     {
@@ -2428,7 +2428,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     { steps: [n('{稲荷|いなり}{神社|じんじゃ}の{本殿|ほんでん}。{左右|さゆう}に、{赤い|あかい}前かけをした{石|いし}のきつねが{座|すわ}っている。', 'The main hall of the Inari shrine. A stone fox in a red bib sits on each side.'), n('お{賽銭|さいせん}を{入|い}れて、{手|て}を{合|あ}わせた。{朝|あさ}の{空気|くうき}が、すっと{静|しず}まる。', 'You drop in a coin and press your hands together. The morning air quietens.'), { do: [{ note: 'inari_torii' }] }] },
   ],
   k_shrine_office: [{ steps: [n('{社務所|しゃむしょ}だ。お{守|まも}りや{絵馬|えま}が{並|なら}んでいる。{絵馬|えま}には、{小|ちい}さなきつねの{絵|え}がかいてある。', 'The shrine office. Charms and ema plaques are lined up. The ema have a little fox drawn on them.')] }],
-  k_souvenir: [{ steps: [n('{土産物|みやげもの}の{店|みせ}。きつねの{形|かたち}の{お菓子|おかし}や、{小|ちい}さな{鳥居|とりい}が{並|なら}んでいる。', 'A souvenir stand with fox-shaped sweets and little torii on display.')] }],
+  k_souvenir: [{ steps: [n('{土産物|みやげもの}の{店|みせ}。きつねの{形|かたち}の{お菓子|おかし}や、{小|ちい}さな{鳥居|とりい}が{並|なら}んでいる。', 'A souvenir stand with fox-shaped sweets and little torii on display.'), { shop: ['yatsuhashi', 'wagashi', 'matcha'] }] }],
   k_fushimi_summit: [
     {
       when: { all: [{ questActive: 'mq21' }, { obj: 'mq21.fushimi' }, { notObj: 'mq21.summit' }] },
