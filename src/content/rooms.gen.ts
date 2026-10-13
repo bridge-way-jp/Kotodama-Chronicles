@@ -1117,5 +1117,1776 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
       }
     ],
     "image": "room2_station"
+  },
+  "ryokan": {
+    "tiles": [
+      "WWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWW",
+      "WcccccfffffWWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWWWWWffWWWWWW",
+      "WWWWWWDDWWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "ryokan_table",
+        "sprite": "fu_ryokan_table",
+        "x": 6,
+        "y": 7,
+        "w": 2,
+        "h": 1,
+        "script": "ryokan_table"
+      },
+      {
+        "id": "ryokan_cushion1",
+        "sprite": "fu_ryokan_cushion1",
+        "x": 5,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "ryokan_cushion2",
+        "sprite": "fu_ryokan_cushion2",
+        "x": 8,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "ryokan_cushion3",
+        "sprite": "fu_ryokan_cushion3",
+        "x": 6,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "ryokan_screen",
+        "sprite": "fu_ryokan_screen",
+        "x": 10,
+        "y": 4,
+        "w": 2,
+        "h": 1,
+        "script": "ryokan_screen"
+      },
+      {
+        "id": "ryokan_hibachi",
+        "sprite": "fu_ryokan_hibachi",
+        "x": 2,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "ryokan_hibachi"
+      },
+      {
+        "id": "ryokan_yukata",
+        "sprite": "fu_ryokan_yukata",
+        "x": 11,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "script": "ryokan_yukata"
+      },
+      {
+        "id": "ryokan_pine",
+        "sprite": "fu_ryokan_pine",
+        "x": 2,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "ryokan_pine"
+      },
+      {
+        "id": "ryokan_counter",
+        "x": 1,
+        "y": 3,
+        "w": 5,
+        "h": 1,
+        "script": "ryokan_counter"
+      },
+      {
+        "id": "ryokan_scroll",
+        "x": 3,
+        "y": 1,
+        "w": 1,
+        "h": 2,
+        "script": "ryokan_scroll"
+      },
+      {
+        "id": "ryokan_shoes",
+        "x": 1,
+        "y": 4,
+        "w": 1,
+        "h": 3,
+        "script": "ryokan_shoes"
+      },
+      {
+        "id": "ryokan_umbrellas",
+        "x": 1,
+        "y": 7,
+        "w": 1,
+        "h": 2,
+        "script": "ryokan_umbrellas"
+      },
+      {
+        "id": "ryokan_yu",
+        "x": 9,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "ryokan_yu"
+      },
+      {
+        "id": "ryokan_cabinet",
+        "x": 11,
+        "y": 2,
+        "w": 2,
+        "h": 2,
+        "script": "ryokan_cabinet"
+      },
+      {
+        "id": "ryokan_window",
+        "x": 12,
+        "y": 4,
+        "w": 1,
+        "h": 4,
+        "script": "ryokan_window"
+      },
+      {
+        "id": "ryokan_plant",
+        "x": 12,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "plant"
+      }
+    ],
+    "image": "room2_ryokan"
+  },
+  "werkstatt": {
+    "tiles": [
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWffWWWWfWWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWWWWffWWWWW",
+      "WWWWWDDWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "werkstatt_desk",
+        "sprite": "fu_werkstatt_desk",
+        "x": 5,
+        "y": 5,
+        "w": 2,
+        "h": 1,
+        "script": "werk_desk"
+      },
+      {
+        "id": "werkstatt_seat1",
+        "sprite": "fu_werkstatt_seat1",
+        "x": 5,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "werkstatt_seat2",
+        "sprite": "fu_werkstatt_seat2",
+        "x": 5,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "werkstatt_lamp",
+        "sprite": "fu_werkstatt_lamp",
+        "x": 3,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "werk_lamp"
+      },
+      {
+        "id": "werkstatt_washi",
+        "sprite": "fu_werkstatt_washi",
+        "x": 8,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "script": "werk_washi"
+      },
+      {
+        "id": "werkstatt_brush",
+        "sprite": "fu_werkstatt_brush",
+        "x": 8,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "werk_brush"
+      },
+      {
+        "id": "werkstatt_scrolls1",
+        "x": 1,
+        "y": 1,
+        "w": 4,
+        "h": 2,
+        "script": "werk_scrolls"
+      },
+      {
+        "id": "werkstatt_window",
+        "x": 5,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "werk_window"
+      },
+      {
+        "id": "werkstatt_scrolls2",
+        "x": 7,
+        "y": 1,
+        "w": 3,
+        "h": 2,
+        "script": "werk_scrolls"
+      },
+      {
+        "id": "werkstatt_bench",
+        "x": 4,
+        "y": 3,
+        "w": 4,
+        "h": 1,
+        "script": "werk_bench"
+      },
+      {
+        "id": "werkstatt_chest",
+        "x": 9,
+        "y": 3,
+        "w": 2,
+        "h": 1,
+        "script": "werk_chest"
+      },
+      {
+        "id": "werkstatt_cabinet",
+        "x": 1,
+        "y": 3,
+        "w": 1,
+        "h": 5,
+        "script": "werk_cabinet"
+      },
+      {
+        "id": "werkstatt_works",
+        "x": 10,
+        "y": 4,
+        "w": 2,
+        "h": 4,
+        "script": "werk_works"
+      }
+    ],
+    "image": "room2_werkstatt"
+  },
+  "tsuru": {
+    "tiles": [
+      "WWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWW",
+      "WWfffffffffffW",
+      "WWfffffffffffW",
+      "WWfffffffffffW",
+      "WWfffffffffffW",
+      "WWfffffffffffW",
+      "WWWWWWffWWWWWW",
+      "WWWWWWDDWWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "tsuru_irori",
+        "sprite": "fu_tsuru_irori",
+        "x": 6,
+        "y": 5,
+        "w": 2,
+        "h": 2,
+        "script": "tsuru_irori"
+      },
+      {
+        "id": "tsuru_cushion1",
+        "sprite": "fu_tsuru_cushion1",
+        "x": 5,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "tsuru_cushion2",
+        "sprite": "fu_tsuru_cushion2",
+        "x": 8,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "tsuru_cushion3",
+        "sprite": "fu_tsuru_cushion3",
+        "x": 6,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "tsuru_cushion4",
+        "sprite": "fu_tsuru_cushion4",
+        "x": 7,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "tsuru_tray",
+        "sprite": "fu_tsuru_tray",
+        "x": 10,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "tsuru_tray"
+      },
+      {
+        "id": "tsuru_wood",
+        "sprite": "fu_tsuru_wood",
+        "x": 4,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "tsuru_wood"
+      },
+      {
+        "id": "tsuru_futon",
+        "sprite": "fu_tsuru_futon",
+        "x": 11,
+        "y": 5,
+        "w": 1,
+        "h": 2,
+        "script": "tsuru_futon"
+      },
+      {
+        "id": "tsuru_kamado",
+        "x": 2,
+        "y": 2,
+        "w": 2,
+        "h": 2,
+        "script": "tsuru_kamado"
+      },
+      {
+        "id": "tsuru_jars",
+        "x": 4,
+        "y": 2,
+        "w": 1,
+        "h": 2,
+        "script": "tsuru_jars"
+      },
+      {
+        "id": "tsuru_shelf",
+        "x": 5,
+        "y": 2,
+        "w": 3,
+        "h": 2,
+        "script": "tsuru_shelf"
+      },
+      {
+        "id": "tsuru_window",
+        "x": 6,
+        "y": 1,
+        "w": 2,
+        "h": 1,
+        "script": "tsuru_window"
+      },
+      {
+        "id": "tsuru_kamidana",
+        "x": 8,
+        "y": 1,
+        "w": 2,
+        "h": 3,
+        "script": "tsuru_kamidana"
+      },
+      {
+        "id": "tsuru_persimmons",
+        "x": 11,
+        "y": 1,
+        "w": 2,
+        "h": 3,
+        "script": "tsuru_persimmons"
+      },
+      {
+        "id": "tsuru_cupboard",
+        "x": 1,
+        "y": 4,
+        "w": 1,
+        "h": 5,
+        "script": "tsuru_cupboard"
+      },
+      {
+        "id": "tsuru_coats",
+        "x": 13,
+        "y": 5,
+        "w": 1,
+        "h": 2,
+        "script": "tsuru_coats"
+      },
+      {
+        "id": "tsuru_boots",
+        "x": 13,
+        "y": 7,
+        "w": 1,
+        "h": 2,
+        "script": "tsuru_boots"
+      }
+    ],
+    "image": "room2_tsuru"
+  },
+  "klinik": {
+    "tiles": [
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWWffcccWWWW",
+      "WWWfffffffWW",
+      "WWWfffffffWW",
+      "WWWfffffffWW",
+      "WWffffffffWW",
+      "WWWWWffWWWWW",
+      "WWWWWDDWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "klinik_desk",
+        "sprite": "fu_klinik_desk",
+        "x": 6,
+        "y": 5,
+        "w": 2,
+        "h": 1,
+        "script": "klinik_desk"
+      },
+      {
+        "id": "klinik_stool1",
+        "sprite": "fu_klinik_stool1",
+        "x": 5,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "klinik_stool2",
+        "sprite": "fu_klinik_stool2",
+        "x": 8,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "klinik_chairs",
+        "sprite": "fu_klinik_chairs",
+        "x": 7,
+        "y": 7,
+        "w": 2,
+        "h": 1,
+        "script": "klinik_chairs"
+      },
+      {
+        "id": "klinik_stove",
+        "sprite": "fu_klinik_stove",
+        "x": 3,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "klinik_stove"
+      },
+      {
+        "id": "klinik_plant2",
+        "sprite": "fu_klinik_plant2",
+        "x": 9,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "plant"
+      },
+      {
+        "id": "klinik_bed",
+        "x": 1,
+        "y": 3,
+        "w": 2,
+        "h": 4,
+        "script": "klinik_bed"
+      },
+      {
+        "id": "klinik_stool",
+        "x": 1,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "klinik_bedstool"
+      },
+      {
+        "id": "klinik_shelf",
+        "x": 3,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "klinik_shelf"
+      },
+      {
+        "id": "klinik_counter",
+        "x": 5,
+        "y": 3,
+        "w": 3,
+        "h": 1,
+        "script": "klinik_counter"
+      },
+      {
+        "id": "klinik_calendar",
+        "x": 8,
+        "y": 1,
+        "w": 1,
+        "h": 2,
+        "script": "klinik_calendar"
+      },
+      {
+        "id": "klinik_chart",
+        "x": 9,
+        "y": 1,
+        "w": 1,
+        "h": 2,
+        "script": "klinik_chart"
+      },
+      {
+        "id": "klinik_drawers",
+        "x": 8,
+        "y": 3,
+        "w": 3,
+        "h": 1,
+        "script": "klinik_shelf"
+      },
+      {
+        "id": "klinik_redcross",
+        "x": 10,
+        "y": 4,
+        "w": 2,
+        "h": 2,
+        "script": "klinik_cabinet"
+      },
+      {
+        "id": "klinik_coat",
+        "x": 10,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "script": "klinik_coat"
+      },
+      {
+        "id": "klinik_plant",
+        "x": 10,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "plant"
+      }
+    ],
+    "image": "room2_klinik"
+  },
+  "kneipe": {
+    "tiles": [
+      "WWWWWWWWWWWWW",
+      "WWWWWWWWWWWWW",
+      "WWWWWWWWWWWWW",
+      "WWfffffffWWWW",
+      "WccccccccfffW",
+      "WWffffffffffW",
+      "WWffffffffffW",
+      "WWffffffffffW",
+      "WWWWWWfWWWWWW",
+      "WWWWWWDWWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "kneipe_cstool1",
+        "sprite": "fu_kneipe_cstool1",
+        "x": 2,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "kneipe_stool"
+      },
+      {
+        "id": "kneipe_cstool2",
+        "sprite": "fu_kneipe_cstool2",
+        "x": 4,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "kneipe_stool"
+      },
+      {
+        "id": "kneipe_cstool3",
+        "sprite": "fu_kneipe_cstool3",
+        "x": 6,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "kneipe_stool"
+      },
+      {
+        "id": "kneipe_cstool4",
+        "sprite": "fu_kneipe_cstool4",
+        "x": 8,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "kneipe_stool"
+      },
+      {
+        "id": "kneipe_table",
+        "sprite": "fu_kneipe_table",
+        "x": 9,
+        "y": 6,
+        "w": 2,
+        "h": 1,
+        "script": "kneipe_table"
+      },
+      {
+        "id": "kneipe_stool1",
+        "sprite": "fu_kneipe_stool1",
+        "x": 8,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "kneipe_stool2",
+        "sprite": "fu_kneipe_stool2",
+        "x": 11,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "kneipe_stool3",
+        "sprite": "fu_kneipe_stool3",
+        "x": 10,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "kneipe_lemons",
+        "sprite": "fu_kneipe_lemons",
+        "x": 11,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "kneipe_lemons"
+      },
+      {
+        "id": "kneipe_cart",
+        "sprite": "fu_kneipe_cart",
+        "x": 2,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "kneipe_cart"
+      },
+      {
+        "id": "kneipe_shelf1",
+        "x": 1,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "kneipe_shelf"
+      },
+      {
+        "id": "kneipe_menu",
+        "x": 3,
+        "y": 1,
+        "w": 3,
+        "h": 1,
+        "script": "kneipe_menu"
+      },
+      {
+        "id": "kneipe_fish",
+        "x": 5,
+        "y": 1,
+        "w": 1,
+        "h": 1,
+        "script": "kneipe_sign"
+      },
+      {
+        "id": "kneipe_grill",
+        "x": 3,
+        "y": 2,
+        "w": 3,
+        "h": 1,
+        "script": "kneipe_grill"
+      },
+      {
+        "id": "kneipe_noren",
+        "x": 7,
+        "y": 1,
+        "w": 1,
+        "h": 2,
+        "script": "kneipe_noren"
+      },
+      {
+        "id": "kneipe_counter",
+        "x": 1,
+        "y": 4,
+        "w": 8,
+        "h": 1,
+        "script": "kneipe_counter"
+      },
+      {
+        "id": "kneipe_shelf2",
+        "x": 9,
+        "y": 2,
+        "w": 1,
+        "h": 2,
+        "script": "kneipe_shelf"
+      },
+      {
+        "id": "kneipe_tv",
+        "x": 10,
+        "y": 2,
+        "w": 2,
+        "h": 2,
+        "script": "kneipe_tv"
+      },
+      {
+        "id": "kneipe_float",
+        "x": 11,
+        "y": 1,
+        "w": 2,
+        "h": 1,
+        "script": "kneipe_float"
+      },
+      {
+        "id": "kneipe_tank",
+        "x": 1,
+        "y": 5,
+        "w": 1,
+        "h": 3,
+        "script": "kneipe_tank"
+      },
+      {
+        "id": "kneipe_window",
+        "x": 12,
+        "y": 4,
+        "w": 1,
+        "h": 4,
+        "script": "kneipe_window"
+      }
+    ],
+    "image": "room2_kneipe"
+  },
+  "leuchtturm": {
+    "tiles": [
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWWWWffWWWWW",
+      "WWWWWDDWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "leuchtturm_desk",
+        "sprite": "fu_leuchtturm_desk",
+        "x": 5,
+        "y": 5,
+        "w": 2,
+        "h": 1,
+        "script": "turm_desk"
+      },
+      {
+        "id": "leuchtturm_chair1",
+        "sprite": "fu_leuchtturm_chair1",
+        "x": 5,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "leuchtturm_chair2",
+        "sprite": "fu_leuchtturm_chair2",
+        "x": 5,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "leuchtturm_globe",
+        "sprite": "fu_leuchtturm_globe",
+        "x": 3,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "turm_globe"
+      },
+      {
+        "id": "leuchtturm_telescope",
+        "sprite": "fu_leuchtturm_telescope",
+        "x": 8,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "turm_telescope"
+      },
+      {
+        "id": "leuchtturm_schooldesk",
+        "sprite": "fu_leuchtturm_schooldesk",
+        "x": 3,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "script": "turm_schooldesk"
+      },
+      {
+        "id": "leuchtturm_photo",
+        "x": 2,
+        "y": 1,
+        "w": 1,
+        "h": 2,
+        "script": "turm_photo"
+      },
+      {
+        "id": "leuchtturm_clock",
+        "x": 3,
+        "y": 1,
+        "w": 1,
+        "h": 2,
+        "script": "turm_clock"
+      },
+      {
+        "id": "leuchtturm_window",
+        "x": 4,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "turm_window"
+      },
+      {
+        "id": "leuchtturm_books1",
+        "x": 2,
+        "y": 3,
+        "w": 3,
+        "h": 1,
+        "script": "turm_books"
+      },
+      {
+        "id": "leuchtturm_books2",
+        "x": 5,
+        "y": 2,
+        "w": 3,
+        "h": 2,
+        "script": "turm_books"
+      },
+      {
+        "id": "leuchtturm_barometer",
+        "x": 8,
+        "y": 1,
+        "w": 1,
+        "h": 2,
+        "script": "turm_barometer"
+      },
+      {
+        "id": "leuchtturm_stairs",
+        "x": 9,
+        "y": 1,
+        "w": 2,
+        "h": 3,
+        "script": "turm_stairs"
+      },
+      {
+        "id": "leuchtturm_blackboard",
+        "x": 1,
+        "y": 3,
+        "w": 1,
+        "h": 3,
+        "script": "turm_blackboard"
+      },
+      {
+        "id": "leuchtturm_classphoto",
+        "x": 1,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "script": "turm_classphoto"
+      },
+      {
+        "id": "leuchtturm_coats",
+        "x": 10,
+        "y": 4,
+        "w": 1,
+        "h": 2,
+        "script": "turm_coats"
+      },
+      {
+        "id": "leuchtturm_charts",
+        "x": 10,
+        "y": 6,
+        "w": 1,
+        "h": 2,
+        "script": "turm_charts"
+      }
+    ],
+    "image": "room2_leuchtturm"
+  },
+  "machiya": {
+    "tiles": [
+      "WWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWW",
+      "WccccffffWWWWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWWWWWffWWWWWW",
+      "WWWWWWDDWWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "machiya_table",
+        "sprite": "fu_machiya_table",
+        "x": 6,
+        "y": 6,
+        "w": 2,
+        "h": 1,
+        "script": "machiya_table"
+      },
+      {
+        "id": "machiya_cushion1",
+        "sprite": "fu_machiya_cushion1",
+        "x": 5,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "machiya_cushion2",
+        "sprite": "fu_machiya_cushion2",
+        "x": 8,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "machiya_cushion3",
+        "sprite": "fu_machiya_cushion3",
+        "x": 6,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "machiya_lantern",
+        "sprite": "fu_machiya_lantern",
+        "x": 3,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "machiya_lantern"
+      },
+      {
+        "id": "machiya_bonsai",
+        "sprite": "fu_machiya_bonsai",
+        "x": 10,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "machiya_bonsai"
+      },
+      {
+        "id": "machiya_screen",
+        "sprite": "fu_machiya_screen",
+        "x": 10,
+        "y": 7,
+        "w": 2,
+        "h": 1,
+        "script": "machiya_screen"
+      },
+      {
+        "id": "machiya_suitcase",
+        "sprite": "fu_machiya_suitcase",
+        "x": 3,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "machiya_suitcase"
+      },
+      {
+        "id": "machiya_counter",
+        "x": 1,
+        "y": 3,
+        "w": 4,
+        "h": 1,
+        "script": "machiya_counter"
+      },
+      {
+        "id": "machiya_keys",
+        "x": 2,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "machiya_keys"
+      },
+      {
+        "id": "machiya_scroll",
+        "x": 6,
+        "y": 1,
+        "w": 1,
+        "h": 2,
+        "script": "machiya_scroll"
+      },
+      {
+        "id": "machiya_garden",
+        "x": 9,
+        "y": 1,
+        "w": 3,
+        "h": 2,
+        "script": "machiya_garden"
+      },
+      {
+        "id": "machiya_shoes",
+        "x": 1,
+        "y": 4,
+        "w": 1,
+        "h": 3,
+        "script": "machiya_shoes"
+      },
+      {
+        "id": "machiya_luggage",
+        "x": 1,
+        "y": 7,
+        "w": 1,
+        "h": 2,
+        "script": "machiya_luggage"
+      },
+      {
+        "id": "machiya_books",
+        "x": 12,
+        "y": 4,
+        "w": 1,
+        "h": 4,
+        "script": "machiya_books"
+      },
+      {
+        "id": "machiya_plant",
+        "x": 12,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "plant"
+      }
+    ],
+    "image": "room2_machiya"
+  },
+  "teehaus": {
+    "tiles": [
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWWfffffffWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWWWWffWWWWW",
+      "WWWWWDDWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "teehaus_table",
+        "sprite": "fu_teehaus_table",
+        "x": 5,
+        "y": 5,
+        "w": 2,
+        "h": 1,
+        "script": "teahouse_table"
+      },
+      {
+        "id": "teehaus_cushion1",
+        "sprite": "fu_teehaus_cushion1",
+        "x": 4,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "teehaus_cushion2",
+        "sprite": "fu_teehaus_cushion2",
+        "x": 7,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "teehaus_cushion3",
+        "sprite": "fu_teehaus_cushion3",
+        "x": 5,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
+        "id": "teehaus_waterjar",
+        "sprite": "fu_teehaus_waterjar",
+        "x": 8,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "teahouse_waterjar"
+      },
+      {
+        "id": "teehaus_vase",
+        "sprite": "fu_teehaus_vase",
+        "x": 3,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "script": "teahouse_vase"
+      },
+      {
+        "id": "teehaus_lamp",
+        "sprite": "fu_teehaus_lamp",
+        "x": 3,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "teahouse_lamp"
+      },
+      {
+        "id": "teehaus_shelf",
+        "x": 1,
+        "y": 1,
+        "w": 3,
+        "h": 2,
+        "script": "teahouse_shelf"
+      },
+      {
+        "id": "teehaus_hearth",
+        "x": 2,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "teahouse_hearth"
+      },
+      {
+        "id": "teehaus_scroll",
+        "x": 5,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "teahouse_scroll"
+      },
+      {
+        "id": "teehaus_flowers",
+        "x": 6,
+        "y": 2,
+        "w": 1,
+        "h": 1,
+        "script": "teahouse_flowers"
+      },
+      {
+        "id": "teehaus_shoji",
+        "x": 8,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "teahouse_garden"
+      },
+      {
+        "id": "teehaus_maple",
+        "x": 10,
+        "y": 1,
+        "w": 1,
+        "h": 2,
+        "script": "teahouse_garden"
+      },
+      {
+        "id": "teehaus_jar",
+        "x": 1,
+        "y": 5,
+        "w": 1,
+        "h": 2,
+        "script": "teahouse_jar"
+      },
+      {
+        "id": "teehaus_plant",
+        "x": 10,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "script": "plant"
+      }
+    ],
+    "image": "room2_teehaus"
+  },
+  "kimono": {
+    "tiles": [
+      "WWWWWWWWWWWWW",
+      "WWWWWWWWWWWWW",
+      "WWWWWWWWWWWWW",
+      "WWfcccccWWWWW",
+      "WWffffffffWWW",
+      "WWfffffffffWW",
+      "WWfffffffffWW",
+      "WWfffffffffWW",
+      "WWWWWWfWWWWWW",
+      "WWWWWWDWWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "kimono_mirror",
+        "sprite": "fu_kimono_mirror",
+        "x": 9,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "kimono_mirror"
+      },
+      {
+        "id": "kimono_bench",
+        "sprite": "fu_kimono_bench",
+        "x": 5,
+        "y": 6,
+        "w": 2,
+        "h": 1,
+        "script": "kimono_bench"
+      },
+      {
+        "id": "kimono_rack",
+        "sprite": "fu_kimono_rack",
+        "x": 3,
+        "y": 5,
+        "w": 2,
+        "h": 1,
+        "script": "kimono_rack"
+      },
+      {
+        "id": "kimono_basket",
+        "sprite": "fu_kimono_basket",
+        "x": 8,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "kimono_basket"
+      },
+      {
+        "id": "kimono_plant2",
+        "sprite": "fu_kimono_plant2",
+        "x": 3,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "plant"
+      },
+      {
+        "id": "kimono_geta",
+        "x": 1,
+        "y": 2,
+        "w": 1,
+        "h": 6,
+        "script": "kimono_geta"
+      },
+      {
+        "id": "kimono_boxes",
+        "x": 3,
+        "y": 1,
+        "w": 5,
+        "h": 2,
+        "script": "kimono_boxes"
+      },
+      {
+        "id": "kimono_counter",
+        "x": 3,
+        "y": 3,
+        "w": 5,
+        "h": 1,
+        "script": "kimono_counter"
+      },
+      {
+        "id": "kimono_noren",
+        "x": 8,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "kimono_noren"
+      },
+      {
+        "id": "kimono_rack1",
+        "x": 10,
+        "y": 1,
+        "w": 2,
+        "h": 3,
+        "script": "kimono_hanging"
+      },
+      {
+        "id": "kimono_platform",
+        "x": 10,
+        "y": 3,
+        "w": 2,
+        "h": 2,
+        "script": "kimono_platform"
+      },
+      {
+        "id": "kimono_rack2",
+        "x": 11,
+        "y": 5,
+        "w": 2,
+        "h": 3,
+        "script": "kimono_hanging"
+      },
+      {
+        "id": "kimono_plant",
+        "x": 1,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "plant"
+      }
+    ],
+    "image": "room2_kimono"
+  },
+  "izakaya": {
+    "tiles": [
+      "WWWWWWWWWWWWW",
+      "WWWWWWWWWWWWW",
+      "WWWWWWWWWWWWW",
+      "WWccccccccWWW",
+      "WWfffffffffWW",
+      "WWffffffffffW",
+      "WWffffffffffW",
+      "WWffffffffffW",
+      "WWWWWWfWWWWWW",
+      "WWWWWWDWWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "izakaya_stool1",
+        "sprite": "fu_izakaya_stool1",
+        "x": 3,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "izakaya_stool"
+      },
+      {
+        "id": "izakaya_stool2",
+        "sprite": "fu_izakaya_stool2",
+        "x": 5,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "izakaya_stool"
+      },
+      {
+        "id": "izakaya_stool3",
+        "sprite": "fu_izakaya_stool3",
+        "x": 7,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "izakaya_stool"
+      },
+      {
+        "id": "izakaya_table",
+        "sprite": "fu_izakaya_table",
+        "x": 4,
+        "y": 6,
+        "w": 2,
+        "h": 1,
+        "script": "izakaya_table"
+      },
+      {
+        "id": "izakaya_barrel",
+        "sprite": "fu_izakaya_barrel",
+        "x": 9,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "script": "izakaya_barrel"
+      },
+      {
+        "id": "izakaya_lantern",
+        "sprite": "fu_izakaya_lantern",
+        "x": 10,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "izakaya_lantern"
+      },
+      {
+        "id": "izakaya_beer",
+        "sprite": "fu_izakaya_beer",
+        "x": 2,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "izakaya_beer"
+      },
+      {
+        "id": "izakaya_bottles",
+        "x": 2,
+        "y": 1,
+        "w": 3,
+        "h": 2,
+        "script": "izakaya_bottles"
+      },
+      {
+        "id": "izakaya_noren",
+        "x": 5,
+        "y": 1,
+        "w": 3,
+        "h": 2,
+        "script": "izakaya_noren"
+      },
+      {
+        "id": "izakaya_grill",
+        "x": 5,
+        "y": 2,
+        "w": 3,
+        "h": 1,
+        "script": "izakaya_grill"
+      },
+      {
+        "id": "izakaya_counter",
+        "x": 2,
+        "y": 3,
+        "w": 8,
+        "h": 1,
+        "script": "izakaya_counter"
+      },
+      {
+        "id": "izakaya_shelf",
+        "x": 8,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "izakaya_shelf"
+      },
+      {
+        "id": "izakaya_tv",
+        "x": 10,
+        "y": 2,
+        "w": 3,
+        "h": 2,
+        "script": "izakaya_tv"
+      },
+      {
+        "id": "izakaya_window",
+        "x": 1,
+        "y": 3,
+        "w": 1,
+        "h": 3,
+        "script": "izakaya_window"
+      },
+      {
+        "id": "izakaya_crates",
+        "x": 1,
+        "y": 6,
+        "w": 1,
+        "h": 2,
+        "script": "izakaya_crates"
+      }
+    ],
+    "image": "room2_izakaya"
+  },
+  "bahnhofinfo": {
+    "tiles": [
+      "WWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWW",
+      "WWffccccccWWWW",
+      "WWffffffffWWWW",
+      "WWfffffffffffW",
+      "WWfffffffffffW",
+      "WWfffffffffffW",
+      "WWffffffffffWW",
+      "WWWWWWffWWWWWW",
+      "WWWWWWDDWWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "bahnhofinfo_bench1",
+        "sprite": "fu_bahnhofinfo_bench1",
+        "x": 4,
+        "y": 6,
+        "w": 2,
+        "h": 1,
+        "script": "info_bench"
+      },
+      {
+        "id": "bahnhofinfo_bench2",
+        "sprite": "fu_bahnhofinfo_bench2",
+        "x": 9,
+        "y": 6,
+        "w": 2,
+        "h": 1,
+        "script": "info_bench"
+      },
+      {
+        "id": "bahnhofinfo_trolley",
+        "sprite": "fu_bahnhofinfo_trolley",
+        "x": 11,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "info_trolley"
+      },
+      {
+        "id": "bahnhofinfo_bins",
+        "sprite": "fu_bahnhofinfo_bins",
+        "x": 3,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "info_bins"
+      },
+      {
+        "id": "bahnhofinfo_sign",
+        "sprite": "fu_bahnhofinfo_sign",
+        "x": 7,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "info_sign"
+      },
+      {
+        "id": "bahnhofinfo_suitcase",
+        "sprite": "fu_bahnhofinfo_suitcase",
+        "x": 8,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "info_suitcase"
+      },
+      {
+        "id": "bahnhofinfo_plant3",
+        "sprite": "fu_bahnhofinfo_plant3",
+        "x": 11,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "plant"
+      },
+      {
+        "id": "bahnhofinfo_lockers",
+        "x": 1,
+        "y": 3,
+        "w": 1,
+        "h": 5,
+        "script": "info_lockers"
+      },
+      {
+        "id": "bahnhofinfo_map",
+        "x": 4,
+        "y": 1,
+        "w": 4,
+        "h": 2,
+        "script": "kyoto_station"
+      },
+      {
+        "id": "bahnhofinfo_board",
+        "x": 7,
+        "y": 1,
+        "w": 3,
+        "h": 2,
+        "script": "info_board"
+      },
+      {
+        "id": "bahnhofinfo_counter",
+        "x": 4,
+        "y": 3,
+        "w": 6,
+        "h": 1,
+        "script": "info_counter"
+      },
+      {
+        "id": "bahnhofinfo_vending",
+        "x": 10,
+        "y": 3,
+        "w": 2,
+        "h": 2,
+        "script": "info_vending"
+      },
+      {
+        "id": "bahnhofinfo_atm",
+        "x": 12,
+        "y": 3,
+        "w": 1,
+        "h": 2,
+        "script": "info_atm"
+      },
+      {
+        "id": "bahnhofinfo_plant1",
+        "x": 1,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "plant"
+      },
+      {
+        "id": "bahnhofinfo_plant2",
+        "x": 12,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "plant"
+      }
+    ],
+    "image": "room2_bahnhofinfo"
+  },
+  "nishikiladen": {
+    "tiles": [
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWccccccccWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWfffffffffW",
+      "WWfffffffffW",
+      "WWWWWffWWWWW",
+      "WWWWWDDWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "nishikiladen_table",
+        "sprite": "fu_nishikiladen_table",
+        "x": 5,
+        "y": 5,
+        "w": 2,
+        "h": 1,
+        "script": "pickle_table"
+      },
+      {
+        "id": "nishikiladen_barrel",
+        "sprite": "fu_nishikiladen_barrel",
+        "x": 3,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "script": "pickle_barrel"
+      },
+      {
+        "id": "nishikiladen_crates2",
+        "sprite": "fu_nishikiladen_crates2",
+        "x": 8,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "script": "pickle_crates"
+      },
+      {
+        "id": "nishikiladen_basket",
+        "sprite": "fu_nishikiladen_basket",
+        "x": 4,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "pickle_basket"
+      },
+      {
+        "id": "nishikiladen_plant2",
+        "sprite": "fu_nishikiladen_plant2",
+        "x": 9,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "plant"
+      },
+      {
+        "id": "nishikiladen_jars",
+        "x": 3,
+        "y": 1,
+        "w": 6,
+        "h": 2,
+        "script": "pickle_jars"
+      },
+      {
+        "id": "nishikiladen_sign",
+        "x": 5,
+        "y": 1,
+        "w": 2,
+        "h": 1,
+        "script": "pickle_sign"
+      },
+      {
+        "id": "nishikiladen_window",
+        "x": 8,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "pickle_window"
+      },
+      {
+        "id": "nishikiladen_counter",
+        "x": 2,
+        "y": 3,
+        "w": 8,
+        "h": 1,
+        "script": "pickle_counter"
+      },
+      {
+        "id": "nishikiladen_crates",
+        "x": 1,
+        "y": 4,
+        "w": 1,
+        "h": 4,
+        "script": "pickle_veg"
+      },
+      {
+        "id": "nishikiladen_scale",
+        "x": 10,
+        "y": 3,
+        "w": 2,
+        "h": 3,
+        "script": "pickle_scale"
+      }
+    ],
+    "image": "room2_nishikiladen"
   }
 };

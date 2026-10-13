@@ -1,4 +1,4 @@
-import { VOCAB, VOCAB_BY_ID } from '../content/vocab';
+import { VOCAB, VOCAB_BY_ID, wordForm } from '../content/vocab';
 import { KANJI, KANJI_BY_ID } from '../content/kanji';
 import type { KanjiEntry, VocabEntry } from './types';
 
@@ -14,7 +14,7 @@ export const CURRICULUM_SOURCE = 'jlpt';
 
 export interface CurriculumData {
   version: number;
-  vocab: { id: string; word: string; reading: string; en: string; pos: VocabEntry['pos']; level: 'N2' | 'N3'; chapter: number; topic?: string; example?: string; exampleEn?: string }[];
+  vocab: { id: string; word: string; reading: string; en: string; pos: VocabEntry['pos']; level: 'N2' | 'N3'; chapter: number; topic?: string; affix?: VocabEntry['affix']; example?: string; exampleEn?: string }[];
   kanji: { id: string; char: string; on: string[]; kun: string[]; meaning: string; words: string[]; strokes: number; chapter: number }[];
 }
 
@@ -23,17 +23,18 @@ export const curriculumInfo = { loaded: false, n2Words: 0, n3Words: 0, kanji: 0 
 /** Adds the curriculum to the game content (idempotent). Words the game already has are skipped. */
 export function registerCurriculum(d: CurriculumData) {
   if (curriculumInfo.loaded) return;
-  const have = new Set(VOCAB.map((v) => v.word));
+  const have = new Set(VOCAB.map(wordForm));
   for (const w of d.vocab) {
-    if (VOCAB_BY_ID[w.id] || have.has(w.word)) continue;
+    if (VOCAB_BY_ID[w.id] || have.has(wordForm(w))) continue;
     const e: VocabEntry = {
       id: w.id, word: w.word, reading: w.reading, en: w.en, de: w.en, pos: w.pos, level: w.level,
       example: w.example ?? '', exampleEn: w.exampleEn ?? '',
       tags: w.topic ? [w.topic] : [], chapter: w.chapter, source: CURRICULUM_SOURCE,
+      ...(w.affix ? { affix: w.affix } : {}),
     };
     VOCAB.push(e);
     VOCAB_BY_ID[e.id] = e;
-    have.add(w.word);
+    have.add(wordForm(e));
     if (w.level === 'N2') curriculumInfo.n2Words++;
     else curriculumInfo.n3Words++;
   }

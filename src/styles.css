@@ -591,9 +591,9 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
   background: none;
   box-shadow: none;
   border-radius: 0;
-  color: #fbecd0;
+  color: #ffffff;
   image-rendering: pixelated;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.75), 0 0 3px rgba(40, 20, 5, 0.6);
 }
 .btn:hover:not(:disabled), .btn.primary:hover:not(:disabled) { background: none; border-image-source: url(../public/assets/ui_btn_hover.png); color: #3b2210; text-shadow: none; }
 .btn:active:not(:disabled) { border-image-source: url(../public/assets/ui_btn_down.png); transform: translateY(1px); box-shadow: none; }
@@ -601,6 +601,10 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
 .btn.ghost { border-image: none; border: 2px solid transparent; color: var(--blue-dark); text-shadow: none; }
 .btn.ghost:hover:not(:disabled) { border-image: none; background: rgba(138, 85, 48, 0.12); }
 .btn.big small { color: inherit; }
+/* subtitles on the wooden buttons: light on the dark plaque, dark on the light (hover / primary) one */
+.btn.choice small, .btn.cmd small, .btn.big small { color: #fbe7c2; opacity: 1; font-size: 13px; }
+.btn.choice:hover:not(:disabled) small, .btn.cmd:hover:not(:disabled) small, .btn.big:hover:not(:disabled) small,
+.btn.primary small { color: #5a3a1c; }
 
 /* answer options: cream cards with a wood edge */
 .opt { background: #fffaf0; border-color: #d9bf93; }
@@ -793,4 +797,50 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
 @media (max-width: 560px) {
   .garden-bed { grid-template-columns: repeat(auto-fill, minmax(62px, 1fr)); }
   .garden-bed .plot img { width: 52px; }
+}
+
+/* shown by ErrorBoundary instead of an empty page */
+.crash-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: #2a1b14;
+}
+.crash-screen .panel {
+  max-width: 420px;
+  text-align: center;
+}
+
+/* ステータス: easter eggs found so far */
+.secret-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.secret-list li {
+  padding: 4px 0;
+  border-bottom: 1px dashed rgba(120, 80, 40, 0.2);
+}
+.secret-list li.found b {
+  color: #b5651d;
+}
+
+.japan-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+}
+.japan-list li {
+  padding: 6px 0;
+  border-bottom: 1px dashed rgba(120, 80, 40, 0.2);
+}
+.japan-list li p {
+  margin: 4px 0;
+  line-height: 1.5;
+}
+.japan-list li.found b {
+  color: #b5651d;
 }

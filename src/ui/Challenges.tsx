@@ -127,7 +127,7 @@ export function ListeningChallenge({ id, item, onDone }: { id?: string; item?: L
           <button className="btn small" onClick={() => setShowEn(!showEn)}>
             {showEn ? 'Hide' : 'Show'} translation
           </button>
-          {showEn && <div className="q-en pre">{l.en}</div>}
+          {showEn && <div className="q-en pre">{withName(l.en)}</div>}
           <button
             className="btn primary"
             autoFocus

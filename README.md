@@ -5,7 +5,7 @@ You move to the small town of Hinomori, people are forgetting words, and creatur
 born from language and memory — start to appear. Understanding Japanese is the core mechanic: it unlocks
 clues, solves people's problems, powers your Kotodama in battle, and drives the story forward.
 
-> Phase 1 (playable vertical slice) — Chapter 1 “Summer in Hinomori”, roughly 30–60 minutes of play.
+> Phase 1 (playable vertical slice) — Chapter 1 “Spring in Hinomori”, roughly 30–60 minutes of play.
 
 ## Run it
 
@@ -138,11 +138,12 @@ NPC placement is valid.
 
 ## Status
 
-**Playable now:** title / new game / continue, Hinomori town + apartment + café + Midori Forest, 8 NPCs, 5 main and 3 side quests,
-reading & listening challenges, grammar teaching cards, glossary, SRS reviews, 10 Kotodama species (3 evolution lines),
-turn-based battles with recruitment, items and shop, relationships with remembered events, JLPT dashboard,
-diagnostic, section practice, timed mock exam, autosave and backups, touch controls.
+**Playable now:** chapters 1–4 (Hinomori town and Midori Forest, Hinomori Valley, Yukimi mountain village, Shiomi harbour
+town) with 17 main and 3 side quests, three region masters (vocabulary, kanji, grammar), bus and train travel, 32 Kotodama species, turn-based battles
+where every move is a Japanese question, befriending with はなす, part-time jobs, the word garden, overnight stays,
+reading & listening challenges, grammar teaching cards (about 90 N2 patterns), the N2 word and kanji lists, SRS reviews,
+JLPT dashboard, diagnostic, section practice, timed mock exam, nine hidden secrets (ひみつ), autosave and backups,
+touch controls.
 
-**Not yet:** chapters 2+ and further regions (city, mountain village, coast, university district), train travel,
-seasonal events, walking NPCs, recorded native audio, kanji stroke-order data, broader N2 coverage (the full N2 scope is several thousand
-words), FSRS.
+**Not yet:** chapters 5–7 (old capital, university city, capital), Shiomi's own music, and the grammar for regions 5–7, seasons,
+walking NPCs, recorded native audio, kanji stroke-order data, FSRS.

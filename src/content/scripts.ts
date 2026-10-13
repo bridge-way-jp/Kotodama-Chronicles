@@ -32,6 +32,40 @@ const talkQuiz = (species: string, idx = 0): Step => {
   };
 };
 
+/** Grandma Tsuru's guesthouse: a free bed in Yukimi once you have met her */
+/** the guesthouse in Gion: a free bed once you have met Ms. Matsuo */
+const MATSUO_STAY: Step[] = [
+  {
+    choice: [
+      {
+        text: '泊めてもらう', en: 'Stay the night (heals your team, starts a new day)',
+        then: [
+          say('matsuo', 'どうぞ、ごゆっくり。{朝|あさ}ごはんも、用意しておきますね。', 'Please, make yourself at home. I’ll have breakfast ready, too.', 'happy'),
+          { do: [{ sleep: true }] },
+          n('町家の二階で、ぐっすり眠った。{格子|こうし}の{向|む}こうから、朝の光がさしている。言霊たちも元気になった！', 'You sleep soundly upstairs in the machiya. Morning light comes through the lattice. Your Kotodama are fully healed!'),
+        ],
+      },
+      { text: 'お茶だけいただく', en: 'Just have some tea' },
+    ],
+  },
+];
+
+const TSURU_STAY: Step[] = [
+  {
+    choice: [
+      {
+        text: '泊めてもらう', en: 'Stay the night (heals your team, starts a new day)',
+        then: [
+          say('tsuru', '遠慮せんでええ。{囲炉裏|いろり}のそばに布団を敷いとくでね。', 'Don’t be shy. I’ll lay out a futon by the hearth.', 'happy'),
+          { do: [{ sleep: true }] },
+          n('囲炉裏の火の音を聞きながら、ぐっすり眠った。言霊たちも元気になった！', 'Listening to the crackling hearth, you sleep soundly. Your Kotodama are fully healed!'),
+        ],
+      },
+      { text: 'お茶だけいただく', en: 'Just have some tea' },
+    ],
+  },
+];
+
 export const SCRIPTS: Record<string, DialogueRule[]> = {
   // ================================================================ apartment
   desk: [
@@ -93,6 +127,16 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   // ================================================================ Ms. Mori
   mori: [
     {
+      when: { all: [{ date: ['01-01', '01-02', '01-03'] }, { notYearFlag: 'otoshidama' }, { questDone: 'mq1' }] },
+      steps: [
+        say('mori', 'あけましておめでとう、@nameちゃん！ 今年もよろしくね。', 'Happy New Year, @name! Let’s have another good year together.', 'happy'),
+        { cg: 'cg_egg_newyear', say: '森さんは、かわいい{袋|ふくろ}を両手で差し出してくれた。', en: 'Ms. Mori holds out a pretty little envelope with both hands.' },
+        say('mori', 'はい、これ。少ないけど、お{年玉|としだま}よ。日本では、お正月に子どもや若い人にあげるの。', 'Here, it isn’t much, but it’s otoshidama. In Japan we give it to children and young people at New Year.', 'happy'),
+        { do: [{ money: 2000 }, { yearFlag: 'otoshidama' }, { secret: 'shogatsu' }, { note: 'newyear' }] },
+        n('「{初詣|はつもうで}」は、もう行った？ 神社でおみくじを引くと、一年の運がわかるらしい。', 'Have you done hatsumōde, the first shrine visit of the year? A fortune slip at the shrine tells your luck for the year.'),
+      ],
+    },
+    {
       when: { notObj: 'mq1.letter' },
       steps: [say('mori', 'あら、@nameさん！ 机の上の手紙、もう読んだ？ まずは読んでみてね。', 'Oh, @name! Have you read the letter on your desk yet? Read it first.')],
     },
@@ -120,7 +164,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         say('mori', '町を歩く{ついでに||g:tsuideni}、ちょっと寄ってあげてくれる？ コンビニは、この大通りの向こう側よ。', 'While you’re walking around town, could you drop by? The store is across the main street.'),
         { teach: 'g:tsuideni' },
         say('mori', '困ったときは{お互い様|おたがいさま|v:otagaisama}。何かあったら、いつでも声をかけてね。', 'We all need help sometimes. Call me any time.'),
-        { do: [{ objective: 'mq1.mori' }, { rel: 'mori', points: 2, memory: 'first_meeting' }, { learn: ['v:otagaisama', 'g:wakedewanai', 'g:tsuideni'] }] },
+        { do: [{ objective: 'mq1.mori' }, { note: 'landlord' }, { rel: 'mori', points: 2, memory: 'first_meeting' }, { learn: ['v:otagaisama', 'g:wakedewanai', 'g:tsuideni'] }] },
       ],
     },
     {
@@ -191,6 +235,24 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
           keys: ['v:tayori'], area: 'reading', retry: true,
         },
         { do: [{ startQuest: 'mq10' }, { objective: 'mq10.mori' }, { chapter: 3 }, { rel: 'mori', points: 1 }, { learn: ['v:tayori', 'v:fuutou'] }] },
+      ],
+    },
+    {
+      when: { all: [{ flag: 'chapter3_done' }, { questNotStarted: 'mq14' }] },
+      steps: [
+        say('mori', '@nameちゃん、おかえり！ つるさんから電話があったのよ。字が読めるようになったって、すごく喜んでたわ。', 'Welcome back, @name! Tsuru called me. She was so happy she can read again.', 'happy'),
+        say('mori', '「海の見える町」……。それなら、潮見町かもしれないわね。瀬戸内海の小さな港町よ。主人と、新婚旅行で行ったの。', '“A town where you can see the sea”… Then it might be Shiomi. A little harbour town on the Inland Sea. My husband and I went there on our honeymoon.'),
+        say('mori', '日野森駅から、海へ向かう電車が出ているわ。……今度は、わたしも名前を忘れずに待ってるからね。', 'A train to the sea leaves from Hinomori station. …This time I’ll be waiting, without forgetting your name.', 'happy'),
+        { do: [{ startQuest: 'mq14' }, { objective: 'mq14.mori' }, { chapter: 4 }, { rel: 'mori', points: 1 }] },
+      ],
+    },
+    {
+      when: { all: [{ flag: 'chapter4_done' }, { questNotStarted: 'mq18' }] },
+      steps: [
+        say('mori', '@nameちゃん、おかえり！ 潮見の{灯台|とうだい}の話、{聞|き}いたわよ。……手がかり、また{見|み}つかったのね。', 'Welcome back, @name! I heard about the lighthouse in Shiomi. …You found another clue.', 'happy'),
+        say('mori', '「{古|ふる}いものと{新|あたら}しいものが、並んで歩く町」……それは、{京都|きょうと}かもしれないわ。{町家|まちや|v:ky_machiya}の{宿|やど}をやっている{友|とも}だちがいるの。', '“A city where old and new walk side by side”… that may be Kyoto. I have a friend who runs a guesthouse in a machiya.'),
+        say('mori', '{日野森駅|ひのもりえき}から、{京都|きょうと}へ行けるわよ。……大きな町だから、{迷|まよ}わないようにね。', 'You can reach Kyoto from Hinomori Station. …It’s a big city, so don’t get lost.'),
+        { do: [{ startQuest: 'mq18' }, { objective: 'mq18.mori' }, { chapter: 5 }, { rel: 'mori', points: 1 }] },
       ],
     },
     {
@@ -305,6 +367,15 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         say('kaede', '……まさか、ね。ううん、なんでもないわ。', '…It couldn’t be. No, never mind.'),
         say('kaede', '駅の古い掲示板、ね。気をつけて行ってらっしゃい。', 'The old bulletin board at the station, then. Take care.'),
         { do: [{ objective: 'mq3.read' }, { rel: 'kaede', points: 2, memory: 'letter' }, { learn: ['v:tegakari', 'v:nazo', 'g:karakoso'] }] },
+      ],
+    },
+    {
+      when: { all: [{ questDone: 'mq3' }, { name: ['K', 'Ｋ', 'ケイ', 'けい', 'Kei', 'kei', 'KEI'] }, { notFlag: 'secret_name_k' }] },
+      steps: [
+        say('kaede', 'そういえば、あなたの名前……@name、なのね。', 'Come to think of it, your name… it’s @name, isn’t it.', 'surprised'),
+        say('kaede', '手紙の「K」も、まさかあなたが自分で……？ ふふ、なんてね。冗談よ。', 'The “K” on that letter… you didn’t write it to yourself, did you? Heh, just kidding.', 'happy'),
+        n('楓さんは笑っているけれど、カップを持つ手が、少しだけふるえていた。', 'Kaede is smiling, but the hand holding her cup trembles slightly.'),
+        { do: [{ secret: 'name_k' }] },
       ],
     },
     {
@@ -445,6 +516,21 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   // ================================================================ shrine
   shrine: [
     {
+      when: { all: [{ date: ['07-07'] }, { notYearFlag: 'tanabata' }] },
+      steps: [
+        { cg: 'cg_egg_tanabata', say: '今日は{七夕|たなばた}。境内の{笹|ささ}に、色とりどりの{短冊|たんざく}が下がっている。', en: 'Today is Tanabata. Colourful paper strips hang from the bamboo in the shrine grounds.' },
+        { cg: 'cg_egg_tanabata', say: '織姫と{彦星|ひこぼし}が、年に一度だけ会える夜。短冊に願いを書くと、かなうと言われている。', en: 'The one night a year when Orihime and Hikoboshi may meet. A wish written on a strip is said to come true.' },
+        {
+          choice: [
+            { text: '「N2に合格できますように」', en: '“May I pass the N2”', then: [n('きっと、毎日の{積み重ね|つみかさね}が届くはず。', 'Surely all those days of practice will reach the stars.')] },
+            { text: '「森さんが、大切な名前を忘れませんように」', en: '“May Ms. Mori never forget the names she loves”', then: [n('笹が風にゆれて、短冊がそっと光った……気がした。', 'The bamboo sways in the wind, and the strip seems to glow softly.')] },
+            { text: '「Kさんに会えますように」', en: '“May I meet K”', then: [n('天の川のどこかで、だれかが帳面を閉じる音がした……ような気がした。', 'Somewhere along the Milky Way, you seem to hear someone close a notebook.')] },
+          ],
+        },
+        { do: [{ yearFlag: 'tanabata' }, { secret: 'tanabata' }, { xp: 50 }] },
+      ],
+    },
+    {
       when: { questNotStarted: 'sq_shrine' },
       steps: [
         n('日野森神社。静かな境内に、おみくじの箱がある。', 'Hinomori Shrine. There is a box of fortune slips in the quiet grounds.'),
@@ -541,7 +627,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   ramen_table: [{ steps: [n('テーブルの上に、はしと{調味料|ちょうみりょう}が{並んで|ならんで}いる。', 'Chopsticks and condiments are lined up on the table.')] }],
   ramen_noren: [{ steps: [n('{奥|おく}の部屋に続く{暖簾|のれん}だ。「{関係者以外立入禁止|かんけいしゃいがいたちいりきんし}」と書いてある。', 'A noren curtain to the back room: “Staff only”.')] }],
   ramen_shelf: [{ steps: [n('{替え玉|かえだま}用の{麺|めん}と、{丼|どんぶり}が{積んで|つんで}ある。', 'Extra noodle portions and stacked bowls.')] }],
-  ramen_ticket: [{ steps: [n('{食券機|しょっけんき}だ。先に{食券|しょっけん}を買ってから{注文|ちゅうもん}する{仕組み|しくみ}になっている。', 'A meal-ticket machine: you buy a ticket first, then order.')] }],
+  ramen_ticket: [{ steps: [n('{食券機|しょっけんき}だ。先に{食券|しょっけん}を買ってから{注文|ちゅうもん}する{仕組み|しくみ}になっている。', 'A meal-ticket machine: you buy a ticket first, then order.'), { do: [{ note: 'shokkenki' }] }] }],
   ramen_menu: [{ steps: [n('メニュー：「しょうゆラーメン　{味噌|みそ}ラーメン　{替え玉|かえだま}{無料|むりょう}」', 'Menu: “Shoyu ramen, miso ramen, free noodle refills”.')] }],
   ramen_poster: [{ steps: [n('{壁|かべ}に「{創業|そうぎょう}五十年」と書かれた{色紙|しきし}が{飾って|かざって}ある。', 'A signed board on the wall: “Founded fifty years ago”.')] }],
   ramen_maneki: [{ steps: [n('{招き猫|まねきねこ}だ。お客さんを{招いて|まねいて}くれるらしい。', 'A beckoning cat. It is said to invite customers in.')] }],
@@ -626,7 +712,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         say('kirishima', '計画の中心にいた研究者のイニシャルは……「K」だ。', 'The initial of the lead researcher of the project was… “K”.'),
         say('kirishima', '君に届いた手紙。もしかすると、計画はまだ終わっていないのかもしれない。', 'The letter you received… perhaps the project isn’t over yet.'),
         { do: [{ take: 'kakera' }, { objective: 'mq5.report' }, { rel: 'kirishima', points: 3, memory: 'archive_project' }, { learn: ['g:wokikkakeni', 'v:kakera'] }] },
-        { cg: 'cg_ending', say: '夕暮れの研究所。欠片の光は、まだ消えていなかった。\n― 第一章「日野森の夏」完 ―', en: 'Dusk at the research facility. The fragment’s light had not gone out yet.\n— End of Chapter 1: “Summer in Hinomori” —' },
+        { cg: 'cg_ending', say: '夕暮れの研究所。欠片の光は、まだ消えていなかった。\n― 第一章「日野森の春」完 ―', en: 'Dusk at the research facility. The fragment’s light had not gone out yet.\n— End of Chapter 1: “Spring in Hinomori” —' },
         { cg: 'cg_valley_arrival', say: '次章予告 ― 第二章「桃と湯けむりの谷」', en: 'Next time — Chapter 2: “The Valley of Peaches and Steam”' },
         n('Chapter 1 complete! Talk to Ms. Mori in front of the apartment to begin Chapter 2. Hinomori stays open: keep befriending Kotodama in Midori Forest and use your desk to review.'),
       ],
@@ -689,49 +775,496 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         say('station_staff', '雪見村行きですね。山の上は雪が深いので、暖かくしていってくださいね。', 'To Yukimi Village? The snow is deep up there, so keep warm.'),
         { cg: 'cg_mountain_arrival', say: '電車を降りると、空気が{凍|こお}るように冷たかった。夕焼けの中、雪に埋もれた村に、ぽつぽつと明かりがともる。', en: 'Stepping off the train, the air is freezing. In the sunset glow, lights flicker on one by one in the village buried in snow.' },
         { cg: 'cg_mountain_arrival', say: 'ここが雪見村……。字が消えていく村。', en: 'So this is Yukimi Village… the village where characters are fading.' },
-        { do: [{ objective: 'mq10.arrive' }, { flag: 'yukimi_visited' }, { warp: { map: 'mountain', x: 7, y: 20 } }] },
+        { do: [{ objective: 'mq10.arrive' }, { flag: 'yukimi_visited' }, { warp: { map: 'mountain', x: 9, y: 19 } }] },
       ],
     },
     {
-      when: { flag: 'yukimi_visited' },
+      when: { all: [{ questActive: 'mq14' }, { notObj: 'mq14.arrive' }] },
       steps: [
-        n('日野森駅。谷へのバスと、雪見村への電車が出ている。', 'Hinomori Station. Buses to the valley and trains to Yukimi Village leave from here.'),
+        n('日野森駅。南の海へ向かう電車が、ホームで待っている。', 'Hinomori Station. A train bound for the southern sea is waiting at the platform.'),
+        say('station_staff', '潮見行きですね。海はいいですよ。いか焼き、食べてきてください！', 'To Shiomi? The sea is lovely. Do try the grilled squid!', 'happy'),
+        { cg: 'cg_harbor_arrival', say: '山のトンネルを抜けると、窓いっぱいに青い海が広がった。小さな駅に降りると、潮のにおいがした。', en: 'Out of the mountain tunnel, the blue sea fills the whole window. Stepping off at the little station, you smell the salt air.' },
+        { cg: 'cg_harbor_arrival', say: '石段の下に、瓦屋根と港と、白い灯台が見える。……ここに、Kがいる。', en: 'Below the stone steps you can see tiled roofs, the harbour and a white lighthouse. …K is here.' },
+        { do: [{ objective: 'mq14.arrive' }, { flag: 'shiomi_visited' }, { learn: ['v:gyokou'] }, { warp: { map: 'harbor', x: 10, y: 2 } }] },
+      ],
+    },
+    {
+      when: { all: [{ questActive: 'mq18' }, { obj: 'mq18.mori' }, { notObj: 'mq18.arrive' }] },
+      steps: [
+        n('日野森駅。大きな町へ向かう電車が、ホームで待っている。乗り換えをして、京都までは二時間ほどだ。', 'Hinomori Station. A train bound for the big city waits at the platform. With a change, Kyoto is about two hours away.'),
+        say('station_staff', '京都行きですね。向こうは、人でいっぱいですよ。おみやげの八つ橋、よろしくお願いします！', 'To Kyoto? It will be packed with people. And please bring back some yatsuhashi!', 'happy'),
+        { cg: 'cg_kyoto_arrival', say: '新幹線から降りると、天井の高い大きな駅に、たくさんの人が行き交っていた。いろいろな言葉の案内が、あちこちから聞こえる。', en: 'Stepping off the Shinkansen, a huge station with a high ceiling, crowds streaming past. Announcements in many languages come from all directions.' },
+        { do: [{ objective: 'mq18.arrive' }, { flag: 'kyoto_visited' }, { learn: ['v:ky_annai'] }, { warp: { map: 'k_station', x: 20, y: 9 } }] },
+      ],
+    },
+    {
+      when: { flag: 'kyoto_visited' },
+      steps: [
+        n('日野森駅。京都、潮見町、雪見村へ、電車が出ている。谷へのバスは、駅前のバス停からだ。', 'Hinomori Station. Trains run to Kyoto, Shiomi and Yukimi Village. Buses to the valley leave from the bus stop in front.'),
         {
           choice: [
-            { text: '電車で雪見村へ', en: 'Take the train to Yukimi Village', then: [{ do: [{ warp: { map: 'mountain', x: 7, y: 20 } }] }] },
-            { text: 'バスで谷へ行く', en: 'Take the bus to Hinomori Valley', then: [{ do: [{ warp: { map: 'valley', x: 20, y: 24 } }] }] },
+            { text: '電車で京都へ', en: 'Take the train to Kyoto', then: [{ do: [{ warp: { map: 'k_station', x: 20, y: 9 } }] }] },
+            { text: '電車で潮見町へ', en: 'Take the train to Shiomi', then: [{ do: [{ warp: { map: 'harbor', x: 10, y: 2 } }] }] },
+            { text: '電車で雪見村へ', en: 'Take the train to Yukimi Village', then: [{ do: [{ warp: { map: 'mountain', x: 9, y: 19 } }] }] },
             { text: 'やめる', en: 'Stay in town' },
           ],
         },
       ],
     },
     {
+      when: { flag: 'shiomi_visited' },
+      steps: [
+        n('日野森駅。北の山の雪見村と、南の海の潮見町へ、電車が出ている。谷へのバスは、駅前のバス停からだ。', 'Hinomori Station. Trains run north to Yukimi Village and south to Shiomi by the sea. Buses to the valley leave from the bus stop in front of the station.'),
+        {
+          choice: [
+            { text: '電車で潮見町へ', en: 'Take the train to Shiomi', then: [{ do: [{ warp: { map: 'harbor', x: 10, y: 2 } }] }] },
+            { text: '電車で雪見村へ', en: 'Take the train to Yukimi Village', then: [{ do: [{ warp: { map: 'mountain', x: 9, y: 19 } }] }] },
+            { text: 'やめる', en: 'Stay in town' },
+          ],
+        },
+      ],
+    },
+    {
+      when: { flag: 'yukimi_visited' },
+      steps: [
+        n('日野森駅。北の山の雪見村へ、電車が出ている。谷へのバスは、駅前のバス停からだ。', 'Hinomori Station. Trains run north to Yukimi Village. Buses to the valley leave from the bus stop in front of the station.'),
+        {
+          choice: [
+            { text: '電車で雪見村へ', en: 'Take the train to Yukimi Village', then: [{ do: [{ warp: { map: 'mountain', x: 9, y: 19 } }] }] },
+            { text: 'やめる', en: 'Stay in town' },
+          ],
+        },
+      ],
+    },
+    { when: { flag: 'chapter1_done' }, steps: [n('日野森駅。今は電車が止まっている。谷へのバスは、駅前のバス停から出ている。', 'Hinomori Station. No trains are running right now. Buses to the valley leave from the bus stop in front of the station.')] },
+    { steps: [n('日野森駅。小さいが、町の人にとって大切な駅だ。', 'Hinomori Station. Small, but important to the townspeople.')] },
+  ],
+  town_busstop: [
+    {
       when: { all: [{ questActive: 'mq6' }, { obj: 'mq6.kirishima' }, { notObj: 'mq6.arrive' }] },
       steps: [
-        n('谷へ行くバスが、駅前で待っている。', 'The bus to the valley is waiting in front of the station.'),
+        { do: [{ bus: 'arrive' }] },
+        n('駅前のバス停に、谷へ行くバスがやってきた。', 'The bus to the valley pulls up at the stop in front of the station.'),
         say('busdriver', '日野森の谷行き、まもなく発車しまーす。', 'The bus to Hinomori Valley is about to depart!'),
         { cg: 'cg_valley_arrival', say: 'バスを降りると、甘い桃の香りがした。山に囲まれた谷に、川の音が響いている。', en: 'Stepping off the bus, you smell sweet peaches. The sound of the river echoes through the valley ringed by mountains.' },
         { cg: 'cg_valley_arrival', say: '……ここに、Kを知る人がいる。', en: '…Somewhere here is someone who knew K.' },
-        { do: [{ objective: 'mq6.arrive' }, { warp: { map: 'valley', x: 20, y: 24 } }] },
+        { do: [{ objective: 'mq6.arrive' }, { bus: 'leave' }, { warp: { map: 'valley', x: 22, y: 18 } }] },
       ],
     },
     {
       when: { flag: 'chapter1_done' },
       steps: [
-        n('日野森駅。駅前から、谷へ行くバスが出ている。', 'Hinomori Station. A bus to the valley leaves from the station square.'),
+        n('バス停だ。「日野森の谷行き」と書いてある。', 'A bus stop. The sign says “To Hinomori Valley”.'),
         {
           choice: [
             {
               text: 'バスで谷へ行く', en: 'Take the bus to Hinomori Valley',
-              then: [n('バスは山道をのぼっていく。窓の外に、{桃|もも}の花が見えてきた。', 'The bus climbs the mountain road. Peach blossoms appear outside the window.'), { do: [{ warp: { map: 'valley', x: 20, y: 24 } }] }],
+              then: [
+                { do: [{ bus: 'arrive' }] },
+                n('バスがやってきた。乗りこむと、バスは山道をのぼっていく。窓の外に、{桃|もも}の花が見えてきた。', 'The bus pulls up. You get on, and it climbs the mountain road. Peach blossoms appear outside the window.'),
+                { do: [{ bus: 'leave' }, { warp: { map: 'valley', x: 22, y: 18 } }] },
+              ],
             },
             { text: 'やめる', en: 'Stay in town' },
           ],
         },
       ],
     },
-    { steps: [n('日野森駅。小さいが、町の人にとって大切な駅だ。', 'Hinomori Station. Small, but important to the townspeople.')] },
+    { steps: [n('バス停だ。「日野森の谷行き」……{時刻表|じこくひょう}を見ると、今日のバスはもう終わっていた。', 'A bus stop: “To Hinomori Valley”. According to the timetable, today’s last bus has already left.')] },
   ],
+  // ================================================================ chapter 4: Shiomi harbour town
+  nagisa: [
+    {
+      when: { all: [{ questActive: 'mq14' }, { obj: 'mq14.arrive' }, { notObj: 'mq14.nagisa' }] },
+      steps: [
+        say('nagisa', 'こんにちは！ 潮見町観光案内所のなぎさです。ようこそ、海の見える町へ！', 'Hello! I’m Nagisa from the Shiomi tourist office. Welcome to the town by the sea!', 'happy'),
+        say('nagisa', '{観光客|かんこうきゃく|v:kankoukyaku}の方ですか？ この町の{名物|めいぶつ|v:meibutsu}は、いか焼きとレモン、それから……夏祭りの舟歌！', 'Are you a tourist? This town’s specialities are grilled squid, lemons and… the boat song at the summer festival!'),
+        say('nagisa', '……だったんですけど。', '…Or at least, they used to be.', 'worried'),
+        say('nagisa', '町と{いっても||g:toittemo}、住んでいるのは三百人くらい。若い人はみんな出ていっちゃって、島への{定期船|ていきせん|v:teikisen}もなくなりました。', 'I say “town”, but only about three hundred people live here. The young people have all left, and the ferry to the island stopped running.'),
+        { teach: 'g:toittemo' },
+        say('nagisa', 'それに最近、おかしいんです。夏祭りで歌う舟歌を、だれも思い出せなくて。町の人みんなが、同じところで歌がとぎれちゃうんです。', 'And lately something strange is happening. Nobody can remember the boat song we sing at the summer festival. Everyone stops singing at the same place.', 'worried'),
+        {
+          quiz: {
+            q: 'なぎさが「町といっても、住んでいるのは三百人くらい」と言ったのはなぜか。',
+            qEn: 'Why does Nagisa say “I say town, but only about three hundred people live here”?',
+            options: ['「町」という言葉から想像するより、ずっと小さいから', '三百人は、町としてはとても多いから', '観光客が三百人来るから', '町の名前を説明したかったから'],
+            answer: 0,
+            why: '〜といっても corrects the image a word creates: it is called a town, but it is really small.',
+          },
+          keys: ['g:toittemo'], area: 'grammar', retry: true,
+        },
+        say('nagisa', '舟歌をいちばんよく知っているのは、源さんです。東の桟橋で、毎日海を見ています。……あ、これ、案内所のうちわです。どうぞ！', 'The one who knows the boat song best is Gen-san. He watches the sea from the east pier every day. …Oh, here’s a fan from the tourist office!', 'happy'),
+        { do: [{ objective: 'mq14.nagisa' }, { note: 'rural_transport' }, { give: 'uchiwa' }, { rel: 'nagisa', points: 1, memory: 'first_meeting' }, { learn: ['v:kankoukyaku', 'v:meibutsu', 'v:teikisen', 'g:toittemo'] }] },
+      ],
+    },
+    {
+      when: { all: [{ questActive: 'mq15' }, { notObj: 'mq15.hamada' }] },
+      steps: [say('nagisa', '浜田さんの食堂、お昼はすごく混むんです。手伝ってあげたら、きっと喜びますよ！', 'Mrs. Hamada’s diner gets really busy at lunchtime. She’d be thrilled if you helped!')],
+    },
+    {
+      when: { flag: 'chapter4_done' },
+      steps: [
+        say('nagisa', '今年の夏祭り、舟歌がちゃんと歌えそうなんです！ 観光客の人たちにも、聞いてもらえたらいいな。', 'This year at the summer festival we’ll actually be able to sing the boat song! I hope the tourists get to hear it too.', 'happy'),
+        say('nagisa', '島へ渡る飛び石は、潮が引いているときなら歩けますよ。小さな祠があるんです。', 'You can walk across the stepping stones to the island when the tide is out. There’s a little shrine there.'),
+      ],
+    },
+    { steps: [say('nagisa', '潮見町へようこそ！ 困ったことがあったら、案内所のなぎさに何でも聞いてくださいね。', 'Welcome to Shiomi! If you need anything, just ask Nagisa at the tourist office.', 'happy')] },
+  ],
+  gen: [
+    {
+      when: { all: [{ questActive: 'mq15' }, { notObj: 'mq15.gen' }] },
+      steps: [
+        say('gen', '……なんだ、観光客か。写真なら、あっちの灯台でも撮りな。', '…What, a tourist? If you want photos, go take them at the lighthouse over there.'),
+        n('源さんは、海を見たまま動かない。足もとには、古い{網|あみ|v:ami}が置いてある。', 'Gen-san doesn’t move, his eyes on the sea. An old net lies at his feet.'),
+        say('gen', '舟歌のことか。……わしは六十年、{漁師|りょうし|v:ryoushi}をやってきた。{引退|いんたい|v:intai}した{ものの||g:monono}、毎朝ここに来てしまう。体が、海を忘れんのだ。', 'The boat song, is it. …I was a fisherman for sixty years. I may have retired, but I still end up here every morning. My body won’t forget the sea.'),
+        { teach: 'g:monono' },
+        say('gen', '舟歌は、目をつぶっても歌えた。……それが今は、二番の途中から、どうしても出てこん。歌おうとすると、波の音しか聞こえんのだ。', 'I could sing the boat song with my eyes closed. …Now, from the middle of the second verse, it just won’t come. When I try to sing, all I hear is the waves.', 'worried'),
+        {
+          quiz: {
+            q: '「引退したものの、毎朝ここに来てしまう」の意味に一番近いものはどれか。',
+            qEn: 'Which is closest in meaning to “I retired, but I still come here every morning”?',
+            options: ['引退したが、それでも毎朝ここに来る', '引退したので、毎朝ここに来られる', '引退する前は、毎朝ここに来ていた', '引退したら、毎朝ここに来るつもりだ'],
+            answer: 0,
+            why: '〜ものの = “although / but” (formal). The second part goes against what the first would make you expect.',
+          },
+          keys: ['g:monono'], area: 'grammar', retry: true,
+        },
+        say('gen', '……浜田の食堂へ行ってみな。あいつも昔は、祭りでよく歌っとった。', '…Try Hamada’s diner. She used to sing at the festival a lot, too.'),
+        { do: [{ objective: 'mq15.gen' }, { note: 'retirement' }, { rel: 'gen', points: 1, memory: 'first_meeting' }, { learn: ['v:ryoushi', 'v:intai', 'v:ami', 'g:monono'] }] },
+      ],
+    },
+    {
+      when: { all: [{ questActive: 'mq16' }, { obj: 'mq16.shiraishi' }, { notObj: 'mq16.dawn' }] },
+      steps: [
+        n('次の朝。まだ暗いうちに、源さんの舟が{出港|しゅっこう|v:shukkou}の準備をしていた。', 'The next morning. While it is still dark, Gen-san’s boat is getting ready to leave port.'),
+        say('gen', '……白石先生から聞いた。カイトの貝に、歌が残っとるそうだな。', '…I heard from Dr. Shiraishi. Kaito’s shell still holds the song, they say.'),
+        n('さくら貝を源さんに渡した。源さんは、それをそっと耳に当てた。', 'You hand the pink shell to Gen-san. He gently holds it to his ear.'),
+        { do: [{ music: 'memory' }] },
+        { cg: 'cg_harbor_song', say: '{夜明け|よあけ|v:yoake}の光が、海を金色にそめていく。源さんは目をつぶって、ゆっくりと口を開いた。', en: 'The light of dawn dyes the sea gold. Gen-san closes his eyes and slowly opens his mouth.' },
+        { cg: 'cg_harbor_song', say: '「♪ 沖の{鴎|かもめ}に　潮どき問えば　わたしゃ立つ鳥　波に聞け……」', en: '“♪ Ask the gulls out at sea when the tide will turn — I’m a bird about to fly, ask the waves…”' },
+        { cg: 'cg_harbor_song', say: '低い声が、静かな港に{響|ひび|v:hibiku}いた。二番も、三番も。とぎれることなく、最後まで。', en: 'His low voice echoes across the quiet harbour. The second verse, the third. Without a break, all the way to the end.' },
+        say('gen', '……出た。全部、出た。', '…It came. All of it came back.', 'surprised'),
+        say('gen', '思い出す{どころか||g:dokoroka}、昔より声が出とる気がするわ。はっはっは！', 'Far from just remembering it, I think my voice is better than it used to be. Ha ha ha!', 'happy'),
+        { teach: 'g:dokoroka' },
+        {
+          quiz: {
+            q: '「思い出すどころか、昔より声が出ている」の意味に一番近いものはどれか。',
+            qEn: 'Which is closest in meaning to “far from just remembering, my voice is better than before”?',
+            options: ['思い出しただけでなく、昔よりよく歌えている', '思い出せなかったので、声が出なかった', '思い出したが、昔ほどは歌えない', '思い出すために、声を出している'],
+            answer: 0,
+            why: 'A どころか B: not just A — something stronger (B) is true. Here B goes well beyond merely remembering.',
+          },
+          keys: ['g:dokoroka'], area: 'grammar', retry: true,
+        },
+        say('gen', 'この歌は、わしの親父も、そのまた親父も{歌|うた}い{継|つ|v:utaitsugu}いできた。わしで終わらせるわけには、いかんな。', 'My father sang this song, and his father before him. I can’t let it end with me.'),
+        say('gen', '歌詞を書いておいてくれ。あんたの字でな。……それから、灯台の海野にも見せてやってくれんか。あいつは、昔この町の学校で先生をしとった。', 'Write the words down for me. In your handwriting. …And would you show them to Umino at the lighthouse? He used to be a teacher at the school here.'),
+        n('源さんの舟歌を、一字一字ていねいに書き留めた。', 'You carefully write down Gen-san’s boat song, character by character.'),
+        say('gen', 'これは礼だ。……今日から、あんたも潮見の漁師の仲間だ。', 'This is my thanks. …From today, you’re one of Shiomi’s fishermen too.', 'happy'),
+        { do: [{ objective: 'mq16.dawn' }, { take: 'pink_shell' }, { give: 'song_sheet' }, { give: 'hachimaki' }, { rel: 'gen', points: 3, memory: 'boat_song' }, { learn: ['v:yoake', 'v:hibiku', 'v:utaitsugu', 'v:shukkou', 'g:dokoroka'] }] },
+        n('そのとき、波の間から、貝のような言霊が顔を出した！', 'Just then, a shell-like Kotodama peeks out between the waves!'),
+        {
+          battle: { species: 'yadone', level: 19, recruitable: true, bg: 'bg_harbor_quay.webp' },
+          win: [n('ヤドネは、源さんの歌に合わせて、貝をカラカラと鳴らしていた。', 'Yadone rattles its shell in time with Gen-san’s song.'), { do: [{ seen: 'yadone' }] }],
+          lose: [n('ヤドネは、波の向こうへ帰っていった。でも、歌はもう消えない。', 'Yadone goes back beyond the waves. But the song won’t vanish again.')],
+        },
+      ],
+    },
+    {
+      when: { flag: 'chapter4_done' },
+      steps: [say('gen', '今朝も歌いながら網を直したわ。カイトのやつ、二番まで覚えたぞ。', 'I mended the nets singing again this morning. That Kaito’s learned it up to the second verse.', 'happy')],
+    },
+    {
+      when: { questDone: 'mq16' },
+      steps: [say('gen', '灯台の海野には、もう会ったか？ あいつは口はきびしいが、字にはもっときびしい。はっはっは。', 'Have you met Umino at the lighthouse yet? He’s strict with his words, and even stricter with writing. Ha ha.')],
+    },
+    { steps: [say('gen', '……海はな、毎日ちがう顔をしとる。人の言葉と同じだ。', '…The sea shows a different face every day. Just like people’s words.')] },
+  ],
+  hamada: [
+    {
+      when: { all: [{ questActive: 'mq15' }, { obj: 'mq15.gen' }, { notObj: 'mq15.hamada' }] },
+      steps: [
+        say('hamada', 'いらっしゃい！ ……あら、源さんに言われて来たの？ ちょうどよかった、お昼の注文がたまっちゃって！', 'Welcome! …Oh, Gen-san sent you? Perfect timing — the lunch orders are piling up!', 'happy'),
+        say('hamada', '注文は最後まで聞くのよ。小さな言葉ひとつで、意味がぜんぜん変わるんだから。', 'Listen to the order right to the end. One little word changes the whole meaning.'),
+        {
+          quiz: {
+            q: 'お客さん：「この店、値段のわりに量が多いね。」――お客さんは何と言っているか。',
+            qEn: 'Customer: “This place gives big portions for the price.” — What is the customer saying?',
+            options: ['値段から考えると、量が多い', '値段が高いので、量が多い', '量が多いので、値段が高い', '値段も量も、ふつうだ'],
+            answer: 0,
+            why: '〜わりに: compared with what you would expect from the price, the portion is big.',
+          },
+          keys: ['g:warini'], area: 'grammar', retry: true,
+        },
+        {
+          quiz: {
+            q: 'お客さん：「子ども（　　）、よく食べるねえ。」――一番いいのはどれか。',
+            qEn: 'Customer: “For a child, he really eats a lot!” — which fits best?',
+            options: ['にしては', 'にもかかわらず', 'どころか', 'ものの'],
+            answer: 0,
+            why: 'Noun + にしては: “for a …” (considering it is a child, eating that much is surprising).',
+          },
+          keys: ['g:nishitewa'], area: 'grammar', retry: true,
+        },
+        {
+          quiz: {
+            q: 'お客さん：「雨（　　）、わざわざ来たんだよ。名物のいか焼き、二本ね！」',
+            qEn: 'Customer: “I came all this way despite the rain. Two of your famous grilled squid!”',
+            options: ['にもかかわらず', 'わりに', 'にしては', 'といっても'],
+            answer: 0,
+            why: '〜にもかかわらず: “in spite of”. They came even though it was raining.',
+          },
+          keys: ['g:nimokakawarazu'], area: 'grammar', retry: true,
+        },
+        say('hamada', 'あんた、耳がいいねえ！ 助かったわ。', 'You’ve got good ears! What a help.', 'happy'),
+        say('hamada', '……舟歌ね。あたしも毎年、祭りで歌ってた。なのに、今年は二番から先が、真っ白なのよ。', '…The boat song. I sang it at the festival every year too. But this year everything after the second verse is just blank.', 'worried'),
+        say('hamada', 'そういえば、孫のカイトが「貝から歌が聞こえる」って言ってたわ。西の浜辺で遊んでるはずよ。', 'Now that I think of it, my grandson Kaito said he “hears a song from a shell”. He should be playing on the beach to the west.'),
+        { do: [{ objective: 'mq15.hamada' }, { rel: 'hamada', points: 1, memory: 'first_meeting' }, { learn: ['g:warini', 'g:nishitewa', 'g:nimokakawarazu'] }] },
+      ],
+    },
+    {
+      when: { obj: 'mq15.hamada' },
+      steps: [
+        say('hamada', 'いらっしゃい！ 今日も手伝ってくれるの？', 'Welcome! Here to help again today?', 'happy'),
+        {
+          choice: [
+            { text: 'バイトする', en: 'Work: diner orders (grammar, pays ¥220 per correct answer)', then: [{ do: [{ open: 'job:diner' }] }] },
+            { text: '何か買う', en: 'Buy something', then: [{ shop: ['ikayaki', 'takosen', 'lemon', 'sea_salt'] }] },
+            { text: 'またこんど', en: 'Maybe later' },
+          ],
+        },
+      ],
+    },
+    { steps: [say('hamada', 'いらっしゃい！ 潮見の名物、いか焼きはいかが？', 'Welcome! How about Shiomi’s speciality, grilled squid?', 'happy'), { shop: ['ikayaki', 'takosen', 'lemon', 'sea_salt'] }] },
+  ],
+  kaito: [
+    {
+      when: { all: [{ questActive: 'mq15' }, { obj: 'mq15.hamada' }, { notObj: 'mq15.kaito' }] },
+      steps: [
+        say('kaito', 'ねえねえ、聞いて！ この{貝殻|かいがら|v:kaigara}、耳に当てると歌が聞こえるんだ！', 'Hey, hey, listen! When I hold this shell to my ear, I can hear a song!', 'happy'),
+        n('さくら貝を耳に当ててみた。波の音の向こうに、かすかに、だれかが歌を{口|くち|v:kuchizusamu}ずさんでいる。', 'You hold the pink shell to your ear. Beyond the sound of the waves, someone is faintly humming a song.'),
+        say('kaito', 'ばあちゃんの舟歌と、同じ歌だよ。でも、続きはぼくも知らないんだ……。', 'It’s the same song as Grandma’s boat song. But I don’t know how it goes on either…', 'worried'),
+        n('そのとき、浜辺に打ち上げられた紙の舟が、ぱたぱたと動きだした！', 'Just then, a paper boat washed up on the beach starts flapping about!'),
+        {
+          battle: { species: 'funedori', level: 18, recruitable: true, bg: 'bg_harbor_beach.webp' },
+          win: [
+            n('紙の舟は、ぬれた手紙でできていた。にじんだ字の中に、「K」という字だけが読める。', 'The paper boat is made from a wet letter. In the smudged ink, only the letter “K” can be read.'),
+            say('kaito', 'この貝、あげる！ 歌の続き、見つけてね。約束だよ！', 'You can have this shell! Find the rest of the song, okay? Promise!', 'happy'),
+            { do: [{ objective: 'mq15.kaito' }, { give: 'pink_shell' }, { give: 'message_bottle' }, { seen: 'funedori' }, { rel: 'kaito', points: 2, memory: 'shell' }, { learn: ['v:kaigara', 'v:kuchizusamu', 'v:hamabe'] }] },
+          ],
+          lose: [say('kaito', 'あっ、逃げちゃった！ ……また来てね！', 'Ah, it got away! …Come back again!')],
+        },
+      ],
+    },
+    {
+      when: { flag: 'chapter4_done' },
+      steps: [say('kaito', '♪ 沖の鴎に　潮どき問えば……。じいちゃんに教わったんだ。上手でしょ！', '♪ Ask the gulls out at sea when the tide will turn… Gen-san taught me. I’m good, right?', 'happy')],
+    },
+    { steps: [say('kaito', '{干潮|かんちょう|v:kanchou}のときはね、島まで歩いて行けるんだよ！ {満潮|まんちょう|v:manchou}になったら、すぐ戻らないとだめだけど。', 'At low tide you can walk all the way to the island! But at high tide you have to come straight back.'), { do: [{ learn: ['v:kanchou', 'v:manchou'] }] }] },
+  ],
+  shiraishi: [
+    {
+      when: { all: [{ questActive: 'mq16' }, { notObj: 'mq16.shiraishi' }] },
+      steps: [
+        say('shiraishi', 'あら、その貝……。ちょっと見せてくれる？ わたしは白石。海の生き物の「声」を研究しているの。', 'Oh, that shell… may I see it? I’m Shiraishi. I study the “voices” of sea creatures.', 'surprised'),
+        say('shiraishi', 'クジラはね、仲間に歌で話しかけるの。何百キロも離れた仲間に、同じ歌が伝わっていくのよ。', 'Whales talk to each other in songs, you know. The same song travels to whales hundreds of kilometres away.'),
+        say('shiraishi', '{防波堤|ぼうはてい|v:boukatei}に録音機を置いて、毎晩海の音を録っているんだけど……最近、聞いたことのないメロディーが入るの。', 'I leave a recorder on the breakwater and record the sea every night… and lately a melody I’ve never heard keeps showing up.'),
+        {
+          listening: 'l_harbor_recording',
+        },
+        say('shiraishi', '海は、人が忘れた歌まで覚えているのかもしれない。……研究者としては、そう言わ{ざるを得ない||g:zaruoenai}わね。', 'Maybe the sea remembers even the songs people forget. …As a researcher, I have to admit that.'),
+        { teach: 'g:zaruoenai' },
+        say('shiraishi', 'その貝を、歌を知っている人のところへ持っていって。夜明けの静かな海なら、きっと歌が戻ってくるわ。', 'Take that shell to someone who knows the song. On the quiet sea at dawn, the song will surely come back.'),
+        { do: [{ objective: 'mq16.shiraishi' }, { rel: 'shiraishi', points: 1, memory: 'whale_song' }, { learn: ['v:boukatei', 'v:kakegoe', 'g:zaruoenai'] }] },
+      ],
+    },
+    { steps: [say('shiraishi', '今夜も録音機を置いておくわ。海の歌、また聞こえるかしら。', 'I’ll leave the recorder out again tonight. I wonder if we’ll hear the sea’s song again.')] },
+  ],
+  umino: [
+    {
+      when: { all: [{ questActive: 'mq17' }, { notObj: 'mq17.umino' }] },
+      steps: [
+        say('umino', '……何の用かね。灯台は見学できんよ。', '…What do you want? The lighthouse is not open to visitors.'),
+        n('源さんの舟歌の歌詞を見せた。海野さんは眼鏡を押し上げて、紙をじっと見た。', 'You show him the lyrics of Gen-san’s boat song. Mr. Umino pushes up his glasses and studies the paper.'),
+        say('umino', 'ほう……源の歌か。字はまだ固いが、ていねいに書いてある。', 'Hm… Gen’s song. Your handwriting is still stiff, but it is careful.', 'surprised'),
+        say('umino', 'わたしは四十年、この町の学校で国語を教えた。生徒がいなくなって、学校は閉じた。今は、この灯台を守る{しかない||g:shikanai}。', 'I taught Japanese at this town’s school for forty years. The pupils left, and the school closed. Now all I can do is keep this lighthouse.'),
+        { teach: 'g:shikanai' },
+        say('umino', '……毎晩、灯台の下に、帳面を持った女の人が来る。だれかを待っているようだ。わたしが声をかけても、首をふるだけだ。', '…Every night a woman with a notebook comes to the foot of the lighthouse. She seems to be waiting for someone. When I speak to her, she only shakes her head.'),
+        say('umino', 'あの人に会いたいのなら、言葉の力を見せてもらおう。言葉を正しく使えん者に、人の心はつかめんからな。準備ができたら来なさい。', 'If you want to meet her, show me the power of your words. Someone who cannot use words correctly cannot reach a person’s heart. Come back when you are ready.'),
+        { do: [{ objective: 'mq17.umino' }, { rel: 'umino', points: 1, memory: 'first_meeting' }, { learn: ['g:shikanai', 'v:toudai'] }] },
+      ],
+    },
+    {
+      when: { all: [{ questActive: 'mq17' }, { obj: 'mq17.umino' }, { notObj: 'mq17.master' }] },
+      steps: [
+        say('umino', 'では、始めよう。言葉の流れを読む問題だ。', 'Then let us begin. Questions on reading the flow of a sentence.'),
+        {
+          quiz: {
+            q: '練習した（　　）、本番ではうまく話せなかった。',
+            qEn: 'Although I practised, I couldn’t speak well on the day.',
+            options: ['ものの', 'からこそ', 'おかげで', 'うえに'],
+            answer: 0,
+            why: '〜ものの: the result goes against what the first part would lead you to expect.',
+          },
+          keys: ['g:monono'], area: 'grammar', retry: true,
+        },
+        {
+          quiz: {
+            q: '彼は謝る（　　）、わたしのせいだと言い出した。',
+            qEn: 'Far from apologising, he started saying it was my fault.',
+            options: ['どころか', 'にしては', 'わりに', 'としても'],
+            answer: 0,
+            why: 'A どころか B: not A at all — the opposite (B) happened.',
+          },
+          keys: ['g:dokoroka'], area: 'grammar', retry: true,
+        },
+        {
+          quiz: {
+            q: '台風で船が出ないので、今日は島へ行くのをあきらめる（　　）。',
+            qEn: 'The boats aren’t running because of the typhoon, so I have no choice but to give up going to the island today.',
+            options: ['しかない', 'わけがない', 'どころではない', 'に越したことはない'],
+            answer: 0,
+            why: '〜しかない: there is no other option. わけがない = it can’t be; に越したことはない = it is best to.',
+          },
+          keys: ['g:shikanai'], area: 'grammar', retry: true,
+        },
+        {
+          quiz: {
+            q: 'たとえ全部は思い出せない（　　）、歌い続けることに意味がある。',
+            qEn: 'Even if we can’t remember all of it, there is meaning in carrying on singing.',
+            options: ['としても', 'からには', 'ものの', 'にしては'],
+            answer: 0,
+            why: 'たとえ〜としても: “even if (it were so)”. A hypothetical concession, unlike ものの (a real fact).',
+          },
+          keys: ['g:toshitemo'], area: 'grammar', retry: true,
+        },
+        say('umino', '……よろしい。最後に、この灯台の光を守る言霊と向き合いなさい。', '…Very well. Lastly, face the Kotodama that guards this lighthouse’s light.'),
+        {
+          battle: { species: 'umiakari', level: 25, boss: true, bg: 'bg_harbor_cliff.webp' },
+          win: [
+            say('umino', '見事だ。……生徒にこんな顔をさせられたのは、何年ぶりかな。', 'Splendid. …How many years has it been since a pupil made me feel like this.', 'happy'),
+            say('umino', 'この鍵を持っていきなさい。灯台の上まで行ける鍵だ。わたしの最後の生徒の、合格の証だよ。', 'Take this key. It opens the way to the top of the lighthouse. Proof that my last pupil passed.'),
+            say('umino', '夜になった。……ほら、今夜も来ている。手すりのところだ。', 'Night has fallen. …Look, she has come again tonight. Over by the railing.'),
+            { do: [{ objective: 'mq17.master' }, { give: 'lighthouse_key' }, { time: 'evening' }, { rel: 'umino', points: 3, memory: 'trial_passed' }, { learn: ['g:monono', 'g:dokoroka', 'g:shikanai', 'g:toshitemo'] }] },
+          ],
+          lose: [say('umino', '言葉は、焦ると逃げていく。落ち着いて、また来なさい。', 'Words run away when you hurry. Calm down, and come again.')],
+        },
+      ],
+    },
+    {
+      when: { flag: 'chapter4_done' },
+      steps: [say('umino', '夏祭りの舟歌、わたしも歌うことにした。……音痴だと笑うんじゃないぞ。', 'I have decided to sing the boat song at the summer festival too. …Don’t you laugh at my singing.', 'happy')],
+    },
+    { steps: [say('umino', '灯台の光は、遠くの船のためにある。言葉も同じだ。届けたい相手がいてこそ、意味を持つ。', 'A lighthouse beam exists for distant ships. Words are the same: they only mean something when there is someone you want them to reach.')] },
+  ],
+  traveller: [
+    {
+      when: { all: [{ questActive: 'mq17' }, { obj: 'mq17.master' }, { notObj: 'mq17.lighthouse' }] },
+      steps: [
+        { do: [{ music: 'lighthouse' }] },
+        { cg: 'cg_harbor_lighthouse', say: '灯台の光が、星の多い夜の海を、ゆっくりとなでていく。手すりのそばに、帳面を抱えた女の人が立っていた。', en: 'The lighthouse beam slowly sweeps the starry night sea. By the railing stands a woman holding a notebook.' },
+        { cg: 'cg_harbor_lighthouse', say: '女の人は、今度は消えなかった。ゆっくりとふり返って、@nameを見た。', en: 'This time the woman does not vanish. She slowly turns around and looks at @name.' },
+        say('traveller', '……雪見村でも、会ったわね。手紙を、読んでくれたのね。', '…We met in Yukimi Village too. You read my letter, didn’t you.'),
+        say('traveller', 'わたしは昔、霧島さんたちと一緒に、言葉を保存する研究をしていた。消えていく言葉を、全部この帳面に集めれば、だれも忘れなくてすむと思っていたの。', 'Long ago I worked with Dr. Kirishima and the others on research to preserve words. I thought that if I gathered every vanishing word in this notebook, nobody would have to forget.'),
+        say('traveller', 'でも、言葉は集めて閉じこめるものじゃなかった。人が使わなくなった言葉は、帳面の中で、少しずつ色をなくしていった。……わたしの名前も。', 'But words aren’t things you collect and lock away. Words people stopped using slowly lost their colour inside the notebook. …My own name too.', 'worried'),
+        {
+          choice: [
+            { text: '「あなたの名前を、いっしょに探させてください。」', en: '“Please let me help you find your name.”' },
+            { text: '「源さんの舟歌、戻ってきましたよ。」', en: '“Gen-san’s boat song has come back.”' },
+          ],
+        },
+        say('traveller', '……あなたは、言葉を閉じこめるんじゃなくて、人に返しているのね。名前を呼んで、歌を歌わせて、手紙を読んで。', '…You don’t lock words away. You give them back to people. You call their names, let them sing their songs, read their letters.', 'happy'),
+        say('traveller', 'わたしの最初の帳面は、古い都のお寺に預けてあるの。そこに、わたしの名前が、まだ残っているかもしれない。', 'My very first notebook is kept at a temple in the old capital. My name might still be there.'),
+        say('traveller', '……もし、そこまで来てくれるなら。今度は、わたしが待っているわ。', '…If you come that far. This time, I’ll be the one waiting.', 'happy'),
+        n('女の人は、灯台の光の中を歩いて、坂道を下りていった。帳面から、一枚の紙がひらりと落ちた。', 'The woman walks through the lighthouse beam and goes down the slope. A single sheet slips out of her notebook.'),
+        n('紙には、ていねいな字で一つだけ書いてあった。「香」。', 'On it, in careful handwriting, is a single character: 香.'),
+        {
+          quiz: {
+            q: '女の人の名前が消えていったのはなぜか。',
+            qEn: 'Why did the woman’s name fade away?',
+            options: ['言葉を帳面に閉じこめて、使わなくなったから', '灯台の光が強すぎたから', '舟歌を歌わなかったから', '雪見村に帳面を忘れたから'],
+            answer: 0,
+            why: '人が使わなくなった言葉は、帳面の中で色をなくしていった — words that are no longer used lose their colour.',
+          },
+          keys: ['v:toudai'], area: 'reading', retry: true,
+        },
+        { do: [{ objective: 'mq17.lighthouse' }, { learn: ['v:suiheisen', 'v:toudai', 'g:toshitemo'] }, { seen: 'umiakari' }] },
+        { cg: 'cg_harbor_arrival', say: '言葉は、閉じこめるものじゃない。歌えば、海の向こうまで届く。\n― 第四章「潮見町の舟歌」完 ―', en: 'Words are not meant to be locked away. Sing them, and they reach beyond the sea.\n— End of Chapter 4: “The Boat Song of Shiomi” —' },
+        n('Chapter 4 complete! Shiomi stays open: help at the diner, befriend the shell and gull Kotodama and keep reviewing. Chapter 5 (Kyoto) is open: talk to Ms. Mori in Hinomori.'),
+      ],
+    },
+  ],
+  shiomi_station: [
+    {
+      when: { flag: 'kyoto_visited' },
+      steps: [
+        n('潮見駅。単線の線路が、山の向こうの日野森までつながっている。乗り換えれば、京都にも行ける。', 'Shiomi Station. A single-track line runs over the hills to Hinomori. With a change you can reach Kyoto too.'),
+        {
+          choice: [
+            { text: '電車で京都へ', en: 'Take the train to Kyoto', then: [{ do: [{ warp: { map: 'k_station', x: 20, y: 9 } }] }] },
+            { text: '電車で日野森へ帰る', en: 'Take the train back to Hinomori', then: [{ do: [{ warp: { map: 'town', x: 27, y: 20 } }] }] },
+            { text: 'もう少しいる', en: 'Stay a little longer' },
+          ],
+        },
+      ],
+    },
+    {
+      steps: [
+        n('潮見駅。単線の線路が、山の向こうの日野森までつながっている。', 'Shiomi Station. A single-track line runs over the hills to Hinomori.'),
+        {
+          choice: [
+            { text: '電車で日野森へ帰る', en: 'Take the train back to Hinomori', then: [{ do: [{ warp: { map: 'town', x: 27, y: 20 } }] }] },
+            { text: 'もう少しいる', en: 'Stay a little longer' },
+          ],
+        },
+      ],
+    },
+  ],
+  harbor_diner: [{ steps: [n('港食堂「はまだ」。のれんに、魚の絵が三つ描いてある。いいにおいがする。', 'The harbour diner “Hamada”. Three fish are painted on the noren curtain. Something smells good.')] }],
+  harbor_inn: [
+    {
+      steps: [
+        n('海の見える宿「しおさい」。二階のベランダから、水平線が見える。', 'The seaside inn “Shiosai”. From the first-floor balcony you can see the horizon.'),
+        {
+          choice: [
+            {
+              text: '泊まる（¥700）', en: 'Stay the night (¥700: heals your team, starts a new day)',
+              then: [
+                {
+                  if: { money: 700 },
+                  then: [
+                    { do: [{ money: -700 }, { sleep: true }, { learn: ['v:suiheisen'] }] },
+                    n('波の音を聞きながら、ぐっすり眠った。言霊たちも元気になった！', 'Listening to the waves, you sleep soundly. Your Kotodama are fully healed!'),
+                  ],
+                  else: [n('お金が足りない……。', 'Not enough money…')],
+                },
+              ],
+            },
+            { text: 'やめる', en: 'Leave' },
+          ],
+        },
+      ],
+    },
+  ],
+  harbor_office: [{ steps: [n('漁協の事務所。「本日の水温　二十二度　波　おだやか」と書いてある。', 'The fishing cooperative office. “Water temperature today: 22°C. Waves: calm.”'), { do: [{ note: 'fishery' }] }] }],
+  harbor_genhouse: [{ steps: [n('源さんの家だ。玄関に、使いこまれた網とガラスの浮き玉がつるしてある。', 'Gen-san’s house. A well-used net and a glass fishing float hang by the door.')] }],
+  harbor_lighthouse: [
+    { when: { item: 'lighthouse_key' }, steps: [n('灯台の扉は、海野さんの鍵で開くようになった。上の窓から、町全体と海が見える。', 'The lighthouse door now opens with Mr. Umino’s key. From the window at the top you can see the whole town and the sea.')] },
+    { steps: [n('白い灯台だ。扉には鍵がかかっている。「関係者以外立入禁止」。', 'A white lighthouse. The door is locked: “Authorised personnel only.”')] },
+  ],
+  harbor_lemon: [{ steps: [n('レモンの木がならぶ小さな畑。潮風で、葉っぱが少ししょっぱい気がする。', 'A small field of lemon trees. The leaves seem a little salty from the sea breeze.')] }],
+  harbor_bottle: [
+    { when: { item: 'message_bottle' }, steps: [n('砂浜に、波が静かに寄せている。', 'Waves lap quietly on the sand.')] },
+    { steps: [n('{浜辺|はまべ|v:hamabe}に、きれいな貝殻がたくさん落ちている。', 'Lots of pretty shells lie on the beach.'), { do: [{ learn: ['v:hamabe'] }] }] },
+  ],
+  harbor_hokora: [
+    {
+      steps: [
+        n('島の小さな祠。海の安全を祈って、だれかがお{神酒|みき}を供えている。', 'The little shrine on the island. Someone has left an offering of sake to pray for safety at sea.'),
+        n('ここからは、町と灯台と、遠くの島々が全部見える。', 'From here you can see the town, the lighthouse and the distant islands all at once.'),
+      ],
+    },
+  ],
+  harbor_light: [{ steps: [n('防波堤の先の、赤い灯台。夜になると、船に港の入り口を知らせる。', 'The red harbour light at the end of the breakwater. At night it shows ships the way into the harbour.')] }],
   // ================================================================ chapter 2: Hinomori valley
   valley_busstop: [
     {
@@ -739,7 +1272,14 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         n('バス停だ。{時刻表|じこくひょう}によると、町へのバスは一時間に一本。', 'A bus stop. According to the timetable, there is one bus an hour to town.'),
         {
           choice: [
-            { text: '町へ帰る', en: 'Ride back to Hinomori town', then: [{ do: [{ warp: { map: 'town', x: 27, y: 20 } }] }] },
+            {
+              text: '町へ帰る', en: 'Ride back to Hinomori town',
+              then: [
+                { do: [{ bus: 'arrive' }] },
+                n('町へ行くバスがやってきた。', 'The bus to town pulls up.'),
+                { do: [{ bus: 'leave' }, { warp: { map: 'town', x: 18, y: 20 } }] },
+              ],
+            },
             { text: 'もう少しいる', en: 'Stay a little longer' },
           ],
         },
@@ -761,7 +1301,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     },
   ],
   yukimi_guesthouse: [{ steps: [n('{合掌造|がっしょうづく}りの大きな{民宿|みんしゅく}。窓から{囲炉裏|いろり}の明かりがもれている。', 'A large thatched guesthouse. Firelight from the hearth glows through the windows.')] }],
-  yukimi_gassho: [{ steps: [n('{屋根|やね}に雪がどっさり{積|つ}もった、古い{合掌造|がっしょうづく}りの家。', 'An old thatched farmhouse with heaps of snow on the roof.')] }],
+  yukimi_gassho: [{ steps: [n('{屋根|やね}に雪がどっさり{積|つ}もった、古い{合掌造|がっしょうづく}りの家。', 'An old thatched farmhouse with heaps of snow on the roof.'), { do: [{ note: 'gassho' }] }] }],
   yukimi_clinic: [{ steps: [n('村の{診療所|しんりょうじょ}。「{本日|ほんじつ}の{診療|しんりょう}　九時〜十七時」', 'The village clinic. “Consultation hours today: 9:00–17:00.”')] }],
   yukimi_temple: [{ steps: [n('山寺の{本堂|ほんどう}。{静|しず}かな空気の中、お{香|こう}の{香|かお}りがする。', 'The main hall of the mountain temple. Incense hangs in the quiet air.')] }],
   yukimi_kamakura: [{ steps: [n('{雪|ゆき}で作った{かまくら}。中は思ったより{暖|あたた}かい。', 'A kamakura made of snow. It’s warmer inside than you’d think.')] }],
@@ -790,7 +1330,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         say('tsuru', 'たいちょう……。そうそう、体の調子のことやね。あんたが読んでくれると、字が戻ってくるみたいやわ。', 'Taichou… yes, of course, how the body is doing. When you read it, it’s as if the characters come back.', 'happy'),
         say('tsuru', 'ここらの言葉は{方言|ほうげん|v:hougen}が強いで、わかりにくいかもしれんけど、ゆっくりしていきなれ。', 'Folks round here speak a strong dialect, so it may be hard to follow, but make yourself at home.'),
         say('tsuru', 'そうそう、毎年冬になると、帳面を持った旅の女の人が、うちに泊まりに来るんよ。村の言葉を、ひとつひとつ{書き留め|かきとめ|v:kakitomeru}ていくの。', 'Oh, and every winter a travelling woman with a notebook stays here. She writes down the village’s words, one by one.'),
-        { do: [{ objective: 'mq10.tsuru' }, { rel: 'tsuru', points: 2, memory: 'hearth' }, { learn: ['v:irori', 'v:hougen', 'v:taichou', 'v:fuutou', 'v:kakitomeru', 'g:hodo'] }] },
+        { do: [{ objective: 'mq10.tsuru' }, { note: 'akiya' }, { rel: 'tsuru', points: 2, memory: 'hearth' }, { learn: ['v:irori', 'v:hougen', 'v:taichou', 'v:fuutou', 'v:kakitomeru', 'g:hodo'] }] },
         n('村のあちこちで、字が消えはじめているらしい。ひなという女の子が、かまくらの前で困っていたそうだ。', 'Characters seem to be fading all over the village. A girl called Hina was apparently upset in front of the kamakura.'),
       ],
     },
@@ -820,13 +1360,14 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         { teach: 'g:kotoni' },
         { do: [{ objective: 'mq13.tsuru' }, { rel: 'tsuru', points: 3, memory: 'letter_read' }, { learn: ['v:tsutaeru', 'g:kotoni'] }] },
         { cg: 'cg_mountain_arrival', say: '雪の下で、言葉は春を待っている。\n― 第三章「雪見村の手紙」完 ―', en: 'Beneath the snow, words are waiting for spring.\n— End of Chapter 3: “Letters from Yukimi Village” —' },
-        n('Chapter 3 complete! Yukimi stays open: help at the clinic, befriend the snow and lantern Kotodama and keep reviewing. Chapter 4 (the town by the sea) is in development.'),
+        n('Chapter 3 complete! Talk to Ms. Mori in front of the apartment to begin Chapter 4. Yukimi stays open: help at the clinic, befriend the snow and lantern Kotodama and keep reviewing.'),
       ],
     },
     {
       when: { questDone: 'mq13' },
-      steps: [say('tsuru', '息子の手紙、毎晩読み返しとるんよ。字は、読むたびに{温|あった}かくなるねえ。', 'I read my son’s letter again every night. Characters get warmer every time you read them.', 'happy')],
+      steps: [say('tsuru', '息子の手紙、毎晩読み返しとるんよ。字は、読むたびに{温|あった}かくなるねえ。', 'I read my son’s letter again every night. Characters get warmer every time you read them.', 'happy'), ...TSURU_STAY],
     },
+    { when: { obj: 'mq10.tsuru' }, steps: [say('tsuru', 'まあまあ、寒かったろう。中でお茶でもどうだい。', 'My, you must be cold. How about some tea inside?'), ...TSURU_STAY] },
     { steps: [say('tsuru', 'まあまあ、寒かったろう。中でお茶でもどうだい。', 'My, you must be cold. How about some tea inside?')] },
   ],
   hina: [
@@ -942,7 +1483,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         say('kuroda', '一度は捨てた村な{だけに||g:dakeni}、この祭りだけは絶対になくしたくないんだ。', 'Precisely because I once turned my back on this village, I never want to lose this festival.'),
         { teach: 'g:dakeni' },
         say('kuroda', '日が暮れたら、駅の近くの広場に来てくれ。灯籠に火を入れるぞ。', 'When the sun goes down, come to the field near the station. We’ll light the lanterns.', 'happy'),
-        { do: [{ objective: 'mq12.kuroda' }, { time: 'evening' }, { rel: 'kuroda', points: 2 }, { learn: ['v:dentou', 'v:gyouji', 'v:tourou', 'v:tsugu', 'g:kotonaku', 'g:dakeni'] }] },
+        { do: [{ objective: 'mq12.kuroda' }, { note: 'matsuri' }, { time: 'evening' }, { rel: 'kuroda', points: 2 }, { learn: ['v:dentou', 'v:gyouji', 'v:tourou', 'v:tsugu', 'g:kotonaku', 'g:dakeni'] }] },
       ],
     },
     { steps: [say('kuroda', 'この先は山道だ。今は雪が深すぎて、{雪崩|なだれ|v:nadare}の危険がある。{通行止|つうこうど}めにしている。', 'Beyond here is the mountain trail. The snow is too deep and there’s a risk of avalanches, so it’s closed.')] },
@@ -951,7 +1492,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     {
       when: { all: [{ questActive: 'mq12' }, { obj: 'mq12.kuroda' }, { notObj: 'mq12.festival' }] },
       steps: [
-        { do: [{ music: 'memory' }] },
+        { do: [{ music: 'festival' }] },
         { cg: 'cg_mountain_festival', say: '日が暮れると、何百もの雪灯籠に、いっせいに火がともった。川の水が、金色に光っている。', en: 'As night falls, hundreds of snow lanterns are lit at once. The river shines gold.' },
         { cg: 'cg_mountain_festival', say: '橋の上に、帳面を抱えた女の人が立っていた。深い緑のコートに、白いマフラー。', en: 'On the bridge stands a woman holding a notebook. A deep green coat, a white scarf.' },
         {
@@ -1054,7 +1595,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     },
     { steps: [n('{手入れ|ていれ|v:teire}の行き届いた小さな畑だ。木の札には何も書かれていない。', 'A small, well-kept plot. The wooden tag is blank.')] },
   ],
-  valley_farmhouse: [{ steps: [n('{茅葺|かやぶ}き{屋根|やね}の古い{農家|のうか}。{縁側|えんがわ}で{猫|ねこ}が{昼寝|ひるね}をしている。', 'An old farmhouse with a thatched roof. A cat is napping on the veranda.')] }],
+  valley_farmhouse: [{ steps: [n('{茅葺|かやぶ}き{屋根|やね}の古い{農家|のうか}。{縁側|えんがわ}で{猫|ねこ}が{昼寝|ひるね}をしている。', 'An old farmhouse with a thatched roof. A cat is napping on the veranda.'), { do: [{ note: 'farm_successor' }] }] }],
   valley_winery: [{ steps: [n('小さなワイナリー。{樽|たる}から、ぶどうの{香|かお}りがする。', 'A small winery. The barrels smell of grapes.')] }],
   valley_stand: [{ steps: [n('{無人販売所|むじんはんばいじょ}だ。「桃 一{袋|ふくろ} 三百円。お金は{箱|はこ}に入れてください」', 'An unmanned stand: “Peaches, 300 yen a bag. Please put the money in the box.”')] }],
   valley_workshop: [{ steps: [n('{書道|しょどう}の{工房|こうぼう}。{入口|いりぐち}に、大きな{掛け軸|かけじく}がかかっている。', 'A calligraphy workshop. A large hanging scroll hangs by the entrance.')] }],
@@ -1179,6 +1720,19 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         {
           choice: [
             { text: 'バイトする', en: 'Work: inn front desk (listening, pays ¥200 per correct answer)', then: [{ do: [{ open: 'job:onsen' }] }] },
+            {
+              text: '泊まる（¥800）', en: 'Stay the night (¥800: heals your team, starts a new day)',
+              then: [
+                {
+                  if: { money: 800 },
+                  then: [
+                    { do: [{ money: -800 }, { sleep: true }] },
+                    n('温泉につかって、ふかふかの{布団|ふとん}でぐっすり眠った。言霊たちも元気になった！', 'You soak in the hot spring and sleep soundly on a soft futon. Your Kotodama are fully healed!'),
+                  ],
+                  else: [say('okami', 'あいにく、お{代|だい}が少し足りないようでございます。', 'I’m afraid that isn’t quite enough, I’m sorry.', 'worried')],
+                },
+              ],
+            },
             { text: 'またこんど', en: 'Maybe later' },
           ],
         },
@@ -1352,10 +1906,10 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   konbini_coffee: [{ steps: [n('セルフのコーヒーマシンだ。レジでカップを買ってから、自分で{入れる|いれる}{仕組み|しくみ}になっている。', 'A self-service coffee machine: you buy a cup at the register and pour it yourself.')] }],
   konbini_ice: [{ steps: [n('アイスの{冷凍|れいとう}ケースだ。{期間限定|きかんげんてい}の{抹茶|まっちゃ}味がある。', 'An ice-cream freezer. There’s a limited-time matcha flavour.')] }],
   konbini_magazines: [{ steps: [n('雑誌の{棚|たな}だ。「{立ち読み|たちよみ}はご{遠慮|えんりょ}ください」と書いてある。', 'A magazine rack. A sign says “Please refrain from reading without buying.”')] }],
-  konbini_atm: [{ steps: [n('ATMだ。{手数料|てすうりょう}がかかるので、{必要|ひつよう}な時だけ使おう。', 'An ATM. It charges a fee, so only use it when you need to.')] }],
-  konbini_trash: [{ steps: [n('ゴミ箱が三つ{並んで|ならんで}いる。ペットボトル、{燃える|もえる}ゴミ、{缶|かん}・びん。{分別|ぶんべつ}してから{捨てよう|すてよう}。', 'Three bins: PET bottles, burnable, cans/bottles. Sort before you throw away.')] }],
+  konbini_atm: [{ steps: [n('ATMだ。{手数料|てすうりょう}がかかるので、{必要|ひつよう}な時だけ使おう。', 'An ATM. It charges a fee, so only use it when you need to.'), { do: [{ note: 'cash' }] }] }],
+  konbini_trash: [{ steps: [n('ゴミ箱が三つ{並んで|ならんで}いる。ペットボトル、{燃える|もえる}ゴミ、{缶|かん}・びん。{分別|ぶんべつ}してから{捨てよう|すてよう}。', 'Three bins: PET bottles, burnable, cans/bottles. Sort before you throw away.'), { do: [{ note: 'bunbetsu' }] }] }],
   konbini_baskets: [{ steps: [n('買い物かごだ。{使い終わったら|つかいおわったら}元の{場所|ばしょ}に{戻す|もどす}こと。', 'Shopping baskets. Put them back where they belong after use.')] }],
-  konbini_counter: [{ steps: [n('レジの横に、肉まんとおでんのケースがある。いいにおいだ。', 'Next to the register are cases of steamed buns and oden. Smells good.')] }],
+  konbini_counter: [{ steps: [n('レジの横に、肉まんとおでんのケースがある。いいにおいだ。', 'Next to the register are cases of steamed buns and oden. Smells good.'), { do: [{ note: 'konbini' }] }] }],
   library_shelf: [
     {
       steps: [
@@ -1390,13 +1944,13 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   station_stove: [{ steps: [n('古い{石油|せきゆ}ストーブだ。やかんがのっている。冬にはここで、みんな電車を待つのだろう。', 'An old kerosene stove with a kettle on top. In winter, people must wait for trains here.')] }],
   station_locker: [{ steps: [n('コインロッカーだ。{全部|ぜんぶ}{空いて|あいて}いる。最近は旅行客も少ないのだろう。', 'Coin lockers, all empty. Few travellers come these days.')] }],
   station_bench: [{ steps: [n('待合室のベンチだ。{誰|だれ}もいない。電車が止まってから、ずっとこうなのだろう。', 'A waiting-room bench. Nobody here. It has probably been like this since the trains stopped.')] }],
-  station_gate: [{ steps: [n('{改札|かいさつ}だ。電車が動いていないので、{通れ|とおれ}ないようになっている。', 'The ticket gates. With no trains running, they are closed.')] }],
+  station_gate: [{ steps: [n('{改札|かいさつ}だ。電車が動いていないので、{通れ|とおれ}ないようになっている。', 'The ticket gates. With no trains running, they are closed.'), { do: [{ note: 'ic_card' }] }] }],
   kitchen: [{ steps: [n('小さなキッチンだ。一人分の料理なら、ここで十分作れる。', 'A small kitchen. Enough to cook for one.')] }],
   nightstand: [{ steps: [n('ベッドの横の小さな棚だ。目覚まし時計は六時に{設定|せってい}してある。', 'A little shelf by the bed. The alarm is set for six.')] }],
   wardrobe: [{ steps: [n('{洋服|ようふく}ダンスだ。{引っ越し|ひっこし}の荷物はまだ半分しか片付いていない。', 'A wardrobe. Only half of the moving boxes are unpacked so far.')] }],
   tv: [{ steps: [n('テレビをつけると、天気予報をやっていた。「明日は全国的に晴れるでしょう。」', 'You switch on the TV: the weather forecast. “Tomorrow will be sunny nationwide.”')] }],
   fridge: [{ steps: [n('冷蔵庫の中には、牛乳と卵と、{賞味期限|しょうみきげん}が{切れ|きれ}そうなヨーグルトがある。', 'In the fridge: milk, eggs and a yoghurt about to pass its best-before date.')] }],
-  shoes: [{ steps: [n('{靴箱|くつばこ}だ。日本では家に入るとき、玄関で靴を{脱ぐ|ぬぐ}。', 'A shoe cabinet. In Japan you take off your shoes at the entrance.')] }],
+  shoes: [{ steps: [n('{靴箱|くつばこ}だ。日本では家に入るとき、玄関で靴を{脱ぐ|ぬぐ}。', 'A shoe cabinet. In Japan you take off your shoes at the entrance.'), { do: [{ note: 'genkan' }] }] }],
   laundry: [{ steps: [n('{洗濯物|せんたくもの}がたまっている。{天気|てんき}がいい日にまとめて{干そう|ほそう}。', 'The laundry is piling up. Better hang it all out on a sunny day.')] }],
   floorlamp: [{ steps: [n('{柔らかい|やわらかい}光のスタンドだ。夜の勉強にちょうどいい。', 'A lamp with soft light. Just right for studying at night.')] }],
   mirror_room: [{ steps: [n('{鏡|かがみ}に自分が{映って|うつって}いる。今日も{頑張ろう|がんばろう}！', 'Your reflection in the mirror. Let’s do our best today!')] }],
@@ -1428,6 +1982,13 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
                   then: [
                     { do: [{ money: -150 }, { give: 'greentea' }] },
                     n('ガコン！ お茶が出てきた。……コンビニでは{品切れ|しなぎれ|v:shinagire}なのに、ここにはあった。', 'Clunk! A bottle drops out. …Sold out at the konbini, but here it is.'),
+                    {
+                      if: { chance: 0.05 },
+                      then: [
+                        n('ピピピピ……「７７７７」！ {当たり|あたり}！ もう一本！', 'Beep-beep-beep… “7777”! A winner! One more drink!'),
+                        { do: [{ give: 'greentea' }, { secret: 'atari' }] },
+                      ],
+                    },
                   ],
                   else: [n('お金が足りない……。', 'Not enough money…')],
                 },
@@ -1447,6 +2008,16 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   torii: [{ steps: [n('{鳥居|とりい}だ。ここから先は神様の{領域|りょういき}だと言われている。', 'A torii gate. Beyond it is said to be the realm of the gods.')] }],
   town_hokora: [
     {
+      when: { hours: [0, 4] },
+      steps: [
+        { cg: 'cg_egg_midnight', say: '真夜中の祠。昼間とちがって、ろうそくの火がともっている。', en: 'The shrine at midnight. Unlike in the daytime, a candle is burning.' },
+        { cg: 'cg_egg_midnight', say: '？？？「……こんな夜中まで、勉強かい。えらいねえ。」', en: '???: “…Studying this late at night? Good for you.”' },
+        { cg: 'cg_egg_midnight', say: '？？？「でもね、言葉は寝ているあいだに、頭の中で{根|ね}をはるんだよ。早くおやすみ。」', en: '???: “But words put down their roots while you sleep, you know. Off to bed with you.”' },
+        { cg: 'cg_egg_midnight', say: 'ふり返っても、だれもいない。言霊たちが、すっかり元気になっている。', en: 'You turn around, but no one is there. Your Kotodama feel completely refreshed.' },
+        { do: [{ heal: true }, { secret: 'yofukashi' }] },
+      ],
+    },
+    {
       steps: [
         n('道ばたの小さな{祠|ほこら}だ。お{供|そな}えの花が新しい。', 'A tiny roadside shrine. The offering flowers are fresh.'),
         n('「言葉を大切に」と、かすれた文字で書いてある。', 'In faded letters: “Treasure your words.”'),
@@ -1463,7 +2034,60 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     },
   ],
   planter: [{ steps: [n('{花壇|かだん}にきれいな花が咲いている。町の人が手入れしているようだ。', 'Pretty flowers in a planter. The townspeople seem to look after them.')] }],
-  mirror: [{ steps: [n('カーブミラーだ。自分の顔が少しゆがんで映っている。', 'A traffic mirror. Your reflection looks a little warped.')] }],
+  mirror: [
+    {
+      when: { all: [{ count: ['mirror_looks', 12] }, { notFlag: 'secret_mirror' }] },
+      steps: [
+        { cg: 'cg_egg_mirror', say: 'カーブミラーをのぞきこむ。……十三回目。', en: 'You peer into the traffic mirror. …For the thirteenth time.' },
+        { cg: 'cg_egg_mirror', say: 'ミラーの中で、小さな青いきつねが、こちらに手をふった。', en: 'Inside the mirror, a small blue fox waves at you.' },
+        { cg: 'cg_egg_mirror', say: 'ふり返ると、ユキツネはちゃんと足もとにいる。きょとんとした顔で。', en: 'You turn around, and Yukitsune is right at your feet, looking puzzled.' },
+        { do: [{ secret: 'mirror' }, { add: 'mirror_looks' }] },
+      ],
+    },
+    { steps: [n('カーブミラーだ。自分の顔が少しゆがんで映っている。', 'A traffic mirror. Your reflection looks a little warped.'), { do: [{ add: 'mirror_looks' }] }] },
+  ],
+  /** the calico cat (a wandering townsfolk animal): be patient with it ten times */
+  folk_cat: [
+    {
+      when: { flag: 'secret_neko' },
+      steps: [n('三毛猫：「にゃ。」（{小判|こばん}のお礼を待っているような顔だ）', 'Calico cat: “Mya.” (It looks like it’s waiting to be thanked for the coin.)')],
+    },
+    {
+      when: { count: ['cat_talks', 9] },
+      steps: [
+        n('三毛猫が、くわえていた何かを、あなたの足もとにぽとりと落とした。', 'The calico cat drops something it was carrying at your feet.'),
+        n('ぴかぴかの{小判|こばん}だ！ どこで拾ってきたんだろう。', 'A shiny gold koban coin! Where did it find that?'),
+        n('「猫に小判」：価値のわからない人に、よいものをあげてもむだだ、ということわざ。……でもこの猫は、ちゃんと価値をわかっていたみたいだ。', '“Neko ni koban” (a gold coin to a cat): a proverb meaning that giving something valuable to someone who can’t appreciate it is wasted. …But this cat seems to know its worth.'),
+        { do: [{ give: 'koban' }, { secret: 'neko' }, { add: 'cat_talks' }] },
+      ],
+    },
+    {
+      when: { count: ['cat_talks', 5] },
+      steps: [n('三毛猫：「にゃあ。」（あなたの足に、すりすりしてくる）', 'Calico cat: “Nyaa.” (It rubs against your legs.)'), { do: [{ add: 'cat_talks' }] }],
+    },
+    { steps: [n('三毛猫：「にゃーん。」（のんびりしている）', 'Calico cat: “Meow.” (It looks relaxed.)'), { do: [{ add: 'cat_talks' }] }] },
+  ],
+  /** ↑↑↓↓←→←→ B A anywhere in the world */
+  egg_konami: [
+    {
+      steps: [
+        n('……どこからか、古いゲーム機の音が聞こえた気がする。', '…From somewhere, you seem to hear the sound of an old game console.'),
+        n('ユキツネ：「いまの、なに？ 昔の人の{呪文|じゅもん}？」', 'Yukitsune: “What was that? A spell from the old days?”'),
+        n('{裏技|うらわざ}を見つけた！ ことのはの{栞|しおり}をもらった。', 'You found a secret trick (urawaza)! You got Kotonoha bookmarks.'),
+        { do: [{ give: 'shiori', n: 3 }, { secret: 'konami' }] },
+      ],
+    },
+  ],
+  /** after 10,000 steps */
+  egg_manpo: [
+    {
+      steps: [
+        n('ピピッ！ スマホの{万歩計|まんぽけい}が鳴った。今日までに、なんと一万歩！', 'Beep! The pedometer (manpokei) on your phone goes off: ten thousand steps so far!'),
+        n('「千里の道も一歩から」。どんなに長い道も、一歩ずつ進めば、いつか着く。', '“A journey of a thousand miles begins with one step.” However long the road, step by step you will get there.'),
+        { do: [{ give: 'onigiri', n: 3 }, { xp: 80 }, { secret: 'manpo' }] },
+      ],
+    },
+  ],
   nosign: [
     {
       steps: [
@@ -1473,6 +2097,431 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       ],
     },
   ],
-  trash: [{ steps: [n('駅のゴミ箱だ。「カン・ビン」「ペットボトル」「その他」に分かれている。', 'The station bins: “cans & bottles”, “PET bottles”, “other”.')] }],
+  // ================================================================ interiors of chapters 2-4 (flavour text; the people keep their own scripts)
+  // --- Onsen inn Yunoka
+  ryokan_counter: [{ steps: [n('{帳場|ちょうば}に{宿帳|やどちょう}と{小さな|ちいさな}ベルが置いてある。{宿泊客|しゅくはくきゃく}の名前が、ていねいな字で並んでいる。', 'The reception counter holds a guest book and a small bell. The guests’ names are lined up in careful handwriting.'), { do: [{ note: 'omotenashi' }] }] }],
+  ryokan_scroll: [{ steps: [n('{桃|もも}の{枝|えだ}が描かれた{掛け軸|かけじく}だ。この谷の{春|はる}を思い出させる。', 'A hanging scroll with a peach branch. It reminds you of spring in this valley.')] }],
+  ryokan_shoes: [{ steps: [n('{下駄箱|げたばこ}に、お{客|きゃく}さんの{靴|くつ}がきれいに並んでいる。ここで{靴|くつ}をぬぐのが{日本|にほん}の{旅館|りょかん}のルールだ。', 'The shoe shelves, with guests’ shoes neatly lined up. Taking your shoes off here is the rule in a Japanese inn.'), { do: [{ note: 'genkan' }] }] }],
+  ryokan_umbrellas: [{ steps: [n('{傘立て|かさたて}に、{赤い|あかい}{傘|かさ}と{青い|あおい}{傘|かさ}が{差して|さして}ある。{雨|あめ}の{日|ひ}は、お{客|きゃく}さんに{貸して|かして}くれるそうだ。', 'The umbrella stand holds red and blue umbrellas. They lend them to guests on rainy days.')] }],
+  ryokan_yu: [{ steps: [n('{額|がく}に大きく「{湯|ゆ}」と{書|か}いてある。{太田|おおた}先生の{字|じ}かもしれない。', 'A framed “湯” (hot water). It might be Mr. Ōta’s calligraphy.')] }],
+  ryokan_cabinet: [{ steps: [n('ガラスの{棚|たな}に、{地元|じもと}の{日本酒|にほんしゅ}と{桃|もも}のジャムが{並んで|ならんで}いる。お{土産|みやげ}にも人気らしい。', 'A glass cabinet with local sake and peach jam. Apparently a popular souvenir.')] }],
+  ryokan_window: [{ steps: [n('{窓|まど}の{外|そと}に、{温泉|おんせん}の{湯気|ゆげ}が{立ちのぼって|たちのぼって}いる。', 'Outside the window, steam from the hot spring rises.')] }],
+  ryokan_table: [{ steps: [n('{低い|ひくい}テーブルに、お{茶|ちゃ}とお{菓子|かし}が用意されている。ひと口いただいた。', 'Tea and sweets are laid out on the low table. You have a little.'), { do: [{ heal: true }] }, n('体がほっとして、{言霊|ことだま}たちも元気になった！', 'You relax, and your Kotodama are refreshed!')] }],
+  ryokan_screen: [{ steps: [n('{山|やま}の絵の{屏風|びょうぶ}だ。{雪|ゆき}の{山|やま}が、{遠く|とおく}に描かれている。', 'A folding screen painted with mountains. Snowy peaks in the distance.')] }],
+  ryokan_hibachi: [{ steps: [n('{火鉢|ひばち}の上で、{鉄瓶|てつびん}がしゅんしゅんと音を立てている。', 'On the hibachi, an iron kettle is softly singing.')] }],
+  ryokan_yukata: [{ steps: [n('{浴衣|ゆかた}とタオルが{整えて|ととのえて}ある。{温泉|おんせん}の前に、お{客|きゃく}さんはここで着がえる。', 'Yukata and towels, neatly arranged. Guests change here before the hot spring.'), { do: [{ note: 'onsen_manners' }] }] }],
+  ryokan_pine: [{ steps: [n('{小さな|ちいさな}{松|まつ}の{鉢植え|はちうえ}だ。{年|とし}を{取った|とった}{木|き}の{形|かたち}が{美しい|うつくしい}。', 'A potted dwarf pine. The shape of the old tree is beautiful.')] }],
+  // --- Mr. Ōta's workshop
+  werk_scrolls: [{ steps: [n('{大きな|おおきな}{掛け軸|かけじく}が何枚も{下がって|さがって}いる。{墨|すみ}の{線|せん}の強さに、{思わず|おもわず}息をのむ。', 'Many large hanging scrolls. The strength of the ink lines takes your breath away.')] }],
+  werk_window: [{ steps: [n('{丸い|まるい}{窓|まど}から、{桃|もも}の{木|き}と{青い|あおい}{空|そら}が見える。まるで{絵|え}のようだ。', 'Through the round window you see the peach tree and blue sky, like a painting.')] }],
+  werk_bench: [{ steps: [n('{筆|ふで}と{硯|すずり}と{紙|かみ}が、きちんと並んでいる。{道具|どうぐ}を{大切に|たいせつに}する人の{机|つくえ}だ。', 'Brushes, inkstones and paper, all in order. The desk of someone who treasures their tools.')] }],
+  werk_chest: [{ steps: [n('{引き出し|ひきだし}の{付いた|ついた}{小さな|ちいさな}たんすだ。{上|うえ}に、{緑|みどり}の{壺|つぼ}が{置いて|おいて}ある。', 'A small chest of drawers with a green pot on top.')] }],
+  werk_cabinet: [{ steps: [n('{背の高い|せのたかい}{棚|たな}だ。{古い|ふるい}{筆|ふで}や{墨|すみ}が、{引き出し|ひきだし}ごとに{分けて|わけて}しまってある。', 'A tall cabinet. Old brushes and ink sticks are sorted drawer by drawer.')] }],
+  werk_works: [{ steps: [n('{仕上がった|しあがった}{作品|さくひん}が、ひもにつるして{乾かして|かわかして}ある。{桜|さくら}や{竹|たけ}の{絵|え}もある。', 'Finished works hang on strings to dry, including paintings of cherry blossoms and bamboo.')] }],
+  werk_desk: [{ steps: [n('{書き|かき}かけの{半紙|はんし}が{机|つくえ}の上にある。{筆|ふで}に{墨|すみ}がまだ{残って|のこって}いる。', 'A half-finished sheet of paper lies on the desk. Ink is still on the brush.'), { do: [{ note: 'shodo' }] }] }],
+  werk_lamp: [{ steps: [n('{行灯|あんどん}のやわらかい{光|ひかり}が、{畳|たたみ}をあたためている。', 'The soft light of the paper lamp warms the tatami.')] }],
+  werk_washi: [{ steps: [n('{和紙|わし}が{積んで|つんで}ある。{手|て}ざわりが、とてもやさしい。', 'A stack of washi paper. It feels very gentle to the touch.')] }],
+  werk_brush: [{ steps: [n('{大きな|おおきな}{筆|ふで}だ。これで{書く|かく}{字|じ}は、きっと{人の背|ひとのせ}ほどの大きさだろう。', 'A huge brush. The characters written with it must be as tall as a person.')] }],
+  // --- Grandma Tsuru's guesthouse
+  tsuru_kamado: [{ steps: [n('{土|つち}の{竈|かまど}の{中|なか}で、{薪|まき}がぱちぱちと{燃えて|もえて}いる。', 'Firewood crackles inside the clay stove.')] }],
+  tsuru_jars: [{ steps: [n('{水|みず}がめと{漬物|つけもの}のかめだ。{冬|ふゆ}の{間|あいだ}、{村|むら}の人はこれで{暮らす|くらす}。', 'Water jars and pickle crocks. The villagers live off these through the winter.')] }],
+  tsuru_shelf: [{ steps: [n('{棚|たな}に、{古い|ふるい}お{椀|わん}がきれいに並んでいる。', 'Old bowls stand neatly on the shelf.')] }],
+  tsuru_window: [{ steps: [n('{紙|かみ}の{窓|まど}の{向こう|むこう}に、{雪|ゆき}が{静かに|しずかに}{降って|ふって}いる。', 'Beyond the paper window, snow falls quietly.')] }],
+  tsuru_kamidana: [{ steps: [n('{神棚|かみだな}に、{榊|さかき}と{白い|しろい}{紙|かみ}が{飾って|かざって}ある。{毎朝|まいあさ}、つるさんが{手を合わせる|てをあわせる}のだろう。', 'The household shrine, decorated with sakaki branches and white paper. Tsuru probably prays here every morning.')] }],
+  tsuru_persimmons: [{ steps: [n('{干し柿|ほしがき}が{軒先|のきさき}に、ずらりと{並んで|ならんで}いる。', 'Dried persimmons hang in a long row.')] }],
+  tsuru_cupboard: [{ steps: [n('{押し入れ|おしいれ}に、ふかふかの{布団|ふとん}が{積んで|つんで}ある。', 'Fluffy futons are stacked in the cupboard.')] }],
+  tsuru_coats: [{ steps: [n('{藁|わら}の{雪|ゆき}よけ{蓑|みの}が{壁|かべ}に{掛けて|かけて}ある。{昔|むかし}は、これを{着て|きて}{雪かき|ゆきかき}をした。', 'Straw snow capes hang on the wall. People used to wear them to shovel snow.')] }],
+  tsuru_boots: [{ steps: [n('{雪靴|ゆきぐつ}がならんでいる。{大きさ|おおきさ}は、{大人|おとな}も{子ども|こども}もいろいろだ。', 'Snow boots in a row, in sizes for adults and children.')] }],
+  tsuru_irori: [{ steps: [n('{囲炉裏|いろり}の{火|ひ}が、ゆらゆらと{赤く|あかく}{燃えて|もえて}いる。{鉄瓶|てつびん}から、{湯気|ゆげ}が{上がって|あがって}いる。', 'The hearth fire flickers red. Steam rises from the iron kettle.'), { do: [{ heal: true }] }, n('火のそばで、体も心もあたたまった。', 'Beside the fire, body and heart both warm up.')] }],
+  tsuru_tray: [{ steps: [n('{小さな|ちいさな}{お盆|おぼん}に、お茶が一杯のっている。', 'A small tray with a cup of tea.')] }],
+  tsuru_wood: [{ steps: [n('{薪|まき}がかごに{山|やま}のように{積んで|つんで}ある。', 'Firewood is piled high in the basket.')] }],
+  tsuru_futon: [
+    { when: { obj: 'mq10.tsuru' }, steps: [n('{布団|ふとん}が{敷いて|しいて}ある。{見る|みる}だけで、{眠く|ねむく}なってくる。', 'A futon is laid out. Just looking at it makes you sleepy.'), ...TSURU_STAY] },
+    { steps: [n('ふかふかの{冬布団|ふゆぶとん}だ。', 'A thick winter futon.')] },
+  ],
+  // --- Yukimi clinic
+  klinik_bed: [{ steps: [n('{診察|しんさつ}ベッドだ。{白い|しろい}シーツが、ぴんと{張って|はって}ある。', 'The examination bed, with a crisp white sheet pulled tight.')] }],
+  klinik_bedstool: [{ steps: [n('{丸い|まるい}いすと、{小さな|ちいさな}{机|つくえ}がある。{体温計|たいおんけい}も{置いて|おいて}ある。', 'A round stool and a small table, with a thermometer on it.')] }],
+  klinik_shelf: [{ steps: [n('{薬|くすり}の{瓶|びん}と、{薬袋|くすりぶくろ}がきちんと並んでいる。', 'Medicine bottles and paper medicine bags, neatly arranged.')] }],
+  klinik_counter: [{ steps: [n('{受付|うけつけ}の{窓口|まどぐち}だ。「{保険証|ほけんしょう}をお{見せ|みせ}ください」と{書いて|かいて}ある。', 'The reception window. A note says: “Please show your insurance card.”'), { do: [{ note: 'health_insurance' }] }] }],
+  klinik_calendar: [{ steps: [n('{壁|かべ}のカレンダーに、{休診日|きゅうしんび}の{印|しるし}がついている。', 'The wall calendar has the clinic’s closed days marked.')] }],
+  klinik_chart: [{ steps: [n('{視力|しりょく}{検査|けんさ}の{表|ひょう}だ。{丸|まる}や{四角|しかく}の{記号|きごう}が{並んで|ならんで}いる。', 'An eye chart with rows of circles and squares.')] }],
+  klinik_cabinet: [{ steps: [n('{赤い|あかい}十字のマークの{棚|たな}だ。{包帯|ほうたい}と{消毒液|しょうどくえき}が{入って|はいって}いる。', 'A cabinet with a red cross. It holds bandages and disinfectant.')] }],
+  klinik_coat: [{ steps: [n('{白衣|はくい}が、{コート掛け|コートかけ}に{掛けて|かけて}ある。', 'A white coat hangs on the coat rack.')] }],
+  klinik_desk: [{ steps: [n('{先生|せんせい}の{机|つくえ}だ。{患者|かんじゃ}さんのカルテが{積んで|つんで}ある。', 'The doctor’s desk, stacked with patient files.')] }],
+  klinik_chairs: [{ steps: [n('{待合|まちあい}のいすだ。{冬|ふゆ}は、お年寄りがここで{世間話|せけんばなし}をしていく。', 'The waiting chairs. In winter, the elderly chat here.'), { do: [{ note: 'aging' }] }] }],
+  klinik_stove: [{ steps: [n('{石油|せきゆ}ストーブの上で、やかんがお{湯|ゆ}をわかしている。', 'A kettle simmers on top of the kerosene stove.')] }],
+  // --- Harbour diner Hamada
+  kneipe_shelf: [{ steps: [n('{皿|さら}や{お椀|おわん}が、棚にぎっしり{積んで|つんで}ある。', 'Plates and bowls are packed onto the shelf.')] }],
+  kneipe_menu: [{ steps: [n('{壁|かべ}に、{木|き}の{札|ふだ}のメニューが{並んで|ならんで}いる。{魚|さかな}の{名前|なまえ}ばかりだ。', 'Wooden menu tags line the wall. Mostly fish names.')] }],
+  kneipe_sign: [{ steps: [n('{魚|さかな}の{形|かたち}の{木|き}の{看板|かんばん}だ。', 'A wooden sign shaped like a fish.')] }],
+  kneipe_grill: [{ steps: [n('{焼き台|やきだい}の{上|うえ}で、{魚|さかな}がいい{色|いろ}に{焼けて|やけて}いる。{大きな|おおきな}{鍋|なべ}も、ぐつぐついっている。', 'Fish browns nicely on the grill, and a big pot bubbles.')] }],
+  kneipe_noren: [{ steps: [n('{青い|あおい}のれんの{奥|おく}は、{台所|だいどころ}の{裏口|うらぐち}だ。', 'Behind the blue noren is the kitchen’s back door.')] }],
+  kneipe_counter: [{ steps: [n('{長い|ながい}カウンターだ。{新鮮な|しんせんな}{魚|さかな}が、{氷|こおり}の上に{並んで|ならんで}いる。', 'A long counter. Fresh fish lies on ice.')] }],
+  kneipe_tv: [{ steps: [n('{小さな|ちいさな}テレビが、{天気予報|てんきよほう}を{流して|ながして}いる。「{明日|あした}の{波|なみ}は{穏やか|おだやか}でしょう」。', 'A small TV plays the weather forecast: “Tomorrow’s waves will be calm.”')] }],
+  kneipe_float: [{ steps: [n('ガラスの{浮き玉|うきだま}と{古い|ふるい}{網|あみ}が{壁|かべ}に{飾って|かざって}ある。', 'A glass float and an old net decorate the wall.')] }],
+  kneipe_tank: [{ steps: [n('{水槽|すいそう}の中を、{小さな|ちいさな}{魚|さかな}が{泳いで|およいで}いる。', 'Small fish swim in the tank.')] }],
+  kneipe_window: [{ steps: [n('{窓|まど}から{港|みなと}が見える。{船|ふね}がゆっくり{揺れて|ゆれて}いる。', 'Through the window you see the harbour, boats rocking slowly.')] }],
+  kneipe_stool: [{ steps: [n('{丸い|まるい}カウンターの{椅子|いす}だ。{座って|すわって}みたくなる。', 'A round counter stool. Tempting to sit on.')] }],
+  kneipe_table: [{ steps: [n('{四人|よにん}がけのテーブルだ。お{昼|ひる}どきはいつもいっぱいになるらしい。', 'A table for four. It is always full at lunchtime, apparently.')] }],
+  kneipe_lemons: [{ steps: [n('{箱|はこ}に、{黄色い|きいろい}レモンがたくさん入っている。{潮見|しおみ}の{名物|めいぶつ}だ。', 'A crate full of yellow lemons, Shiomi’s speciality.'), { do: [{ note: 'omiyage' }] }] }],
+  kneipe_cart: [{ steps: [n('{焼いた|やいた}いかのお{皿|さら}が、ワゴンの上に{積んで|つんで}ある。', 'Plates of grilled squid are stacked on the cart.')] }],
+  // --- Lighthouse keeper's room
+  turm_photo: [{ steps: [n('{古い|ふるい}{集合写真|しゅうごうしゃしん}だ。{教室|きょうしつ}いっぱいに、{子ども|こども}たちが{並んで|ならんで}いる。', 'An old group photo. Children fill the whole classroom.')] }],
+  turm_clock: [{ steps: [n('{柱時計|はしらどけい}が、{静かに|しずかに}{時|とき}を{刻んで|きざんで}いる。', 'The wall clock quietly counts the time.')] }],
+  turm_window: [{ steps: [n('{丸い|まるい}{窓|まど}の{外|そと}は、{一面|いちめん}の{海|うみ}だ。', 'Outside the round window: nothing but sea.')] }],
+  turm_books: [{ steps: [n('{辞書|じしょ}や{古い|ふるい}{教科書|きょうかしょ}が、ぎっしり{並んで|ならんで}いる。{背表紙|せびょうし}は、{何度も|なんども}{開いた|ひらいた}あとで{すり切れて|すりきれて}いる。', 'Dictionaries and old textbooks are packed in tight. The spines are worn from being opened again and again.')] }],
+  turm_barometer: [{ steps: [n('{気圧計|きあつけい}の{針|はり}は、「{晴れ|はれ}」のあたりを{指して|さして}いる。', 'The barometer needle points around “fair”.')] }],
+  turm_stairs: [{ steps: [n('{鉄|てつ}のらせん階段が、{灯台|とうだい}の{上|うえ}まで{続いて|つづいて}いる。', 'An iron spiral staircase climbs to the top of the lighthouse.')] }],
+  turm_blackboard: [{ steps: [n('{小さな|ちいさな}{黒板|こくばん}に、{消えかけた|きえかけた}チョークの{線|せん}が{残って|のこって}いる。', 'Faded chalk lines remain on the small blackboard.')] }],
+  turm_classphoto: [{ steps: [n('{額|がく}に、{学校|がっこう}の{先生|せんせい}たちの{写真|しゃしん}が入っている。{若い|わかい}{頃|ころ}の{海野|うみの}さんもいるようだ。', 'A framed photo of the school’s teachers. A young Mr. Umino seems to be among them.'), { do: [{ note: 'school_closing' }] }] }],
+  turm_coats: [{ steps: [n('{防水|ぼうすい}の{上着|うわぎ}とランタンが、{釘|くぎ}に{掛けて|かけて}ある。', 'Oilskins and a lantern hang from hooks.')] }],
+  turm_charts: [{ steps: [n('{海図|かいず}がしまってある{棚|たな}だ。{潮|しお}の{流れ|ながれ}が、{細かく|こまかく}{書き込んで|かきこんで}ある。', 'A cabinet of sea charts, with tides and currents noted in fine detail.')] }],
+  turm_desk: [{ steps: [n('{先生|せんせい}の{机|つくえ}だ。{開いた|ひらいた}ノートに、{赤ペン|あかペン}で{直した|なおした}あとがある。', 'The teacher’s desk. An open notebook shows corrections in red pen.')] }],
+  turm_globe: [{ steps: [n('{地球儀|ちきゅうぎ}だ。{指|ゆび}で{回す|まわす}と、{海|うみ}の{青|あお}がぐるりとまわる。', 'A globe. Spin it with a finger and the blue of the sea turns round.')] }],
+  turm_telescope: [{ steps: [n('{望遠鏡|ぼうえんきょう}をのぞくと、{水平線|すいへいせん|v:suiheisen}の{向こう|むこう}に、{小さな|ちいさな}{島|しま}が見える。', 'Through the telescope you see a small island beyond the horizon.'), { do: [{ learn: ['v:suiheisen'] }] }] }],
+  turm_schooldesk: [{ steps: [n('{椅子|いす}の{付いた|ついた}{古い|ふるい}{学校|がっこう}の{机|つくえ}だ。{机|つくえ}に、{生徒|せいと}の{落書き|らくがき}が{残って|のこって}いる。', 'An old school desk with attached seat. A pupil’s doodle is still carved into it.')] }],
+
+  // ================================================================ Kyoto (chapter 5)
+  kyoto_station: [
+    {
+      when: { all: [{ questActive: 'mq21' }, { notObj: 'mq21.fushimi' }] },
+      steps: [
+        n('京都駅。構内は、朝から{大勢|おおぜい}の人でごった返している。伏見稲荷へは、{奈良線|ならせん}の{各駅停車|かくえきていしゃ}で、二つ目の駅だ。', 'Kyoto Station, crowded from early morning. Fushimi Inari is two stops away on the local Nara Line.'),
+        {
+          choice: [
+            { text: '伏見稲荷へ行く', en: 'Take the local train to Fushimi Inari', then: [{ do: [{ objective: 'mq21.fushimi' }, { flag: 'fushimi_visited' }, { warp: { map: 'k_fushimi', x: 20, y: 26 } }] }] },
+            { text: 'やめる', en: 'Not yet' },
+          ],
+        },
+      ],
+    },
+    {
+      steps: [
+        n('京都駅。新幹線のホームは上、地下鉄とバスは下だ。{乗り換え|のりかえ|v:norikae}の{案内|あんない|v:ky_annai}が、何か国語もで書いてある。', 'Kyoto Station. The Shinkansen platforms are upstairs, the subway and buses below. Transfer signs are written in several languages.'),
+        {
+          choice: [
+            { text: '伏見稲荷へ行く', en: 'Take the local train to Fushimi Inari', then: [{ do: [{ flag: 'fushimi_visited' }, { warp: { map: 'k_fushimi', x: 20, y: 26 } }] }] },
+            { text: '日野森へ帰る', en: 'Take the train back to Hinomori', then: [{ do: [{ warp: { map: 'town', x: 27, y: 20 } }] }] },
+            { text: '潮見町へ行く', en: 'Take the train to Shiomi', then: [{ do: [{ warp: { map: 'harbor', x: 10, y: 2 } }] }] },
+            { text: 'やめる', en: 'Stay in Kyoto' },
+          ],
+        },
+      ],
+    },
+  ],
+  k_station_front: [{ steps: [n('京都駅の入口だ。ガラスの大きな建物の中に、案内所とホームへの階段がある。', 'The entrance of Kyoto Station. Inside the big glass building are the information desk and stairs to the platforms.')] }],
+  ikeda: [
+    {
+      when: { all: [{ questActive: 'mq18' }, { obj: 'mq18.arrive' }, { notObj: 'mq18.ikeda' }] },
+      steps: [
+        say('ikeda', 'いらっしゃいませ。京都駅へ、ようこそ。……初めてですか。', 'Welcome to Kyoto Station. …Is this your first time?'),
+        say('ikeda', '本日は、{紅葉|こうよう}の{季節|きせつ}で、{構内|こうない}がたいへん{混雑|こんざつ}しております。お{急|いそ}ぎのところ、ご{迷惑|めいわく}をおかけします。', 'It is autumn-leaf season, so the station is very crowded. We apologise to those in a hurry.'),
+        say('ikeda', '{ご案内|ごあんない}に{先立って|さきだって|g:nisakidatte}、ひとつお願いです。ホームでも{路地|ろじ}でも、立ち止まって写真を撮るのは、お{控|ひか}えくださいね。', 'Before I guide you, one request: please refrain from stopping to take photos, on the platforms or in the lanes.'),
+        { teach: 'g:nisakidatte' },
+        {
+          quiz: {
+            q: '「ご案内に先立って、お願いです」とは、どんな意味か。',
+            qEn: 'What does 「ご案内に先立って、お願いです」 mean?',
+            options: ['案内を始める前に、まずお願いがある', '案内をしたあとで、お願いする', '案内はしないが、お願いはある', '案内と同じ時に、お願いする'],
+            answer: 0,
+            why: '〜に先立って = prior to ~, before starting: the request comes before the guidance.',
+          },
+          keys: ['g:nisakidatte'], area: 'grammar', retry: true,
+        },
+        say('ikeda', '宿は、{祇園|ぎおん}の{松尾|まつお}さんのお{宅|たく}ですね。駅を出て、{錦市場|にしきいちば}を{通じて|つうじて|g:wotsujite}、{東|ひがし}へ行くのが{早|はや}いですよ。ICカードがあれば、バスも楽です。', 'Your inn is Ms. Matsuo’s house in Gion. Going through Nishiki Market and east is quickest. With an IC card, buses are easy too.'),
+        { do: [{ objective: 'mq18.ikeda' }, { rel: 'ikeda', points: 1, memory: 'first_meeting' }, { note: 'ic_card' }, { learn: ['g:nisakidatte', 'g:wotsujite', 'v:ky_annai'] }] },
+      ],
+    },
+    { when: { flag: 'chapter5_done' }, steps: [say('ikeda', '伏見の朝は、いいでしょう？ あそこの{夜明け|よあけ}が、一番静かなんです。', 'Fushimi in the morning is lovely, isn’t it? Dawn is the quietest time there.', 'happy')] },
+    { steps: [say('ikeda', '乗り換えは、あちらの{階段|かいだん}を下りて、左です。お気をつけて。', 'Transfers: go down those stairs and turn left. Take care.')] },
+  ],
+  emma: [
+    {
+      when: { all: [{ questActive: 'mq19' }, { notObj: 'mq19.emma' }] },
+      steps: [
+        say('emma', 'あの、すみません！ この{看板|かんばん}、読めなくて……。「ご{遠慮|えんりょ|v:enryo}ください」って、書いてありますよね。何を？', 'Excuse me! I can’t read this sign… it says “go-enryo kudasai”, right? What does it want from me?', 'worried'),
+        n('{看板|かんばん}には、こう書いてある。「路地での写真撮影は、ご遠慮ください」。', 'The sign reads: “Please refrain from taking photographs in the lanes.”'),
+        {
+          quiz: {
+            q: '「ご遠慮ください」は、どんな意味か。',
+            qEn: 'What does 「ご遠慮ください」 mean?',
+            options: ['しないでください', 'どうぞ、してください', 'あとでしてください', 'ゆっくりしてください'],
+            answer: 0,
+            why: '遠慮 = holding back. 「ご遠慮ください」 is a polite way to say “please don’t”.',
+          },
+          keys: ['v:enryo'], area: 'vocab', retry: true,
+        },
+        say('emma', 'えっ、写真はだめなんですか！ わたしは、ただの{旅行者|りょこうしゃ}{にすぎない||g:nisugimai}のに……。', 'What, no photos! I’m nothing more than a tourist…', 'surprised'),
+        { teach: 'g:nisugimai' },
+        n('エマは、{肩|かた}をすぼめた。「ただの旅行者」でも、{路地|ろじ}に住む人にとっては、{毎日|まいにち}{何十人|なんじゅうにん}もの旅行者の一人だ。', 'Emma shrugs. “Just one tourist” — but for the people who live in the lane, she is one of dozens every day.'),
+        say('emma', '……そうか。住んでいる人の{迷惑|めいわく}に、なっていたんですね。ありがとう。気をつけます！', '…I see. I had been a bother to the people who live here. Thank you. I’ll be careful!', 'happy'),
+        { do: [{ objective: 'mq19.emma' }, { rel: 'emma', points: 1, memory: 'first_meeting' }, { note: 'overtourism' }, { learn: ['v:enryo', 'g:nisugimai', 'v:ky_roji'] }] },
+      ],
+    },
+    { steps: [say('emma', '京都、すごいですね！ ……でも、人がいっぱいで、ちょっと{疲|つか}れました。', 'Kyoto is amazing! …But so many people. I’m a little tired.')] },
+  ],
+  sakamoto: [
+    {
+      when: { all: [{ questActive: 'mq19' }, { notObj: 'mq19.sakamoto' }] },
+      steps: [
+        say('sakamoto', 'ああ、君は旅行者かね。……少し、{相談|そうだん}に乗ってくれないか。', 'Ah, you’re a traveller? …Could you give me a bit of advice?', 'worried'),
+        say('sakamoto', '京都の取引先に、新しい商品を{提案|ていあん}したんだ。そうしたら、「{前向|まえむ}きに{検討|けんとう}させていただきます」と、{笑顔|えがお}で言われた。', 'I proposed a new product to a client in Kyoto. And they said with a smile: “We’ll consider it positively.”'),
+        say('sakamoto', 'これは、いい{返事|へんじ}だろう？ だが、{部下|ぶか}は「期待しないほうがいい」と言うんだ。', 'That’s a good answer, isn’t it? But my subordinate says I shouldn’t get my hopes up.'),
+        {
+          quiz: {
+            q: '「前向きに検討させていただきます」は、京都の取引先の{返事|へんじ}として、どう考えられるか。',
+            qEn: 'How might 「前向きに検討させていただきます」 be understood as a reply from a Kyoto client?',
+            options: ['はっきり断らない、遠回しな断りかもしれない', '必ず買うという、はっきりした約束だ', '商品が悪いという、ていねいな説明だ', '値段を下げてほしいという、お願いだ'],
+            answer: 0,
+            why: 'A smiling “we will consider it” can be a polite, indirect no (tatemae). Context and tone tell you the honne.',
+          },
+          keys: ['v:ky_tatemae'], area: 'reading', retry: true,
+        },
+        say('sakamoto', '……やはり、そうか。{社長|しゃちょう}ともなると、はっきり断れないものだな。', '…So that’s how it is. When you reach a president’s level, you can’t say no outright.'),
+        { teach: 'g:tomonaruto' },
+        say('sakamoto', '{相手|あいて}は、まるで{何|なに}も{気|き}にしていない{かのように||g:kanoyouda}笑っていた。……あれが、{空気|くうき}を読む、ということか。', 'The other side smiled as if nothing mattered. …Is that what “reading the air” means?'),
+        { teach: 'g:kanoyouda' },
+        { do: [{ objective: 'mq19.sakamoto' }, { rel: 'sakamoto', points: 1, memory: 'first_meeting' }, { note: 'honne_tatemae' }, { learn: ['v:ky_honne', 'v:ky_tatemae', 'v:ky_kuuki', 'g:tomonaruto', 'g:kanoyouda'] }] },
+      ],
+    },
+    { steps: [say('sakamoto', '次の会議までに、頭を冷やさないとな。……{遠回|とおまわ}しな返事は、{難|むずか}しい。', 'I need to cool my head before the next meeting. …Indirect replies are hard.')] },
+  ],
+  matsuo: [
+    {
+      when: { all: [{ questActive: 'mq18' }, { obj: 'mq18.ikeda' }, { notObj: 'mq18.matsuo' }] },
+      steps: [
+        say('matsuo', 'まあ、遠いところ、ようこそ。{森|もり}さんから、聞いていますよ。ゲストハウス「まつお」の松尾です。', 'Well, welcome from so far away. Ms. Mori told me about you. I’m Matsuo of the guesthouse “Matsuo”.', 'happy'),
+        n('この{町家|まちや|v:ky_machiya}は、{松尾|まつお}さんの{家族|かぞく}が{百年|ひゃくねん}以上住んできた家だ。{今|いま}は、一階を{宿|やど}にしている。', 'This machiya was home to Ms. Matsuo’s family for over a hundred years. Now the ground floor is a guesthouse.'),
+        say('matsuo', 'ご近所の{皆|みな}さんと{話|はな}し{合|あ}って、{決|き}まりを作ったんです。{夜|よる}は静かに、{路地|ろじ}では写真を撮らない。……お客さんが増えて、近所の{意見|いけん}も{分|わ}かれていてね。', 'We talked with the neighbours and made rules: be quiet at night, no photos in the lane. …With more guests, the neighbours’ opinions are divided.'),
+        say('matsuo', '{町|まち}の{将来|しょうらい}を{めぐって||g:womeguratte}、いろいろな声があるのよ。この{宿|やど}のルールは、{皆|みな}さんの{意見|いけん}に{基づいて||g:nimotozuite}作ったんです。', 'There are all kinds of voices about the town’s future. The rules of this inn are based on everyone’s opinions.'),
+        { teach: 'g:womeguratte' },
+        { teach: 'g:nimotozuite' },
+        { do: [{ objective: 'mq18.matsuo' }, { rel: 'matsuo', points: 1, memory: 'first_meeting' }, { note: 'machiya_stay' }, { learn: ['v:ky_machiya', 'g:womeguratte', 'g:nimotozuite'] }] },
+        say('matsuo', '二階に、お部屋を用意してあります。疲れたら、いつでも泊まっていってね。', 'I have a room ready upstairs. Whenever you’re tired, do stay the night.'),
+      ],
+    },
+    { when: { obj: 'mq18.matsuo' }, steps: [say('matsuo', 'おかえりなさい。今日は、どんな一日だった？', 'Welcome back. How was your day?', 'happy'), ...MATSUO_STAY] },
+    { steps: [say('matsuo', 'いらっしゃいませ。ゲストハウス「まつお」へ、ようこそ。', 'Welcome to the guesthouse “Matsuo”.')] },
+  ],
+  rin: [
+    {
+      when: { all: [{ questActive: 'mq19' }, { notObj: 'mq19.rin' }] },
+      steps: [
+        say('rin', 'いらっしゃいませ！ 着物の{貸衣装|かしいしょう}は、いかがですか。……あ、{今|いま}、お客さんが{多|おお}くて、ばたばたしてて。', 'Welcome! How about renting a kimono? …Sorry, we’re rushed — so many customers.', 'happy'),
+        say('rin', 'わたし、北海道から来た{学生|がくせい}なんです。アルバイトで、ここで{働|はたら}いて{三|さん}か{月|げつ}。', 'I’m a student from Hokkaido. I’ve been working here part-time for three months.'),
+        say('rin', '着物で歩く{観光客|かんこうきゃく}は、みんな楽しそう。{とはいえ||g:tohaie}、お店の前を通る近所の人は、ちょっと{困|こま}った顔をするんです。', 'The tourists walking in kimono all look happy. Even so, neighbours passing the shop sometimes look a bit troubled.'),
+        { teach: 'g:tohaie' },
+        {
+          quiz: {
+            q: '「楽しそうだ。とはいえ、近所の人は困った顔をする」の意味に、一番近いものはどれか。',
+            qEn: 'Which is closest to “They look happy. Even so, the neighbours look troubled”?',
+            options: ['観光客は喜んでいるが、近所の人は少し困っている', '観光客も近所の人も、みんな楽しんでいる', '近所の人は喜んでいるが、観光客は困っている', '観光客は少ないので、近所の人は困っている'],
+            answer: 0,
+            why: 'とはいえ = admitting the first fact but contrasting it: tourists are happy, yet neighbours are a bit troubled.',
+          },
+          keys: ['g:tohaie'], area: 'grammar', retry: true,
+        },
+        say('rin', 'わたしは、どっちの{気持|きも}ちも{分|わ}かる。……だから、{澄江|すみえ}さんに、{相談|そうだん}してみたら？ 島のお茶室にいる{先生|せんせい}。ヒントをくれるって、{町|まち}で{有名|ゆうめい}なの。', 'I understand both feelings. …So why not ask Sumie-san? The teacher at the tea room on the island. She’s famous in town for giving hints.'),
+        { do: [{ objective: 'mq19.rin' }, { rel: 'rin', points: 1, memory: 'first_meeting' }, { note: 'kimono_rental' }, { learn: ['g:tohaie', 'v:ky_kimono'] }] },
+      ],
+    },
+    { when: { flag: 'chapter5_done' }, steps: [say('rin', '伏見に行ったんですね！ わたしも、今度の朝、行ってみようかな。', 'You went to Fushimi! Maybe I’ll go one morning, too.', 'happy')] },
+    { steps: [say('rin', '着物、{似合|にあ}いますよ。……なんて、お客さんには、みんなにそう言うんですけどね。', 'It suits you. …Well, that’s what I tell all the customers.', 'happy')] },
+  ],
+  sumie: [
+    {
+      when: { all: [{ questActive: 'mq20' }, { notObj: 'mq20.sumie' }] },
+      steps: [
+        { do: [{ music: 'gion' }] },
+        { cg: 'cg_kyoto_tea', say: '{静|しず}かな{茶室|ちゃしつ}に、{炭|すみ}の{音|おと}だけが{響|ひび}いている。{澄江|すみえ}さんは、ゆっくりとお茶をたてた。', en: 'In the quiet tea room only the sound of charcoal can be heard. Sumie-san whisks the tea slowly.' },
+        say('sumie', 'ようこそ。……お{茶|ちゃ}は、お好きですか。それとも、お急ぎですか。', 'Welcome. …Do you like tea? Or are you in a hurry?'),
+        say('sumie', 'ぶぶ漬けでも、いかがどすか。……なんて、{京都|きょうと}の{人|ひと}はそう言って、帰ってほしい{意味|いみ}だと、よく{言|い}われますなあ。', 'Would you like some ochazuke?… That’s what Kyoto people supposedly say when they mean “please go home”, or so the story goes.', 'happy'),
+        n('{澄江|すみえ}さんは、{楽|たの}しそうに{目|め}を{細|ほそ}めた。これは、よく知られた「{京都人|きょうとじん}の{話|はなし}」だ。{本当|ほんとう}にそうなのかは、{人|ひと}と{場面|ばめん}による。', 'Sumie-san narrows her eyes with amusement. It’s a well-known “story about Kyoto people”. Whether it’s really so depends on the person and the situation.'),
+        say('sumie', '{大事|だいじ}なのは、{言葉|ことば}の{裏|うら}を{察|さっ|v:ky_sassuru}すること。……けれど、{察|さっ}するだけでは、足りません。{相手|あいて}の{気持|きも}ちに{気配|きくば}りができて{こそ||g:tekoso}、{本当|ほんとう}に{伝|つた}わるのです。', 'What matters is sensing what lies behind words. …But sensing is not enough. Only when you can be considerate of the other person’s feelings does it truly get through.'),
+        { teach: 'g:tekoso' },
+        say('sumie', '三つ、ヒントを出しましょう。{答|こた}えられたら、お話ししましょう。……{準備|じゅんび}ができたら、また{来|き}てください。', 'I’ll give you three hints. If you can answer them, we will talk. …Come back when you’re ready.'),
+        { do: [{ objective: 'mq20.sumie' }, { rel: 'sumie', points: 1, memory: 'first_meeting' }, { learn: ['v:ky_sassuru', 'v:ky_toomawashi', 'v:ky_kikubari', 'g:tekoso'] }] },
+      ],
+    },
+    {
+      when: { all: [{ questActive: 'mq20' }, { obj: 'mq20.sumie' }, { notObj: 'mq20.master' }] },
+      steps: [
+        say('sumie', 'では、一つめ。……お客様が、「このお茶、とてもおいしいですね」と{言|い}いながら、{お茶|おちゃ}を{少|すこ}ししか{飲|の}んでいません。どう{思|おも}いますか。', 'First: a guest says, “This tea is very delicious,” but drinks only a little. What do you think?'),
+        {
+          quiz: {
+            q: 'お客さんが「おいしいですね」と言いながら、少ししか飲まないとき、考えられることは何か。',
+            qEn: 'When a guest says “delicious” but drinks only a little, what might be going on?',
+            options: ['お茶が{口|くち}に{合|あ}わないが、{言|い}いにくいのかもしれない', 'とても気に入って、ゆっくり味わっている', 'のどがかわいていて、もっと欲しい', '急いでいて、すぐ帰りたい'],
+            answer: 0,
+            why: 'A polite compliment with actions that don’t match can mean the real feeling (honne) is different; you read the gap.',
+          },
+          keys: ['v:ky_honne'], area: 'reading', retry: true,
+        },
+        say('sumie', 'よろしい。二つめ。……「{考|かんが}えておきます」は、どんな{時|とき}に、どんな{意味|いみ}ですか。', 'Good. Second: when does “I’ll think about it” mean what?'),
+        {
+          quiz: {
+            q: '「考えておきます」の言い方について、正しいものはどれか。',
+            qEn: 'Which is correct about the way of saying 「考えておきます」?',
+            options: ['声の調子や{場面|ばめん}によって、「はい」にも「だめ」にもなる', '必ず「はい」という意味だ', '必ず「だめ」という意味だ', '何の意味もない、ただの挨拶だ'],
+            answer: 0,
+            why: 'Indirect replies depend on tone and context. The skill is to listen to the whole situation, not only the words.',
+          },
+          keys: ['v:ky_toomawashi'], area: 'reading', retry: true,
+        },
+        say('sumie', '最後に、三つめ。……{町|まち}の{人|ひと}も、{旅人|たびびと}も、{傷|きず}つけない言い方を、{見|み}つけられますか。', 'Last, the third: can you find a way of speaking that hurts neither the townspeople nor the travellers?'),
+        grammarQuiz('hatomokaku', 0),
+        grammarQuiz('dakenokotohaaru', 0),
+        say('sumie', '……お見事です。{十年|じゅうねん}お{茶|ちゃ}を{習|なら}っている{だけのことはある||g:dakenokotohaaru}、とお{世辞|せじ}を言うつもりでしたが、あなたは、{初|はじ}めてのお{客様|きゃくさま}の{割|わり}に、{よく聞|よくき}きました。', 'Splendid. I was going to flatter you by saying “no wonder, having studied tea for ten years”, but for a first-time guest you listened very well.'),
+        { teach: 'g:dakenokotohaaru' },
+        say('sumie', '最後に、{言霊|ことだま}と{向|む}き合ってください。……お茶の{湯気|ゆげ}から{生|う}まれた、{町|まち}の{声|こえ}です。', 'Lastly, face a Kotodama. …A voice of the town, born from the steam of tea.'),
+        {
+          battle: { species: 'bunbuku', level: 26, recruitable: true, bg: 'bg_kyoto_gion.webp' },
+          win: [
+            { cg: 'cg_kyoto_tea', say: 'ブンブクの{湯気|ゆげ}の中から、いくつもの{声|こえ}が{聞|き}こえた。{町|まち}の人の{本音|ほんね}と{旅|たび}の人の{本音|ほんね}。どちらも、{本当|ほんとう}の声だった。', en: 'From Bunbuku’s steam many voices rose: the townspeople’s honne and the travellers’ honne. Both were true.' },
+            say('sumie', '{言葉|ことば}は、{言|い}われたことだけでなく、{言|い}われなかったことも、運びます。……あなたなら、その{両方|りょうほう}を、聞けるでしょう。', 'Words carry not only what is said but also what is not. …You will be able to hear both.', 'happy'),
+            say('sumie', 'あの{方|かた}に会いたいのなら、{夜明|よあ}けの{伏見|ふしみ}へ行きなさい。{千|せん}の{鳥居|とりい}の{道|みち}を、{一人|ひとり}で歩いている人がいます。', 'If you want to meet her, go to Fushimi at dawn. Someone walks the path of a thousand gates alone.'),
+            { do: [{ objective: 'mq20.master' }, { give: 'sumie_cup' }, { rel: 'sumie', points: 3, memory: 'trial_passed' }, { learn: ['g:hatomokaku', 'g:tekoso', 'g:dakenokotohaaru', 'g:narini'] }] },
+          ],
+          lose: [say('sumie', '{焦|あせ}ると、{言葉|ことば}の{裏|うら}は見えなくなります。{落|お}ち着いて、またどうぞ。', 'When you hurry, what lies behind words becomes invisible. Calm down and come again.')],
+        },
+      ],
+    },
+    { when: { flag: 'chapter5_done' }, steps: [say('sumie', '{朝|あさ}の{鳥居|とりい}は、いかがでしたか。……言わなくても、お顔に{書|か}いてありますね。', 'How were the gates in the morning? …You needn’t say; it’s written on your face.', 'happy')] },
+    { steps: [say('sumie', 'お茶を、一服。……急がなくても、{言葉|ことば}は逃げません。', 'Have a cup of tea. …Words don’t run away if you don’t hurry.')] },
+  ],
+  k_guesthouse: [
+    { when: { obj: 'mq18.matsuo' }, steps: [n('ゲストハウス「まつお」の玄関だ。松尾さんが、中から手を振っている。', 'The entrance of the guesthouse “Matsuo”. Ms. Matsuo waves from inside.'), ...MATSUO_STAY] },
+    { steps: [n('{町家|まちや|v:ky_machiya}を{改装|かいそう}した{宿|やど}だ。{格子戸|こうしど}の{向|む}こうで、{灯|あか}りがやさしくゆれている。', 'A guesthouse in a renovated machiya. Beyond the latticed door a light flickers gently.')] },
+  ],
+  k_teahouse: [
+    { when: { all: [{ questActive: 'mq20' }, { notObj: 'mq20.sumie' }] }, steps: [n('島の{茶室|ちゃしつ}。{澄江|すみえ}さんが、{入口|いりぐち}の{前|まえ}でお{待|ま}ちのようだ。', 'The tea house on the island. Sumie-san seems to be waiting at the entrance.')] },
+    { steps: [n('小さな{庭|にわ}のある{茶室|ちゃしつ}。{石灯籠|いしどうろう}に、{紅葉|もみじ}が{一枚|いちまい}{落|お}ちている。', 'A tea house with a small garden. A maple leaf has fallen on the stone lantern.')] },
+  ],
+  k_kimono_shop: [{ steps: [n('{着物|きもの|v:ky_kimono}の{貸衣装|かしいしょう}のお店。色とりどりの着物が、{窓|まど}いっぱいにかかっている。', 'A kimono rental shop. Colourful kimono hang across the whole window.'), { do: [{ note: 'kimono_rental' }] }] }],
+  k_izakaya: [{ steps: [n('{居酒屋|いざかや}の{前|まえ}だ。{夜|よる}になると、{赤|あか}い{提灯|ちょうちん}に{灯|ひ}がともる。{今|いま}は、{準備中|じゅんびちゅう}の{札|ふだ}が{下|さ}がっている。', 'In front of an izakaya. At night its red lantern lights up. For now a “preparing” sign hangs.')] }],
+  k_kamo_cafe: [{ steps: [n('川を見下ろす、小さな{茶|ちゃ}カフェ。{抹茶|まっちゃ|v:ky_matcha}と{和菓子|わがし}のセットが、{人気|にんき}らしい。', 'A small tea café overlooking the river. The matcha and Japanese-sweet set seems popular.')] }],
+  k_shop_veg: [{ steps: [n('{漬物|つけもの}や{野菜|やさい}を{売|う}る{店|みせ}。{試食|ししょく}の{皿|さら}が{並|なら}んでいる。「{食|た}べ{歩|ある}きは、ご{遠慮|えんりょ}ください」の{札|ふだ}も。', 'A shop selling pickles and vegetables, with sample plates. A sign asks: “Please refrain from eating while walking.”'), { do: [{ note: 'tabearuki' }] }] }],
+  k_shop_old: [{ steps: [n('{老舗|しにせ|v:ky_shinise}の{店|みせ}。{包丁|ほうちょう}や{器|うつわ}が、{静|しず}かに{並|なら}んでいる。{店|みせ}の{人|ひと}は、{奥|おく}で{忙|いそが}しそうだ。', 'A long-established shop with knives and tableware lined up quietly. The staff look busy in the back.')] }],
+  k_nishiki_sign: [
+    {
+      when: { all: [{ questActive: 'mq19' }, { obj: 'mq19.emma' }, { obj: 'mq19.sakamoto' }, { obj: 'mq19.rin' }, { notObj: 'mq19.nishiki' }] },
+      steps: [
+        n('{錦市場|にしきいちば}の{入口|いりぐち}で、{看板|かんばん}がちかちか{光|ひか}っている。「ようこそ！ Welcome! 欢迎！」。……{何|なに}かが、{看板|かんばん}の{文字|もじ}の{陰|かげ}で、{騒|さわ}いでいる。', 'At the entrance of Nishiki Market a sign flickers: “Youkoso! Welcome! 欢迎!” …Something is making a racket behind the letters.'),
+        {
+          battle: { species: 'chatama', level: 23, recruitable: true, bg: 'bg_kyoto_gion.webp' },
+          win: [
+            n('{騒|さわ}いでいたのは、チャタマだった。たくさんの{言葉|ことば}に{囲|かこ}まれて、{自分|じぶん}の{声|こえ}が{聞|き}こえなくなっていたのだ。', 'It was Chatama. Surrounded by so many words, it could no longer hear its own voice.'),
+            n('{看板|かんばん}の{光|ひかり}が、{少|すこ}しやさしくなった。「ようこそ」の{文字|もじ}が、ゆっくりと{落|お}ち{着|つ}く。', 'The sign’s light softens a little. The letters of “Welcome” settle slowly.'),
+            { do: [{ objective: 'mq19.nishiki' }, { note: 'tabearuki' }, { seen: 'chatama' }, { learn: ['v:ky_honne', 'v:ky_kuuki'] }] },
+          ],
+          lose: [n('{看板|かんばん}の{光|ひかり}が、まぶしくてよく見えない。……{少|すこ}し{休|やす}んで、また{来|き}よう。', 'The sign is too bright to see clearly. …Rest a bit and try again.')],
+        },
+      ],
+    },
+    { when: { questActive: 'mq19' }, steps: [n('{看板|かんばん}がちかちか光っている。{先|さき}に、{駅|えき}や{祇園|ぎおん}で、{人|ひと}の{話|はなし}を{聞|き}いてみよう。', 'The sign flickers. First, let’s listen to people at the station and in Gion.')] },
+    { steps: [n('{錦市場|にしきいちば}の{入口|いりぐち}。「ようこそ」の{看板|かんばん}が、{静|しず}かに{光|ひか}っている。', 'The entrance of Nishiki Market. The “Welcome” sign glows quietly.')] },
+  ],
+  k_gion_hokora: [{ steps: [n('{石段|いしだん}の{上|うえ}の、小さなお{社|やしろ}。{町|まち}の人が、{毎朝|まいあさ}{手|て}を{合|あ}わせるのだろう。', 'A small shrine at the top of the stone steps. Townspeople probably pray here every morning.')] }],
+  k_gion_lantern: [{ steps: [n('{広場|ひろば}の{真|ま}ん{中|なか}の{大|おお}きな{石灯籠|いしどうろう}。{夜|よる}になると、ほんのり{灯|あか}りがともる。', 'A big stone lantern in the middle of the square. At night it glows softly.')] }],
+  k_shrine: [
+    { steps: [n('{稲荷|いなり}{神社|じんじゃ}の{本殿|ほんでん}。{左右|さゆう}に、{赤い|あかい}前かけをした{石|いし}のきつねが{座|すわ}っている。', 'The main hall of the Inari shrine. A stone fox in a red bib sits on each side.'), n('お{賽銭|さいせん}を{入|い}れて、{手|て}を{合|あ}わせた。{朝|あさ}の{空気|くうき}が、すっと{静|しず}まる。', 'You drop in a coin and press your hands together. The morning air quietens.'), { do: [{ note: 'inari_torii' }] }] },
+  ],
+  k_shrine_office: [{ steps: [n('{社務所|しゃむしょ}だ。お{守|まも}りや{絵馬|えま}が{並|なら}んでいる。{絵馬|えま}には、{小|ちい}さなきつねの{絵|え}がかいてある。', 'The shrine office. Charms and ema plaques are lined up. The ema have a little fox drawn on them.')] }],
+  k_souvenir: [{ steps: [n('{土産物|みやげもの}の{店|みせ}。きつねの{形|かたち}の{お菓子|おかし}や、{小|ちい}さな{鳥居|とりい}が{並|なら}んでいる。', 'A souvenir stand with fox-shaped sweets and little torii on display.')] }],
+  k_fushimi_summit: [
+    {
+      when: { all: [{ questActive: 'mq21' }, { obj: 'mq21.fushimi' }, { notObj: 'mq21.summit' }] },
+      steps: [
+        { do: [{ music: 'gion' }] },
+        { cg: 'cg_kyoto_fushimi', say: '{千本|せんぼん}の{鳥居|とりい}のトンネルに、{朝|あさ}の{光|ひかり}が{差|さ}し{込|こ}んでいる。……{遠|とお}くに、{帳面|ちょうめん}を{抱|かか}えた女の人が、{歩|ある}いていく。', en: 'Morning light streams through the tunnel of a thousand torii. …Far ahead, a woman with a notebook walks away.' },
+        { cg: 'cg_kyoto_fushimi', say: '@nameは、思わず{手|て}を{伸|の}ばした。けれど、{女|おんな}の{人|ひと}は、{振|ふ}り{返|かえ}らなかった。{鳥居|とりい}の{向|む}こうの{光|ひかり}の中へ、{少|すこ}しずつ{消|き}えていく。', en: '@name reaches out. But the woman does not turn around. She fades little by little into the light beyond the gates.' },
+        n('{道|みち}に、{一枚|いちまい}の{紙|かみ}が{落|お}ちていた。ていねいな{字|じ}で、こう{書|か}いてある。「{言葉|ことば}は、{人|ひと}の{多|おお}い{町|まち}ほど、{聞|き}こえなくなる」。', 'A sheet of paper lies on the path. In careful handwriting it says: “Words become harder to hear in busy towns.”'),
+        n('その下に、{一字|いちじ}だけ。「{阪|さか}」。', 'Beneath it, a single character: 阪.'),
+        {
+          quiz: {
+            q: '{女|おんな}の人は、なぜ振り返らなかったと{考|かんが}えられるか。',
+            qEn: 'Why might the woman not have turned around?',
+            options: ['まだ、会うための言葉を探している途中だから', '@nameの顔を、知らなかったから', '朝の光がまぶしかったから', '道を急いでいたから'],
+            answer: 0,
+            why: 'Sumie-san’s hint: she is still “searching for the words”. Words not yet found cannot be said — you read it between the lines.',
+          },
+          keys: ['v:ky_sassuru'], area: 'reading', retry: true,
+        },
+        { do: [{ objective: 'mq21.summit' }, { note: 'inari_torii' }, { seen: 'senbon' }, { learn: ['v:ky_sassuru', 'g:nihokanaranai', 'g:tsutsuaru', 'g:wotowazu'] }] },
+        { cg: 'cg_kyoto_arrival', say: '言葉は、{聞|き}こえなくなっても、なくなりはしない。{察|さっ}して、{待|ま}って、また{届|とど}ける。\n― 第五章「京都」完 ―', en: 'Words may become hard to hear but they do not vanish. Sense them, wait, and deliver them again.\n— Chapter 5 “Kyoto” complete —' },
+        n('Chapter 5 complete! Kyoto stays open: tea with Sumie-san, the Kotodama of the river and Fushimi, and your Japan notes. Chapter 6 (Osaka) is in development.'),
+      ],
+    },
+    { steps: [n('{頂上|ちょうじょう}の{広場|ひろば}。{京都|きょうと}の{町|まち}と、{遠|とお}い{山|やま}が{霞|かす}んで{見|み}える。', 'The summit clearing. Kyoto and the distant mountains lie hazy below.')] },
+  ],
+
+  // ---- interiors of Kyoto (chapter 5): flavour text
+  machiya_counter: [{ steps: [n('帳場の机に、宿帳と鍵かけがある。世界のあちこちの国の名前が、丁寧な字で並んでいる。', 'The reception desk holds a guest book and a key rack. Names from all over the world are lined up in neat handwriting.')] }],
+  machiya_keys: [{ steps: [n('小さな鍵が、部屋の名前の札といっしょに下がっている。「梅」「竹」「松」。', 'Small keys hang with name tags for the rooms: “Plum”, “Bamboo”, “Pine”.')] }],
+  machiya_scroll: [{ steps: [n('紅葉の枝を描いた掛け軸だ。季節ごとに、松尾さんが掛け替えるらしい。', 'A hanging scroll with maple branches. Ms. Matsuo apparently changes it with the seasons.')] }],
+  machiya_garden: [{ steps: [n('ガラスの戸の向こうに、小さな中庭がある。石の手水鉢に、水がしたたっている。', 'Beyond the glass doors is a small inner garden. Water drips into a stone basin.')] }],
+  machiya_shoes: [{ steps: [n('下駄箱に、お客さんの靴がきれいに並んでいる。町家でも、靴はぬぐのがきまりだ。', 'Guests’ shoes are lined up neatly in the shoe cabinet. Shoes come off in a machiya, too.')] }],
+  machiya_luggage: [{ steps: [n('荷物置き場だ。大きなスーツケースが、いくつも預けてある。', 'The luggage corner, with several big suitcases left in storage.')] }],
+  machiya_books: [{ steps: [n('本棚に、観光ガイドが並んでいる。「路地では静かに」と書いた小さな紙がはさんである。', 'Tour guides line the shelf. A small slip tucked in says “Please be quiet in the lanes”.')] }],
+  machiya_table: [{ steps: [n('低いテーブルに、お茶とお菓子が用意されている。ひと口いただいた。', 'Tea and sweets are set out on the low table. You have a little.'), { do: [{ heal: true }] }, n('体がほっとして、言霊たちも元気になった！', 'You relax, and your Kotodama are refreshed!')] }],
+  machiya_lantern: [{ steps: [n('紙の行灯のやわらかい光が、畳をあたためている。', 'The soft light of the paper lantern warms the tatami.')] }],
+  machiya_bonsai: [{ steps: [n('小さな紅葉の盆栽だ。葉が、ほんのり赤くなっている。', 'A small maple bonsai. Its leaves are just turning red.')] }],
+  machiya_screen: [{ steps: [n('川の絵の屏風だ。川べりを歩く人たちが、小さく描かれている。', 'A folding screen painted with a river. Tiny people walk along its bank.')] }],
+  machiya_suitcase: [{ steps: [n('お客さんの大きなスーツケースだ。持ち主は、まだ観光中らしい。', 'A guest’s big suitcase. Its owner is still out sightseeing, apparently.')] }],
+  teahouse_shelf: [{ steps: [n('棚に、茶わんや茶入れがきちんと並んでいる。どれも、長く使われてきた道具だ。', 'Tea bowls and caddies are lined up on the shelf, all tools that have been used for a long time.')] }],
+  teahouse_hearth: [{ steps: [n('畳の中の小さな炉に、炭が赤く燃えている。釜から、静かに湯気が上がる。', 'Charcoal glows red in the small hearth sunk in the tatami. Steam rises quietly from the kettle.')] }],
+  teahouse_scroll: [{ steps: [n('山の絵の掛け軸が、床の間に掛かっている。見ていると、気持ちが静まる。', 'A mountain scroll hangs in the alcove. Looking at it calms the mind.')] }],
+  teahouse_flowers: [{ steps: [n('床の間に、季節の花が活けてある。赤い葉が、ひと枝そえてある。', 'Seasonal flowers are arranged in the alcove, with one branch of red leaves.')] }],
+  teahouse_garden: [{ steps: [n('障子の向こうに、庭の紅葉が見える。風が吹くたびに、葉が一枚ずつ落ちる。', 'Beyond the shoji you see the garden’s maples. With every breeze a leaf falls.')] }],
+  teahouse_jar: [{ steps: [n('小さな棚に、水がめと壺が置いてある。', 'A small shelf holds a water jar and a pot.')] }],
+  teahouse_table: [{ steps: [n('低い茶卓の上に、お茶の道具が一そろい置いてある。茶せんが、きれいにそろっている。', 'A set of tea utensils is laid out on the low tea table. The whisk is perfectly aligned.'), { do: [{ heal: true }] }, n('温かいお茶を一服。心が落ち着いて、言霊たちも元気になった！', 'A cup of warm tea. Your mind settles, and your Kotodama are refreshed!')] }],
+  teahouse_waterjar: [{ steps: [n('水指の台だ。水の音が、静かな部屋に小さく響く。', 'A stand for the water jar. The sound of water echoes softly in the quiet room.')] }],
+  teahouse_vase: [{ steps: [n('竹の花入れが、台の上に置いてある。', 'A bamboo flower vase on its stand.')] }],
+  teahouse_lamp: [{ steps: [n('和紙の灯りが、茶室をほんのり明るくしている。', 'A washi lamp lights the tea room faintly.')] }],
+  kimono_geta: [{ steps: [n('下駄と草履の棚だ。着物の色に合わせて、鼻緒を選ぶらしい。', 'A shelf of geta and zori. You choose the thongs to match the colour of your kimono.')] }],
+  kimono_boxes: [{ steps: [n('帯や小物の箱が、色ごとに並んでいる。', 'Boxes of obi and accessories are lined up by colour.')] }],
+  kimono_counter: [{ steps: [n('受付のカウンターだ。タブレットで、予約と返却の時間を確認する。', 'The reception counter. A tablet is used to check reservations and return times.')] }],
+  kimono_noren: [{ steps: [n('赤いのれんの奥は、着付けの部屋だ。「スタッフ専用」の札がかかっている。', 'Behind the red noren is the dressing room. A sign reads “Staff only”.')] }],
+  kimono_hanging: [{ steps: [n('色とりどりの着物が、ずらりと掛かっている。花もよう、鳥もよう……どれにしようか迷う。', 'Colourful kimono hang in a long row: flowers, birds… it’s hard to choose.')] }],
+  kimono_platform: [{ steps: [n('小さな畳の台だ。ここに立って、着付けをしてもらう。', 'A small tatami platform. You stand here to be dressed.')] }],
+  kimono_mirror: [{ steps: [n('大きな鏡に、自分の姿がうつる。……着物を着たら、もっと背筋が伸びそうだ。', 'A big mirror shows your reflection. …In a kimono you’d probably stand straighter.')] }],
+  kimono_bench: [{ steps: [n('着付けの前に、足袋をはくための低いベンチだ。', 'A low bench for putting on tabi socks before dressing.')] }],
+  kimono_rack: [{ steps: [n('移動式のラックに、これから貸し出す着物が掛かっている。', 'On a wheeled rack hang the kimono about to go out for rent.')] }],
+  kimono_basket: [{ steps: [n('かごの中に、髪かざりがたくさん入っている。花やリボン、小さな櫛もある。', 'A basket full of hair ornaments: flowers, ribbons, even little combs.')] }],
+  izakaya_bottles: [{ steps: [n('棚に、日本酒の瓶がずらりと並んでいる。ラベルは、地元の酒蔵のものばかりだ。', 'Sake bottles line the shelf, all labelled by local breweries.')] }],
+  izakaya_noren: [{ steps: [n('藍色ののれんに、白く徳利の形が染め抜いてある。奥が、台所だ。', 'The indigo noren has a sake bottle dyed in white. The kitchen lies behind it.')] }],
+  izakaya_grill: [{ steps: [n('焼き台の上に、串がのっている。夜になると、いい香りがするのだろう。', 'Skewers sit on the grill. At night it probably smells wonderful.')] }],
+  izakaya_counter: [{ steps: [n('長いカウンターだ。席に着くと、まず小さなお通しが出るらしい。……日本の居酒屋には、チップはない。', 'A long counter. When you sit down, a small appetiser (otoshi) apparently comes first. …In Japanese izakaya there is no tipping.'), { do: [{ note: 'otoshi' }] }] }],
+  izakaya_shelf: [{ steps: [n('小さな棚に、お皿やコップがきちんと重ねてある。', 'A small shelf with plates and cups stacked neatly.')] }],
+  izakaya_tv: [{ steps: [n('小さなテレビが、天気予報を流している。', 'A small TV plays the weather forecast.')] }],
+  izakaya_window: [{ steps: [n('細い窓から、路地の明かりがもれてくる。', 'Light from the lane seeps through the narrow window.')] }],
+  izakaya_crates: [{ steps: [n('瓶ケースが、壁ぎわに積んである。', 'Bottle crates are stacked against the wall.')] }],
+  izakaya_stool: [{ steps: [n('カウンターの丸い椅子だ。座ってみたくなる。', 'A round counter stool. You feel like sitting down.')] }],
+  izakaya_table: [{ steps: [n('低いテーブルに、座布団が二つ。仲のいい二人用の席だ。', 'A low table with two cushions. A seat for two friends.')] }],
+  izakaya_barrel: [{ steps: [n('樽をテーブルにした席だ。', 'A table made from a barrel.')] }],
+  izakaya_lantern: [{ steps: [n('赤い提灯が、床に置いてある。夜は、これを店の前に出すのだろう。', 'A red lantern stands on the floor. At night it probably goes out front.')] }],
+  izakaya_beer: [{ steps: [n('瓶ビールのケースだ。空の瓶が、まだ少し残っている。', 'Crates of bottled beer, with a few empty bottles left.')] }],
+  info_lockers: [{ steps: [n('コインロッカーが、壁にずらりと並んでいる。大きなスーツケースも入るサイズがある。', 'Coin lockers line the wall, with sizes that fit big suitcases.')] }],
+  info_board: [{ steps: [n('電車の時刻表の電光掲示板だ。行き先が、日本語と英語で交互に表示される。', 'The electronic timetable board. Destinations alternate between Japanese and English.'), { do: [{ note: 'ic_card' }] }] }],
+  info_counter: [{ steps: [n('案内カウンターだ。「Information」の丸いマークが、青く光っている。', 'The information counter. A round “Information” mark glows blue.')] }],
+  info_vending: [{ steps: [n('自動販売機だ。ICカードをタッチして買える機械もある。', 'A vending machine. Some can be paid for by touching an IC card.')] }],
+  info_atm: [{ steps: [n('ATMだ。外国のカードが使えるかどうか、画面で選ぶようになっている。', 'An ATM. A menu on the screen asks whether you’re using a foreign card.')] }],
+  info_bench: [{ steps: [n('待合のベンチだ。大きな荷物を持った旅行者が、休んでいる。', 'A waiting bench. Travellers with big luggage rest here.')] }],
+  info_trolley: [{ steps: [n('荷物用のカートだ。', 'A luggage trolley.')] }],
+  info_bins: [{ steps: [n('三つのごみ箱が並んでいる。「燃えるごみ」「びん・缶」「ペットボトル」。', 'Three bins stand in a row: “burnable”, “bottles & cans”, “PET bottles”.'), { do: [{ note: 'bunbetsu' }] }] }],
+  info_sign: [{ steps: [n('案内板に、乗り場の番号が書いてある。いろいろな言葉の説明つきだ。', 'A signboard lists platform numbers with explanations in several languages.')] }],
+  info_suitcase: [{ steps: [n('だれかの黒いスーツケースだ。持ち主は、案内カウンターに並んでいるのだろう。', 'Somebody’s black suitcase. Its owner is probably in line at the counter.')] }],
+  pickle_jars: [{ steps: [n('大きなガラス瓶に、色とりどりの漬物が入っている。きゅうり、大根、なす、かぶ……。', 'Big glass jars hold colourful pickles: cucumber, radish, aubergine, turnip…')] }],
+  pickle_sign: [{ steps: [n('「本日のおすすめ」と、墨で書いた木の看板が掛かっている。', 'A wooden sign in ink reads “Today’s recommendation”.')] }],
+  pickle_window: [{ steps: [n('小さな格子窓から、朝の光がさしている。', 'Morning light falls through a small latticed window.')] }],
+  pickle_counter: [{ steps: [n('カウンターに、試食の皿が並んでいる。「お一つどうぞ」と、店の人が笑う。……「食べ歩き」は、ご遠慮ください。', 'Sample plates line the counter. “Have one,” the shopkeeper smiles. …But please refrain from eating while walking.'), { do: [{ note: 'tabearuki' }] }] }],
+  pickle_veg: [{ steps: [n('木箱に、大根、白菜、なすが並んでいる。冬の京野菜だ。', 'Wooden crates of daikon, napa cabbage and aubergines: winter Kyoto vegetables.')] }],
+  pickle_scale: [{ steps: [n('古い秤と、包み紙が置いてある。重さを量って、一枚ずつ包んでくれる。', 'An old scale and wrapping paper. Items are weighed and wrapped one by one.')] }],
+  pickle_table: [{ steps: [n('試食用の小さなテーブルに、つまようじと小皿が並んでいる。', 'A small tasting table with toothpicks and little plates.')] }],
+  pickle_barrel: [{ steps: [n('大きな漬物樽だ。蓋の上に、重い石がのせてある。', 'A big pickling barrel with a heavy stone on its lid.')] }],
+  pickle_crates: [{ steps: [n('木箱が重ねてある。', 'Stacked wooden crates.')] }],
+  pickle_basket: [{ steps: [n('お客さん用の買い物かごだ。', 'A shopping basket for customers.')] }],
+  trash: [{ steps: [n('駅のゴミ箱だ。「カン・ビン」「ペットボトル」「その他」に分かれている。', 'The station bins: “cans & bottles”, “PET bottles”, “other”.'), { do: [{ note: 'bunbetsu' }] }] }],
   barrel: [{ steps: [n('ラーメン屋の裏の{雨水|あまみず}をためる{樽|たる}だ。', 'A rain barrel behind the ramen shop.')] }],
 };

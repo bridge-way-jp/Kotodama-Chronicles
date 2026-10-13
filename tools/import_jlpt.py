@@ -68,17 +68,30 @@ KANJI_HINTS = {
 }
 
 
+def affix_kind(expr):
+    """'～館' is a suffix, 'お～' a prefix; a ～ inside a usage note like (かさを～) does not count."""
+    core = re.sub(r'[（(][^)）]*[)）]', '', expr).replace(' ', '').strip()
+    if re.match(r'^[～〜]', core):
+        return 'suffix'
+    if re.search(r'[～〜]$', core):
+        return 'prefix'
+    return None
+
+
 def clean_word(expr):
-    """'～位' -> '位', '(かさを～) さす' -> 'さす', '〜 (まる) ごと' -> 'まるごと'"""
-    w = re.sub(r'[（(][^)）]*[～〜][^)）]*[)）]', '', expr)  # usage notes like (かさを～)
-    w = re.sub(r'[（(]([^)）]*)[)）]', r'\1', w)
+    """'～位' -> '位', '(かさを～) さす' -> 'さす', '〜 (まる) ごと' -> 'ごと', 'はい (かん)' -> 'はい', '下品(な)' -> '下品'.
+    Brackets are always notes (usage, an example word, (かん) = interjection, (な) = na-adjective)."""
+    w = re.sub(r'[（(][^)）]*[)）]', '', expr).strip()
+    if not affix_kind(expr):
+        w = w.split(' ')[0]  # 'こうよう もみじ', 'しかく しかくい': alternatives, keep the first
     w = w.replace('～', '').replace('〜', '').replace(' ', '').strip()
     return w.split('・')[0].split('/')[0].split(';')[0].strip()
 
 
-def clean_reading(r):
-    r = re.sub(r'[（(][^)）]*[～〜][^)）]*[)）]', '', r)
-    r = re.sub(r'[（(]([^)）]*)[)）]', r'\1', r)
+def clean_reading(r, affix=None):
+    r = re.sub(r'[（(][^)）]*[)）]', '', r).strip()
+    if not affix:
+        r = r.split(' ')[0]
     return r.replace('～', '').replace('〜', '').replace(' ', '').split('・')[0].split('/')[0].split(';')[0].strip()
 
 
@@ -146,14 +159,19 @@ def main():
     for level in ('N2', 'N3'):
         rows = list(csv.DictReader(open(os.path.join(SRC, f'{level.lower()}.csv'), encoding='utf-8')))
         for i, r in enumerate(rows):
+            affix = affix_kind(r['expression'])
             word = clean_word(r['expression'])
-            reading = clean_reading(r['reading'])
+            reading = clean_reading(r['reading'], affix)
             en = clean_meaning(r['meaning'])
-            if not word or not reading or not en or word in have or word in seen:
+            # an affix (～位, い) and the word with the same characters (位, くらい) are different items
+            form = {'suffix': '～' + word, 'prefix': word + '～'}.get(affix, word)
+            if not word or not reading or not en or form in have or form in seen:
                 continue
-            seen.add(word)
+            seen.add(form)
             e = {'id': romaji_id(level, i), 'word': word, 'reading': reading, 'en': en,
-                 'pos': guess_pos(word, reading, en), 'level': level}
+                 'pos': 'na-adj' if re.search(r'[（(]な[)）]', r['expression']) else guess_pos(word, reading, en), 'level': level}
+            if affix:
+                e['affix'] = affix
             if level == 'N2':
                 t = topic_of(r['meaning']) or topic_from_kanji(word)
                 if t:

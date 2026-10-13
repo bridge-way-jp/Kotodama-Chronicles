@@ -3,7 +3,7 @@ import { store, DEFAULT_SETTINGS } from '../core/store';
 import { QUESTS } from '../content/quests';
 import { AFFINITY_INFO, ITEMS, MOVES, SPECIES } from '../content/creatures';
 import { NPCS } from '../content/npcs';
-import { VOCAB } from '../content/vocab';
+import { VOCAB, wordForm } from '../content/vocab';
 import { GRAMMAR } from '../content/grammar';
 import { KANJI } from '../content/kanji';
 import { AFFIXES } from '../content/wordformation';
@@ -18,16 +18,19 @@ import { exportToJson, makeEnvelope } from '../core/save';
 import { ExportBox, ImportBox } from './Backup';
 import { CloudSettings, PackSettings } from './CloudPanel';
 import { saveNow, saveStatus } from '../core/persistence';
+import { SECRETS, foundSecrets } from '../content/secrets';
+import { NOTES, foundNotes } from '../content/society';
 import { setSfx, setMusicVolume, hasJapaneseVoice, ttsAvailable } from '../core/audio';
 import { ItemDetail, MASTERY_LABEL } from './Cards';
 import type { Settings } from '../core/types';
 
-export type MenuTab = 'status' | 'quests' | 'kotodama' | 'bag' | 'notebook' | 'jlpt' | 'map' | 'settings';
+export type MenuTab = 'status' | 'quests' | 'kotodama' | 'bag' | 'notebook' | 'japan' | 'jlpt' | 'map' | 'settings';
 
 const TABS: { id: MenuTab; ja: string; en: string; icon: string }[] = [
   { id: 'quests', ja: 'クエスト', en: 'Quests', icon: 'mi_quests' },
   { id: 'kotodama', ja: 'コトダマ', en: 'Kotodama', icon: 'mi_kotodama' },
   { id: 'notebook', ja: 'ノート', en: 'Notebook', icon: 'mi_notebook' },
+  { id: 'japan', ja: '日本ノート', en: 'Japan notes', icon: 'mi_notebook' },
   { id: 'jlpt', ja: 'JLPT N2', en: 'Readiness', icon: 'mi_jlpt' },
   { id: 'bag', ja: 'もちもの', en: 'Bag', icon: 'mi_bag' },
   { id: 'status', ja: 'ステータス', en: 'Status', icon: 'mi_status' },
@@ -64,6 +67,7 @@ export function Menu({ tab: initial, onClose, actions }: { tab?: MenuTab; onClos
           {tab === 'kotodama' && <KotodamaTab />}
           {tab === 'bag' && <BagTab />}
           {tab === 'notebook' && <NotebookTab />}
+          {tab === 'japan' && <JapanTab />}
           {tab === 'jlpt' && <JlptTab actions={actions} />}
           {tab === 'map' && <MapTab />}
           {tab === 'settings' && <SettingsTab actions={actions} />}
@@ -116,6 +120,58 @@ function StatusTab() {
           {rel.memories.length > 0 && <div className="note">Remembers: {rel.memories.map(memoryText).join(' · ')}</div>}
         </div>
       ))}
+      <h3>
+        ひみつ Secrets <small className="note">{foundSecrets(s)} / {Object.keys(SECRETS).length}</small>
+      </h3>
+      <ul className="secret-list">
+        {Object.entries(SECRETS).map(([id, x]) =>
+          s.flags['secret_' + id] ? (
+            <li key={id} className="found">
+              ✦ <b lang="ja">{x.name}</b> <small>{x.nameEn}</small>
+            </li>
+          ) : (
+            <li key={id} className="hidden">
+              ？？？ <small className="note">{x.hint}</small>
+            </li>
+          ),
+        )}
+      </ul>
+    </div>
+  );
+}
+
+function JapanTab() {
+  const s = store.s;
+  const chapters = [...new Set(Object.values(NOTES).map((n) => n.chapter))].sort((a, b) => a - b);
+  return (
+    <div className="tab-content">
+      <h3>
+        日本ノート Japan notes <small className="note">{foundNotes(s)} / {Object.keys(NOTES).length}</small>
+      </h3>
+      <p className="note">Alltag, Gesellschaft und Probleme in Japan. Einträge schalten sich frei, wenn du die passende Stelle im Spiel erlebst. / Everyday life and society in Japan, unlocked as you meet them.</p>
+      {chapters.map((c) => (
+        <div key={c}>
+          <h4>Kapitel {c}</h4>
+          <ul className="japan-list">
+            {Object.entries(NOTES)
+              .filter(([, n]) => n.chapter === c)
+              .map(([id, n]) =>
+                s.flags['note_' + id] ? (
+                  <li key={id} className="found">
+                    <b lang="ja">{n.title}</b> <small>{n.titleEn}</small>
+                    <p>{n.de}</p>
+                    <p className="note">{n.en}</p>
+                    {n.words && <p lang="ja" className="note">{n.words}</p>}
+                  </li>
+                ) : (
+                  <li key={id} className="hidden">
+                    ？？？ <small className="note">noch nicht entdeckt / not found yet</small>
+                  </li>
+                ),
+              )}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 }
@@ -126,6 +182,9 @@ function memoryText(m: string) {
       first_meeting: 'your first meeting', helped_customer: 'you helped with the regular customer', letter: 'the unsigned letter',
       presentation: 'you helped with the presentation', homework: 'you did the わけ homework', archive_project: 'you found the word fragment',
       lab_past: 'stories about the facility', university_rumour: 'the university rumour',
+      forgot_name: 'the day she forgot your name', name_scroll: 'the name you wrote for her', husband_voice: 'her husband’s voice in the steam',
+      boat_song: 'the boat song at dawn', shell: 'the singing shell', whale_song: 'the song in the recording',
+      name_written: 'the name you wrote with the brush', trial_passed: 'you passed the trial', hearth: 'the evening by the hearth', letter_read: 'reading the letter together',
     }[m] ?? m
   );
 }
@@ -295,7 +354,7 @@ function NotebookTab() {
   const [showAll, setShowAll] = useState(false);
   const items =
     kind === 'v'
-      ? VOCAB.map((v) => ({ k: 'v:' + v.id, label: v.word, sub: v.reading }))
+      ? VOCAB.map((v) => ({ k: 'v:' + v.id, label: wordForm(v), sub: v.reading }))
       : kind === 'g'
         ? GRAMMAR.map((g) => ({ k: 'g:' + g.id, label: g.pattern, sub: g.meaning }))
         : KANJI.map((x) => ({ k: 'k:' + x.id, label: x.char, sub: x.meaning }));
@@ -609,13 +668,14 @@ function SettingsTab({ actions }: { actions: MenuActions }) {
 
 // ------------------------------------------------------------------ region map
 const PLACES: { id: string; ja: string; en: string; x: number; y: number; open: (s: typeof store.s) => boolean; maps?: string[] }[] = [
-  { id: 'town', ja: '日野森町', en: 'Hinomori Town', x: 55, y: 44, open: () => true, maps: ['town', 'apartment', 'cafe', 'konbini', 'library', 'station'] },
+  { id: 'town', ja: '日野森町', en: 'Hinomori Town', x: 55, y: 44, open: () => true, maps: ['town', 'apartment', 'cafe', 'konbini', 'library', 'station', 'ramen'] },
   { id: 'forest', ja: 'みどりの森', en: 'Midori Forest', x: 63, y: 16, open: (s) => !!s.flags.forest_open, maps: ['forest'] },
-  { id: 'lab', ja: '日野森言語研究所', en: 'Language Research Facility', x: 82, y: 24, open: () => true },
+  { id: 'lab', ja: '日野森言語研究所', en: 'Language Research Facility', x: 82, y: 24, open: () => true, maps: ['lab'] },
+  { id: 'valley', ja: '日野森の谷', en: 'Hinomori Valley', x: 70, y: 56, open: (s) => !!s.quests.mq6?.objectives.arrive, maps: ['valley'] },
+  { id: 'village', ja: '雪見村', en: 'Yukimi Village', x: 18, y: 14, open: (s) => !!s.quests.mq10?.objectives.arrive, maps: ['mountain'] },
   { id: 'city', ja: 'さくら市', en: 'Sakura City', x: 12, y: 33, open: () => false },
-  { id: 'village', ja: '山の村', en: 'Mountain village', x: 18, y: 14, open: () => false },
   { id: 'univ', ja: '大学の街', en: 'University district', x: 18, y: 68, open: () => false },
-  { id: 'coast', ja: '港町', en: 'Harbour town', x: 52, y: 84, open: () => false },
+  { id: 'coast', ja: '潮見町', en: 'Shiomi', x: 52, y: 84, open: (s) => !!s.quests.mq14?.objectives.arrive, maps: ['harbor'] },
 ];
 
 function MapTab() {
@@ -634,7 +694,7 @@ function MapTab() {
         ))}
       </div>
       <p className="note">
-        You are in <b lang="ja">{here?.ja ?? '日野森町'}</b>. Places marked ？？？ open up as the story continues — the railway west leads to the city in chapter 2.
+        You are in <b lang="ja">{here?.ja ?? '日野森町'}</b>. Places marked ？？？ open up as the story continues.
       </p>
     </div>
   );

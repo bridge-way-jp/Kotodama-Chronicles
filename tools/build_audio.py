@@ -16,7 +16,7 @@ import numpy as np
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, 'art', 'audio')
 OUT = os.path.join(ROOT, 'public', 'audio')
-LOOPS = ['onsen', 'memory', 'valley']
+LOOPS = ['onsen', 'memory', 'valley', 'snow', 'festival', 'harbor', 'lighthouse', 'kyoto', 'gion']
 PLAIN_LOOPS = ['title']  # already fade in and out, loop as they are
 JINGLES = ['evolve', 'newfriend']
 LOOP_XFADE = 1.5

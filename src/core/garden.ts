@@ -1,6 +1,7 @@
 import type { Card, GameState } from './types';
 import { DAY, mastery } from './srs';
 import { VOCAB_BY_ID } from '../content/vocab';
+import { keyExists } from './learning';
 
 /**
  * The word garden (the Stardew part): every word the player has met is a plant.
@@ -39,6 +40,7 @@ export function plantStage(card: Card, now = Date.now()): PlantStage {
 
 export function garden(s: GameState, now = Date.now()): Plant[] {
   return Object.values(s.cards)
+    .filter((c) => keyExists(c.key))
     .map((c) => ({ key: c.key, kind: plantKind(c.key), stage: plantStage(c, now), thirsty: c.introduced && c.due <= now }))
     .sort((a, b) => a.kind.localeCompare(b.kind) || b.stage - a.stage);
 }

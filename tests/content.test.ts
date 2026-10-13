@@ -7,6 +7,8 @@ import { QUESTS } from '../src/content/quests';
 import { NPCS } from '../src/content/npcs';
 import { MAPS } from '../src/content/maps';
 import { ITEMS, SPECIES } from '../src/content/creatures';
+import { NOTES } from '../src/content/society';
+import { PRACTICE_READING, PRACTICE_LISTENING } from '../src/content/practice';
 
 const text = JSON.stringify(SCRIPTS);
 
@@ -33,6 +35,25 @@ describe('story content references', () => {
     const species = [...text.matchAll(/"species":"([^"]+)"/g)].map((m) => m[1]).filter((sp) => !SPECIES[sp]);
     const warps = [...text.matchAll(/"warp":\{"map":"([^"]+)"/g)].map((m) => m[1]).filter((m) => !MAPS[m]);
     expect({ who, objectives, quests, items, species, warps }).toEqual({ who: [], objectives: [], quests: [], items: [], species: [], warps: [] });
+  });
+
+  it('every Japan note that scripts unlock exists, and every note is unlocked somewhere', () => {
+    const used = new Set([...text.matchAll(/"note":"([^"]+)"/g)].map((m) => m[1]));
+    expect([...used].filter((id) => !NOTES[id])).toEqual([]);
+    expect(Object.keys(NOTES).filter((id) => !used.has(id))).toEqual([]);
+  });
+
+  it('practice texts link to real vocabulary and grammar, and have well-formed questions', () => {
+    for (const t of [...PRACTICE_READING, ...PRACTICE_LISTENING]) {
+      for (const v of t.vocab) expect(VOCAB_BY_ID[v], `${t.id}: ${v}`).toBeTruthy();
+      if ('grammar' in t) for (const g of t.grammar) expect(GRAMMAR_BY_ID[g], `${t.id}: ${g}`).toBeTruthy();
+      for (const q of t.questions) {
+        expect(q.options.length, t.id).toBe(4);
+        expect(new Set(q.options).size, t.id).toBe(4);
+        expect(q.answer, t.id).toBeLessThan(4);
+        expect(q.why.length, t.id).toBeGreaterThan(5);
+      }
+    }
   });
 
   it('map NPCs and warps point at real things', () => {

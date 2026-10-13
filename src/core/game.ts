@@ -1,5 +1,7 @@
 import { QUESTS } from '../content/quests';
 import { ITEMS, SPECIES } from '../content/creatures';
+import { SECRETS, foundSecrets } from '../content/secrets';
+import { NOTES, foundNotes } from '../content/society';
 import { encounter, labelOfKey } from './learning';
 import { toast } from './events';
 import type { Action } from './script';
@@ -71,7 +73,7 @@ export function giveCreatureXp(s: GameState, c: CreatureInstance, amount: number
     const before = maxHp(c);
     c.level++;
     c.hp += maxHp(c) - before;
-    msgs.push(`${SPECIES[c.speciesId].name} grew to Lv. ${c.level}!`);
+    msgs.push(`${SPECIES[c.speciesId].name}のレベルが ${c.level} に上がった！`);
     const evo = SPECIES[c.speciesId].evolvesTo;
     if (evo && c.level >= evo.level) {
       const fromId = c.speciesId;
@@ -81,7 +83,7 @@ export function giveCreatureXp(s: GameState, c: CreatureInstance, amount: number
       c.hp = Math.max(1, Math.round(maxHp(c) * ratio));
       s.dex[evo.species] = 'caught';
       evolutions?.push({ from: fromId, to: evo.species });
-      msgs.push(`${from} evolved into ${SPECIES[evo.species].name}!`);
+      msgs.push(`${from}は${SPECIES[evo.species].name}に進化した！`);
     }
   }
   return msgs;
@@ -142,10 +144,25 @@ export interface ActionHooks {
   warp?: (map: string, x: number, y: number) => void;
   open?: (what: string) => void;
   music?: (key: string) => void;
+  bus?: (mode: 'arrive' | 'leave') => void;
 }
 
 export function runAction(s: GameState, a: Action, hooks: ActionHooks = {}) {
   if ('flag' in a) s.flags[a.flag] = a.value ?? true;
+  else if ('add' in a) s.flags[a.add] = (Number(s.flags[a.add]) || 0) + (a.n ?? 1);
+  else if ('yearFlag' in a) s.flags[`${a.yearFlag}_${new Date().getFullYear()}`] = true;
+  else if ('secret' in a) {
+    if (!s.flags['secret_' + a.secret]) {
+      s.flags['secret_' + a.secret] = true;
+      toast(`✦ ひみつ発見！ Secret found: ${SECRETS[a.secret]?.name ?? a.secret} (${foundSecrets(s)}/${Object.keys(SECRETS).length})`, 'level');
+    }
+  }
+  else if ('note' in a) {
+    if (!s.flags['note_' + a.note]) {
+      s.flags['note_' + a.note] = true;
+      toast(`📖 日本ノート Japan note: ${NOTES[a.note]?.title ?? a.note} (${foundNotes(s)}/${Object.keys(NOTES).length})`, 'level');
+    }
+  }
   else if ('startQuest' in a) startQuest(s, a.startQuest);
   else if ('objective' in a) completeObjective(s, a.objective);
   else if ('give' in a) {
@@ -180,4 +197,5 @@ export function runAction(s: GameState, a: Action, hooks: ActionHooks = {}) {
   else if ('open' in a) hooks.open?.(a.open);
   else if ('chapter' in a) s.chapter = a.chapter;
   else if ('music' in a) hooks.music?.(a.music);
+  else if ('bus' in a) hooks.bus?.(a.bus);
 }

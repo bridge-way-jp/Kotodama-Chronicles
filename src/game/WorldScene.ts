@@ -25,7 +25,7 @@ const DETAIL_KEYS = [
   'tp_pot_flower', 'tp_planter_y', 'tp_planter_p', 'tp_mirror', 'tp_sign', 'tp_trash', 'tp_barrel', 'tp_torii',
   'tile_bridge_n', 'tile_bridge_s',
 ];
-const NPC_SHEETS = ['mori', 'kaede', 'haruto', 'aoi', 'sato', 'kirishima', 'station_staff', 'customer', 'hayashi', 'sakura', 'okami', 'kenji', 'ota', 'busdriver', 'tsuru', 'hina', 'fujii', 'kuroda', 'jokan', 'traveller'];
+const NPC_SHEETS = ['mori', 'kaede', 'haruto', 'aoi', 'sato', 'kirishima', 'station_staff', 'customer', 'hayashi', 'sakura', 'okami', 'kenji', 'ota', 'busdriver', 'tsuru', 'hina', 'fujii', 'kuroda', 'jokan', 'traveller', 'gen', 'nagisa', 'hamada', 'kaito', 'umino', 'shiraishi', 'sumie', 'matsuo', 'rin', 'ikeda', 'sakamoto', 'emma'];
 
 export const ASSET_KEYS = [
   // player walk cycle: hero_<dir>_<frame>, frames 0/2 standing, 1/3 stepping
@@ -49,9 +49,20 @@ export const ASSET_KEYS = [
   'wgs_peach_3', 'wgs_grape_3', 'wgs_sunflower_3', 'wgs_rice_2', 'wgs_asagao_3', 'wgs_sakura_2', 'wgs_tag',
   // Yukimi mountain village, chapter 3 (tools/build_mountain.py)
   'map_mountain', 'bx_guesthouse', 'bx_gassho', 'bx_clinic', 'bx_temple', 'bx_yukimi_station', 'bx_kamakura',
+  // Shiomi harbour town, chapter 4 (tools/build_harbor.py)
+  'bus_front', 'bus_side',
+  'map_harbor', 'bx_lighthouse', 'bx_diner', 'bx_harbor_office', 'bx_seaside_inn', 'bx_townhouse', 'bx_shiomi_station',
+  'map_bahnhof', 'map_kamogawa', 'map_gion', 'map_nishiki', 'map_fushimi',
+  ...(['bahnhof_station', 'bahnhof_kiosk', 'bahnhof_konbini', 'kamogawa_tea_house', 'kamogawa_machiya', 'kamogawa_market_shop', 'kamogawa_kimono_shop', 'kamogawa_machiya2',
+    'gion_guesthouse', 'gion_tea_house', 'gion_kimono_shop', 'gion_machiya', 'gion_machiya2', 'gion_machiya3', 'gion_machiya4', 'gion_machiya5',
+    'fushimi_shrine', 'fushimi_tea_house', 'fushimi_market_shop'] as const).map((k) => `bx_k_${k}`),
+  ...[0, 1, 2, 3, 4, 5].flatMap((i) => [`bx_k_nishiki_shop_t${i}`, `bx_k_nishiki_shop_b${i}`]),
   'map_valley', 'bx_farmhouse', 'bx_winery', 'bx_stand', 'bx_workshop', 'bx_busstop', 'bx_ryokan',
   ...Object.values(ROOMS_GEN).flatMap((r) => [r.image, ...r.objects.flatMap((o) => (o.sprite ? [o.sprite] : []))]),
 ];
+
+/** set when the player rides the bus to another map: the bus drives off once the new map is shown */
+let busLeavingOnEnter = false;
 
 const DIRS: Record<Dir, [number, number]> = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 const STEP_MS = 170;
@@ -109,6 +120,7 @@ export class WorldScene extends Phaser.Scene {
   tint?: Phaser.GameObjects.Rectangle;
   unsub: (() => void)[] = [];
   lastStepEncounter = 0;
+  manpoShown = false;
   stepCount = 0;
 
   constructor() {
@@ -157,6 +169,16 @@ export class WorldScene extends Phaser.Scene {
     this.time.addEvent({ delay: 550, loop: true, callback: () => this.animateTiles() });
     this.unsub.push(store.subscribe(() => this.refreshVisibility()));
     this.unsub.push(bus.on('warp', (p) => this.warpTo(p.map, p.x, p.y, p.facing ?? 'down')));
+    this.unsub.push(
+      bus.on('bus', ({ mode }) => {
+        if (mode === 'arrive') this.busArrive();
+        else busLeavingOnEnter = true;
+      }),
+    );
+    if (busLeavingOnEnter) {
+      busLeavingOnEnter = false;
+      this.busLeave();
+    }
     this.events.once('shutdown', () => {
       this.unsub.forEach((u) => u());
       this.unsub = [];
@@ -387,9 +409,29 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
-  /** a few butterflies drifting over outdoor maps */
+  /** the bus comes down the road from the north and stops at the bus stop */
+  busArrive() {
+    const stop = this.map.busStop;
+    if (!stop || !this.textures.exists('bus_front')) return;
+    const x = stop.x * TILE;
+    const y = (stop.y + 1) * TILE;
+    const b = this.add.image(x, y - 9 * TILE, 'bus_front').setOrigin(0.5, 1).setDepth(y).setAlpha(0);
+    this.tweens.add({ targets: b, y, alpha: 1, duration: 1600, ease: 'Sine.easeOut' });
+  }
+
+  /** arriving by bus: it waits at the stop for a moment, then drives off down the road */
+  busLeave() {
+    const stop = this.map.busStop;
+    if (!stop || !this.textures.exists('bus_front')) return;
+    const x = stop.x * TILE;
+    const y = (stop.y + 1) * TILE;
+    const b = this.add.image(x, y, 'bus_front').setOrigin(0.5, 1).setDepth(y);
+    this.tweens.add({ targets: b, y: y + 8 * TILE, alpha: 0, delay: 1100, duration: 1800, ease: 'Sine.easeIn', onComplete: () => b.destroy() });
+  }
+
+  /** a few butterflies drifting over outdoor maps (not in the snow) */
   spawnButterflies() {
-    if (this.map.interior || !this.textures.exists('g_butterfly_0')) return;
+    if (this.map.interior || this.map.snow || !this.textures.exists('g_butterfly_0')) return;
     const W = this.map.tiles[0].length * TILE;
     const H = this.map.tiles.length * TILE;
     for (let i = 0; i < 4; i++) {
@@ -694,6 +736,10 @@ export class WorldScene extends Phaser.Scene {
 
   afterStep() {
     const s = store.s;
+    if (s.stats.steps >= 10000 && !s.flags.secret_manpo && !this.manpoShown) {
+      this.manpoShown = true;
+      bus.emit('interact', { id: 'egg_manpo', kind: 'object' });
+    }
     if (this.tileAt(this.px, this.py) === '"' && this.map.encounters && s.team.length > 0) {
       if (s.stats.steps - this.lastStepEncounter > 3 && Math.random() < 0.12) {
         this.lastStepEncounter = s.stats.steps;
@@ -725,6 +771,11 @@ export class WorldScene extends Phaser.Scene {
       const back: Record<Dir, Dir> = { up: 'down', down: 'up', left: 'right', right: 'left' };
       folk.dir = back[this.facing];
       folk.sprite.setTexture(`folk_${folk.def.sprite}_${folk.dir}_0`);
+      // some townsfolk have a script of their own (easter eggs), the rest say a random line
+      if (SCRIPTS['folk_' + folk.def.id]) {
+        bus.emit('interact', { id: 'folk_' + folk.def.id, kind: 'npc' });
+        return;
+      }
       const line = folk.def.lines[Math.floor(Math.random() * folk.def.lines.length)];
       bus.emit('message', { text: `${folk.def.name}：「${line.jp}」`, en: line.en });
       return;

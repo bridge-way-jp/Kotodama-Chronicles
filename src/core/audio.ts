@@ -129,10 +129,19 @@ export const TRACKS: Record<string, string> = {
   memory: 'audio/memory.mp3',
   valley: 'audio/valley.mp3',
   title: 'audio/title.mp3',
+  snow: 'audio/snow.mp3',
+  festival: 'audio/festival.mp3',
+  harbor: 'audio/harbor.mp3',
+  lighthouse: 'audio/lighthouse.mp3',
+  kyoto: 'audio/kyoto.mp3',
+  gion: 'audio/gion.mp3',
 };
 
 export const MAP_MUSIC: Record<string, string> = {
-  town: 'town', apartment: 'home', cafe: 'cafe', konbini: 'town', library: 'home', station: 'town', forest: 'forest', valley: 'valley', mountain: 'onsen',
+  town: 'town', apartment: 'home', cafe: 'cafe', konbini: 'town', library: 'home', station: 'town', forest: 'forest', valley: 'valley', mountain: 'snow', harbor: 'harbor',
+  ryokan: 'onsen', werkstatt: 'valley', tsuru: 'snow', klinik: 'snow', kneipe: 'harbor', leuchtturm: 'lighthouse',
+  k_station: 'kyoto', k_nishiki: 'kyoto', k_kamo: 'kyoto', k_gion: 'gion', k_fushimi: 'gion',
+  machiya: 'gion', teehaus: 'gion', kimono: 'kyoto', izakaya: 'kyoto', bahnhofinfo: 'kyoto', nishikiladen: 'kyoto',
 };
 
 let music: HTMLAudioElement | null = null;

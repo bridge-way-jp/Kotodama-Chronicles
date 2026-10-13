@@ -1,4 +1,4 @@
-import { VOCAB, VOCAB_BY_ID, confusable, hasKanji } from '../content/vocab';
+import { VOCAB, VOCAB_BY_ID, confusable, hasKanji, wordForm } from '../content/vocab';
 import { GRAMMAR, GRAMMAR_BY_ID } from '../content/grammar';
 import { KANJI, KANJI_BY_ID } from '../content/kanji';
 import { gradeFromAnswer, isDue, mastery, needsContext, newCard, review } from './srs';
@@ -60,6 +60,26 @@ function pickN<T>(arr: T[], n: number, r = Math.random): T[] {
   return shuffle(arr, r).slice(0, n);
 }
 
+const script = (w: string) => (hasKanji(w) ? 'kanji' : /^[ァ-ヿー]+$/.test(w) ? 'katakana' : 'kana');
+
+/**
+ * Wrong answers that look like real competitors: same part of speech, same script (kanji /
+ * hiragana / katakana), similar length, and an affix only for an affix. The closest candidates
+ * are drawn at random, so an answer can't be spotted by its shape alone.
+ */
+export function similarWords(v: VocabEntry, pool: VocabEntry[], n: number, r = Math.random): VocabEntry[] {
+  const sc = script(v.word);
+  let cands = pool.filter((x) => !!x.affix === !!v.affix);
+  // the script must match whenever there are enough such words (a kana option among kanji is a giveaway)
+  const sameScript = cands.filter((x) => script(x.word) === sc);
+  if (sameScript.length >= n * 3) cands = sameScript;
+  const score = (x: VocabEntry) =>
+    (x.pos === v.pos ? 0 : 2) + (script(x.word) === sc ? 0 : 3) + Math.min(3, Math.abs(x.word.length - v.word.length)) + (x.affix && x.affix !== v.affix ? 2 : 0);
+  const ranked = shuffle(cands, r).sort((a, b) => score(a) - score(b));
+  // pick from the best few dozen so the same distractors don't always appear together
+  return pickN(ranked.slice(0, Math.max(n * 8, 24)), n, r);
+}
+
 export function meaningOf(id: string, lang: 'en' | 'de') {
   const v = VOCAB_BY_ID[id];
   return lang === 'de' ? v.de : v.en;
@@ -71,7 +91,7 @@ export function areaOfKey(key: string): SkillArea {
 
 export function labelOfKey(key: string): string {
   const [t, id] = key.split(':');
-  if (t === 'v') return VOCAB_BY_ID[id]?.word ?? id;
+  if (t === 'v') return VOCAB_BY_ID[id] ? wordForm(VOCAB_BY_ID[id]) : id;
   if (t === 'g') return GRAMMAR_BY_ID[id]?.pattern ?? id;
   if (t === 'k') return KANJI_BY_ID[id]?.char ?? id;
   return key;
@@ -119,18 +139,17 @@ function vocabExercise(id: string, mode: string, s: GameState, r: () => number):
   const others = VOCAB.filter(
     (x) => x.id !== id && !confusable(v, x) && x.word !== v.word && x.de !== v.de && x.en !== v.en && x.exampleEn !== v.exampleEn && (x.example || (mode !== 'sentence' && mode !== 'listen')),
   );
-  const samePos = others.filter((x) => x.pos === v.pos);
-  const pool = samePos.length >= 3 ? samePos : others;
-  const distract = pickN(pool, 3, r);
+  const distract = similarWords(v, others, 3, r);
+  const form = wordForm(v);
   const key = 'v:' + id;
   const base = { id: `${key}:${mode}:${Math.floor(r() * 1e6)}`, key, area: 'vocab' as SkillArea, mode };
   const tr = (x: VocabEntry) => (lang === 'de' && x.exampleDe) || x.exampleEn;
-  const expl = `**${v.word}**（${v.reading}）— ${lang === 'de' ? v.de : v.en}\n${v.example}\n${tr(v)}`;
+  const expl = `**${form}**（${v.reading}）— ${lang === 'de' ? v.de : v.en}\n${v.example}\n${tr(v)}`;
   switch (mode) {
     case 'reading':
       return {
         ...base, context: false, instruction: 'How is this word read?',
-        prompt: v.word,
+        prompt: form,
         options: shuffle([{ text: v.reading, correct: true }, ...readingDistractors(v.reading, r).map((t) => ({ text: t, correct: false }))], r),
         explanation: expl,
       };
@@ -138,7 +157,7 @@ function vocabExercise(id: string, mode: string, s: GameState, r: () => number):
       return {
         ...base, context: false, instruction: 'Which word matches this meaning?',
         prompt: lang === 'de' ? v.de : v.en,
-        options: shuffle([{ text: v.word, correct: true }, ...distract.map((d) => ({ text: d.word, correct: false, key: 'v:' + d.id }))], r),
+        options: shuffle([{ text: form, correct: true }, ...distract.map((d) => ({ text: wordForm(d), correct: false, key: 'v:' + d.id }))], r),
         explanation: expl,
       };
     case 'cloze': {
@@ -168,13 +187,13 @@ function vocabExercise(id: string, mode: string, s: GameState, r: () => number):
     case 'type':
       return {
         ...base, context: false, instruction: 'Type the reading in hiragana (romaji is converted automatically).',
-        prompt: v.word, accept: [v.reading], explanation: expl,
+        prompt: form, accept: [v.reading], explanation: expl,
       };
     case 'meaning':
     default:
       return {
-        ...base, mode: 'meaning', context: false, instruction: 'What does this word mean?',
-        prompt: v.word,
+        ...base, mode: 'meaning', context: false, instruction: v.affix ? 'What does this prefix / suffix mean?' : 'What does this word mean?',
+        prompt: form,
         options: shuffle([{ text: lang === 'de' ? v.de : v.en, correct: true }, ...distract.map((d) => ({ text: lang === 'de' ? d.de : d.en, correct: false, key: 'v:' + d.id }))], r),
         explanation: expl,
       };
@@ -196,7 +215,9 @@ export function readingDistractors(reading: string, r: () => number): string[] {
   }
   out.delete(reading);
   // prefer real readings of the same length, then ±1, so no option is trivially wrong
-  const others = VOCAB.filter((v) => v.reading !== reading);
+  // (whole words only: a lone affix reading like い or しょう is an easy giveaway)
+  const kata = (w: string) => /^[ァ-ヿー]+$/.test(w);
+  const others = VOCAB.filter((v) => v.reading !== reading && !v.affix && kata(v.reading) === kata(reading));
   const fill = [
     ...shuffle(others.filter((v) => v.reading.length === reading.length), r),
     ...shuffle(others.filter((v) => Math.abs(v.reading.length - reading.length) === 1), r),
@@ -235,7 +256,10 @@ function grammarExercise(id: string, mode: string, r: () => number): Exercise {
 function kanjiExercise(id: string, mode: string, r: () => number): Exercise {
   const k = KANJI_BY_ID[id];
   const key = 'k:' + id;
-  const word = VOCAB_BY_ID[k.words[Math.floor(r() * k.words.length)]];
+  // show the kanji inside a whole word when there is one (an affix like ～館 is a weaker example)
+  const whole = k.words.filter((w) => !VOCAB_BY_ID[w]?.affix);
+  const ids = whole.length ? whole : k.words;
+  const word = VOCAB_BY_ID[ids[Math.floor(r() * ids.length)]];
   const expl = `**${k.char}** — ${k.meaning}\n音: ${k.on.join('、') || '—'}　訓: ${k.kun.join('、') || '—'}\n${word.word}（${word.reading}）${word.en}`;
   if (mode === 'meaning') {
     const others = pickN(KANJI.filter((x) => x.id !== id), 3, r);
@@ -278,6 +302,8 @@ export function exerciseFor(s: GameState, key: string, opts: { prefer?: 'listen'
   else modes = ['cloze', 'sentence', 'listen', 'type', 'reverse'];
   if (opts.prefer === 'isolated') modes = ['meaning', 'reading', 'reverse'];
   if (opts.prefer === 'context') modes = ['cloze', 'sentence'];
+  // an affix is only asked for its reading or meaning (it never stands alone in a sentence)
+  if (VOCAB_BY_ID[id]?.affix) modes = modes.filter((x) => x === 'meaning' || x === 'reading' || x === 'reverse');
   // kana-only words (conjunctions, onomatopoeia) have nothing to read or type
   if (!hasKanji(VOCAB_BY_ID[id]?.word ?? '')) modes = modes.filter((x) => x !== 'reading' && x !== 'type');
   // curriculum words without an example sentence yet are drilled without context
@@ -299,7 +325,8 @@ export interface QueueInfo {
 
 export function queueInfo(s: GameState, now = Date.now()): QueueInfo {
   rollDaily(s, now);
-  const cards = Object.values(s.cards);
+  // cards whose item left the curriculum (or whose word list failed to load) are skipped, not lost
+  const cards = Object.values(s.cards).filter((c) => keyExists(c.key));
   const due = cards.filter((c) => isDue(c, now)).sort((a, b) => a.due - b.due).map((c) => c.key);
   // new = encountered in the world but never studied; chapter items come after
   const encounteredNew = cards.filter((c) => !c.introduced).sort((a, b) => b.encounters - a.encounters).map((c) => c.key);
@@ -371,20 +398,33 @@ export function buildReviewSession(s: GameState, size = 12, now = Date.now(), r 
 }
 
 /** Picks one exercise for a battle move of the given area, preferring due items. */
+/** keys asked in the last few battle questions, so the same item doesn't come back every turn */
+const recentBattleKeys: string[] = [];
+const RECENT_BATTLE = 6;
+
 export function battleExercise(s: GameState, area: 'vocab' | 'grammar' | 'kanji' | 'listening', r = Math.random): Exercise {
   const now = Date.now();
   const prefix = area === 'grammar' ? 'g:' : area === 'kanji' ? 'k:' : 'v:';
-  const cards = Object.values(s.cards).filter((c) => c.key.startsWith(prefix));
+  const cards = Object.values(s.cards).filter((c) => c.key.startsWith(prefix) && keyExists(c.key));
   const due = cards.filter((c) => isDue(c, now));
   const studied = cards.filter((c) => c.introduced);
   const met = cards.filter((c) => !c.introduced);
   let pool: Card[] = due.length ? due : met.length && r() < 0.5 ? met : studied.length ? studied : met;
+  // with only a few items due, mix in other studied ones so battles don't drill one word
+  if (due.length && due.length < 4 && studied.length > due.length && r() < 0.5) pool = studied;
+  const fresh = (list: Card[]) => list.filter((c) => !recentBattleKeys.includes(c.key));
+  if (fresh(pool).length) pool = fresh(pool);
+  else if (fresh(cards).length) pool = fresh(cards);
   let key: string;
   if (pool.length) key = pool[Math.floor(r() * pool.length)].key;
   else {
     const all = allKeys().filter((k) => k.startsWith(prefix) && chapterOf(k) <= s.chapter);
-    key = all[Math.floor(r() * all.length)];
+    const unseen = all.filter((k) => !recentBattleKeys.includes(k));
+    const from = unseen.length ? unseen : all;
+    key = from[Math.floor(r() * from.length)];
   }
+  recentBattleKeys.push(key);
+  if (recentBattleKeys.length > RECENT_BATTLE) recentBattleKeys.shift();
   return exerciseFor(s, key, { prefer: area === 'listening' ? 'listen' : undefined, r });
 }
 

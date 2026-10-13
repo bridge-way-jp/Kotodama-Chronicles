@@ -10,6 +10,26 @@ import type { Question } from '../core/types';
 const DEBUG = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug');
 export const dbgOk = (ok: boolean) => (DEBUG && ok ? { 'data-ok': '1' } : {});
 
+/** the number keys 1–9 pick the option with that number (as printed on the buttons) */
+function useNumberKeys(picks: ((() => void) | null)[], enabled: boolean) {
+  const ref = useRef(picks);
+  ref.current = picks;
+  useEffect(() => {
+    if (!enabled) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      const m = /^(?:Digit|Numpad)([1-9])$/.exec(e.code);
+      const pick = m && ref.current[Number(m[1]) - 1];
+      if (!pick) return;
+      e.preventDefault();
+      pick();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [enabled]);
+}
+
 export function AudioButton({
   lines,
   label = '▶ 再生',
@@ -85,6 +105,7 @@ export function QuestionBlock({
     setPicked(i);
     if (!ok) setWrong(new Set(wrong).add(i));
   };
+  useNumberKeys(order.map((i) => () => choose(i)), !done);
 
   return (
     <div className="question">
@@ -170,6 +191,7 @@ export function ExerciseView({
     setChosen(o);
     finish(o.correct);
   };
+  useNumberKeys(ex.options?.map((o) => (hidden.has(o.text) ? null : () => pick(o))) ?? [], !answered && !!ex.options);
 
   const submitTyped = () => {
     if (answered || !typed.trim()) return;
@@ -204,7 +226,7 @@ export function ExerciseView({
         <div className="ex-prompt hidden-text">🎧 ……</div>
       )}
       {readingHint && <div className="hint">よみ: {readingHint}</div>}
-      {(tools?.showEn || (answered && ex.promptEn)) && ex.promptEn && <div className="q-en">{ex.promptEn}</div>}
+      {(tools?.showEn || (answered && ex.promptEn)) && ex.promptEn && <div className="q-en">{withName(ex.promptEn)}</div>}
       {ex.options ? (
         <div className="options">
           {ex.options.map((o, i) =>

@@ -54,13 +54,15 @@ function showRuby(key: string | undefined, mode: string): boolean {
 
 function Word({ tok, mode }: { tok: Extract<Token, { t: 'word' }>; mode: string }) {
   const [revealed, setRevealed] = useState(false);
-  const ruby = tok.ruby && (showRuby(tok.key, mode) || revealed);
+  // a reading over a word that is already written in kana adds nothing
+  const hasRuby = !!tok.ruby && tok.ruby !== tok.base;
+  const ruby = hasRuby && (showRuby(tok.key, mode) || revealed);
   const onClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (tok.ruby) setRevealed(true);
+    if (hasRuby) setRevealed(true);
     if (tok.key) bus.emit('gloss', { key: tok.key });
   };
-  const cls = tok.key ? 'jp-word linked' : tok.ruby ? 'jp-word' : undefined;
+  const cls = tok.key ? 'jp-word linked' : hasRuby ? 'jp-word' : undefined;
   const inner = ruby ? (
     <ruby>
       {tok.base}
@@ -70,7 +72,7 @@ function Word({ tok, mode }: { tok: Extract<Token, { t: 'word' }>; mode: string 
     tok.base
   );
   return (
-    <span className={cls} onClick={tok.key || (tok.ruby && !ruby) ? onClick : undefined} title={tok.key ? 'Tap for meaning' : undefined}>
+    <span className={cls} onClick={tok.key || (hasRuby && !ruby) ? onClick : undefined} title={tok.key ? 'Tap for meaning' : undefined}>
       {inner}
     </span>
   );
