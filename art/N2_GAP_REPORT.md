@@ -21,3 +21,6 @@ Target: roughly 130 patterns in total, at least 3 exercises each. Missing (draft
 2. Third exercise for every existing pattern
 3. Missing N2 kanji, then the N3 kanji
 4. More reading and listening texts of exam length
+
+## Progress
+- Added 27 new N2 patterns in src/content/grammar_n2_r5.ts (chapter 5 / Kyoto group), 3 exercises each. Total grammar now 107.
