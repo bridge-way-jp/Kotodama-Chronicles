@@ -342,3 +342,24 @@ describe('easter eggs', () => {
     expect(s.flags.secret_neko).toBe(true);
   });
 });
+
+describe('Kyoto', () => {
+  it('Fushimi: from the station path you can reach the shrine, the summit and the wild-grass clearing', () => {
+    const m = MAPS.k_fushimi;
+    const H = m.tiles.length;
+    const W = m.tiles[0].length;
+    const solid = (x: number, y: number) =>
+      x < 0 || y < 0 || x >= W || y >= H || BLOCKING.has(m.tiles[y][x]) ||
+      m.objects.some((o) => o.solid !== false && (o.w ?? 1) > 0 && x >= o.x && x < o.x + (o.w ?? 1) && y >= o.y && y < o.y + (o.h ?? 1));
+    const seen = new Set(['20,26']);
+    const q = [[20, 26]];
+    while (q.length) {
+      const [x, y] = q.shift()!;
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+        const k = `${x + dx},${y + dy}`;
+        if (!seen.has(k) && !solid(x + dx, y + dy)) { seen.add(k); q.push([x + dx, y + dy]); }
+      }
+    }
+    for (const p of ['22,17', '30,2', '34,10', '38,12']) expect(seen.has(p), p).toBe(true);
+  });
+});
