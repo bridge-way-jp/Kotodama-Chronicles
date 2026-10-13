@@ -3,6 +3,7 @@ import { GRAMMAR_R2 } from './grammar_n2_r2';
 import { GRAMMAR_R3 } from './grammar_n2_r3';
 import { GRAMMAR_R4 } from './grammar_n2_r4';
 import { GRAMMAR_R5 } from './grammar_n2_r5';
+import { EXTRA_EXERCISES } from './grammar_extra_exercises';
 
 /** Chapter 1 grammar. Original example sentences and exercises (not official JLPT material). */
 export const GRAMMAR: GrammarEntry[] = [
@@ -389,5 +390,6 @@ export const GRAMMAR: GrammarEntry[] = [
 
 // N2 course grammar, region by region (docs/CURRICULUM.md)
 GRAMMAR.push(...GRAMMAR_R2, ...GRAMMAR_R3, ...GRAMMAR_R4, ...GRAMMAR_R5);
+for (const [id, ex] of EXTRA_EXERCISES) GRAMMAR.find((g) => g.id === id)?.exercises.push(ex);
 
 export const GRAMMAR_BY_ID: Record<string, GrammarEntry> = Object.fromEntries(GRAMMAR.map((g) => [g.id, g]));

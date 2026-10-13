@@ -6,6 +6,7 @@ import { buildReviewSession, exerciseFor, queueInfo, recordAnswer } from '../src
 import { VOCAB, VOCAB_BY_ID, wordForm } from '../src/content/vocab';
 import { KANJI } from '../src/content/kanji';
 import { GRAMMAR, GRAMMAR_BY_ID } from '../src/content/grammar';
+import { EXTRA_EXERCISES } from '../src/content/grammar_extra_exercises';
 
 registerCurriculum(JSON.parse(readFileSync('public/data/jlpt.json', 'utf8')));
 
@@ -112,6 +113,11 @@ describe('N2 course grammar', () => {
         expect(ex.why.length).toBeGreaterThan(20);
       }
     }
+  });
+
+  it('extra exercises attach to real patterns', () => {
+    for (const [id] of EXTRA_EXERCISES) expect(GRAMMAR_BY_ID[id], id).toBeTruthy();
+    expect(GRAMMAR_BY_ID.monono.exercises.length).toBe(3);
   });
 
   it('course grammar is available from the start, after chapter-1 story grammar', () => {
