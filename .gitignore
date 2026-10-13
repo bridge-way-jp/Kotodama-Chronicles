@@ -6,3 +6,4 @@ screenshots/
 art/music/*.wav
 art/music/
 __pycache__/
+art/out/
