@@ -209,9 +209,6 @@ REDRAWN = {
     # chapter 3: the snowy mountain village (sheet has 3 rows per block: down, left, up)
     'hm_chars_mountain.webp': [[('npc', 'tsuru'), ('npc', 'hina'), ('npc', 'fujii')],
                                [('npc', 'kuroda'), ('npc', 'jokan'), ('npc', 'traveller')]],
-    # chapter 4: the harbour town (top row 4 direction rows, bottom row only down / left / up)
-    'hm_chars_harbor.webp': [[('npc', 'gen'), ('npc', 'nagisa'), ('npc', 'hamada')],
-                             [('npc', 'kaito'), ('npc', 'umino'), ('npc', 'shiraishi')]],
     'hm_chars_valley.webp': [[('npc', 'hayashi'), ('npc', 'sakura'), ('npc', 'okami')],
                              [('npc', 'kenji'), ('npc', 'ota'), ('npc', 'busdriver')]],
     'hm_chars_more.webp': [[('npc', 'kirishima'), ('npc', 'station_staff'), ('npc', 'customer')],
@@ -222,7 +219,7 @@ REDRAWN = {
 
 
 # sheets whose blocks always have this many direction rows (guessing from the block height fails for bulky figures)
-ROWS_PER_BLOCK = {'hm_chars_mountain.webp': 3, 'hm_chars_harbor.webp': [4, 3]}  # a list: per block row
+ROWS_PER_BLOCK = {'hm_chars_mountain.webp': 3}
 
 CHILDREN = {'kid', 'hina', 'kaito'}
 CHILD_HEIGHT = 38
@@ -297,6 +294,29 @@ def redrawn_sheet(name, layout):
             print(name, who, f'{n} rows')
 
 
+# sheets on a fixed grid (cell px): 3 blocks of 4 x 4 cells per block row, rows down / left / right / up
+GRID_NPC_SHEETS = {
+    'hm_chars_harbor.webp': (128, [['gen', 'nagisa', 'hamada'], ['kaito', 'umino', 'shiraishi']]),
+}
+
+
+def fixed_grid_sheet(name, cell, layout):
+    a = load(name)
+    fg = ndimage.binary_opening(~magenta_mask(a))
+    for br, row in enumerate(layout):
+        for bc, who in enumerate(row):
+            imgs = [cut(a, fg, ((bc * 4 + c) * cell, (br * 4 + r) * cell, (bc * 4 + c + 1) * cell, (br * 4 + r + 1) * cell))
+                    for r in range(4) for c in range(4)]
+            tallest = max(i.height for i in imgs)
+            h = CHILD_HEIGHT if who in CHILDREN else HEIGHT
+            for k, d in enumerate(['down', 'left', 'right', 'up']):
+                img = imgs[k * 4]
+                resize_px(img, max(8, round(img.height * h / tallest))).save(os.path.join(OUT, f'npc_{who}_{d}.png'))
+            print(name, who, 'fixed grid')
+
+
 if __name__ == '__main__':
     for n, layout in REDRAWN.items():
         redrawn_sheet(n, layout)
+    for n, (cell, layout) in GRID_NPC_SHEETS.items():
+        fixed_grid_sheet(n, cell, layout)
