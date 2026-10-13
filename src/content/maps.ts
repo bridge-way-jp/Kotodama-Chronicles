@@ -251,12 +251,15 @@ export const MAPS: Record<string, MapDef> = {
     npcs: [
       { id: 'hayashi', x: 7, y: 6, facing: 'down' },
       { id: 'sakura_hayashi', x: 24, y: 3, facing: 'right' },
-      { id: 'okami', x: 32, y: 15, facing: 'down' },
       { id: 'kenji', x: 24, y: 15, facing: 'down' },
-      { id: 'ota', x: 17, y: 15, facing: 'down' },
       { id: 'busdriver', x: 26, y: 17, facing: 'left' },
     ],
-    warps: [20, 21].map((x) => ({ x, y: 27, to: { map: 'town', x: 18, y: 20, facing: 'down' as const } })),
+    warps: [
+      ...[20, 21].map((x) => ({ x, y: 27, to: { map: 'town', x: 18, y: 20, facing: 'down' as const } })),
+      { x: 32, y: 14, to: { map: 'ryokan', x: 6, y: 9, facing: 'up' as const } },
+      { x: 33, y: 14, to: { map: 'ryokan', x: 7, y: 9, facing: 'up' as const } },
+      { x: 17, y: 14, to: { map: 'werkstatt', x: 5, y: 8, facing: 'up' as const } },
+    ],
     zones: [
       { x0: 25, y0: 1, x1: 32, y1: 4, encounters: 'valley_grove', bg: 'bg_valley_orchard.webp' },
       { x0: 2, y0: 15, x1: 7, y1: 17, encounters: 'valley_river', bg: 'bg_valley_river.webp' },
@@ -282,13 +285,16 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'yukimi_festival', x: 13, y: 21, w: 6, h: 3, solid: false },
     ],
     npcs: [
-      { id: 'tsuru', x: 34, y: 17, facing: 'down' },
       { id: 'hina', x: 19, y: 16, facing: 'down' },
-      { id: 'fujii', x: 27, y: 22, facing: 'down' },
       { id: 'kuroda', x: 22, y: 24, facing: 'up' },
       { id: 'jokan', x: 21, y: 4, facing: 'down' },
     ],
-    warps: [],
+    warps: [
+      { x: 34, y: 16, to: { map: 'tsuru', x: 6, y: 9, facing: 'up' } },
+      { x: 35, y: 16, to: { map: 'tsuru', x: 7, y: 9, facing: 'up' } },
+      { x: 27, y: 21, to: { map: 'klinik', x: 5, y: 8, facing: 'up' } },
+      { x: 28, y: 21, to: { map: 'klinik', x: 6, y: 8, facing: 'up' } },
+    ],
     zones: [
       { x0: 2, y0: 11, x1: 7, y1: 13, encounters: 'mountain_snow', bg: 'bg_mountain_trail.webp' },
       { x0: 37, y0: 10, x1: 40, y1: 13, encounters: 'mountain_lantern', bg: 'bg_mountain_trail.webp' },
@@ -312,13 +318,18 @@ export const MAPS: Record<string, MapDef> = {
     npcs: [
       { id: 'nagisa', x: 21, y: 14, facing: 'down' },
       { id: 'gen', x: 29, y: 19, facing: 'left' },
-      { id: 'hamada', x: 18, y: 13, facing: 'down' },
       { id: 'kaito', x: 6, y: 15, facing: 'down' },
       { id: 'shiraishi', x: 22, y: 20, facing: 'up', when: { questDone: 'mq15' } },
-      { id: 'umino', x: 36, y: 4, facing: 'up' },
+      { id: 'umino', x: 36, y: 4, facing: 'up', when: { not: { item: 'lighthouse_key' } } },
       { id: 'traveller', x: 36, y: 2, facing: 'down', when: { all: [{ obj: 'mq17.master' }, { notObj: 'mq17.lighthouse' }] } },
     ],
-    warps: [],
+    warps: [
+      ...[16, 17, 18].map((x) => ({ x, y: 12, to: { map: 'kneipe', x: 6, y: 8, facing: 'up' as const } })),
+      ...[3, 4].map((y) => ({
+        x: 38, y, to: { map: 'leuchtturm', x: 5, y: 8, facing: 'up' as const }, when: { item: 'lighthouse_key' },
+        locked: '灯台の扉には鍵がかかっている。「関係者以外立入禁止」。',
+      })),
+    ],
     zones: [
       { x0: 0, y0: 7, x1: 8, y1: 11, encounters: 'harbor_dunes', bg: 'bg_harbor_beach.webp' },
       { x0: 37, y0: 9, x1: 40, y1: 12, encounters: 'harbor_cliff', bg: 'bg_harbor_cliff.webp' },
@@ -403,5 +414,50 @@ export const MAPS: Record<string, MapDef> = {
       { x: 10, y: 14, to: { map: 'town', x: 27, y: 20, facing: 'down' } },
       { x: 11, y: 14, to: { map: 'town', x: 27, y: 20, facing: 'down' } },
     ],
+  },
+  ryokan: {
+    id: 'ryokan', name: 'Onsen inn Yunoka', nameJa: '温泉旅館 ゆのか', tiles: ROOMS_GEN.ryokan.tiles, interior: true, image: ROOMS_GEN.ryokan.image,
+    objects: ROOMS_GEN.ryokan.objects,
+    npcs: [{ id: 'okami', x: 6, y: 3, facing: 'left' }],
+    warps: [
+      { x: 6, y: 10, to: { map: 'valley', x: 32, y: 15, facing: 'down' } },
+      { x: 7, y: 10, to: { map: 'valley', x: 33, y: 15, facing: 'down' } },
+    ],
+  },
+  werkstatt: {
+    id: 'werkstatt', name: 'Calligraphy workshop', nameJa: '書道の工房', tiles: ROOMS_GEN.werkstatt.tiles, interior: true, image: ROOMS_GEN.werkstatt.image,
+    objects: ROOMS_GEN.werkstatt.objects,
+    npcs: [{ id: 'ota', x: 7, y: 5, facing: 'left' }],
+    warps: [5, 6].map((x) => ({ x, y: 9, to: { map: 'valley', x: 17, y: 15, facing: 'down' as const } })),
+  },
+  tsuru: {
+    id: 'tsuru', name: 'Tsuru’s guesthouse', nameJa: 'つるさんの民宿', tiles: ROOMS_GEN.tsuru.tiles, interior: true, image: ROOMS_GEN.tsuru.image,
+    objects: ROOMS_GEN.tsuru.objects,
+    npcs: [{ id: 'tsuru', x: 5, y: 6, facing: 'right' }],
+    warps: [
+      { x: 6, y: 10, to: { map: 'mountain', x: 34, y: 17, facing: 'down' } },
+      { x: 7, y: 10, to: { map: 'mountain', x: 35, y: 17, facing: 'down' } },
+    ],
+  },
+  klinik: {
+    id: 'klinik', name: 'Yukimi clinic', nameJa: '雪見診療所', tiles: ROOMS_GEN.klinik.tiles, interior: true, image: ROOMS_GEN.klinik.image,
+    objects: ROOMS_GEN.klinik.objects,
+    npcs: [{ id: 'fujii', x: 4, y: 3, facing: 'right' }],
+    warps: [
+      { x: 5, y: 9, to: { map: 'mountain', x: 27, y: 22, facing: 'down' } },
+      { x: 6, y: 9, to: { map: 'mountain', x: 28, y: 22, facing: 'down' } },
+    ],
+  },
+  kneipe: {
+    id: 'kneipe', name: 'Harbour diner Hamada', nameJa: '港食堂 はまだ', tiles: ROOMS_GEN.kneipe.tiles, interior: true, image: ROOMS_GEN.kneipe.image,
+    objects: ROOMS_GEN.kneipe.objects,
+    npcs: [{ id: 'hamada', x: 5, y: 3, facing: 'down' }],
+    warps: [{ x: 6, y: 9, to: { map: 'harbor', x: 17, y: 13, facing: 'down' } }],
+  },
+  leuchtturm: {
+    id: 'leuchtturm', name: 'Lighthouse keeper’s room', nameJa: '灯台守の部屋', tiles: ROOMS_GEN.leuchtturm.tiles, interior: true, image: ROOMS_GEN.leuchtturm.image,
+    objects: ROOMS_GEN.leuchtturm.objects,
+    npcs: [{ id: 'umino', x: 8, y: 5, facing: 'left' }],
+    warps: [5, 6].map((x) => ({ x, y: 9, to: { map: 'harbor', x: 37, y: 4, facing: 'left' as const } })),
   },
 };
