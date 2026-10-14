@@ -35,7 +35,7 @@ _sheets = {}
 
 def sheet(name):
     if name not in _sheets:
-        a = load(f'hm_{name}.webp')
+        a = load(f'hm_{name}.webp' if os.path.exists(os.path.join(ROOT, 'art', 'sheets', f'hm_{name}.webp')) else f'{name}.webp')
         fg = ~magenta_mask(a)
         lab, _ = ndimage.label(ndimage.binary_dilation(fg, iterations=1))
         objs = ndimage.find_objects(lab)
@@ -588,37 +588,81 @@ ROOMS = {
         grid=['W' * 14] * 3 + ['WW' + 'f' * 10 + 'WW'] * 7 + ['W' * 6 + 'DD' + 'W' * 6],
         spots=[('desks', 2, 2, 7, 1, 'buero_desks'), ('board', 4, 1, 2, 1, 'buero_board'), ('calendar', 6, 1, 1, 1, 'buero_calendar'), ('meeting', 8, 1, 4, 2, 'buero_meeting'),
                ('cabinets', 1, 3, 1, 5, 'buero_cabinet'), ('coffee', 12, 3, 1, 2, 'buero_coffee'), ('printer', 12, 5, 1, 2, 'buero_printer'), ('plant', 12, 8, 1, 1, 'plant')],
-        furniture=[],
+        furniture=[
+            ('isl1', 'furniture_buero', 0, 3, 6, 3, 1, 'furn_desk', dict(tw=3.2)),
+            ('isl2', 'furniture_buero', 0, 8, 6, 3, 1, 'furn_desk', dict(tw=3.2)),
+            ('meet', 'furniture_buero', 3, 3, 8, 3, 1, 'furn_table', dict(tw=2.8)),
+            ('copier', 'furniture_buero', 6, 11, 4, 1, 1, 'furn_machine', dict(tw=1.3)),
+            ('plant', 'furniture_buero', 7, 11, 8, 1, 1, 'plant', dict(tw=0.9)),
+            ('boxes', 'furniture_buero', 8, 2, 9, 1, 1, 'furn_box', dict(tw=1.1)),
+            ('chair', 'furniture_buero', 1, 7, 7, 1, 1, None, dict(tw=0.8)),
+        ],
     ),
     'empfang': dict(
         size=(12, 10), painted='room_empfang.webp', clean=True, crop=(0, 0, 768, 640),
         grid=['W' * 12] * 3 + ['WWW' + 'c' * 6 + 'WWW'] + ['WW' + 'f' * 8 + 'WW'] * 5 + ['W' * 5 + 'DD' + 'W' * 5],
         spots=[('desk', 3, 3, 6, 1, 'empfang_desk'), ('logo', 4, 1, 4, 1, 'empfang_logo'), ('shelf', 1, 1, 1, 3, 'empfang_shelf'), ('door', 10, 1, 1, 2, 'empfang_door'), ('umbrellas', 10, 6, 1, 1, 'empfang_umbrellas')],
-        furniture=[],
+        furniture=[
+            ('sofa', 'furniture_empfang', 0, 2, 5, 1, 2, 'furn_seat', dict(tw=1.5)),
+            ('table', 'furniture_empfang', 3, 4, 6, 1, 1, 'furn_table', dict(tw=1.4)),
+            ('arm', 'furniture_empfang', 4, 4, 8, 1, 1, 'furn_seat', dict(tw=1.2)),
+            ('plant', 'furniture_empfang', 1, 9, 5, 1, 1, 'plant', dict(tw=1.1)),
+            ('sign', 'furniture_empfang', 2, 8, 8, 1, 1, 'furn_sign', dict(tw=1.0)),
+        ],
     ),
     'takoladen': dict(
         size=(12, 10), painted='room_takoyaki_laden.webp', clean=True, crop=(0, 0, 768, 640),
         grid=['W' * 12] * 3 + ['W' + 'c' * 8 + 'ffW'] + ['WW' + 'f' * 9 + 'W'] * 5 + ['W' * 5 + 'DD' + 'W' * 5],
         spots=[('griddle', 1, 3, 4, 1, 'tako_griddle'), ('menu', 3, 1, 5, 1, 'tako_menu'), ('noren', 8, 1, 2, 1, 'tako_noren'), ('tv', 10, 1, 1, 2, 'tako_tv'), ('flour', 1, 3, 1, 2, 'tako_flour'), ('stools', 2, 4, 6, 1, 'tako_stool')],
-        furniture=[],
+        furniture=[
+            ('st1', 'furniture_takoyaki_laden', 0, 2, 4, 1, 1, 'furn_seat', dict(tw=0.7)),
+            ('st2', 'furniture_takoyaki_laden', 0, 4, 4, 1, 1, 'furn_seat', dict(tw=0.7)),
+            ('st3', 'furniture_takoyaki_laden', 0, 6, 4, 1, 1, 'furn_seat', dict(tw=0.7)),
+            ('st4', 'furniture_takoyaki_laden', 0, 8, 4, 1, 1, 'furn_seat', dict(tw=0.7)),
+            ('tab1', 'furniture_takoyaki_laden', 2, 3, 7, 1, 1, 'furn_table', dict(tw=0.9)),
+            ('tab2', 'furniture_takoyaki_laden', 2, 8, 7, 1, 1, 'furn_table', dict(tw=0.9)),
+            ('crate', 'furniture_takoyaki_laden', 12, 10, 5, 1, 1, 'furn_box', dict(tw=1.0)),
+            ('bin', 'furniture_takoyaki_laden', 16, 10, 8, 1, 1, 'furn_box', dict(tw=0.9)),
+        ],
     ),
     'okonomi': dict(
         size=(13, 10), painted='room_okonomiyaki.webp', clean=True, crop=(0, 0, 832, 640),
         grid=['W' * 13] * 3 + ['WW' + 'c' * 9 + 'WW'] + ['WW' + 'f' * 9 + 'WW'] * 5 + ['W' * 6 + 'DD' + 'W' * 5],
         spots=[('shelf', 1, 1, 2, 2, 'okonomi_shelf'), ('noren', 3, 1, 2, 2, 'okonomi_noren'), ('menu', 5, 1, 4, 1, 'okonomi_menu'), ('photo', 9, 1, 2, 1, 'okonomi_photo'), ('griddles', 3, 3, 6, 1, 'okonomi_griddle')],
-        furniture=[],
+        furniture=[
+            ('grill1', 'furniture_okonomiyaki', 0, 3, 5, 3, 2, 'furn_table', dict(tw=3.0)),
+            ('grill2', 'furniture_okonomiyaki', 0, 8, 5, 3, 2, 'furn_table', dict(tw=3.0)),
+            ('beer', 'furniture_okonomiyaki', 1, 10, 8, 1, 1, 'furn_box', dict(tw=1.0)),
+            ('coat', 'furniture_okonomiyaki', 3, 2, 8, 1, 1, 'furn_rack', dict(tw=0.9)),
+            ('lamp', 'furniture_okonomiyaki', 4, 10, 4, 1, 1, 'furn_lamp', dict(tw=0.8)),
+        ],
     ),
     'konbini2': dict(
         size=(13, 10), painted='room_konbini_osaka.webp', clean=True, crop=(0, 0, 832, 640),
         grid=['W' * 13] * 3 + ['WW' + 'c' * 5 + 'ff' + 'WWWW'] + ['WW' + 'f' * 10 + 'W'] * 5 + ['W' * 6 + 'DD' + 'W' * 5],
         spots=[('counter', 2, 3, 5, 1, 'konbini2_counter'), ('fridges', 9, 1, 4, 3, 'konbini2_fridge'), ('boards', 3, 1, 6, 1, 'konbini2_board'), ('magazines', 1, 4, 1, 4, 'konbini2_magazines'), ('atm', 12, 6, 1, 3, 'konbini2_atm')],
-        furniture=[],
+        furniture=[
+            ('shelf1', 'furniture_konbini', 0, 3, 6, 3, 1, 'furn_shelf', dict(tw=3.0)),
+            ('shelf2', 'furniture_konbini', 0, 8, 6, 3, 1, 'furn_shelf', dict(tw=3.0)),
+            ('boxes', 'furniture_konbini', 1, 11, 8, 1, 1, 'furn_box', dict(tw=1.1)),
+            ('freezer', 'furniture_konbini', 2, 9, 4, 2, 1, 'furn_machine', dict(tw=2.2)),
+            ('mop', 'furniture_konbini', 3, 2, 8, 1, 1, 'furn_box', dict(tw=0.9)),
+            ('baskets', 'furniture_konbini', 4, 11, 5, 1, 1, 'furn_box', dict(tw=1.0)),
+        ],
     ),
     'kushikatsu': dict(
         size=(12, 10), painted='room_kushikatsu.webp', clean=True, crop=(0, 0, 768, 640),
         grid=['W' * 12] * 3 + ['W' + 'c' * 8 + 'ffW'] + ['WW' + 'f' * 9 + 'W'] * 5 + ['W' * 5 + 'DD' + 'W' * 5],
         spots=[('posters', 1, 1, 2, 2, 'kushi_poster'), ('fryers', 4, 1, 4, 2, 'kushi_fryer'), ('sign', 9, 1, 1, 2, 'kushi_sign'), ('racks', 7, 1, 2, 2, 'kushi_rack'), ('counter', 1, 3, 5, 1, 'kushi_counter'), ('tv', 1, 3, 1, 2, 'kushi_tv')],
-        furniture=[],
+        furniture=[
+            ('st1', 'furniture_kushikatsu', 0, 2, 4, 1, 1, 'furn_seat', dict(tw=0.8)),
+            ('st2', 'furniture_kushikatsu', 0, 6, 4, 1, 1, 'furn_seat', dict(tw=0.8)),
+            ('st3', 'furniture_kushikatsu', 0, 7, 4, 1, 1, 'furn_seat', dict(tw=0.8)),
+            ('table', 'furniture_kushikatsu', 1, 6, 7, 2, 1, 'furn_table', dict(tw=2.0)),
+            ('bench', 'furniture_kushikatsu', 2, 2, 7, 2, 1, 'furn_seat', dict(tw=2.2)),
+            ('sticks', 'furniture_kushikatsu', 3, 9, 4, 1, 1, 'furn_box', dict(tw=1.1)),
+            ('board', 'furniture_kushikatsu', 4, 9, 8, 1, 1, 'furn_sign', dict(tw=1.1)),
+        ],
     ),
     # --- chapter 7 (Tokyo): painted rooms (furniture sheets are not cut yet)
     'kissaten': dict(
@@ -626,39 +670,77 @@ ROOMS = {
         grid=['W' * 13] * 3 + ['WWW' + 'c' * 7 + 'f' + 'WW'] + ['WWW' + 'f' * 8 + 'WW'] * 5 + ['W' * 6 + 'DD' + 'W' * 5],
         spots=[('siphons', 4, 1, 2, 2, 'kissaten_siphon'), ('cups', 5, 1, 4, 1, 'kissaten_cups'), ('case', 8, 3, 2, 1, 'kissaten_case'), ('clock', 9, 1, 1, 2, 'kissaten_clock'),
                ('booths', 1, 3, 1, 5, 'kissaten_booths'), ('books', 11, 1, 1, 3, 'kissaten_books'), ('window', 11, 5, 1, 2, 'kissaten_window'), ('counter', 3, 3, 5, 1, 'kissaten_counter')],
-        furniture=[],
+        furniture=[
+            ('tab1', 'furniture_kissaten', 0, 3, 6, 3, 1, 'furn_table', dict(tw=2.8)),
+            ('tab2', 'furniture_kissaten', 0, 8, 6, 3, 1, 'furn_table', dict(tw=2.8)),
+            ('juke', 'furniture_kissaten', 2, 10, 4, 1, 1, 'furn_jukebox', dict(tw=1.0)),
+            ('st1', 'furniture_kissaten', 3, 4, 4, 1, 1, 'furn_seat', dict(tw=0.7)),
+            ('st2', 'furniture_kissaten', 3, 7, 4, 1, 1, 'furn_seat', dict(tw=0.7)),
+            ('rack', 'furniture_kissaten', 4, 10, 8, 1, 1, 'furn_shelf', dict(tw=1.0)),
+        ],
     ),
     'sento': dict(
         size=(12, 10), painted='room_sento.webp', clean=True, crop=(0, 0, 768, 640),
         grid=['W' * 12] * 3 + ['WW' + 'ff' + 'c' * 5 + 'f' + 'WW'] + ['WW' + 'f' * 8 + 'WW'] * 5 + ['W' * 5 + 'DD' + 'W' * 5],
         spots=[('noren_blue', 2, 1, 2, 2, 'sento_noren_blue'), ('fuji', 4, 1, 4, 1, 'sento_fuji'), ('noren_red', 8, 1, 2, 2, 'sento_noren_red'), ('counter', 4, 3, 5, 1, 'sento_counter'),
                ('lockers', 1, 3, 1, 5, 'sento_lockers'), ('vending', 10, 3, 1, 2, 'sento_vending'), ('bench', 10, 5, 1, 3, 'sento_bench')],
-        furniture=[],
+        furniture=[
+            ('bench', 'furniture_sento', 0, 3, 6, 3, 1, 'furn_seat', dict(tw=3.0)),
+            ('towels', 'furniture_sento', 1, 8, 5, 1, 1, 'furn_box', dict(tw=1.0)),
+            ('coat', 'furniture_sento', 3, 9, 7, 1, 1, 'furn_rack', dict(tw=0.9)),
+            ('plant', 'furniture_sento', 4, 2, 8, 1, 1, 'plant', dict(tw=1.1)),
+        ],
     ),
     'gamecenter': dict(
         size=(13, 10), painted='room_game_center.webp', clean=True, crop=(0, 0, 832, 640),
         grid=['W' * 13] * 3 + ['WWW' + 'c' * 8 + 'WW'] + ['WWW' + 'f' * 7 + 'WWW'] * 5 + ['W' * 6 + 'DD' + 'W' * 5],
         spots=[('arcade', 3, 1, 6, 2, 'game_arcade'), ('prize', 9, 1, 2, 2, 'game_prize'), ('crane', 1, 3, 1, 5, 'game_crane'), ('dance', 10, 4, 1, 2, 'game_dance'), ('purikura', 10, 6, 2, 3, 'game_purikura')],
-        furniture=[],
+        furniture=[
+            ('crane1', 'furniture_game_center', 1, 4, 5, 1, 1, 'furn_machine', dict(tw=1.1)),
+            ('crane2', 'furniture_game_center', 1, 4, 7, 1, 1, 'furn_machine', dict(tw=1.1)),
+            ('arcade', 'furniture_game_center', 0, 8, 7, 1, 1, 'furn_machine', dict(tw=1.0)),
+            ('change', 'furniture_game_center', 11, 9, 5, 1, 1, 'furn_machine', dict(tw=1.0)),
+            ('bench', 'furniture_game_center', 12, 3, 8, 2, 1, 'furn_seat', dict(tw=2.4)),
+        ],
     ),
     'yokocho': dict(
         size=(12, 10), painted='room_yokocho.webp', clean=True, crop=(0, 0, 768, 640),
         grid=['W' * 12] * 3 + ['WW' + 'c' * 6 + 'ff' + 'WW'] * 2 + ['WW' + 'f' * 8 + 'WW'] * 4 + ['W' * 5 + 'DD' + 'W' * 5],
         spots=[('bottles', 1, 1, 3, 2, 'yokocho_bottles'), ('menu', 4, 1, 3, 1, 'yokocho_menu'), ('grill', 4, 2, 2, 1, 'yokocho_grill'), ('noren', 8, 1, 2, 2, 'yokocho_noren'),
                ('tv', 9, 1, 2, 1, 'yokocho_tv'), ('counter', 2, 3, 6, 2, 'yokocho_counter'), ('coat', 10, 2, 1, 2, 'yokocho_coat')],
-        furniture=[],
+        furniture=[
+            ('st1', 'furniture_yokocho', 2, 3, 5, 1, 1, 'furn_seat', dict(tw=0.8)),
+            ('st2', 'furniture_yokocho', 2, 4, 5, 1, 1, 'furn_seat', dict(tw=0.8)),
+            ('st3', 'furniture_yokocho', 2, 5, 5, 1, 1, 'furn_seat', dict(tw=0.8)),
+            ('st4', 'furniture_yokocho', 2, 6, 5, 1, 1, 'furn_seat', dict(tw=0.8)),
+            ('st5', 'furniture_yokocho', 2, 7, 5, 1, 1, 'furn_seat', dict(tw=0.8)),
+            ('crate', 'furniture_yokocho', 0, 9, 7, 1, 1, 'furn_box', dict(tw=1.0)),
+            ('coat', 'furniture_yokocho', 1, 2, 8, 1, 1, 'furn_rack', dict(tw=0.9)),
+            ('lamp', 'furniture_yokocho', 3, 8, 8, 1, 1, 'furn_lamp', dict(tw=1.0)),
+        ],
     ),
     'kuyakusho': dict(
         size=(14, 11), painted='room_kuyakusho.webp', clean=True, crop=(0, 0, 896, 704),
         grid=['W' * 14] * 3 + ['WW' + 'c' * 10 + 'WW'] * 2 + ['WW' + 'f' * 10 + 'WW'] * 5 + ['W' * 6 + 'DD' + 'W' * 6],
         spots=[('counter', 2, 3, 10, 2, 'kuyaku_counter'), ('board', 1, 5, 1, 4, 'kuyaku_board'), ('forms', 12, 5, 1, 3, 'kuyaku_forms'), ('ticket', 10, 1, 2, 1, 'kuyaku_ticket')],
-        furniture=[],
+        furniture=[
+            ('ticket', 'furniture_kuyakusho', 0, 10, 5, 1, 1, 'furn_machine', dict(tw=1.0)),
+            ('chairs1', 'furniture_kuyakusho', 1, 2, 7, 3, 1, 'furn_seat', dict(tw=3.0)),
+            ('chairs2', 'furniture_kuyakusho', 1, 8, 7, 3, 1, 'furn_seat', dict(tw=3.0)),
+            ('desk', 'furniture_kuyakusho', 3, 10, 9, 1, 1, 'furn_desk', dict(tw=1.4)),
+        ],
     ),
     'radio': dict(
         size=(13, 10), painted='room_radio.webp', clean=True, crop=(0, 0, 832, 640),
         grid=['W' * 13] * 3 + ['WWW' + 'f' + 'c' * 6 + 'f' + 'WW'] + ['WWW' + 'f' * 8 + 'WW'] * 5 + ['W' * 6 + 'DD' + 'W' * 5],
         spots=[('records', 4, 1, 5, 2, 'radio_records'), ('thermos', 8, 2, 2, 2, 'radio_thermos'), ('onair', 10, 1, 1, 1, 'radio_onair'), ('desk', 1, 3, 1, 4, 'radio_desk')],
-        furniture=[],
+        furniture=[
+            ('sofa', 'furniture_radio', 0, 10, 6, 1, 2, 'furn_seat', dict(tw=1.4)),
+            ('lamp', 'furniture_radio', 1, 3, 4, 1, 1, 'furn_lamp', dict(tw=0.7)),
+            ('mic', 'furniture_radio', 2, 7, 6, 3, 1, 'furn_table', dict(tw=2.8)),
+            ('shelf', 'furniture_radio', 3, 3, 8, 1, 1, 'furn_shelf', dict(tw=1.0)),
+            ('side', 'furniture_radio', 4, 10, 4, 1, 1, 'furn_table', dict(tw=1.0)),
+        ],
     ),
 }
 

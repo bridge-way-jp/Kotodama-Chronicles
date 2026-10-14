@@ -261,6 +261,19 @@ export const TOKYO_SCRIPTS: Record<string, DialogueRule[]> = {
     { steps: [n('{隅田川|すみだがわ}の{青|あお}い{時間|じかん}。{川|かわ}の{向|む}こうで、{高|たか}い{塔|とう}が、{静|しず}かに{光|ひか}っている。', 'The Sumida at blue hour. Across the river the tall tower glows quietly.')] },
   ],
 
+
+  // ---------------------------------------------------------------- furniture of the Osaka and Tokyo rooms
+  furn_seat: place('座り心地のよさそうな椅子だ。', 'A seat that looks comfortable.'),
+  furn_table: place('使いこまれたテーブルだ。', 'A well-used table.'),
+  furn_desk: place('机の上に、書類とペンが置いてある。', 'Papers and pens lie on the desk.'),
+  furn_box: place('箱や入れ物が、きちんと積んである。', 'Boxes and containers stacked neatly.'),
+  furn_shelf: place('棚に、いろいろな物がならんでいる。', 'Various things lined up on the shelf.'),
+  furn_machine: place('機械だ。使い方は、見れば分かりそうだ。', 'A machine. It looks easy enough to work out.'),
+  furn_lamp: place('あたたかい灯りがともっている。', 'A warm light glows.'),
+  furn_rack: place('コートかけだ。', 'A coat rack.'),
+  furn_sign: place('立て看板だ。字は、ちょっとかすれている。', 'A standing sign board. The writing is a little faded.'),
+  furn_jukebox: place('古いジュークボックスだ。今は、静かに眠っている。', 'An old jukebox. It sleeps quietly right now.'),
+
   // ---------------------------------------------------------------- interiors
   kissaten_siphon: place('サイフォンが、こぽこぽと音を立てている。コーヒーのいい匂いが、店じゅうに広がっている。', 'The siphon bubbles. The good smell of coffee spreads through the whole shop.'),
   kissaten_cups: place('棚に、同じ形のコーヒーカップが、きれいにならんでいる。', 'Coffee cups of the same shape stand in neat rows on the shelves.'),
