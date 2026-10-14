@@ -48,5 +48,11 @@ export const NPCS: Record<string, NpcDef> = {
   ikeda: { id: 'ikeda', name: '池田さん', nameEn: 'Mr. Ikeda', role: 'Station attendant', sprite: 'npc_ikeda', portrait: 'portrait_ikeda', color: '#2f3f6a' },
   sakamoto: { id: 'sakamoto', name: '坂本さん', nameEn: 'Mr. Sakamoto', role: 'Business traveller', sprite: 'npc_sakamoto', portrait: 'portrait_sakamoto', color: '#5a5a66' },
   emma: { id: 'emma', name: 'エマ', nameEn: 'Emma', role: 'Backpacker', sprite: 'npc_emma', portrait: 'portrait_emma', color: '#d0a040' },
+  tachibana: { id: 'tachibana', name: '立花さん', nameEn: 'Tachibana-san', role: 'Business-manners trainer, master of keigo', sprite: 'npc_tachibana', portrait: 'portrait_tachibana', color: '#3f3f4f' },
+  kenta: { id: 'kenta', name: '健太さん', nameEn: 'Kenta', role: 'New graduate salesman', sprite: 'npc_kenta', portrait: 'portrait_kenta', color: '#2f3f6a' },
+  okan: { id: 'okan', name: 'おかん', nameEn: 'Okan (Mrs. Naniwa)', role: 'Takoyaki shop owner', sprite: 'npc_okan', portrait: 'portrait_okan', color: '#b8742a' },
+  fujita: { id: 'fujita', name: '藤田課長', nameEn: 'Section chief Fujita', role: 'Overworked section chief', sprite: 'npc_fujita', portrait: 'portrait_fujita', color: '#5a5a66' },
+  minh: { id: 'minh', name: 'ミンさん', nameEn: 'Minh', role: 'Convenience-store worker', sprite: 'npc_minh', portrait: 'portrait_minh', color: '#3a7fc0' },
+  porter: { id: 'porter', name: 'ポーターさん', nameEn: 'Hotel porter', role: 'Hotel porter', sprite: 'npc_porter', portrait: 'portrait_porter', color: '#2f3a5a' },
   busdriver: { id: 'busdriver', name: '運転手さん', nameEn: 'Bus driver', role: 'Bus driver', sprite: 'npc_busdriver', portrait: 'npc_busdriver_down', color: '#4a86b5' },
 };

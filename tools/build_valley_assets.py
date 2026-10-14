@@ -94,6 +94,18 @@ KYOTO_ITEMS = ['i_matcha', 'i_wagashi', 'i_sensu', 'i_furoshiki', 'i_omamori_k',
                'i_yatsuhashi', 'i_ic_card', 'i_goshuin', 'i_incense', 'i_ema', 'i_cranes']
 
 
+OSAKA_BGS = ['bg_osaka_dotonbori', 'bg_osaka_umeda', 'bg_osaka_castle']
+OSAKA_CGS = ['cg_osaka_arrival', 'cg_osaka_takoyaki', 'cg_osaka_castle']
+OSAKA_ITEMS = ['i_takoyaki', 'i_okonomiyaki', 'i_kushikatsu', 'i_canned_coffee', 'i_meishi', 'i_lanyard',
+               'i_energy', 'i_hanko', 'i_pen', 'i_notebook_red', 'i_neko_osaka', 'i_old_tickets']
+
+
+def osaka():
+    grid_items('hm_items_osaka.webp', OSAKA_ITEMS)
+    bgs('battle_bgs_osaka.webp', OSAKA_BGS)
+    cgs(OSAKA_CGS)
+
+
 def kyoto():
     grid_items('hm_items_kyoto.webp', KYOTO_ITEMS)
     bgs('battle_bgs_kyoto.webp', KYOTO_BGS)
@@ -127,6 +139,7 @@ if __name__ == '__main__':
     eggs()
     harbor()
     kyoto()
+    osaka()
     cgs()
     bgs('battle_bgs_mountain.webp', MOUNTAIN_BGS)
     grid_items('hm_items_mountain.webp', MOUNTAIN_ITEMS)

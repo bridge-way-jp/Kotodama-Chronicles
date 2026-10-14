@@ -142,6 +142,8 @@ export const MAP_MUSIC: Record<string, string> = {
   ryokan: 'onsen', werkstatt: 'valley', tsuru: 'snow', klinik: 'snow', kneipe: 'harbor', leuchtturm: 'lighthouse',
   k_station: 'kyoto', k_nishiki: 'kyoto', k_kamo: 'kyoto', k_gion: 'gion', k_fushimi: 'gion',
   machiya: 'gion', teehaus: 'gion', kimono: 'kyoto', izakaya: 'kyoto', bahnhofinfo: 'kyoto', nishikiladen: 'kyoto',
+  o_umeda: 'kyoto', o_nakanoshima: 'kyoto', o_dotonbori: 'festival', o_shinsekai: 'festival', o_castle: 'gion',
+  buero: 'town', empfang: 'town', takoladen: 'festival', okonomi: 'festival', konbini2: 'town', kushikatsu: 'festival',
 };
 
 let music: HTMLAudioElement | null = null;

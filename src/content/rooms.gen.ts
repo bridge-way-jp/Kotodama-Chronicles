@@ -2888,5 +2888,388 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
       }
     ],
     "image": "room2_nishikiladen"
+  },
+  "buero": {
+    "tiles": [
+      "WWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWWWWWDDWWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "buero_desks",
+        "x": 2,
+        "y": 2,
+        "w": 7,
+        "h": 1,
+        "script": "buero_desks"
+      },
+      {
+        "id": "buero_board",
+        "x": 4,
+        "y": 1,
+        "w": 2,
+        "h": 1,
+        "script": "buero_board"
+      },
+      {
+        "id": "buero_calendar",
+        "x": 6,
+        "y": 1,
+        "w": 1,
+        "h": 1,
+        "script": "buero_calendar"
+      },
+      {
+        "id": "buero_meeting",
+        "x": 8,
+        "y": 1,
+        "w": 4,
+        "h": 2,
+        "script": "buero_meeting"
+      },
+      {
+        "id": "buero_cabinets",
+        "x": 1,
+        "y": 3,
+        "w": 1,
+        "h": 5,
+        "script": "buero_cabinet"
+      },
+      {
+        "id": "buero_coffee",
+        "x": 12,
+        "y": 3,
+        "w": 1,
+        "h": 2,
+        "script": "buero_coffee"
+      },
+      {
+        "id": "buero_printer",
+        "x": 12,
+        "y": 5,
+        "w": 1,
+        "h": 2,
+        "script": "buero_printer"
+      },
+      {
+        "id": "buero_plant",
+        "x": 12,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "plant"
+      }
+    ],
+    "image": "room2_buero"
+  },
+  "empfang": {
+    "tiles": [
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWWccccccWWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWWWWDDWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "empfang_desk",
+        "x": 3,
+        "y": 3,
+        "w": 6,
+        "h": 1,
+        "script": "empfang_desk"
+      },
+      {
+        "id": "empfang_logo",
+        "x": 4,
+        "y": 1,
+        "w": 4,
+        "h": 1,
+        "script": "empfang_logo"
+      },
+      {
+        "id": "empfang_shelf",
+        "x": 1,
+        "y": 1,
+        "w": 1,
+        "h": 3,
+        "script": "empfang_shelf"
+      },
+      {
+        "id": "empfang_door",
+        "x": 10,
+        "y": 1,
+        "w": 1,
+        "h": 2,
+        "script": "empfang_door"
+      },
+      {
+        "id": "empfang_umbrellas",
+        "x": 10,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "script": "empfang_umbrellas"
+      }
+    ],
+    "image": "room2_empfang"
+  },
+  "takoladen": {
+    "tiles": [
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WccccccccffW",
+      "WWfffffffffW",
+      "WWfffffffffW",
+      "WWfffffffffW",
+      "WWfffffffffW",
+      "WWfffffffffW",
+      "WWWWWDDWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "takoladen_griddle",
+        "x": 1,
+        "y": 3,
+        "w": 4,
+        "h": 1,
+        "script": "tako_griddle"
+      },
+      {
+        "id": "takoladen_menu",
+        "x": 3,
+        "y": 1,
+        "w": 5,
+        "h": 1,
+        "script": "tako_menu"
+      },
+      {
+        "id": "takoladen_noren",
+        "x": 8,
+        "y": 1,
+        "w": 2,
+        "h": 1,
+        "script": "tako_noren"
+      },
+      {
+        "id": "takoladen_tv",
+        "x": 10,
+        "y": 1,
+        "w": 1,
+        "h": 2,
+        "script": "tako_tv"
+      },
+      {
+        "id": "takoladen_flour",
+        "x": 1,
+        "y": 3,
+        "w": 1,
+        "h": 2,
+        "script": "tako_flour"
+      },
+      {
+        "id": "takoladen_stools",
+        "x": 2,
+        "y": 4,
+        "w": 6,
+        "h": 1,
+        "script": "tako_stool"
+      }
+    ],
+    "image": "room2_takoladen"
+  },
+  "okonomi": {
+    "tiles": [
+      "WWWWWWWWWWWWW",
+      "WWWWWWWWWWWWW",
+      "WWWWWWWWWWWWW",
+      "WWcccccccccWW",
+      "WWfffffffffWW",
+      "WWfffffffffWW",
+      "WWfffffffffWW",
+      "WWfffffffffWW",
+      "WWfffffffffWW",
+      "WWWWWWDDWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "okonomi_shelf",
+        "x": 1,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "okonomi_shelf"
+      },
+      {
+        "id": "okonomi_noren",
+        "x": 3,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "okonomi_noren"
+      },
+      {
+        "id": "okonomi_menu",
+        "x": 5,
+        "y": 1,
+        "w": 4,
+        "h": 1,
+        "script": "okonomi_menu"
+      },
+      {
+        "id": "okonomi_photo",
+        "x": 9,
+        "y": 1,
+        "w": 2,
+        "h": 1,
+        "script": "okonomi_photo"
+      },
+      {
+        "id": "okonomi_griddles",
+        "x": 3,
+        "y": 3,
+        "w": 6,
+        "h": 1,
+        "script": "okonomi_griddle"
+      }
+    ],
+    "image": "room2_okonomi"
+  },
+  "konbini2": {
+    "tiles": [
+      "WWWWWWWWWWWWW",
+      "WWWWWWWWWWWWW",
+      "WWWWWWWWWWWWW",
+      "WWcccccffWWWW",
+      "WWffffffffffW",
+      "WWffffffffffW",
+      "WWffffffffffW",
+      "WWffffffffffW",
+      "WWffffffffffW",
+      "WWWWWWDDWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "konbini2_counter",
+        "x": 2,
+        "y": 3,
+        "w": 5,
+        "h": 1,
+        "script": "konbini2_counter"
+      },
+      {
+        "id": "konbini2_fridges",
+        "x": 9,
+        "y": 1,
+        "w": 4,
+        "h": 3,
+        "script": "konbini2_fridge"
+      },
+      {
+        "id": "konbini2_boards",
+        "x": 3,
+        "y": 1,
+        "w": 6,
+        "h": 1,
+        "script": "konbini2_board"
+      },
+      {
+        "id": "konbini2_magazines",
+        "x": 1,
+        "y": 4,
+        "w": 1,
+        "h": 4,
+        "script": "konbini2_magazines"
+      },
+      {
+        "id": "konbini2_atm",
+        "x": 12,
+        "y": 6,
+        "w": 1,
+        "h": 3,
+        "script": "konbini2_atm"
+      }
+    ],
+    "image": "room2_konbini2"
+  },
+  "kushikatsu": {
+    "tiles": [
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WccccccccffW",
+      "WWfffffffffW",
+      "WWfffffffffW",
+      "WWfffffffffW",
+      "WWfffffffffW",
+      "WWfffffffffW",
+      "WWWWWDDWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "kushikatsu_posters",
+        "x": 1,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "kushi_poster"
+      },
+      {
+        "id": "kushikatsu_fryers",
+        "x": 4,
+        "y": 1,
+        "w": 4,
+        "h": 2,
+        "script": "kushi_fryer"
+      },
+      {
+        "id": "kushikatsu_sign",
+        "x": 9,
+        "y": 1,
+        "w": 1,
+        "h": 2,
+        "script": "kushi_sign"
+      },
+      {
+        "id": "kushikatsu_racks",
+        "x": 7,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "kushi_rack"
+      },
+      {
+        "id": "kushikatsu_counter",
+        "x": 1,
+        "y": 3,
+        "w": 5,
+        "h": 1,
+        "script": "kushi_counter"
+      },
+      {
+        "id": "kushikatsu_tv",
+        "x": 1,
+        "y": 3,
+        "w": 1,
+        "h": 2,
+        "script": "kushi_tv"
+      }
+    ],
+    "image": "room2_kushikatsu"
   }
 };

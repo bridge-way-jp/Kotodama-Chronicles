@@ -5,6 +5,7 @@ import { VALLEY_GEN } from './valley.gen';
 import { MOUNTAIN_GEN } from './mountain.gen';
 import { HARBOR_GEN } from './harbor.gen';
 import { KYOTO_GEN } from './kyoto.gen';
+import { OSAKA_GEN } from './osaka.gen';
 import type { Dir } from '../core/types';
 
 /**
@@ -235,41 +236,40 @@ export const MAPS: Record<string, MapDef> = {
     busStop: { x: 21, y: 20 },
     // footprints match tools/build_valley.py BUILDINGS
     objects: [
-      { id: 'valley_farmhouse', sprite: 'bx_farmhouse', x: 4, y: 4, w: 5, h: 2 },
-      { id: 'valley_winery', sprite: 'bx_winery', x: 22, y: 13, w: 4, h: 2 },
-      { id: 'valley_stand', sprite: 'bx_stand', x: 15, y: 19, w: 3, h: 1 },
-      { id: 'valley_workshop', sprite: 'bx_workshop', x: 16, y: 14, w: 3, h: 1 },
-      { id: 'valley_busstop', sprite: 'bx_busstop', x: 22, y: 17, w: 3, h: 1, interactAt: [{ x: 22, y: 18 }, { x: 23, y: 18 }, { x: 24, y: 18 }, { x: 21, y: 17 }] },
-      { id: 'valley_ryokan', sprite: 'bx_ryokan', x: 29, y: 13, w: 7, h: 2 },
+      { id: 'valley_farmhouse', sprite: 'bx_farmhouse', x: 4, y: 3, w: 5, h: 2 },
+      { id: 'valley_winery', sprite: 'bx_winery', x: 22, y: 11, w: 4, h: 2 },
+      { id: 'valley_stand', sprite: 'bx_stand', x: 16, y: 19, w: 3, h: 1 },
+      { id: 'valley_workshop', sprite: 'bx_workshop', x: 14, y: 17, w: 3, h: 1 },
+      { id: 'valley_busstop', sprite: 'bx_busstop', x: 23, y: 20, w: 3, h: 1, interactAt: [{ x: 22, y: 20 }, { x: 23, y: 21 }, { x: 25, y: 21 }] },
+      { id: 'valley_ryokan', sprite: 'bx_ryokan', x: 29, y: 12, w: 7, h: 2 },
       // the word garden next to the farmhouse (Mr. Hayashi lends Maria a bed after the harvest)
       ...(['peach_3', 'grape_3', 'sunflower_3', 'rice_2', 'asagao_3', 'sakura_2'] as const).map((p, i) => ({
         id: `valley_garden_${i}`, sprite: `wgs_${p}`, x: 10 + (i % 2), y: 3 + Math.floor(i / 2), w: 1, h: 1, script: 'valley_garden',
       })),
       { id: 'valley_garden_tag', sprite: 'wgs_tag', x: 9, y: 5, w: 1, h: 1, script: 'valley_garden' },
       // the footbath on the onsen square: talk to it from the square, facing north
-      { id: 'valley_ashiyu', x: 35, y: 8, w: 6, h: 1, solid: false, interactAt: [35, 36, 37, 38, 39, 40].map((x) => ({ x, y: 9 })) },
+      { id: 'valley_ashiyu', x: 36, y: 9, w: 5, h: 1, solid: false, interactAt: [36, 37, 38, 39].map((x) => ({ x, y: 10 })) },
     ],
     npcs: [
-      { id: 'hayashi', x: 7, y: 6, facing: 'down' },
+      { id: 'hayashi', x: 7, y: 5, facing: 'down' },
       { id: 'sakura_hayashi', x: 24, y: 3, facing: 'right' },
-      { id: 'kenji', x: 24, y: 15, facing: 'down' },
-      { id: 'busdriver', x: 26, y: 17, facing: 'left' },
+      { id: 'kenji', x: 23, y: 15, facing: 'down' },
+      { id: 'busdriver', x: 24, y: 21, facing: 'up' },
     ],
     warps: [
       ...[20, 21].map((x) => ({ x, y: 27, to: { map: 'town', x: 18, y: 20, facing: 'down' as const } })),
-      { x: 32, y: 14, to: { map: 'ryokan', x: 6, y: 9, facing: 'up' as const } },
-      { x: 33, y: 14, to: { map: 'ryokan', x: 7, y: 9, facing: 'up' as const } },
-      { x: 17, y: 14, to: { map: 'werkstatt', x: 5, y: 8, facing: 'up' as const } },
+      { x: 32, y: 13, to: { map: 'ryokan', x: 6, y: 9, facing: 'up' as const } },
+      { x: 33, y: 13, to: { map: 'ryokan', x: 7, y: 9, facing: 'up' as const } },
+      { x: 15, y: 17, to: { map: 'werkstatt', x: 5, y: 8, facing: 'up' as const } },
     ],
     zones: [
-      { x0: 25, y0: 1, x1: 32, y1: 4, encounters: 'valley_grove', bg: 'bg_valley_orchard.webp' },
-      { x0: 2, y0: 15, x1: 7, y1: 17, encounters: 'valley_river', bg: 'bg_valley_river.webp' },
+      { x0: 25, y0: 0, x1: 33, y1: 4, encounters: 'valley_grove', bg: 'bg_valley_orchard.webp' },
+      { x0: 3, y0: 16, x1: 7, y1: 17, encounters: 'valley_river', bg: 'bg_valley_river.webp' },
     ],
     steam: [
-      { x: 1000, y: 300, w: 30, depth: 470 }, // behind the inn roof
-      { x: 1085, y: 300, w: 30, depth: 470 },
-      { x: 1205, y: 270, w: 70 }, // hot-spring falls
-      { x: 1240, y: 336, w: 50 }, // footbath on the onsen square
+      { x: 1230, y: 250, w: 40 }, // hot-spring pool
+      { x: 1275, y: 245, w: 36 },
+      { x: 1250, y: 330, w: 50 }, // footbath edge
     ],
   },
   mountain: {
@@ -423,6 +423,61 @@ export const MAPS: Record<string, MapDef> = {
     npcs: [],
     zones: [{ x0: 17, y0: 3, x1: 26, y1: 10, encounters: 'fushimi', bg: 'bg_kyoto_fushimi.webp' }],
     warps: [19, 20, 21, 22].map((x) => ({ x, y: 27, to: { map: 'k_station', x: 20, y: 9, facing: 'up' as const } })),
+  },
+  // ---- Osaka (chapter 6); built by tools/build_osaka.py
+  o_umeda: {
+    id: 'o_umeda', name: 'Umeda', nameJa: '梅田', tiles: OSAKA_GEN.umeda.tiles, image: 'map_umeda', objects: OSAKA_GEN.umeda.objects,
+    npcs: [{ id: 'porter', x: 22, y: 9, facing: 'left' }], warps: OSAKA_GEN.umeda.warps,
+  },
+  o_nakanoshima: {
+    id: 'o_nakanoshima', name: 'Nakanoshima', nameJa: '中之島', tiles: OSAKA_GEN.nakanoshima.tiles, image: 'map_nakanoshima', objects: OSAKA_GEN.nakanoshima.objects,
+    npcs: [], warps: OSAKA_GEN.nakanoshima.warps,
+  },
+  o_dotonbori: {
+    id: 'o_dotonbori', name: 'Dotonbori', nameJa: '道頓堀', tiles: OSAKA_GEN.dotonbori.tiles, image: 'map_dotonbori',
+    objects: [...OSAKA_GEN.dotonbori.objects, { id: 'doton_alley', x: 15, y: 10, w: 2, h: 1, solid: false, script: 'doton_alley' }],
+    npcs: [], warps: OSAKA_GEN.dotonbori.warps, bg: 'bg_osaka_dotonbori.webp',
+    // the alley between the shops: the worn-out lantern lives there
+    // (objects are appended below)
+  },
+  o_shinsekai: {
+    id: 'o_shinsekai', name: 'Shinsekai', nameJa: '新世界', tiles: OSAKA_GEN.shinsekai.tiles, image: 'map_shinsekai', objects: OSAKA_GEN.shinsekai.objects,
+    npcs: [], warps: OSAKA_GEN.shinsekai.warps, bg: 'bg_osaka_dotonbori.webp',
+  },
+  o_castle: {
+    id: 'o_castle', name: 'Osaka Castle', nameJa: '大阪城', tiles: OSAKA_GEN.osakajo.tiles, image: 'map_osakajo',
+    objects: [...OSAKA_GEN.osakajo.objects, { id: 'castle_bridge', x: 20, y: 12, w: 4, h: 1, solid: false, script: 'castle_bridge' }], encounters: 'osaka_castle', bg: 'bg_osaka_castle.webp',
+    npcs: [], warps: OSAKA_GEN.osakajo.warps,
+    zones: [{ x0: 3, y0: 6, x1: 7, y1: 12, encounters: 'osaka_castle', bg: 'bg_osaka_castle.webp' }],
+  },
+  buero: {
+    id: 'buero', name: 'Open-plan office', nameJa: 'オフィス', tiles: ROOMS_GEN.buero.tiles, interior: true, image: ROOMS_GEN.buero.image, objects: ROOMS_GEN.buero.objects,
+    npcs: [{ id: 'kenta', x: 4, y: 4, facing: 'right' }],
+    warps: [6, 7].map((x) => ({ x, y: 10, to: { map: 'o_umeda', x: 8 + x - 6, y: 14, facing: 'down' as const } })),
+  },
+  empfang: {
+    id: 'empfang', name: 'Company reception', nameJa: '会社の受付', tiles: ROOMS_GEN.empfang.tiles, interior: true, image: ROOMS_GEN.empfang.image, objects: ROOMS_GEN.empfang.objects,
+    npcs: [{ id: 'tachibana', x: 5, y: 5, facing: 'down' }],
+    warps: [5, 6].map((x) => ({ x, y: 9, to: { map: 'o_umeda', x: 8 + x - 5, y: 22, facing: 'down' as const } })),
+  },
+  takoladen: {
+    id: 'takoladen', name: 'Takoyaki shop', nameJa: 'たこ焼き屋', tiles: ROOMS_GEN.takoladen.tiles, interior: true, image: ROOMS_GEN.takoladen.image, objects: ROOMS_GEN.takoladen.objects,
+    npcs: [{ id: 'okan', x: 10, y: 3, facing: 'left' }],
+    warps: [5, 6].map((x) => ({ x, y: 9, to: { map: 'o_dotonbori', x: 7 + x - 5, y: 12, facing: 'down' as const } })),
+  },
+  okonomi: {
+    id: 'okonomi', name: 'Okonomiyaki restaurant', nameJa: 'お好み焼き屋', tiles: ROOMS_GEN.okonomi.tiles, interior: true, image: ROOMS_GEN.okonomi.image, objects: ROOMS_GEN.okonomi.objects,
+    npcs: [], warps: [6, 7].map((x) => ({ x, y: 9, to: { map: 'o_dotonbori', x: 12 + x - 6, y: 12, facing: 'down' as const } })),
+  },
+  konbini2: {
+    id: 'konbini2', name: 'Convenience store', nameJa: 'コンビニ', tiles: ROOMS_GEN.konbini2.tiles, interior: true, image: ROOMS_GEN.konbini2.image, objects: ROOMS_GEN.konbini2.objects,
+    npcs: [{ id: 'minh', x: 7, y: 3, facing: 'down' }],
+    warps: [6, 7].map((x) => ({ x, y: 9, to: { map: 'o_umeda', x: 33 + x - 6, y: 22, facing: 'down' as const } })),
+  },
+  kushikatsu: {
+    id: 'kushikatsu', name: 'Kushikatsu diner', nameJa: '串カツ屋', tiles: ROOMS_GEN.kushikatsu.tiles, interior: true, image: ROOMS_GEN.kushikatsu.image, objects: ROOMS_GEN.kushikatsu.objects,
+    npcs: [{ id: 'fujita', x: 4, y: 5, facing: 'left' }],
+    warps: [5, 6].map((x) => ({ x, y: 9, to: { map: 'o_shinsekai', x: 4 + x - 5, y: 15, facing: 'down' as const } })),
   },
   apartment: {
     id: 'apartment', name: 'Your apartment', nameJa: 'アパート', tiles: ROOMS_GEN.apartment.tiles, interior: true, image: ROOMS_GEN.apartment.image,
