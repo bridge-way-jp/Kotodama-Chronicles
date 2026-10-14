@@ -299,6 +299,7 @@ GRID_NPC_SHEETS = {
     'hm_chars_harbor.webp': (128, [['gen', 'nagisa', 'hamada'], ['kaito', 'umino', 'shiraishi']]),
     'hm_chars_kyoto.webp': (128, [['sumie', 'matsuo', 'rin'], ['ikeda', 'sakamoto', 'emma']]),
     'hm_chars_osaka.webp': (128, [['tachibana', 'kenta', 'okan'], ['fujita', 'minh', 'porter']]),
+    'hm_chars_tokyo.webp': (128, [['kuroi', 'haru', 'yoshie'], ['yamamoto', 'priya', 'attendant']]),
 }
 
 

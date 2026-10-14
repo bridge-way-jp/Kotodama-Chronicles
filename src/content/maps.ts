@@ -6,6 +6,7 @@ import { MOUNTAIN_GEN } from './mountain.gen';
 import { HARBOR_GEN } from './harbor.gen';
 import { KYOTO_GEN } from './kyoto.gen';
 import { OSAKA_GEN } from './osaka.gen';
+import { TOKYO_GEN } from './tokyo.gen';
 import type { Dir } from '../core/types';
 
 /**
@@ -449,6 +450,59 @@ export const MAPS: Record<string, MapDef> = {
     objects: [...OSAKA_GEN.osakajo.objects, { id: 'castle_bridge', x: 20, y: 12, w: 4, h: 1, solid: false, script: 'castle_bridge' }], encounters: 'osaka_castle', bg: 'bg_osaka_castle.webp',
     npcs: [], warps: OSAKA_GEN.osakajo.warps,
     zones: [{ x0: 3, y0: 6, x1: 7, y1: 12, encounters: 'osaka_castle', bg: 'bg_osaka_castle.webp' }],
+  },
+  // ---- Tokyo (chapter 7); built by tools/build_tokyo.py
+  t_station: {
+    id: 't_station', name: 'Tokyo Station', nameJa: '東京駅', tiles: TOKYO_GEN.station.tiles, image: 'map_station', objects: TOKYO_GEN.station.objects,
+    npcs: [{ id: 'attendant', x: 24, y: 10, facing: 'left' }], warps: TOKYO_GEN.station.warps, bg: 'bg_tokyo_shibuya.webp',
+  },
+  t_asakusa: {
+    id: 't_asakusa', name: 'Asakusa', nameJa: '浅草', tiles: TOKYO_GEN.asakusa.tiles, image: 'map_asakusa', objects: TOKYO_GEN.asakusa.objects,
+    npcs: [], warps: TOKYO_GEN.asakusa.warps, bg: 'bg_tokyo_shibuya.webp',
+  },
+  t_shibuya: {
+    id: 't_shibuya', name: 'Shibuya', nameJa: '渋谷', tiles: TOKYO_GEN.shibuya.tiles, image: 'map_shibuya', objects: TOKYO_GEN.shibuya.objects,
+    npcs: [{ id: 'priya', x: 15, y: 21, facing: 'right' }], warps: TOKYO_GEN.shibuya.warps, bg: 'bg_tokyo_shibuya.webp',
+  },
+  t_shinjuku: {
+    id: 't_shinjuku', name: 'Shinjuku', nameJa: '新宿', tiles: TOKYO_GEN.shinjuku.tiles, image: 'map_shinjuku', encounters: 'tokyo_gyoen', objects: TOKYO_GEN.shinjuku.objects,
+    npcs: [], warps: TOKYO_GEN.shinjuku.warps, bg: 'bg_tokyo_yokocho.webp',
+    zones: [{ x0: 32, y0: 3, x1: 39, y1: 7, encounters: 'tokyo_gyoen', bg: 'bg_tokyo_yokocho.webp' }],
+  },
+  t_sumida: {
+    id: 't_sumida', name: 'Sumida Riverside', nameJa: '隅田川', tiles: TOKYO_GEN.sumida.tiles, image: 'map_sumida', encounters: 'tokyo_river',
+    objects: [...TOKYO_GEN.sumida.objects, { id: 'sm_river', x: 31, y: 8, w: 4, h: 1, solid: false, script: 'sm_river' }, { id: 'sm_dock', x: 20, y: 19, w: 3, h: 1, solid: false, script: 'sm_dock' }],
+    npcs: [], warps: TOKYO_GEN.sumida.warps, bg: 'bg_tokyo_sumida.webp',
+    zones: [{ x0: 1, y0: 21, x1: 12, y1: 25, encounters: 'tokyo_river', bg: 'bg_tokyo_sumida.webp' }],
+  },
+  kissaten: {
+    id: 'kissaten', name: 'Kissaten', nameJa: '喫茶店', tiles: ROOMS_GEN.kissaten.tiles, interior: true, image: ROOMS_GEN.kissaten.image, objects: ROOMS_GEN.kissaten.objects,
+    npcs: [{ id: 'yoshie', x: 5, y: 4, facing: 'up' }],
+    warps: [6, 7].map((x) => ({ x, y: 9, to: { map: 't_asakusa', x: 10, y: 6, facing: 'down' as const } })),
+  },
+  sento: {
+    id: 'sento', name: 'Sento', nameJa: '銭湯', tiles: ROOMS_GEN.sento.tiles, interior: true, image: ROOMS_GEN.sento.image, objects: ROOMS_GEN.sento.objects,
+    npcs: [],
+    warps: [5, 6].map((x) => ({ x, y: 9, to: { map: 't_asakusa', x: 9 + x - 5, y: 12, facing: 'down' as const } })),
+  },
+  gamecenter: {
+    id: 'gamecenter', name: 'Game centre', nameJa: 'ゲームセンター', tiles: ROOMS_GEN.gamecenter.tiles, interior: true, image: ROOMS_GEN.gamecenter.image, objects: ROOMS_GEN.gamecenter.objects,
+    npcs: [{ id: 'haru', x: 5, y: 5, facing: 'left' }],
+    warps: [6, 7].map((x) => ({ x, y: 9, to: { map: 't_shibuya', x: 9 + x - 6, y: 10, facing: 'down' as const } })),
+  },
+  yokocho: {
+    id: 'yokocho', name: 'Yokocho izakaya', nameJa: '横丁の居酒屋', tiles: ROOMS_GEN.yokocho.tiles, interior: true, image: ROOMS_GEN.yokocho.image, objects: ROOMS_GEN.yokocho.objects,
+    npcs: [], warps: [5, 6].map((x) => ({ x, y: 9, to: { map: 't_shinjuku', x: 22, y: 13, facing: 'down' as const } })),
+  },
+  kuyakusho: {
+    id: 'kuyakusho', name: 'Ward office', nameJa: '区役所', tiles: ROOMS_GEN.kuyakusho.tiles, interior: true, image: ROOMS_GEN.kuyakusho.image, objects: ROOMS_GEN.kuyakusho.objects,
+    npcs: [{ id: 'yamamoto', x: 6, y: 4, facing: 'down' }],
+    warps: [5, 6].map((x) => ({ x, y: 9, to: { map: 't_shinjuku', x: 4 + x - 5, y: 9, facing: 'down' as const } })),
+  },
+  radio: {
+    id: 'radio', name: 'Radio studio', nameJa: 'ラジオ局', tiles: ROOMS_GEN.radio.tiles, interior: true, image: ROOMS_GEN.radio.image, objects: ROOMS_GEN.radio.objects,
+    npcs: [{ id: 'kuroi', x: 6, y: 5, facing: 'down' }],
+    warps: [6, 7].map((x) => ({ x, y: 10, to: { map: 't_sumida', x: 17 + x - 6, y: 8, facing: 'down' as const } })),
   },
   buero: {
     id: 'buero', name: 'Open-plan office', nameJa: 'オフィス', tiles: ROOMS_GEN.buero.tiles, interior: true, image: ROOMS_GEN.buero.image, objects: ROOMS_GEN.buero.objects,

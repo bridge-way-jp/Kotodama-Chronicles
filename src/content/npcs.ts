@@ -54,5 +54,12 @@ export const NPCS: Record<string, NpcDef> = {
   fujita: { id: 'fujita', name: '藤田課長', nameEn: 'Section chief Fujita', role: 'Overworked section chief', sprite: 'npc_fujita', portrait: 'portrait_fujita', color: '#5a5a66' },
   minh: { id: 'minh', name: 'ミンさん', nameEn: 'Minh', role: 'Convenience-store worker', sprite: 'npc_minh', portrait: 'portrait_minh', color: '#3a7fc0' },
   porter: { id: 'porter', name: 'ポーターさん', nameEn: 'Hotel porter', role: 'Hotel porter', sprite: 'npc_porter', portrait: 'portrait_porter', color: '#2f3a5a' },
+  kuroi: { id: 'kuroi', name: '黒井さん', nameEn: 'Kuroi-san', role: 'Night-radio host, master of Tokyo', sprite: 'npc_kuroi', portrait: 'portrait_kuroi', color: '#2f3f5a' },
+  haru: { id: 'haru', name: 'ハル', nameEn: 'Haru', role: 'Freelancer from Hokkaido', sprite: 'npc_haru', portrait: 'portrait_haru', color: '#b59a6a' },
+  yoshie: { id: 'yoshie', name: '芳江さん', nameEn: 'Yoshie-san', role: 'Owner of an old kissaten', sprite: 'npc_yoshie', portrait: 'portrait_yoshie', color: '#7a4a7a' },
+  yamamoto: { id: 'yamamoto', name: '山本さん', nameEn: 'Yamamoto-san', role: 'Ward-office clerk', sprite: 'npc_yamamoto', portrait: 'portrait_yamamoto', color: '#5a8ab5' },
+  priya: { id: 'priya', name: 'プリヤ', nameEn: 'Priya', role: 'IT engineer from India', sprite: 'npc_priya', portrait: 'portrait_priya', color: '#3f3f4a' },
+  attendant: { id: 'attendant', name: '駅員さん', nameEn: 'Station attendant', role: 'Tokyo Station attendant', sprite: 'npc_attendant', portrait: 'portrait_attendant', color: '#1f2f5a' },
+  kotone: { id: 'kotone', name: '琴音', nameEn: 'Kotone', role: 'K', sprite: '', color: '#2f5a3f' },
   busdriver: { id: 'busdriver', name: '運転手さん', nameEn: 'Bus driver', role: 'Bus driver', sprite: 'npc_busdriver', portrait: 'npc_busdriver_down', color: '#4a86b5' },
 };

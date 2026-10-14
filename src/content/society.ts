@@ -237,6 +237,61 @@ export const NOTES: Record<string, JapanNote> = {
     en: 'Kansai (Osaka, Kyoto, Kobe) has its own dialect, food culture and self-image compared with Tokyo. Osaka is seen as more direct, funnier and price-conscious (“Mōkarimakka?” = “Making money?”). Such stereotypes are only tendencies; every city varies a lot inside.',
     words: '関西弁・大阪・食い倒れ',
   },
+  // --- chapter 7: Tokyo
+  rushhour: {
+    chapter: 7, title: '満員電車', titleEn: 'Rush-hour trains',
+    de: 'In den Stoßzeiten sind Tokyos Züge extrem voll. Es gilt als guter Ton, leise zu sein, nicht zu telefonieren und den Rucksack vor den Körper oder ins Gepäcknetz zu nehmen. Manche Linien haben Frauenwagen und eigene Zeiten, um die Spitzen zu entlasten; immer mehr Firmen erlauben Homeoffice oder versetzte Arbeitszeiten.',
+    en: 'In rush hour Tokyo’s trains are extremely full. Good manners mean staying quiet, not phoning, and wearing your backpack in front or putting it on the rack. Some lines have women-only cars, and more and more companies allow remote work or staggered hours to ease the peaks.',
+    words: '満員・通勤・終電',
+  },
+  cashless: {
+    chapter: 7, title: 'ICカードとキャッシュレス', titleEn: 'IC cards and cashless life',
+    de: 'Mit einer aufladbaren IC-Karte (Suica, Pasmo, ICOCA …) fährt man Bahn und Bus und zahlt an Automaten und in Läden. Daneben wachsen QR-Zahlungen und Kreditkarten; Bargeld ist aber immer noch weit verbreitet, besonders in kleinen Läden und Kneipen.',
+    en: 'With a rechargeable IC card (Suica, Pasmo, ICOCA…) you ride trains and buses and pay at vending machines and shops. QR payments and credit cards are growing, but cash is still widely used, especially in small shops and bars.',
+    words: 'ICカード・改札・チャージ',
+  },
+  kodoku: {
+    chapter: 7, title: '都会の孤独', titleEn: 'Loneliness in the city',
+    de: 'In großen Städten leben viele Menschen allein, und man kennt kaum die Nachbarn. Einsamkeit gilt in Japan inzwischen als gesellschaftliches Thema; es gibt Ansprechstellen, Nachbarschaftsprojekte und „dritte Orte“ wie Cafés, Bäder oder Radiosendungen, in denen man sich weniger allein fühlt.',
+    en: 'In big cities many people live alone and hardly know their neighbours. Loneliness is now seen in Japan as a social issue; there are helplines, neighbourhood projects and “third places” such as cafés, bathhouses or radio shows where people feel less alone.',
+    words: '孤独・一人暮らし・居場所',
+  },
+  sharehouse: {
+    chapter: 7, title: 'シェアハウス', titleEn: 'Share houses',
+    de: 'In Tokyo sind Mieten hoch, und Verträge können kompliziert sein (Kaution, „Schlüsselgeld“, Bürgen). Share Houses mit eigenem Zimmer und gemeinsamer Küche sind eine einfachere Alternative; viele Ausländer und junge Berufstätige wohnen so. Sie bieten Kontakt, verlangen aber Rücksicht auf Hausregeln.',
+    en: 'Rents in Tokyo are high and contracts can be complicated (deposits, “key money”, guarantors). Share houses with a private room and shared kitchen are a simpler alternative; many foreigners and young workers live this way. They offer company but ask you to follow house rules.',
+    words: 'シェアハウス・契約・保証人',
+  },
+  kuyakusho: {
+    chapter: 7, title: '区役所の手続き', titleEn: 'Paperwork at the ward office',
+    de: 'Wer in Japan umzieht oder neu ankommt, meldet sich am Rathaus des Stadtbezirks (区役所) an. Dort bekommt man z. B. die Meldebescheinigung (住民票). Man zieht eine Nummer und wartet am Schalter; Formulare sind oft auf Japanisch. Viele Städte haben inzwischen Hilfe für Ausländer und mehrsprachige Anleitungen.',
+    en: 'When you move or arrive in Japan, you register at the ward office (kuyakusho). There you get, for example, your certificate of residence (juminhyo). You take a number and wait at the counter; forms are often in Japanese. Many cities now offer help for foreigners and multilingual guides.',
+    words: '区役所・住民票・窓口',
+  },
+  sento: {
+    chapter: 7, title: '銭湯', titleEn: 'Sento (public bathhouse)',
+    de: 'Viele ältere Wohnungen hatten kein eigenes Bad, daher gingen die Leute in den Sento. Heute gibt es weniger davon, aber manche sind beliebte Treffpunkte. Man wäscht sich zuerst gründlich am Waschplatz und taucht sauber in das heiße Becken. Tätowierungen und Fotos können Einschränkungen haben.',
+    en: 'Many older flats had no bath of their own, so people went to the sento. There are fewer today, but some are popular meeting places. You wash thoroughly at the wash stations first and enter the hot pool clean. Tattoos and photos may be restricted.',
+    words: '銭湯・湯船・番台',
+  },
+  kissaten: {
+    chapter: 7, title: '喫茶店', titleEn: 'Kissaten (old-style coffee houses)',
+    de: 'Die Kissaten der Showa-Zeit sind ruhige Orte mit Siphon-Kaffee, Pudding und Sahnesoda. Sie sind oft familiengeführt und werden von Stammgästen getragen. Viele schließen, weil die Inhaber älter werden; manche junge Leute entdecken sie jetzt neu.',
+    en: 'Showa-era kissaten are quiet places with siphon coffee, pudding and cream soda. They are often family-run and kept alive by regulars. Many are closing as owners age, while some young people are now rediscovering them.',
+    words: '喫茶店・常連・昭和',
+  },
+  chonaikai: {
+    chapter: 7, title: '祭りと町内会', titleEn: 'Festivals and neighbourhood associations',
+    de: 'Viele Stadtteile organisieren ihr Fest über die Nachbarschaftsvereinigung (町内会). Die Mitglieder tragen den tragbaren Schrein, verkaufen Essen und üben monatelang. Wegen Überalterung fehlen vielerorts Helfer; deshalb öffnen sich manche Feste für Zugezogene und Touristen.',
+    en: 'Many districts run their festival through the neighbourhood association (chonaikai). Members carry the portable shrine, sell food and rehearse for months. Because of ageing, helpers are missing in many places, so some festivals now welcome newcomers and tourists.',
+    words: '祭り・町内会・神輿',
+  },
+  nightradio: {
+    chapter: 7, title: '深夜ラジオ', titleEn: 'Late-night radio',
+    de: 'Nachts senden viele Radiosendungen, in denen Hörer Briefe und Mails schicken. Die Moderatoren werden für manche Menschen zu vertrauten Stimmen. Für Lernende ist das echtes, gesprochenes Japanisch mit Alltagssprache und Humor, oft schneller als Schullehrbuch-Dialoge.',
+    en: 'At night many radio shows invite listeners to send letters and messages. For some people the hosts become familiar voices. For learners it is real spoken Japanese with everyday language and humour, often faster than textbook dialogues.',
+    words: '深夜・放送・リスナー',
+  },
 };
 
 export function foundNotes(s: GameState): number {
