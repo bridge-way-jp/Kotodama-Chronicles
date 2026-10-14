@@ -620,6 +620,46 @@ ROOMS = {
         spots=[('posters', 1, 1, 2, 2, 'kushi_poster'), ('fryers', 4, 1, 4, 2, 'kushi_fryer'), ('sign', 9, 1, 1, 2, 'kushi_sign'), ('racks', 7, 1, 2, 2, 'kushi_rack'), ('counter', 1, 3, 5, 1, 'kushi_counter'), ('tv', 1, 3, 1, 2, 'kushi_tv')],
         furniture=[],
     ),
+    # --- chapter 7 (Tokyo): painted rooms (furniture sheets are not cut yet)
+    'kissaten': dict(
+        size=(13, 10), painted='room_kissaten.webp', clean=True, crop=(0, 0, 832, 640),
+        grid=['W' * 13] * 3 + ['WWW' + 'c' * 7 + 'f' + 'WW'] + ['WWW' + 'f' * 8 + 'WW'] * 5 + ['W' * 6 + 'DD' + 'W' * 5],
+        spots=[('siphons', 4, 1, 2, 2, 'kissaten_siphon'), ('cups', 5, 1, 4, 1, 'kissaten_cups'), ('case', 8, 3, 2, 1, 'kissaten_case'), ('clock', 9, 1, 1, 2, 'kissaten_clock'),
+               ('booths', 1, 3, 1, 5, 'kissaten_booths'), ('books', 11, 1, 1, 3, 'kissaten_books'), ('window', 11, 5, 1, 2, 'kissaten_window'), ('counter', 3, 3, 5, 1, 'kissaten_counter')],
+        furniture=[],
+    ),
+    'sento': dict(
+        size=(12, 10), painted='room_sento.webp', clean=True, crop=(0, 0, 768, 640),
+        grid=['W' * 12] * 3 + ['WW' + 'ff' + 'c' * 5 + 'f' + 'WW'] + ['WW' + 'f' * 8 + 'WW'] * 5 + ['W' * 5 + 'DD' + 'W' * 5],
+        spots=[('noren_blue', 2, 1, 2, 2, 'sento_noren_blue'), ('fuji', 4, 1, 4, 1, 'sento_fuji'), ('noren_red', 8, 1, 2, 2, 'sento_noren_red'), ('counter', 4, 3, 5, 1, 'sento_counter'),
+               ('lockers', 1, 3, 1, 5, 'sento_lockers'), ('vending', 10, 3, 1, 2, 'sento_vending'), ('bench', 10, 5, 1, 3, 'sento_bench')],
+        furniture=[],
+    ),
+    'gamecenter': dict(
+        size=(13, 10), painted='room_game_center.webp', clean=True, crop=(0, 0, 832, 640),
+        grid=['W' * 13] * 3 + ['WWW' + 'c' * 8 + 'WW'] + ['WWW' + 'f' * 7 + 'WWW'] * 5 + ['W' * 6 + 'DD' + 'W' * 5],
+        spots=[('arcade', 3, 1, 6, 2, 'game_arcade'), ('prize', 9, 1, 2, 2, 'game_prize'), ('crane', 1, 3, 1, 5, 'game_crane'), ('dance', 10, 4, 1, 2, 'game_dance'), ('purikura', 10, 6, 2, 3, 'game_purikura')],
+        furniture=[],
+    ),
+    'yokocho': dict(
+        size=(12, 10), painted='room_yokocho.webp', clean=True, crop=(0, 0, 768, 640),
+        grid=['W' * 12] * 3 + ['WW' + 'c' * 6 + 'ff' + 'WW'] * 2 + ['WW' + 'f' * 8 + 'WW'] * 4 + ['W' * 5 + 'DD' + 'W' * 5],
+        spots=[('bottles', 1, 1, 3, 2, 'yokocho_bottles'), ('menu', 4, 1, 3, 1, 'yokocho_menu'), ('grill', 4, 2, 2, 1, 'yokocho_grill'), ('noren', 8, 1, 2, 2, 'yokocho_noren'),
+               ('tv', 9, 1, 2, 1, 'yokocho_tv'), ('counter', 2, 3, 6, 2, 'yokocho_counter'), ('coat', 10, 2, 1, 2, 'yokocho_coat')],
+        furniture=[],
+    ),
+    'kuyakusho': dict(
+        size=(14, 11), painted='room_kuyakusho.webp', clean=True, crop=(0, 0, 896, 704),
+        grid=['W' * 14] * 3 + ['WW' + 'c' * 10 + 'WW'] * 2 + ['WW' + 'f' * 10 + 'WW'] * 5 + ['W' * 6 + 'DD' + 'W' * 6],
+        spots=[('counter', 2, 3, 10, 2, 'kuyaku_counter'), ('board', 1, 5, 1, 4, 'kuyaku_board'), ('forms', 12, 5, 1, 3, 'kuyaku_forms'), ('ticket', 10, 1, 2, 1, 'kuyaku_ticket')],
+        furniture=[],
+    ),
+    'radio': dict(
+        size=(13, 10), painted='room_radio.webp', clean=True, crop=(0, 0, 832, 640),
+        grid=['W' * 13] * 3 + ['WWW' + 'f' + 'c' * 6 + 'f' + 'WW'] + ['WWW' + 'f' * 8 + 'WW'] * 5 + ['W' * 6 + 'DD' + 'W' * 5],
+        spots=[('records', 4, 1, 5, 2, 'radio_records'), ('thermos', 8, 2, 2, 2, 'radio_thermos'), ('onair', 10, 1, 1, 1, 'radio_onair'), ('desk', 1, 3, 1, 4, 'radio_desk')],
+        furniture=[],
+    ),
 }
 
 

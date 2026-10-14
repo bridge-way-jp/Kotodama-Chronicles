@@ -3271,5 +3271,388 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
       }
     ],
     "image": "room2_kushikatsu"
+  },
+  "kissaten": {
+    "tiles": [
+      "WWWWWWWWWWWWW",
+      "WWWWWWWWWWWWW",
+      "WWWWWWWWWWWWW",
+      "WWWcccccccfWW",
+      "WWWffffffffWW",
+      "WWWffffffffWW",
+      "WWWffffffffWW",
+      "WWWffffffffWW",
+      "WWWffffffffWW",
+      "WWWWWWDDWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "kissaten_siphons",
+        "x": 4,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "kissaten_siphon"
+      },
+      {
+        "id": "kissaten_cups",
+        "x": 5,
+        "y": 1,
+        "w": 4,
+        "h": 1,
+        "script": "kissaten_cups"
+      },
+      {
+        "id": "kissaten_case",
+        "x": 8,
+        "y": 3,
+        "w": 2,
+        "h": 1,
+        "script": "kissaten_case"
+      },
+      {
+        "id": "kissaten_clock",
+        "x": 9,
+        "y": 1,
+        "w": 1,
+        "h": 2,
+        "script": "kissaten_clock"
+      },
+      {
+        "id": "kissaten_booths",
+        "x": 1,
+        "y": 3,
+        "w": 1,
+        "h": 5,
+        "script": "kissaten_booths"
+      },
+      {
+        "id": "kissaten_books",
+        "x": 11,
+        "y": 1,
+        "w": 1,
+        "h": 3,
+        "script": "kissaten_books"
+      },
+      {
+        "id": "kissaten_window",
+        "x": 11,
+        "y": 5,
+        "w": 1,
+        "h": 2,
+        "script": "kissaten_window"
+      },
+      {
+        "id": "kissaten_counter",
+        "x": 3,
+        "y": 3,
+        "w": 5,
+        "h": 1,
+        "script": "kissaten_counter"
+      }
+    ],
+    "image": "room2_kissaten"
+  },
+  "sento": {
+    "tiles": [
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWffcccccfWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWWWWDDWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "sento_noren_blue",
+        "x": 2,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "sento_noren_blue"
+      },
+      {
+        "id": "sento_fuji",
+        "x": 4,
+        "y": 1,
+        "w": 4,
+        "h": 1,
+        "script": "sento_fuji"
+      },
+      {
+        "id": "sento_noren_red",
+        "x": 8,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "sento_noren_red"
+      },
+      {
+        "id": "sento_counter",
+        "x": 4,
+        "y": 3,
+        "w": 5,
+        "h": 1,
+        "script": "sento_counter"
+      },
+      {
+        "id": "sento_lockers",
+        "x": 1,
+        "y": 3,
+        "w": 1,
+        "h": 5,
+        "script": "sento_lockers"
+      },
+      {
+        "id": "sento_vending",
+        "x": 10,
+        "y": 3,
+        "w": 1,
+        "h": 2,
+        "script": "sento_vending"
+      },
+      {
+        "id": "sento_bench",
+        "x": 10,
+        "y": 5,
+        "w": 1,
+        "h": 3,
+        "script": "sento_bench"
+      }
+    ],
+    "image": "room2_sento"
+  },
+  "gamecenter": {
+    "tiles": [
+      "WWWWWWWWWWWWW",
+      "WWWWWWWWWWWWW",
+      "WWWWWWWWWWWWW",
+      "WWWccccccccWW",
+      "WWWfffffffWWW",
+      "WWWfffffffWWW",
+      "WWWfffffffWWW",
+      "WWWfffffffWWW",
+      "WWWfffffffWWW",
+      "WWWWWWDDWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "gamecenter_arcade",
+        "x": 3,
+        "y": 1,
+        "w": 6,
+        "h": 2,
+        "script": "game_arcade"
+      },
+      {
+        "id": "gamecenter_prize",
+        "x": 9,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "game_prize"
+      },
+      {
+        "id": "gamecenter_crane",
+        "x": 1,
+        "y": 3,
+        "w": 1,
+        "h": 5,
+        "script": "game_crane"
+      },
+      {
+        "id": "gamecenter_dance",
+        "x": 10,
+        "y": 4,
+        "w": 1,
+        "h": 2,
+        "script": "game_dance"
+      },
+      {
+        "id": "gamecenter_purikura",
+        "x": 10,
+        "y": 6,
+        "w": 2,
+        "h": 3,
+        "script": "game_purikura"
+      }
+    ],
+    "image": "room2_gamecenter"
+  },
+  "yokocho": {
+    "tiles": [
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWWWWWWWWWWW",
+      "WWccccccffWW",
+      "WWccccccffWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWffffffffWW",
+      "WWWWWDDWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "yokocho_bottles",
+        "x": 1,
+        "y": 1,
+        "w": 3,
+        "h": 2,
+        "script": "yokocho_bottles"
+      },
+      {
+        "id": "yokocho_menu",
+        "x": 4,
+        "y": 1,
+        "w": 3,
+        "h": 1,
+        "script": "yokocho_menu"
+      },
+      {
+        "id": "yokocho_grill",
+        "x": 4,
+        "y": 2,
+        "w": 2,
+        "h": 1,
+        "script": "yokocho_grill"
+      },
+      {
+        "id": "yokocho_noren",
+        "x": 8,
+        "y": 1,
+        "w": 2,
+        "h": 2,
+        "script": "yokocho_noren"
+      },
+      {
+        "id": "yokocho_tv",
+        "x": 9,
+        "y": 1,
+        "w": 2,
+        "h": 1,
+        "script": "yokocho_tv"
+      },
+      {
+        "id": "yokocho_counter",
+        "x": 2,
+        "y": 3,
+        "w": 6,
+        "h": 2,
+        "script": "yokocho_counter"
+      },
+      {
+        "id": "yokocho_coat",
+        "x": 10,
+        "y": 2,
+        "w": 1,
+        "h": 2,
+        "script": "yokocho_coat"
+      }
+    ],
+    "image": "room2_yokocho"
+  },
+  "kuyakusho": {
+    "tiles": [
+      "WWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWW",
+      "WWWWWWWWWWWWWW",
+      "WWccccccccccWW",
+      "WWccccccccccWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWffffffffffWW",
+      "WWWWWWDDWWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "kuyakusho_counter",
+        "x": 2,
+        "y": 3,
+        "w": 10,
+        "h": 2,
+        "script": "kuyaku_counter"
+      },
+      {
+        "id": "kuyakusho_board",
+        "x": 1,
+        "y": 5,
+        "w": 1,
+        "h": 4,
+        "script": "kuyaku_board"
+      },
+      {
+        "id": "kuyakusho_forms",
+        "x": 12,
+        "y": 5,
+        "w": 1,
+        "h": 3,
+        "script": "kuyaku_forms"
+      },
+      {
+        "id": "kuyakusho_ticket",
+        "x": 10,
+        "y": 1,
+        "w": 2,
+        "h": 1,
+        "script": "kuyaku_ticket"
+      }
+    ],
+    "image": "room2_kuyakusho"
+  },
+  "radio": {
+    "tiles": [
+      "WWWWWWWWWWWWW",
+      "WWWWWWWWWWWWW",
+      "WWWWWWWWWWWWW",
+      "WWWfccccccfWW",
+      "WWWffffffffWW",
+      "WWWffffffffWW",
+      "WWWffffffffWW",
+      "WWWffffffffWW",
+      "WWWffffffffWW",
+      "WWWWWWDDWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "radio_records",
+        "x": 4,
+        "y": 1,
+        "w": 5,
+        "h": 2,
+        "script": "radio_records"
+      },
+      {
+        "id": "radio_thermos",
+        "x": 8,
+        "y": 2,
+        "w": 2,
+        "h": 2,
+        "script": "radio_thermos"
+      },
+      {
+        "id": "radio_onair",
+        "x": 10,
+        "y": 1,
+        "w": 1,
+        "h": 1,
+        "script": "radio_onair"
+      },
+      {
+        "id": "radio_desk",
+        "x": 1,
+        "y": 3,
+        "w": 1,
+        "h": 4,
+        "script": "radio_desk"
+      }
+    ],
+    "image": "room2_radio"
   }
 };

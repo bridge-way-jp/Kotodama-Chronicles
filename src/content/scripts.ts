@@ -1,6 +1,7 @@
 import type { DialogueRule, Mood, Step } from '../core/script';
 import { GRAMMAR_BY_ID } from './grammar';
 import { DECO_CATALOG, SPECIES } from './creatures';
+import { TOKYO_SCRIPTS } from './scripts_tokyo';
 
 /**
  * All interaction scripts, keyed by NPC id or map-object id.
@@ -244,6 +245,15 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         say('mori', '「海の見える町」……。それなら、潮見町かもしれないわね。瀬戸内海の小さな港町よ。主人と、新婚旅行で行ったの。', '“A town where you can see the sea”… Then it might be Shiomi. A little harbour town on the Inland Sea. My husband and I went there on our honeymoon.'),
         say('mori', '日野森駅から、海へ向かう電車が出ているわ。……今度は、わたしも名前を忘れずに待ってるからね。', 'A train to the sea leaves from Hinomori station. …This time I’ll be waiting, without forgetting your name.', 'happy'),
         { do: [{ startQuest: 'mq14' }, { objective: 'mq14.mori' }, { chapter: 4 }, { rel: 'mori', points: 1 }] },
+      ],
+    },
+    {
+      when: { all: [{ flag: 'chapter6_done' }, { questNotStarted: 'mq26' }] },
+      steps: [
+        say('mori', '@nameちゃん、おかえり！ 大阪のお話、ぜんぶ聞いたわよ。……「東」の字ね。', 'Welcome back, @name! I heard all about Osaka. …The character 東, then.', 'happy'),
+        say('mori', '東京には、{何|なん}{万|まん}もの{落|お}とし{物|もの}を{預|あず}かる{駅員|えきいん}さんがいるの。{昔|むかし}、{私|わたし}も、{忘|わす}れ{物|もの}を{取|と}りに{行|い}ったことがあってね。', 'In Tokyo there are station attendants who look after tens of thousands of lost things. I once went there myself to pick up something I’d forgotten.'),
+        say('mori', '{大|おお}きい{町|まち}は、{疲|つか}れるわ。……でも、きっと、{大事|だいじ}なことが{待|ま}っているから。{気|き}をつけて、いってらっしゃい。', 'Big cities are tiring. …But I’m sure something important is waiting. Take care, and off you go.'),
+        { do: [{ startQuest: 'mq26' }, { objective: 'mq26.mori' }, { chapter: 7 }, { rel: 'mori', points: 1 }] },
       ],
     },
     {
@@ -804,6 +814,30 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         say('station_staff', '京都行きですね。向こうは、人でいっぱいですよ。おみやげの八つ橋、よろしくお願いします！', 'To Kyoto? It will be packed with people. And please bring back some yatsuhashi!', 'happy'),
         { cg: 'cg_kyoto_arrival', say: '新幹線から降りると、天井の高い大きな駅に、たくさんの人が行き交っていた。いろいろな言葉の案内が、あちこちから聞こえる。', en: 'Stepping off the Shinkansen, a huge station with a high ceiling, crowds streaming past. Announcements in many languages come from all directions.' },
         { do: [{ objective: 'mq18.arrive' }, { flag: 'kyoto_visited' }, { learn: ['v:ky_annai'] }, { warp: { map: 'k_station', x: 20, y: 9 } }] },
+      ],
+    },
+    {
+      when: { all: [{ questActive: 'mq26' }, { obj: 'mq26.mori' }, { notObj: 'mq26.arrive' }] },
+      steps: [
+        n('日野森駅。東京へ向かう新幹線が、ホームで待っている。', 'Hinomori Station. A Shinkansen bound for Tokyo waits at the platform.'),
+        { cg: 'cg_tokyo_arrival', say: '新幹線を降りると、長いホームを、{暗|くら}い{色|いろ}のコートの{人|ひと}たちが、{川|かわ}のように{流|なが}れていた。だれも、{顔|かお}を{上|あ}げない。{赤|あか}れんがの{駅|えき}が、{朝|あさ}の{光|ひかり}の{中|なか}で、{静|しず}かに{待|ま}っている。', en: 'Stepping off the Shinkansen, people in dark coats flow like a river along the long platform. Nobody looks up. The red-brick station waits quietly in the morning light.' },
+        { do: [{ objective: 'mq26.arrive' }, { flag: 'tokyo_visited' }, { learn: ['v:tk_manin'] }, { warp: { map: 't_station', x: 20, y: 9 } }] },
+      ],
+    },
+    {
+      when: { flag: 'tokyo_visited' },
+      steps: [
+        n('日野森駅。東京、大阪、京都、潮見町、雪見村へ、電車が出ている。', 'Hinomori Station. Trains run to Tokyo, Osaka, Kyoto, Shiomi and Yukimi Village.'),
+        {
+          choice: [
+            { text: '新幹線で東京へ', en: 'Take the Shinkansen to Tokyo', then: [{ do: [{ warp: { map: 't_station', x: 20, y: 9 } }] }] },
+            { text: '電車で大阪へ', en: 'Take the train to Osaka', then: [{ do: [{ warp: { map: 'o_umeda', x: 20, y: 25 } }] }] },
+            { text: '電車で京都へ', en: 'Take the train to Kyoto', then: [{ do: [{ warp: { map: 'k_station', x: 20, y: 9 } }] }] },
+            { text: '電車で潮見町へ', en: 'Take the train to Shiomi', then: [{ do: [{ warp: { map: 'harbor', x: 10, y: 2 } }] }] },
+            { text: '電車で雪見村へ', en: 'Take the train to Yukimi Village', then: [{ do: [{ warp: { map: 'mountain', x: 9, y: 19 } }] }] },
+            { text: 'やめる', en: 'Stay in town' },
+          ],
+        },
       ],
     },
     {
@@ -2804,11 +2838,12 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
         },
         { do: [{ objective: 'mq25.castle' }, { give: 'old_tickets' }, { learn: ['g:nihokanaranai', 'v:os_nagare'] }, { seen: 'neongitsune' }] },
         { cg: 'cg_osaka_arrival', say: '{言葉|ことば}は、すり{減|へ}っても、{磨|みが}けば、また{光|ひか}る。\n― 第六章「大阪」完 ―', en: 'Words may wear thin, but polish them and they shine again.\n— Chapter 6 “Osaka” complete —' },
-        n('Chapter 6 complete! Osaka stays open: takoyaki with Okan, the shops, the wild Kotodama at the castle and your Japan notes. Chapter 7 (Tokyo) is in development.'),
+        n('Chapter 6 complete! Osaka stays open: takoyaki with Okan, the shops, the wild Kotodama at the castle and your Japan notes. Chapter 7 (Tokyo) is ready — take the Shinkansen from Hinomori station after talking to Ms. Mori.'),
       ],
     },
     { steps: [n('{お城|おしろ}の{橋|はし}。{朝|あさ}の{光|ひかり}の{中|なか}を、ジョギングの{人|ひと}たちが{走|はし}っていく。', 'The castle bridge. Joggers run through the morning light.')] },
   ],
   trash: [{ steps: [n('駅のゴミ箱だ。「カン・ビン」「ペットボトル」「その他」に分かれている。', 'The station bins: “cans & bottles”, “PET bottles”, “other”.'), { do: [{ note: 'bunbetsu' }] }] }],
   barrel: [{ steps: [n('ラーメン屋の裏の{雨水|あまみず}をためる{樽|たる}だ。', 'A rain barrel behind the ramen shop.')] }],
+  ...TOKYO_SCRIPTS,
 };

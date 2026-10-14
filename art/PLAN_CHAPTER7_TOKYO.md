@@ -1,4 +1,4 @@
-# Chapter 7 plan: Tokyo (東京) — finale, draft for discussion
+# Chapter 7 plan: Tokyo (東京) — finale (story decisions made)
 
 **Why Tokyo:** the biggest city, the last stop of K's trail (Kyoto 京 → Osaka 阪 → 東). Chapter 5 taught reading between the lines,
 chapter 6 the working world; chapter 7 is about **living in a huge modern city** — and about Maria deciding what she does with
@@ -8,8 +8,24 @@ what she learned. Tone: lively, a little lonely, hopeful. Light touch on social 
 Tachibana-san's old notebook leads to Tokyo, where the Kotodama are **hurried and unheard**: words fly past in crowds, in
 earphones and on screens and nobody listens. The region master is a night-shift radio host (深夜ラジオ) who talks to thousands of
 lonely listeners and has stopped hearing his own voice. Maria and her fox follow K's last clue through four neighbourhoods, help
-people who are lonely in a crowd, and finally find who K was (K's true identity and the last Kotodama of the main story: to be
-confirmed by the project owner before we write it).
+people who are lonely in a crowd, and finally find who K was (see the decisions below).
+
+## Story decisions (made by Claude, owner said "you decide" — change anything you like)
+1. **Who is K?** **Kotone (琴音), Kaede's older sister**, about 55, former lead researcher of the Hinomori "Kotodama Archive Project".
+   Maria is *not* related to her; Maria's role is to be the first person in years who learns Japanese by listening instead of storing words.
+2. **What happened to her?** After the accident that closed the facility she left on her own: she travelled Kyoto → Osaka → Tokyo, leaving
+   notebook pages at each stop to help the scattered Kotodama and to listen to people. She is alive and well, but ashamed that the Archive
+   "froze" words instead of letting them live. In Tokyo she works quietly as a volunteer on Kuroi's night radio (reading listener letters).
+3. **The last Kotodama:** the **Archive Kotodama "Kotonoha" (言ノ葉)** — the first Kotodama Kotone ever made, kept in the Archive and
+   lost in the accident. It is **Maria's white fox** (its ear tips already glow pale blue). In the finale it evolves into its final form,
+   not through battle XP but through a short sentence in Japanese that Maria says herself (a free-reply quiz built from everything she learned).
+4. **Ending:** warm and open. Kotone and Kaede are reunited by phone/radio, the Archive project is reborn as a "living archive"
+   (a small learning room in Hinomori), Maria chooses to keep studying Japanese. Postgame: all regions stay open, the JLPT mock-exam mode
+   and rematches continue; a final epilogue CG depends on one choice (stay in Japan for another year / go home and come back in spring).
+
+## Smaller decisions
+5. Kuroi (radio host) is the Tokyo region master. 6. Tone stays light-to-warm; one quiet, grounded scene each for loneliness (Haru) and
+overwork (Kuroi), no heavy topics. 7. Cameos in the finale via radio/phone: Kenta, Tachibana, Tsuru, Nagisa, Hina. 8. Five maps as planned.
 
 ## Society themes (each unlocks a Japan note)
 - Rush-hour trains (満員電車), manners on trains, the quiet of the commute; suica/cashless life, QR payments

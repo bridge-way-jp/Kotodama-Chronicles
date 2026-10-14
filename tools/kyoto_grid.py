@@ -9,7 +9,7 @@ from PIL import Image
 W, H, T = 42, 28, 32
 
 
-def guess(path):
+def guess(path, asphalt_blocks=True):
     im = np.array(Image.open(path).convert('RGB').resize((W * T, H * T), Image.LANCZOS)).astype(int)
     rows = []
     for ty in range(H):
@@ -24,7 +24,7 @@ def guess(path):
             water = ((b > r + 25) & (b >= g - 5) & (sat > 0.25)).mean()
             foliage = ((sat > 0.68) & (mx > 80)).mean()
             green = ((g > r + 12) & (g > b + 12)).mean()
-            if asphalt > 0.55 or water > 0.5 or foliage > 0.38 or green > 0.45:
+            if (asphalt_blocks and asphalt > 0.55) or water > 0.5 or foliage > 0.38 or green > 0.45:
                 row += 'T'
             else:
                 row += '.'

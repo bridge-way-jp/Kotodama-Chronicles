@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { MAPS, BLOCKING, type MapDef, type MapObject } from '../content/maps';
 import { ROOMS_GEN } from '../content/rooms.gen';
 import { OSAKA_GEN } from '../content/osaka.gen';
+import { TOKYO_GEN } from '../content/tokyo.gen';
 import { NPCS } from '../content/npcs';
 import { ENCOUNTERS } from '../content/creatures';
 import { check, pickRule, type Step } from '../core/script';
@@ -27,7 +28,7 @@ const DETAIL_KEYS = [
   'tp_pot_flower', 'tp_planter_y', 'tp_planter_p', 'tp_mirror', 'tp_sign', 'tp_trash', 'tp_barrel', 'tp_torii',
   'tile_bridge_n', 'tile_bridge_s',
 ];
-const NPC_SHEETS = ['mori', 'kaede', 'haruto', 'aoi', 'sato', 'kirishima', 'station_staff', 'customer', 'hayashi', 'sakura', 'okami', 'kenji', 'ota', 'busdriver', 'tsuru', 'hina', 'fujii', 'kuroda', 'jokan', 'traveller', 'gen', 'nagisa', 'hamada', 'kaito', 'umino', 'shiraishi', 'sumie', 'matsuo', 'rin', 'ikeda', 'sakamoto', 'emma', 'tachibana', 'kenta', 'okan', 'fujita', 'minh', 'porter'];
+const NPC_SHEETS = ['mori', 'kaede', 'haruto', 'aoi', 'sato', 'kirishima', 'station_staff', 'customer', 'hayashi', 'sakura', 'okami', 'kenji', 'ota', 'busdriver', 'tsuru', 'hina', 'fujii', 'kuroda', 'jokan', 'traveller', 'gen', 'nagisa', 'hamada', 'kaito', 'umino', 'shiraishi', 'sumie', 'matsuo', 'rin', 'ikeda', 'sakamoto', 'emma', 'tachibana', 'kenta', 'okan', 'fujita', 'minh', 'porter', 'kuroi', 'haru', 'yoshie', 'yamamoto', 'priya', 'attendant'];
 
 export const ASSET_KEYS = [
   // player walk cycle: hero_<dir>_<frame>, frames 0/2 standing, 1/3 stepping
@@ -61,6 +62,8 @@ export const ASSET_KEYS = [
   ...[0, 1, 2, 3, 4, 5].flatMap((i) => [`bx_k_nishiki_shop_t${i}`, `bx_k_nishiki_shop_b${i}`]),
   'map_umeda', 'map_nakanoshima', 'map_dotonbori', 'map_shinsekai', 'map_osakajo',
   ...Object.values(OSAKA_GEN).flatMap((m) => m.objects.flatMap((o) => (o.sprite ? [o.sprite] : []))),
+  'map_station', 'map_asakusa', 'map_shibuya', 'map_shinjuku', 'map_sumida',
+  ...Object.values(TOKYO_GEN).flatMap((m) => m.objects.flatMap((o) => (o.sprite ? [o.sprite] : []))),
   'map_valley', 'bx_farmhouse', 'bx_winery', 'bx_stand', 'bx_workshop', 'bx_busstop', 'bx_ryokan',
   ...Object.values(ROOMS_GEN).flatMap((r) => [r.image, ...r.objects.flatMap((o) => (o.sprite ? [o.sprite] : []))]),
 ];
