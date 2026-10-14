@@ -472,7 +472,7 @@ export const MAPS: Record<string, MapDef> = {
   t_sumida: {
     id: 't_sumida', name: 'Sumida Riverside', nameJa: '隅田川', tiles: TOKYO_GEN.sumida.tiles, image: 'map_sumida', encounters: 'tokyo_river',
     objects: [...TOKYO_GEN.sumida.objects, { id: 'sm_river', x: 31, y: 8, w: 4, h: 1, solid: false, script: 'sm_river' }, { id: 'sm_dock', x: 20, y: 19, w: 3, h: 1, solid: false, script: 'sm_dock' }],
-    npcs: [], warps: TOKYO_GEN.sumida.warps, bg: 'bg_tokyo_sumida.webp',
+    npcs: [{ id: 'kotone', x: 33, y: 8, facing: 'down', when: { flag: 'chapter7_done' } }], warps: TOKYO_GEN.sumida.warps, bg: 'bg_tokyo_sumida.webp',
     zones: [{ x0: 1, y0: 21, x1: 12, y1: 25, encounters: 'tokyo_river', bg: 'bg_tokyo_sumida.webp' }],
   },
   kissaten: {

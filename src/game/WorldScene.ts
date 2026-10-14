@@ -28,7 +28,7 @@ const DETAIL_KEYS = [
   'tp_pot_flower', 'tp_planter_y', 'tp_planter_p', 'tp_mirror', 'tp_sign', 'tp_trash', 'tp_barrel', 'tp_torii',
   'tile_bridge_n', 'tile_bridge_s',
 ];
-const NPC_SHEETS = ['mori', 'kaede', 'haruto', 'aoi', 'sato', 'kirishima', 'station_staff', 'customer', 'hayashi', 'sakura', 'okami', 'kenji', 'ota', 'busdriver', 'tsuru', 'hina', 'fujii', 'kuroda', 'jokan', 'traveller', 'gen', 'nagisa', 'hamada', 'kaito', 'umino', 'shiraishi', 'sumie', 'matsuo', 'rin', 'ikeda', 'sakamoto', 'emma', 'tachibana', 'kenta', 'okan', 'fujita', 'minh', 'porter', 'kuroi', 'haru', 'yoshie', 'yamamoto', 'priya', 'attendant'];
+const NPC_SHEETS = ['mori', 'kaede', 'haruto', 'aoi', 'sato', 'kirishima', 'station_staff', 'customer', 'hayashi', 'sakura', 'okami', 'kenji', 'ota', 'busdriver', 'tsuru', 'hina', 'fujii', 'kuroda', 'jokan', 'traveller', 'gen', 'nagisa', 'hamada', 'kaito', 'umino', 'shiraishi', 'sumie', 'matsuo', 'rin', 'ikeda', 'sakamoto', 'emma', 'tachibana', 'kenta', 'okan', 'fujita', 'minh', 'porter', 'kuroi', 'haru', 'yoshie', 'yamamoto', 'priya', 'attendant', 'kotone'];
 
 export const ASSET_KEYS = [
   // player walk cycle: hero_<dir>_<frame>, frames 0/2 standing, 1/3 stepping

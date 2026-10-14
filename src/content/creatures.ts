@@ -94,6 +94,15 @@ export const SPECIES: Record<string, Species> = {
     ability: { id: 'reveal_reading', name: 'よみとき', desc: 'Reveals the reading of the key word in a question.' },
     talk: [],
   },
+  kotonoha: {
+    id: 'kotonoha', name: 'コトノハ', nameEn: 'Kotonoha', sprite: 'k_kotonoha', affinity: 'memory', baseHp: 80, baseAtk: 27,
+    desc: 'アーカイブで最初に生まれた言霊。しっぽの葉に、たくさんの言葉がやどっている。',
+    descEn: 'The first Kotodama born in the Archive. Countless words dwell in the leaves of its tail.',
+    personality: 'gentle, wise',
+    moves: ['memory_echo', 'sky_verse'],
+    ability: { id: 'eliminate', name: 'えだわけ', desc: 'Removes one wrong answer.' },
+    talk: [],
+  },
   kotori: {
     id: 'kotori', name: 'コトリ', nameEn: 'Kotori', sprite: 'k_bird1', affinity: 'wind', baseHp: 24, baseAtk: 9,
     desc: '人のうわさ話から生まれる小鳥。聞いた言葉を何でもまねする。',
@@ -797,6 +806,6 @@ export const IDLE_SPRITES = ['k_fox_blue', 'k_fox_winged', 'k_bird1', 'k_bird2',
   'k_shell1', 'k_shell2', 'k_shell3', 'k_gull1', 'k_gull2', 'k_gull3',
   'k_chatama', 'k_bunbuku', 'k_yugetsuru', 'k_inariko', 'k_inahogi', 'k_senbon',
   'k_tako1', 'k_tako2', 'k_tako3', 'k_sign1', 'k_sign2', 'k_sign3',
-  'k_radio1', 'k_radio2', 'k_radio3', 'k_pass1', 'k_pass2', 'k_pass3'];
+  'k_radio1', 'k_radio2', 'k_radio3', 'k_pass1', 'k_pass2', 'k_pass3', 'k_kotonoha'];
 /** sprites with an action pose (atk_<key>.png), shown when the creature attacks */
 export const ATTACK_SPRITES = IDLE_SPRITES;

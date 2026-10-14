@@ -23,6 +23,7 @@ SHEETS = {
     'portraits_harbor.webp': ['gen', 'nagisa', 'hamada', 'kaito', 'umino', 'shiraishi'],
     'portraits_kyoto.webp': ['sumie', 'matsuo', 'rin', 'ikeda', 'sakamoto', 'emma'],
     'portraits_osaka.webp': ['tachibana', 'kenta', 'okan', 'fujita', 'minh', 'porter'],
+    'portraits_kotone.webp': ['kotone'],
     'portraits_tokyo.webp': ['kuroi', 'haru', 'yoshie', 'yamamoto', 'priya', 'attendant'],
 }
 EXPR = ['neutral', 'happy', 'surprised', 'worried']
