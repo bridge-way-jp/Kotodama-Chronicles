@@ -7,7 +7,7 @@ import { RIDE_MS } from '../core/ride';
  * mountain country. Layers scroll at different speeds (see .ride-* in styles.css).
  * The destination map is already loaded underneath; the scene fades out to reveal it.
  */
-export function BusRide({ onDone }: { onDone: () => void }) {
+export function BusRide({ kind = 'bus', onDone }: { kind?: 'bus' | 'local' | 'shinkansen'; onDone: () => void }) {
   const [dest, setDest] = useState<{ ja: string } | null>(null);
   const [phase, setPhase] = useState<'in' | 'run' | 'out'>('in');
 
@@ -23,29 +23,43 @@ export function BusRide({ onDone }: { onDone: () => void }) {
   }, [onDone]);
 
   return (
-    <div className={`ride ride-${phase}`} aria-hidden>
+    <div className={`ride ride-${phase} ride-k-${kind}`} aria-hidden>
       <div className="ride-sky" />
       <div className="ride-sun" />
       <div className="ride-clouds" />
       <div className="ride-far" />
       <div className="ride-mid" />
       <div className="ride-trees" />
-      <div className="ride-gantry">
-        <span>日野森 IC</span>
-        <span className="ride-arrow">↗ 12 km</span>
-      </div>
+      {kind === 'bus' ? (
+        <div className="ride-gantry">
+          <span>日野森 IC</span>
+          <span className="ride-arrow">↗ 12 km</span>
+        </div>
+      ) : (
+        <div className="ride-wires" />
+      )}
       <div className="ride-rail" />
       <div className="ride-poles" />
       <div className="ride-road">
         <div className="ride-lane" />
       </div>
-      <div className="ride-bus">
-        <img src="assets/bus_side.png" alt="" />
-      </div>
+      {kind === 'bus' ? (
+        <div className="ride-bus">
+          <img src="assets/bus_side.png" alt="" />
+        </div>
+      ) : (
+        <div className="ride-train">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="ride-car">
+              {[0, 1, 2, 3].map((w) => <i key={w} />)}
+            </div>
+          ))}
+        </div>
+      )}
       <div className="ride-bar top" />
       <div className="ride-bar bottom">
         <span className="ride-ann">
-          {phase === 'out' && dest ? `まもなく、${dest.ja}です。` : 'ご乗車ありがとうございます。この バスは 高速道路を 走ります。'}
+          {phase === 'out' && dest ? `まもなく、${dest.ja}です。` : kind === 'bus' ? 'ご乗車ありがとうございます。この バスは 高速道路を 走ります。' : kind === 'shinkansen' ? 'ご乗車ありがとうございます。この 新幹線は、のぞみ号です。' : 'ご乗車ありがとうございます。この 電車は、各駅に とまります。'}
         </span>
       </div>
     </div>

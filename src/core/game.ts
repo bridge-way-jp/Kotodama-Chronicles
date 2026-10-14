@@ -145,6 +145,7 @@ export interface ActionHooks {
   open?: (what: string) => void;
   music?: (key: string) => void;
   bus?: (mode: 'arrive' | 'leave') => void;
+  train?: (kind: 'local' | 'shinkansen') => void;
 }
 
 export function runAction(s: GameState, a: Action, hooks: ActionHooks = {}) {
@@ -198,4 +199,5 @@ export function runAction(s: GameState, a: Action, hooks: ActionHooks = {}) {
   else if ('chapter' in a) s.chapter = a.chapter;
   else if ('music' in a) hooks.music?.(a.music);
   else if ('bus' in a) hooks.bus?.(a.bus);
+  else if ('train' in a) hooks.train?.(a.train);
 }
