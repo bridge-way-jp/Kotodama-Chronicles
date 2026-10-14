@@ -1,5 +1,5 @@
 """
-Hinomori valley (chapter 2) from the painted ground (art/sheets/ground_valley_draft.webp, 42 x 28 tiles).
+Hinomori valley (chapter 2) from the painted ground (art/sheets/ground_valley_v2.webp, 42 x 28 tiles).
 
 Writes:
   public/assets/map_valley.png     the ground picture scaled to the grid
@@ -32,54 +32,57 @@ def rect(ch, x0, y0, x1, y1):
             g[y][x] = ch
 
 
-# re-read from the painted ground on a 40 px grid (the first grid was drawn for an older draft)
-# --- north bank: farm plot, vineyard paths, peach grove
-rect('.', 2, 2, 11, 6)          # farm plot with its grass border
-rect('H', 8, 7, 9, 7)           # stairs down from the farm
-rect('.', 12, 0, 13, 8)         # path west of the vineyard
-rect('.', 18, 0, 19, 8)         # path between the vineyards
-rect('.', 24, 0, 24, 5)         # path east of the vineyard
-rect('H', 24, 6, 24, 7)         # stairs down to the river bank
-rect('"', 25, 1, 32, 4)         # peach grove (tall grass)
-rect('.', 13, 1, 24, 1)         # lane along the top fence of the vineyards
-rect('.', 17, 8, 19, 8)         # from the vineyard path down to the bridge
-rect('.', 8, 8, 13, 8)          # path along the north bank
-rect('.', 10, 9, 15, 9)         # to the bridge
-# --- bridge and river
-rect('b', 16, 9, 17, 10)
-rect('b', 18, 10, 19, 11)
-# --- west peninsula between the river arms
-rect('H', 11, 10, 11, 11)
-rect('.', 9, 12, 11, 12)
-rect('.', 6, 13, 10, 13)
-rect('H', 5, 14, 6, 14)
-rect('"', 2, 15, 7, 17)         # riverside meadow (tall grass)
+# read off ground_valley_v2.webp (42 x 28 tiles of 32 px); everything stays blocked unless carved out
+# --- north-west: farm plot, word garden, lane along the top
+rect('.', 3, 3, 8, 5)           # farm plot (farmhouse sits on its top two rows)
+rect('.', 9, 3, 11, 5)          # word-garden beds (objects stand on them)
+rect('.', 8, 2, 14, 2)          # lane above the beds
+rect('H', 5, 6, 7, 7)           # stairs down from the farm
+rect('.', 13, 0, 14, 8)         # path along the west side of the vineyards
+rect('.', 13, 0, 24, 0)         # lane along the top of the vineyards
+rect('.', 24, 0, 25, 5)         # path east of the vineyards
+rect('"', 25, 0, 33, 4)         # peach grove (tall grass)
+rect('H', 24, 6, 25, 7)         # stairs down from the grove path
+rect('.', 8, 7, 23, 7)          # path along the north bank
+rect('.', 24, 8, 25, 10)
+# --- bridge and west bank
+rect('.', 5, 8, 12, 9)
+rect('b', 13, 8, 15, 10)
+rect('H', 8, 10, 10, 11)        # stairs down to the west meadow
+rect('.', 5, 12, 10, 13)
+rect('H', 4, 14, 7, 15)
+rect('"', 3, 16, 7, 17)         # dry riverside grass (wild Kotodama)
 # --- village centre
-rect('.', 20, 10, 33, 10)       # road east along the river
-rect('.', 20, 11, 22, 13)       # down from the bridge to the square
-rect('H', 33, 11, 34, 12)       # stairs up to the onsen square
-rect('.', 35, 9, 40, 11)        # footbath and onsen square
-rect('.', 27, 11, 28, 17)       # path down to the inn
-rect('.', 29, 12, 38, 17)       # inn plot and lawn
-rect('.', 15, 14, 26, 19)       # the paved square and its plots
-rect('T', 20, 17, 21, 18)       # the big tree in the middle of the square
-rect('H', 24, 16, 25, 17)       # stairs from the square to the inn lawn
-rect('.', 26, 16, 26, 17)
-rect('H', 27, 18, 28, 18)       # stairs down from the inn lawn
-rect('.', 27, 19, 28, 21)       # path down to the bus road
-rect('.', 22, 21, 26, 21)
-rect('T', 23, 19, 26, 19)       # the little garden with trees
-rect('T', 25, 18, 26, 18)
+rect('.', 13, 11, 26, 13)       # below the bridge, winery row
+rect('.', 17, 14, 26, 18)       # the paved square
+rect('.', 20, 9, 35, 9)
+rect('.', 20, 10, 39, 10)       # road east along the river
+rect('.', 33, 11, 39, 11)
+rect('T', 36, 7, 40, 9)         # the hot-spring pool
+rect('.', 29, 11, 36, 14)       # inn plot
+rect('.', 28, 14, 36, 16)       # onsen stone square
+rect('H', 30, 17, 31, 17)
+rect('.', 27, 18, 39, 18)       # lane east of the square
+rect('H', 27, 19, 28, 20)
+rect('.', 28, 21, 28, 21)
+# --- west of the square: workshop yard, stairs, stand plot
+rect('.', 13, 17, 16, 18)
+rect('H', 13, 19, 15, 20)
+rect('.', 13, 21, 17, 21)
+rect('.', 16, 20, 18, 20)
+rect('.', 16, 19, 18, 19)
+rect('.', 15, 14, 16, 15)       # little plot beside the square
 # --- bus road leaves the map at the bottom
-rect('.', 20, 19, 21, 27)
+rect('.', 19, 19, 22, 27)
+rect('.', 23, 20, 25, 21)       # bus shelter plot
 # buildings: name -> (sheet, index or None, width px, footprint x, y, w, h)
 BUILDINGS = {
-    'farmhouse': ('exterior_valley', 1, 176, 4, 4, 5, 2),
-    'winery': ('exterior_valley', 2, 140, 22, 13, 4, 2),
-    'stand': ('exterior_valley', 3, 104, 15, 19, 3, 1),
-    'workshop': ('exterior_valley', 4, 116, 16, 14, 3, 1),
-    'busstop': ('exterior_valley', 5, 104, 22, 17, 3, 1),
-    'ryokan': (None, None, 232, 29, 13, 7, 2),
+    'farmhouse': ('exterior_valley', 1, 176, 4, 3, 5, 2),
+    'winery': ('exterior_valley', 2, 140, 22, 11, 4, 2),
+    'stand': ('exterior_valley', 3, 104, 16, 19, 3, 1),
+    'workshop': ('exterior_valley', 4, 116, 14, 17, 3, 1),
+    'busstop': ('exterior_valley', 5, 104, 23, 20, 3, 1),
+    'ryokan': (None, None, 232, 29, 12, 7, 2),
 }
 
 
@@ -99,7 +102,7 @@ def main():
         img.save(os.path.join(OUT, f'bx_{key}.png'))
         rect('T', x, y, x + w - 1, y + h - 1)  # buildings block
     rows = [''.join(r) for r in g]
-    src = Image.open(os.path.join(ROOT, 'art', 'sheets', 'ground_valley_draft.webp')).convert('RGB')
+    src = Image.open(os.path.join(ROOT, 'art', 'sheets', 'ground_valley_v2.webp')).convert('RGB')
     src.resize((W * T, H * T), Image.LANCZOS).save(os.path.join(OUT, 'map_valley.png'))
     ts = '/* generated by tools/build_valley.py — do not edit */\nexport const VALLEY_GEN: string[] = ' + json.dumps(rows, indent=2) + ';\n'
     open(os.path.join(ROOT, 'src', 'content', 'valley.gen.ts'), 'w').write(ts)

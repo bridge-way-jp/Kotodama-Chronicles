@@ -236,41 +236,40 @@ export const MAPS: Record<string, MapDef> = {
     busStop: { x: 21, y: 20 },
     // footprints match tools/build_valley.py BUILDINGS
     objects: [
-      { id: 'valley_farmhouse', sprite: 'bx_farmhouse', x: 4, y: 4, w: 5, h: 2 },
-      { id: 'valley_winery', sprite: 'bx_winery', x: 22, y: 13, w: 4, h: 2 },
-      { id: 'valley_stand', sprite: 'bx_stand', x: 15, y: 19, w: 3, h: 1 },
-      { id: 'valley_workshop', sprite: 'bx_workshop', x: 16, y: 14, w: 3, h: 1 },
-      { id: 'valley_busstop', sprite: 'bx_busstop', x: 22, y: 17, w: 3, h: 1, interactAt: [{ x: 22, y: 18 }, { x: 23, y: 18 }, { x: 24, y: 18 }, { x: 21, y: 17 }] },
-      { id: 'valley_ryokan', sprite: 'bx_ryokan', x: 29, y: 13, w: 7, h: 2 },
+      { id: 'valley_farmhouse', sprite: 'bx_farmhouse', x: 4, y: 3, w: 5, h: 2 },
+      { id: 'valley_winery', sprite: 'bx_winery', x: 22, y: 11, w: 4, h: 2 },
+      { id: 'valley_stand', sprite: 'bx_stand', x: 16, y: 19, w: 3, h: 1 },
+      { id: 'valley_workshop', sprite: 'bx_workshop', x: 14, y: 17, w: 3, h: 1 },
+      { id: 'valley_busstop', sprite: 'bx_busstop', x: 23, y: 20, w: 3, h: 1, interactAt: [{ x: 22, y: 20 }, { x: 23, y: 21 }, { x: 25, y: 21 }] },
+      { id: 'valley_ryokan', sprite: 'bx_ryokan', x: 29, y: 12, w: 7, h: 2 },
       // the word garden next to the farmhouse (Mr. Hayashi lends Maria a bed after the harvest)
       ...(['peach_3', 'grape_3', 'sunflower_3', 'rice_2', 'asagao_3', 'sakura_2'] as const).map((p, i) => ({
         id: `valley_garden_${i}`, sprite: `wgs_${p}`, x: 10 + (i % 2), y: 3 + Math.floor(i / 2), w: 1, h: 1, script: 'valley_garden',
       })),
       { id: 'valley_garden_tag', sprite: 'wgs_tag', x: 9, y: 5, w: 1, h: 1, script: 'valley_garden' },
       // the footbath on the onsen square: talk to it from the square, facing north
-      { id: 'valley_ashiyu', x: 35, y: 8, w: 6, h: 1, solid: false, interactAt: [35, 36, 37, 38, 39, 40].map((x) => ({ x, y: 9 })) },
+      { id: 'valley_ashiyu', x: 36, y: 9, w: 5, h: 1, solid: false, interactAt: [36, 37, 38, 39].map((x) => ({ x, y: 10 })) },
     ],
     npcs: [
-      { id: 'hayashi', x: 7, y: 6, facing: 'down' },
+      { id: 'hayashi', x: 7, y: 5, facing: 'down' },
       { id: 'sakura_hayashi', x: 24, y: 3, facing: 'right' },
-      { id: 'kenji', x: 24, y: 15, facing: 'down' },
-      { id: 'busdriver', x: 26, y: 17, facing: 'left' },
+      { id: 'kenji', x: 23, y: 15, facing: 'down' },
+      { id: 'busdriver', x: 24, y: 21, facing: 'up' },
     ],
     warps: [
       ...[20, 21].map((x) => ({ x, y: 27, to: { map: 'town', x: 18, y: 20, facing: 'down' as const } })),
-      { x: 32, y: 14, to: { map: 'ryokan', x: 6, y: 9, facing: 'up' as const } },
-      { x: 33, y: 14, to: { map: 'ryokan', x: 7, y: 9, facing: 'up' as const } },
-      { x: 17, y: 14, to: { map: 'werkstatt', x: 5, y: 8, facing: 'up' as const } },
+      { x: 32, y: 13, to: { map: 'ryokan', x: 6, y: 9, facing: 'up' as const } },
+      { x: 33, y: 13, to: { map: 'ryokan', x: 7, y: 9, facing: 'up' as const } },
+      { x: 15, y: 17, to: { map: 'werkstatt', x: 5, y: 8, facing: 'up' as const } },
     ],
     zones: [
-      { x0: 25, y0: 1, x1: 32, y1: 4, encounters: 'valley_grove', bg: 'bg_valley_orchard.webp' },
-      { x0: 2, y0: 15, x1: 7, y1: 17, encounters: 'valley_river', bg: 'bg_valley_river.webp' },
+      { x0: 25, y0: 0, x1: 33, y1: 4, encounters: 'valley_grove', bg: 'bg_valley_orchard.webp' },
+      { x0: 3, y0: 16, x1: 7, y1: 17, encounters: 'valley_river', bg: 'bg_valley_river.webp' },
     ],
     steam: [
-      { x: 1000, y: 300, w: 30, depth: 470 }, // behind the inn roof
-      { x: 1085, y: 300, w: 30, depth: 470 },
-      { x: 1205, y: 270, w: 70 }, // hot-spring falls
-      { x: 1240, y: 336, w: 50 }, // footbath on the onsen square
+      { x: 1230, y: 250, w: 40 }, // hot-spring pool
+      { x: 1275, y: 245, w: 36 },
+      { x: 1250, y: 330, w: 50 }, // footbath edge
     ],
   },
   mountain: {
