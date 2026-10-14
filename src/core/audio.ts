@@ -363,3 +363,87 @@ export function stopBusSound() {
   busAudio?.pause();
   busAudio = null;
 }
+
+// ------------------------------------------------------------------ train sounds
+export type TrainKind = 'local' | 'shinkansen';
+
+/** a rhythmic clatter over a low rumble; real files public/audio/sfx_train_<kind>.mp3 are used when present */
+function synthTrain(kind: TrainKind, seconds: number) {
+  const c = (ctx ??= new AudioContext());
+  const t0 = c.currentTime;
+  const out = c.createGain();
+  out.gain.value = 1;
+  out.connect(c.destination);
+  const fast = kind === 'shinkansen';
+  // rumble
+  const r = c.createOscillator();
+  const rg = c.createGain();
+  const lp = c.createBiquadFilter();
+  lp.type = 'lowpass';
+  lp.frequency.value = fast ? 220 : 160;
+  r.type = 'sawtooth';
+  r.frequency.value = fast ? 42 : 34;
+  rg.gain.setValueAtTime(0.0001, t0);
+  rg.gain.exponentialRampToValueAtTime(0.05, t0 + 0.6);
+  rg.gain.setValueAtTime(0.05, t0 + seconds - 0.8);
+  rg.gain.exponentialRampToValueAtTime(0.0001, t0 + seconds);
+  r.connect(lp).connect(rg).connect(out);
+  r.start(t0);
+  r.stop(t0 + seconds + 0.1);
+  // wheel clatter: two short ticks per joint
+  const step = fast ? 0.11 : 0.34;
+  for (let t = 0.4; t < seconds - 0.5; t += step) {
+    for (const d of [0, step * 0.28]) {
+      const s = c.createBufferSource();
+      s.buffer = noiseBuffer(c, 0.05);
+      const f = c.createBiquadFilter();
+      f.type = 'bandpass';
+      f.frequency.value = fast ? 1800 : 1200;
+      const g = c.createGain();
+      g.gain.setValueAtTime(fast ? 0.05 : 0.09, t0 + t + d);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + t + d + 0.05);
+      s.connect(f).connect(g).connect(out);
+      s.start(t0 + t + d);
+    }
+  }
+  // departure chime and arrival chime
+  for (const at of [0.05, seconds - 0.9]) {
+    [660, 880, 660].forEach((fq, i) => {
+      const o = c.createOscillator();
+      const g = c.createGain();
+      o.type = 'sine';
+      o.frequency.value = fq;
+      g.gain.setValueAtTime(0.0001, t0 + at + i * 0.25);
+      g.gain.exponentialRampToValueAtTime(0.1, t0 + at + i * 0.25 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + at + i * 0.25 + 0.6);
+      o.connect(g).connect(out);
+      o.start(t0 + at + i * 0.25);
+      o.stop(t0 + at + i * 0.25 + 0.7);
+    });
+  }
+}
+
+let trainAudio: HTMLAudioElement | null = null;
+export function trainSound(kind: TrainKind, seconds = 5.6) {
+  if (!sfxOn) return;
+  const fallback = () => {
+    try {
+      synthTrain(kind, seconds);
+    } catch {
+      /* audio not available */
+    }
+  };
+  try {
+    const a = new Audio(`audio/sfx_train_${kind}.mp3`);
+    a.volume = 0.7;
+    a.onerror = fallback;
+    a.play().catch(fallback);
+    trainAudio = a;
+  } catch {
+    fallback();
+  }
+}
+export function stopTrainSound() {
+  trainAudio?.pause();
+  trainAudio = null;
+}

@@ -24,8 +24,8 @@ export const TOKYO_SCRIPTS: Record<string, DialogueRule[]> = {
   // ---------------------------------------------------------------- places (outdoors)
   tk_station: [{ steps: [n('東京駅。赤れんがの大きな駅舎に、新幹線のホームから人が流れてくる。', 'Tokyo Station. People stream out of the Shinkansen platforms into the big red-brick building.'), {
     choice: [
-      { text: '日野森へ帰る', en: 'Take the train back to Hinomori', then: [{ do: [{ warp: { map: 'town', x: 27, y: 20 } }] }] },
-      { text: '大阪へ行く', en: 'Take the train to Osaka', then: [{ do: [{ warp: { map: 'o_umeda', x: 20, y: 25 } }] }] },
+      { text: '日野森へ帰る', en: 'Take the train back to Hinomori', then: [{ do: [{ train: 'shinkansen' }, { warp: { map: 'town', x: 27, y: 20 } }] }] },
+      { text: '大阪へ行く', en: 'Take the train to Osaka', then: [{ do: [{ train: 'shinkansen' }, { warp: { map: 'o_umeda', x: 20, y: 25 } }] }] },
       { text: 'やめる', en: 'Not now' },
     ],
   }] }],

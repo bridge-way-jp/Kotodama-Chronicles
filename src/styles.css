@@ -874,3 +874,20 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
 @keyframes ride-bob { 0%, 100% { transform: translate(-50%, 0) scaleX(-1); } 50% { transform: translate(-50%, -3px) scaleX(-1); } }
 @keyframes ride-gantry { from { right: -40%; } to { right: 110%; } }
 @media (prefers-reduced-motion: reduce) { .ride * { animation-duration: 0s !important; } }
+
+/* train variants of the ride scene: tracks instead of a road, catenary wires, a train instead of the bus */
+.ride-k-shinkansen .ride-trees { animation-duration: 3.4s; }
+.ride-k-shinkansen .ride-mid { animation-duration: 10s; }
+.ride-k-shinkansen .ride-poles { animation-duration: .8s; }
+.ride-k-local .ride-trees { animation-duration: 8s; }
+.ride-k-shinkansen .ride-road, .ride-k-local .ride-road { background: linear-gradient(#6b5d4f, #4a4036); border-top-color: #b9b2a6; }
+.ride-k-shinkansen .ride-lane, .ride-k-local .ride-lane { top: 30%; height: 14px; background: repeating-linear-gradient(90deg, #3b3028 0 12px, transparent 12px 40px); --w: 40px; animation-duration: .12s; }
+.ride-k-shinkansen .ride-rail, .ride-k-local .ride-rail { display: none; }
+.ride-wires { top: 38%; height: 16%; background: repeating-linear-gradient(90deg, transparent 0 300px, #2c2f36 300px 306px), linear-gradient(transparent 48%, #2c2f36 48% 52%, transparent 52%); --w: 306px; animation: ride-scroll .9s linear infinite; }
+.ride-train { left: 50%; right: auto; bottom: 13%; transform: translateX(-50%); display: flex; gap: 4px; animation: ride-bob-x .5s ease-in-out infinite; }
+.ride-car { position: relative; width: min(22vw, 190px); aspect-ratio: 3.2; background: linear-gradient(#f4f6f8 0 62%, #1d5aa8 62% 74%, #f4f6f8 74%); border: 3px solid #26303c; border-radius: 12px 16px 6px 6px; display: flex; gap: 6%; padding: 4% 6% 0; }
+.ride-car i { flex: 1; height: 3.6vmin; max-height: 36px; background: linear-gradient(#9fd2f3, #5c9bd1); border: 2px solid #26303c; border-radius: 3px; }
+.ride-k-local .ride-car { background: linear-gradient(#e9eef0 0 58%, #2e8b57 58% 72%, #e9eef0 72%); }
+.ride-k-local .ride-car:nth-child(n+2) { display: none; }
+.ride-k-shinkansen .ride-car:first-child { border-radius: 40px 16px 6px 6px; }
+@keyframes ride-bob-x { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -2px); } }

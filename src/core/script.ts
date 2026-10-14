@@ -61,7 +61,9 @@ export type Action =
   /** switch the music for a scene: a track key, or 'map' for the current map's track (memory ends with the scene) */
   | { music: string }
   /** the bus pulls up at this map's stop, or (before a warp) drives off from the stop on the next map */
-  | { bus: 'arrive' | 'leave' };
+  | { bus: 'arrive' | 'leave' }
+  /** the train ride scene (call before the warp to the other station) */
+  | { train: 'local' | 'shinkansen' };
 
 export type Mood = 'neutral' | 'happy' | 'surprised' | 'worried';
 

@@ -6,7 +6,7 @@ import { bus } from '../core/events';
 import { store } from '../core/store';
 import { pickRule, type Step } from '../core/script';
 import { healTeam, runAction, type ActionHooks } from '../core/game';
-import { MAP_MUSIC, busSound, currentMusic, duckMusic, playMusic, setMusicVolume, setSfx, sfx, stopBusSound, stopMusic, stopSpeech } from '../core/audio';
+import { MAP_MUSIC, busSound, currentMusic, duckMusic, playMusic, setMusicVolume, setSfx, sfx, stopBusSound, stopMusic, stopSpeech, stopTrainSound, trainSound } from '../core/audio';
 import { RIDE_MS } from '../core/ride';
 import { BusRide } from './BusRide';
 import { SCRIPTS } from '../content/scripts';
@@ -70,10 +70,11 @@ export function GameView({ onExit }: { onExit: () => void }) {
     setOverlays((x) => x.filter((o) => o.id !== id));
   }, []);
 
-  const [ride, setRide] = useState(false);
+  const [ride, setRide] = useState<null | 'bus' | 'local' | 'shinkansen'>(null);
   const endRide = useCallback(() => {
     stopBusSound();
-    setRide(false);
+    stopTrainSound();
+    setRide(null);
   }, []);
   useEffect(() => {
     if (!ride) return;
@@ -91,8 +92,14 @@ export function GameView({ onExit }: { onExit: () => void }) {
         input.locked = true;
         input.releaseAll();
         busSound('ride', RIDE_MS / 1000);
-        setRide(true);
+        setRide('bus');
       }
+    },
+    train: (kind) => {
+      input.locked = true;
+      input.releaseAll();
+      trainSound(kind, RIDE_MS / 1000);
+      setRide(kind);
     },
     open: (what) => {
       if (what === 'review') push({ kind: 'review' });
@@ -112,7 +119,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
 
   // lock world input while any overlay is open
   useEffect(() => {
-    input.locked = overlays.length > 0 || ride;
+    input.locked = overlays.length > 0 || !!ride;
     if (overlays.length) input.releaseAll();
   }, [overlays.length, ride]);
 
@@ -269,7 +276,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
           {renderOverlay(o)}
         </div>
       ))}
-      {ride && <BusRide onDone={endRide} />}
+      {ride && <BusRide kind={ride} onDone={endRide} />}
       <GlossPopup />
       <Toasts />
     </div>
