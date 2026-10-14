@@ -1051,8 +1051,8 @@ export const TOKYO_GEN: Record<string, { tiles: string[]; objects: MapObject[]; 
     "y": 9,
     "to": {
      "map": "kuyakusho",
-     "x": 5,
-     "y": 8,
+     "x": 6,
+     "y": 9,
      "facing": "up"
     }
    },
@@ -1061,8 +1061,8 @@ export const TOKYO_GEN: Record<string, { tiles: string[]; objects: MapObject[]; 
     "y": 9,
     "to": {
      "map": "kuyakusho",
-     "x": 5,
-     "y": 8,
+     "x": 6,
+     "y": 9,
      "facing": "up"
     }
    },
@@ -1243,7 +1243,7 @@ export const TOKYO_GEN: Record<string, { tiles: string[]; objects: MapObject[]; 
     "to": {
      "map": "radio",
      "x": 6,
-     "y": 9,
+     "y": 8,
      "facing": "up"
     }
    },
@@ -1253,7 +1253,7 @@ export const TOKYO_GEN: Record<string, { tiles: string[]; objects: MapObject[]; 
     "to": {
      "map": "radio",
      "x": 6,
-     "y": 9,
+     "y": 8,
      "facing": "up"
     }
    },

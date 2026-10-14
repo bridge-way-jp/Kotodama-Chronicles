@@ -496,13 +496,13 @@ export const MAPS: Record<string, MapDef> = {
   },
   kuyakusho: {
     id: 'kuyakusho', name: 'Ward office', nameJa: '区役所', tiles: ROOMS_GEN.kuyakusho.tiles, interior: true, image: ROOMS_GEN.kuyakusho.image, objects: ROOMS_GEN.kuyakusho.objects,
-    npcs: [{ id: 'yamamoto', x: 6, y: 4, facing: 'down' }],
-    warps: [5, 6].map((x) => ({ x, y: 9, to: { map: 't_shinjuku', x: 4 + x - 5, y: 9, facing: 'down' as const } })),
+    npcs: [{ id: 'yamamoto', x: 6, y: 5, facing: 'down' }],
+    warps: [6, 7].map((x) => ({ x, y: 10, to: { map: 't_shinjuku', x: 4 + x - 6, y: 9, facing: 'down' as const } })),
   },
   radio: {
     id: 'radio', name: 'Radio studio', nameJa: 'ラジオ局', tiles: ROOMS_GEN.radio.tiles, interior: true, image: ROOMS_GEN.radio.image, objects: ROOMS_GEN.radio.objects,
     npcs: [{ id: 'kuroi', x: 6, y: 5, facing: 'down' }],
-    warps: [6, 7].map((x) => ({ x, y: 10, to: { map: 't_sumida', x: 17 + x - 6, y: 8, facing: 'down' as const } })),
+    warps: [6, 7].map((x) => ({ x, y: 9, to: { map: 't_sumida', x: 17 + x - 6, y: 8, facing: 'down' as const } })),
   },
   buero: {
     id: 'buero', name: 'Open-plan office', nameJa: 'オフィス', tiles: ROOMS_GEN.buero.tiles, interior: true, image: ROOMS_GEN.buero.image, objects: ROOMS_GEN.buero.objects,

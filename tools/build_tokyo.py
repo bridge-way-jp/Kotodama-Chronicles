@@ -29,7 +29,7 @@ EXT = {'tower': 0, 'station': 1, 'gate': 2, 'shibuya': 3, 'radio': 4, 'sento': 5
 
 # interior entrances: map -> (x, y, facing) where you stand after walking in (filled in once the room sizes are known)
 INTERIOR_IN = {'kissaten': (6, 8, 'up'), 'sento': (5, 8, 'up'), 'gamecenter': (6, 8, 'up'), 'yokocho': (5, 8, 'up'),
-               'kuyakusho': (5, 8, 'up'), 'radio': (6, 9, 'up')}
+               'kuyakusho': (6, 9, 'up'), 'radio': (6, 8, 'up')}
 
 # plot = rect of blocked tiles; width = sprite width in tiles (bottom centre sits under the plot); door = walkway tiles
 MAPS = {

@@ -3558,60 +3558,11 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
   },
   "kuyakusho": {
     "tiles": [
-      "WWWWWWWWWWWW",
-      "WWWWWWWWWWWW",
-      "WWWWWWWWWWWW",
-      "WWWccccccWWW",
-      "WWffffffffWW",
-      "WWffffffffWW",
-      "WWffffffffWW",
-      "WWffffffffWW",
-      "WWffffffffWW",
-      "WWWWWDDWWWWW"
-    ],
-    "objects": [
-      {
-        "id": "kuyakusho_counter",
-        "x": 3,
-        "y": 3,
-        "w": 6,
-        "h": 1,
-        "script": "kuyaku_counter"
-      },
-      {
-        "id": "kuyakusho_logo",
-        "x": 4,
-        "y": 1,
-        "w": 4,
-        "h": 1,
-        "script": "kuyaku_board"
-      },
-      {
-        "id": "kuyakusho_shelf",
-        "x": 1,
-        "y": 1,
-        "w": 1,
-        "h": 3,
-        "script": "kuyaku_forms"
-      },
-      {
-        "id": "kuyakusho_door",
-        "x": 10,
-        "y": 1,
-        "w": 1,
-        "h": 2,
-        "script": "kuyaku_ticket"
-      }
-    ],
-    "image": "room2_kuyakusho"
-  },
-  "radio": {
-    "tiles": [
       "WWWWWWWWWWWWWW",
       "WWWWWWWWWWWWWW",
       "WWWWWWWWWWWWWW",
-      "WWffffffffffWW",
-      "WWffffffffffWW",
+      "WWccccccccccWW",
+      "WWccccccccccWW",
       "WWffffffffffWW",
       "WWffffffffffWW",
       "WWffffffffffWW",
@@ -3621,36 +3572,85 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
     ],
     "objects": [
       {
-        "id": "radio_desks",
+        "id": "kuyakusho_counter",
         "x": 2,
-        "y": 2,
-        "w": 7,
-        "h": 1,
-        "script": "radio_desk"
+        "y": 3,
+        "w": 10,
+        "h": 2,
+        "script": "kuyaku_counter"
       },
       {
-        "id": "radio_board",
-        "x": 4,
+        "id": "kuyakusho_board",
+        "x": 1,
+        "y": 5,
+        "w": 1,
+        "h": 4,
+        "script": "kuyaku_board"
+      },
+      {
+        "id": "kuyakusho_forms",
+        "x": 12,
+        "y": 5,
+        "w": 1,
+        "h": 3,
+        "script": "kuyaku_forms"
+      },
+      {
+        "id": "kuyakusho_ticket",
+        "x": 10,
         "y": 1,
         "w": 2,
+        "h": 1,
+        "script": "kuyaku_ticket"
+      }
+    ],
+    "image": "room2_kuyakusho"
+  },
+  "radio": {
+    "tiles": [
+      "WWWWWWWWWWWWW",
+      "WWWWWWWWWWWWW",
+      "WWWWWWWWWWWWW",
+      "WWWfccccccfWW",
+      "WWWffffffffWW",
+      "WWWffffffffWW",
+      "WWWffffffffWW",
+      "WWWffffffffWW",
+      "WWWffffffffWW",
+      "WWWWWWDDWWWWW"
+    ],
+    "objects": [
+      {
+        "id": "radio_records",
+        "x": 4,
+        "y": 1,
+        "w": 5,
+        "h": 2,
+        "script": "radio_records"
+      },
+      {
+        "id": "radio_thermos",
+        "x": 8,
+        "y": 2,
+        "w": 2,
+        "h": 2,
+        "script": "radio_thermos"
+      },
+      {
+        "id": "radio_onair",
+        "x": 10,
+        "y": 1,
+        "w": 1,
         "h": 1,
         "script": "radio_onair"
       },
       {
-        "id": "radio_cabinets",
+        "id": "radio_desk",
         "x": 1,
         "y": 3,
         "w": 1,
-        "h": 5,
-        "script": "radio_records"
-      },
-      {
-        "id": "radio_coffee",
-        "x": 12,
-        "y": 3,
-        "w": 1,
-        "h": 2,
-        "script": "radio_thermos"
+        "h": 4,
+        "script": "radio_desk"
       }
     ],
     "image": "room2_radio"

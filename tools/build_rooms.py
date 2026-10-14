@@ -648,17 +648,16 @@ ROOMS = {
                ('tv', 9, 1, 2, 1, 'yokocho_tv'), ('counter', 2, 3, 6, 2, 'yokocho_counter'), ('coat', 10, 2, 1, 2, 'yokocho_coat')],
         furniture=[],
     ),
-    # placeholders until the ward-office and radio-studio pictures arrive (they borrow the Osaka reception and office rooms)
     'kuyakusho': dict(
-        size=(12, 10), painted='room_empfang.webp', clean=True, crop=(0, 0, 768, 640),
-        grid=['W' * 12] * 3 + ['WWW' + 'c' * 6 + 'WWW'] + ['WW' + 'f' * 8 + 'WW'] * 5 + ['W' * 5 + 'DD' + 'W' * 5],
-        spots=[('counter', 3, 3, 6, 1, 'kuyaku_counter'), ('logo', 4, 1, 4, 1, 'kuyaku_board'), ('shelf', 1, 1, 1, 3, 'kuyaku_forms'), ('door', 10, 1, 1, 2, 'kuyaku_ticket')],
+        size=(14, 11), painted='room_kuyakusho.webp', clean=True, crop=(0, 0, 896, 704),
+        grid=['W' * 14] * 3 + ['WW' + 'c' * 10 + 'WW'] * 2 + ['WW' + 'f' * 10 + 'WW'] * 5 + ['W' * 6 + 'DD' + 'W' * 6],
+        spots=[('counter', 2, 3, 10, 2, 'kuyaku_counter'), ('board', 1, 5, 1, 4, 'kuyaku_board'), ('forms', 12, 5, 1, 3, 'kuyaku_forms'), ('ticket', 10, 1, 2, 1, 'kuyaku_ticket')],
         furniture=[],
     ),
     'radio': dict(
-        size=(14, 11), painted='room_buero.webp', clean=True, crop=(0, 0, 896, 704),
-        grid=['W' * 14] * 3 + ['WW' + 'f' * 10 + 'WW'] * 7 + ['W' * 6 + 'DD' + 'W' * 6],
-        spots=[('desks', 2, 2, 7, 1, 'radio_desk'), ('board', 4, 1, 2, 1, 'radio_onair'), ('cabinets', 1, 3, 1, 5, 'radio_records'), ('coffee', 12, 3, 1, 2, 'radio_thermos')],
+        size=(13, 10), painted='room_radio.webp', clean=True, crop=(0, 0, 832, 640),
+        grid=['W' * 13] * 3 + ['WWW' + 'f' + 'c' * 6 + 'f' + 'WW'] + ['WWW' + 'f' * 8 + 'WW'] * 5 + ['W' * 6 + 'DD' + 'W' * 5],
+        spots=[('records', 4, 1, 5, 2, 'radio_records'), ('thermos', 8, 2, 2, 2, 'radio_thermos'), ('onair', 10, 1, 1, 1, 'radio_onair'), ('desk', 1, 3, 1, 4, 'radio_desk')],
         furniture=[],
     ),
 }
