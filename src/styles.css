@@ -844,3 +844,33 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
 .japan-list li.found b {
   color: #b5651d;
 }
+
+/* ---------------------------------------------------------------- bus ride (expressway) */
+.ride { position: absolute; inset: 0; z-index: 80; overflow: hidden; background: #0b1220; opacity: 0; transition: opacity .6s ease; pointer-events: all; }
+.ride-run { opacity: 1; }
+.ride-in { opacity: 0; }
+.ride-out { opacity: 0; transition-duration: .7s; }
+.ride > * { position: absolute; left: 0; right: 0; }
+.ride-sky { top: 0; bottom: 0; background: linear-gradient(#5fb4ee 0%, #a9dcf6 48%, #fbe3b8 70%); }
+.ride-sun { top: 9%; left: 70%; width: 9vmin; height: 9vmin; border-radius: 50%; background: #fff8dc; box-shadow: 0 0 40px 14px rgba(255,244,200,.7); }
+.ride-clouds { --w: 2000px; top: 6%; height: 20%; background: radial-gradient(ellipse 90px 22px at 20% 55%, #fff 70%, transparent 72%), radial-gradient(ellipse 130px 28px at 65% 35%, #fff 70%, transparent 72%), radial-gradient(ellipse 70px 18px at 90% 65%, #fff 70%, transparent 72%); background-size: 50% 100%; animation: ride-scroll-slow 70s linear infinite; opacity: .85; }
+.ride-far { --w: 800px; top: 30%; height: 30%; background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='200' viewBox='0 0 800 200'><path d='M0 200V120L90 60 160 110 260 30 360 120 450 70 560 130 660 50 760 110 800 120V200Z' fill='%238aa8c8'/><path d='M260 30l24 20-12 8-14-12-16 10z' fill='%23fff' opacity='.8'/></svg>") repeat-x bottom / 800px 100%; animation: ride-scroll 30s linear infinite; }
+.ride-mid { --w: 600px; top: 42%; height: 26%; background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='160' viewBox='0 0 600 160'><path d='M0 160V90Q80 40 170 80T340 70 520 90 600 90V160Z' fill='%234f8a62'/></svg>") repeat-x bottom / 600px 100%; animation: ride-scroll 18s linear infinite; }
+.ride-trees { --w: 360px; top: 52%; height: 22%; background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='360' height='120' viewBox='0 0 360 120'><g fill='%23256a3c'><path d='M30 120l20-70 20 70z'/><path d='M120 120l16-56 16 56z'/><path d='M210 120l22-80 22 80z'/><path d='M300 120l14-50 14 50z'/></g><g fill='%23e98fb0'><circle cx='80' cy='92' r='16'/><circle cx='262' cy='96' r='14'/></g></svg>") repeat-x bottom / 360px 100%; animation: ride-scroll 7s linear infinite; }
+.ride-gantry { top: 20%; left: auto; right: -40%; width: 34%; height: 16%; background: #1c7a47; border: 4px solid #e8f2ea; border-radius: 6px; color: #fff; font-weight: 700; font-size: clamp(14px, 3.2vmin, 28px); display: flex; justify-content: space-between; align-items: center; padding: 0 3%; box-shadow: 0 14px 0 -8px #555; animation: ride-gantry 5.4s linear 0.4s 1 both; }
+.ride-rail { --w: 126px; top: 71%; height: 4%; background: repeating-linear-gradient(90deg, #cfd5db 0 120px, #9aa3ad 120px 126px); border-top: 3px solid #eef2f5; border-bottom: 3px solid #7c8590; animation: ride-scroll 1.2s linear infinite; }
+.ride-poles { --w: 388px; top: 56%; height: 19%; background: repeating-linear-gradient(90deg, transparent 0 380px, #4a4f57 380px 388px); animation: ride-scroll 1.8s linear infinite; }
+.ride-road { top: 75%; bottom: 0; background: linear-gradient(#4b4f57, #3a3d44); border-top: 4px solid #e8e8e8; }
+.ride-lane { --w: 190px; position: absolute; left: 0; right: 0; top: 38%; height: 5px; background: repeating-linear-gradient(90deg, #f5f5f0 0 90px, transparent 90px 190px); animation: ride-scroll-lane .5s linear infinite; }
+.ride-bus { left: 50%; right: auto; bottom: 14%; width: min(40vw, 320px); transform: translateX(-50%); animation: ride-bob .9s ease-in-out infinite; }
+.ride-bus img { width: 100%; image-rendering: pixelated; display: block; }
+.ride-bar { height: 12%; background: #000; z-index: 2; }
+.ride-bar.top { top: 0; }
+.ride-bar.bottom { bottom: 0; display: grid; place-items: center; padding: 0 4%; }
+.ride-ann { color: #fff3c7; font-size: clamp(14px, 2.8vmin, 24px); letter-spacing: .06em; text-align: center; text-shadow: 0 1px 2px #000; }
+@keyframes ride-scroll { to { background-position-x: calc(var(--w, 800px) * -1); } }
+@keyframes ride-scroll-slow { to { background-position-x: calc(var(--w) * -1); } }
+@keyframes ride-scroll-lane { to { background-position-x: -190px; } }
+@keyframes ride-bob { 0%, 100% { transform: translate(-50%, 0) scaleX(-1); } 50% { transform: translate(-50%, -3px) scaleX(-1); } }
+@keyframes ride-gantry { from { right: -40%; } to { right: 110%; } }
+@media (prefers-reduced-motion: reduce) { .ride * { animation-duration: 0s !important; } }

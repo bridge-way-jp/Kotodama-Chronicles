@@ -6,7 +6,9 @@ import { bus } from '../core/events';
 import { store } from '../core/store';
 import { pickRule, type Step } from '../core/script';
 import { healTeam, runAction, type ActionHooks } from '../core/game';
-import { MAP_MUSIC, currentMusic, duckMusic, playMusic, setMusicVolume, setSfx, sfx, stopMusic, stopSpeech } from '../core/audio';
+import { MAP_MUSIC, busSound, currentMusic, duckMusic, playMusic, setMusicVolume, setSfx, sfx, stopBusSound, stopMusic, stopSpeech } from '../core/audio';
+import { RIDE_MS } from '../core/ride';
+import { BusRide } from './BusRide';
 import { SCRIPTS } from '../content/scripts';
 import { saveNow } from '../core/persistence';
 import type { BattleSetup } from '../core/battle';
@@ -68,10 +70,30 @@ export function GameView({ onExit }: { onExit: () => void }) {
     setOverlays((x) => x.filter((o) => o.id !== id));
   }, []);
 
+  const [ride, setRide] = useState(false);
+  const endRide = useCallback(() => {
+    stopBusSound();
+    setRide(false);
+  }, []);
+  useEffect(() => {
+    if (!ride) return;
+    duckMusic(0.35);
+    return () => duckMusic(1);
+  }, [ride]);
+
   const hooks: ActionHooks = {
     warp: (map, x, y) => bus.emit('warp', { map, x, y }),
     music: (key) => playMusic(key === 'map' ? MAP_MUSIC[store.s.map] ?? 'town' : key),
-    bus: (mode) => bus.emit('bus', { mode }),
+    bus: (mode) => {
+      bus.emit('bus', { mode });
+      if (mode === 'arrive') busSound('arrive');
+      else {
+        input.locked = true;
+        input.releaseAll();
+        busSound('ride', RIDE_MS / 1000);
+        setRide(true);
+      }
+    },
     open: (what) => {
       if (what === 'review') push({ kind: 'review' });
       else if (what === 'dashboard') push({ kind: 'menu', tab: 'jlpt' });
@@ -90,9 +112,9 @@ export function GameView({ onExit }: { onExit: () => void }) {
 
   // lock world input while any overlay is open
   useEffect(() => {
-    input.locked = overlays.length > 0;
+    input.locked = overlays.length > 0 || ride;
     if (overlays.length) input.releaseAll();
-  }, [overlays.length]);
+  }, [overlays.length, ride]);
 
   useEffect(() => {
     setSfx(store.s.settings.sfx);
@@ -247,6 +269,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
           {renderOverlay(o)}
         </div>
       ))}
+      {ride && <BusRide onDone={endRide} />}
       <GlossPopup />
       <Toasts />
     </div>
