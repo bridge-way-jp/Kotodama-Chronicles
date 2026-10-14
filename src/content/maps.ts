@@ -506,7 +506,7 @@ export const MAPS: Record<string, MapDef> = {
   },
   buero: {
     id: 'buero', name: 'Open-plan office', nameJa: 'オフィス', tiles: ROOMS_GEN.buero.tiles, interior: true, image: ROOMS_GEN.buero.image, objects: ROOMS_GEN.buero.objects,
-    npcs: [{ id: 'kenta', x: 4, y: 4, facing: 'right' }],
+    npcs: [{ id: 'kenta', x: 6, y: 7, facing: 'up' }],
     warps: [6, 7].map((x) => ({ x, y: 10, to: { map: 'o_umeda', x: 8 + x - 6, y: 14, facing: 'down' as const } })),
   },
   empfang: {

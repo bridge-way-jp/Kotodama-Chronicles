@@ -2905,6 +2905,69 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
     ],
     "objects": [
       {
+        "id": "buero_isl1",
+        "sprite": "fu_buero_isl1",
+        "x": 3,
+        "y": 6,
+        "w": 3,
+        "h": 1,
+        "script": "furn_desk"
+      },
+      {
+        "id": "buero_isl2",
+        "sprite": "fu_buero_isl2",
+        "x": 8,
+        "y": 6,
+        "w": 3,
+        "h": 1,
+        "script": "furn_desk"
+      },
+      {
+        "id": "buero_meet",
+        "sprite": "fu_buero_meet",
+        "x": 3,
+        "y": 8,
+        "w": 3,
+        "h": 1,
+        "script": "furn_table"
+      },
+      {
+        "id": "buero_copier",
+        "sprite": "fu_buero_copier",
+        "x": 11,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "furn_machine"
+      },
+      {
+        "id": "buero_plant",
+        "sprite": "fu_buero_plant",
+        "x": 11,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "plant"
+      },
+      {
+        "id": "buero_boxes",
+        "sprite": "fu_buero_boxes",
+        "x": 2,
+        "y": 9,
+        "w": 1,
+        "h": 1,
+        "script": "furn_box"
+      },
+      {
+        "id": "buero_chair",
+        "sprite": "fu_buero_chair",
+        "x": 7,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "solid": false
+      },
+      {
         "id": "buero_desks",
         "x": 2,
         "y": 2,
@@ -2986,6 +3049,51 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
     ],
     "objects": [
       {
+        "id": "empfang_sofa",
+        "sprite": "fu_empfang_sofa",
+        "x": 2,
+        "y": 5,
+        "w": 1,
+        "h": 2,
+        "script": "furn_seat"
+      },
+      {
+        "id": "empfang_table",
+        "sprite": "fu_empfang_table",
+        "x": 4,
+        "y": 6,
+        "w": 1,
+        "h": 1,
+        "script": "furn_table"
+      },
+      {
+        "id": "empfang_arm",
+        "sprite": "fu_empfang_arm",
+        "x": 4,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
+        "id": "empfang_plant",
+        "sprite": "fu_empfang_plant",
+        "x": 9,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "plant"
+      },
+      {
+        "id": "empfang_sign",
+        "sprite": "fu_empfang_sign",
+        "x": 8,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "furn_sign"
+      },
+      {
         "id": "empfang_desk",
         "x": 3,
         "y": 3,
@@ -3042,6 +3150,78 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
       "WWWWWDDWWWWW"
     ],
     "objects": [
+      {
+        "id": "takoladen_st1",
+        "sprite": "fu_takoladen_st1",
+        "x": 2,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
+        "id": "takoladen_st2",
+        "sprite": "fu_takoladen_st2",
+        "x": 4,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
+        "id": "takoladen_st3",
+        "sprite": "fu_takoladen_st3",
+        "x": 6,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
+        "id": "takoladen_st4",
+        "sprite": "fu_takoladen_st4",
+        "x": 8,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
+        "id": "takoladen_tab1",
+        "sprite": "fu_takoladen_tab1",
+        "x": 3,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "furn_table"
+      },
+      {
+        "id": "takoladen_tab2",
+        "sprite": "fu_takoladen_tab2",
+        "x": 8,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "furn_table"
+      },
+      {
+        "id": "takoladen_crate",
+        "sprite": "fu_takoladen_crate",
+        "x": 10,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "furn_box"
+      },
+      {
+        "id": "takoladen_bin",
+        "sprite": "fu_takoladen_bin",
+        "x": 10,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "furn_box"
+      },
       {
         "id": "takoladen_griddle",
         "x": 1,
@@ -3108,6 +3288,51 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
     ],
     "objects": [
       {
+        "id": "okonomi_grill1",
+        "sprite": "fu_okonomi_grill1",
+        "x": 3,
+        "y": 5,
+        "w": 3,
+        "h": 2,
+        "script": "furn_table"
+      },
+      {
+        "id": "okonomi_grill2",
+        "sprite": "fu_okonomi_grill2",
+        "x": 8,
+        "y": 5,
+        "w": 3,
+        "h": 2,
+        "script": "furn_table"
+      },
+      {
+        "id": "okonomi_beer",
+        "sprite": "fu_okonomi_beer",
+        "x": 10,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "furn_box"
+      },
+      {
+        "id": "okonomi_coat",
+        "sprite": "fu_okonomi_coat",
+        "x": 2,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "furn_rack"
+      },
+      {
+        "id": "okonomi_lamp",
+        "sprite": "fu_okonomi_lamp",
+        "x": 10,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "furn_lamp"
+      },
+      {
         "id": "okonomi_shelf",
         "x": 1,
         "y": 1,
@@ -3165,6 +3390,60 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
     ],
     "objects": [
       {
+        "id": "konbini2_shelf1",
+        "sprite": "fu_konbini2_shelf1",
+        "x": 3,
+        "y": 6,
+        "w": 3,
+        "h": 1,
+        "script": "furn_shelf"
+      },
+      {
+        "id": "konbini2_shelf2",
+        "sprite": "fu_konbini2_shelf2",
+        "x": 8,
+        "y": 6,
+        "w": 3,
+        "h": 1,
+        "script": "furn_shelf"
+      },
+      {
+        "id": "konbini2_boxes",
+        "sprite": "fu_konbini2_boxes",
+        "x": 11,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "furn_box"
+      },
+      {
+        "id": "konbini2_freezer",
+        "sprite": "fu_konbini2_freezer",
+        "x": 9,
+        "y": 4,
+        "w": 2,
+        "h": 1,
+        "script": "furn_machine"
+      },
+      {
+        "id": "konbini2_mop",
+        "sprite": "fu_konbini2_mop",
+        "x": 2,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "furn_box"
+      },
+      {
+        "id": "konbini2_baskets",
+        "sprite": "fu_konbini2_baskets",
+        "x": 11,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "furn_box"
+      },
+      {
         "id": "konbini2_counter",
         "x": 2,
         "y": 3,
@@ -3221,6 +3500,69 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
       "WWWWWDDWWWWW"
     ],
     "objects": [
+      {
+        "id": "kushikatsu_st1",
+        "sprite": "fu_kushikatsu_st1",
+        "x": 2,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
+        "id": "kushikatsu_st2",
+        "sprite": "fu_kushikatsu_st2",
+        "x": 6,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
+        "id": "kushikatsu_st3",
+        "sprite": "fu_kushikatsu_st3",
+        "x": 7,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
+        "id": "kushikatsu_table",
+        "sprite": "fu_kushikatsu_table",
+        "x": 6,
+        "y": 7,
+        "w": 2,
+        "h": 1,
+        "script": "furn_table"
+      },
+      {
+        "id": "kushikatsu_bench",
+        "sprite": "fu_kushikatsu_bench",
+        "x": 2,
+        "y": 7,
+        "w": 2,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
+        "id": "kushikatsu_sticks",
+        "sprite": "fu_kushikatsu_sticks",
+        "x": 9,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "furn_box"
+      },
+      {
+        "id": "kushikatsu_board",
+        "sprite": "fu_kushikatsu_board",
+        "x": 9,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "furn_sign"
+      },
       {
         "id": "kushikatsu_posters",
         "x": 1,
@@ -3286,6 +3628,60 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
       "WWWWWWDDWWWWW"
     ],
     "objects": [
+      {
+        "id": "kissaten_tab1",
+        "sprite": "fu_kissaten_tab1",
+        "x": 3,
+        "y": 6,
+        "w": 3,
+        "h": 1,
+        "script": "furn_table"
+      },
+      {
+        "id": "kissaten_tab2",
+        "sprite": "fu_kissaten_tab2",
+        "x": 8,
+        "y": 6,
+        "w": 3,
+        "h": 1,
+        "script": "furn_table"
+      },
+      {
+        "id": "kissaten_juke",
+        "sprite": "fu_kissaten_juke",
+        "x": 10,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "furn_jukebox"
+      },
+      {
+        "id": "kissaten_st1",
+        "sprite": "fu_kissaten_st1",
+        "x": 4,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
+        "id": "kissaten_st2",
+        "sprite": "fu_kissaten_st2",
+        "x": 7,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
+        "id": "kissaten_rack",
+        "sprite": "fu_kissaten_rack",
+        "x": 10,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "furn_shelf"
+      },
       {
         "id": "kissaten_siphons",
         "x": 4,
@@ -3368,6 +3764,42 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
     ],
     "objects": [
       {
+        "id": "sento_bench",
+        "sprite": "fu_sento_bench",
+        "x": 3,
+        "y": 6,
+        "w": 3,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
+        "id": "sento_towels",
+        "sprite": "fu_sento_towels",
+        "x": 8,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "furn_box"
+      },
+      {
+        "id": "sento_coat",
+        "sprite": "fu_sento_coat",
+        "x": 9,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "furn_rack"
+      },
+      {
+        "id": "sento_plant",
+        "sprite": "fu_sento_plant",
+        "x": 2,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "plant"
+      },
+      {
         "id": "sento_noren_blue",
         "x": 2,
         "y": 1,
@@ -3441,6 +3873,51 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
     ],
     "objects": [
       {
+        "id": "gamecenter_crane1",
+        "sprite": "fu_gamecenter_crane1",
+        "x": 4,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "furn_machine"
+      },
+      {
+        "id": "gamecenter_crane2",
+        "sprite": "fu_gamecenter_crane2",
+        "x": 4,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "furn_machine"
+      },
+      {
+        "id": "gamecenter_arcade",
+        "sprite": "fu_gamecenter_arcade",
+        "x": 8,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "furn_machine"
+      },
+      {
+        "id": "gamecenter_change",
+        "sprite": "fu_gamecenter_change",
+        "x": 9,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "furn_machine"
+      },
+      {
+        "id": "gamecenter_bench",
+        "sprite": "fu_gamecenter_bench",
+        "x": 3,
+        "y": 8,
+        "w": 2,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
         "id": "gamecenter_arcade",
         "x": 3,
         "y": 1,
@@ -3497,6 +3974,78 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
       "WWWWWDDWWWWW"
     ],
     "objects": [
+      {
+        "id": "yokocho_st1",
+        "sprite": "fu_yokocho_st1",
+        "x": 3,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
+        "id": "yokocho_st2",
+        "sprite": "fu_yokocho_st2",
+        "x": 4,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
+        "id": "yokocho_st3",
+        "sprite": "fu_yokocho_st3",
+        "x": 5,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
+        "id": "yokocho_st4",
+        "sprite": "fu_yokocho_st4",
+        "x": 6,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
+        "id": "yokocho_st5",
+        "sprite": "fu_yokocho_st5",
+        "x": 7,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
+        "id": "yokocho_crate",
+        "sprite": "fu_yokocho_crate",
+        "x": 9,
+        "y": 7,
+        "w": 1,
+        "h": 1,
+        "script": "furn_box"
+      },
+      {
+        "id": "yokocho_coat",
+        "sprite": "fu_yokocho_coat",
+        "x": 2,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "furn_rack"
+      },
+      {
+        "id": "yokocho_lamp",
+        "sprite": "fu_yokocho_lamp",
+        "x": 8,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "furn_lamp"
+      },
       {
         "id": "yokocho_bottles",
         "x": 1,
@@ -3572,6 +4121,42 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
     ],
     "objects": [
       {
+        "id": "kuyakusho_ticket",
+        "sprite": "fu_kuyakusho_ticket",
+        "x": 10,
+        "y": 5,
+        "w": 1,
+        "h": 1,
+        "script": "furn_machine"
+      },
+      {
+        "id": "kuyakusho_chairs1",
+        "sprite": "fu_kuyakusho_chairs1",
+        "x": 2,
+        "y": 7,
+        "w": 3,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
+        "id": "kuyakusho_chairs2",
+        "sprite": "fu_kuyakusho_chairs2",
+        "x": 8,
+        "y": 7,
+        "w": 3,
+        "h": 1,
+        "script": "furn_seat"
+      },
+      {
+        "id": "kuyakusho_desk",
+        "sprite": "fu_kuyakusho_desk",
+        "x": 10,
+        "y": 9,
+        "w": 1,
+        "h": 1,
+        "script": "furn_desk"
+      },
+      {
         "id": "kuyakusho_counter",
         "x": 2,
         "y": 3,
@@ -3620,6 +4205,51 @@ export const ROOMS_GEN: Record<string, { tiles: string[]; image: string; objects
       "WWWWWWDDWWWWW"
     ],
     "objects": [
+      {
+        "id": "radio_sofa",
+        "sprite": "fu_radio_sofa",
+        "x": 10,
+        "y": 6,
+        "w": 1,
+        "h": 2,
+        "script": "furn_seat"
+      },
+      {
+        "id": "radio_lamp",
+        "sprite": "fu_radio_lamp",
+        "x": 3,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "furn_lamp"
+      },
+      {
+        "id": "radio_mic",
+        "sprite": "fu_radio_mic",
+        "x": 7,
+        "y": 6,
+        "w": 3,
+        "h": 1,
+        "script": "furn_table"
+      },
+      {
+        "id": "radio_shelf",
+        "sprite": "fu_radio_shelf",
+        "x": 3,
+        "y": 8,
+        "w": 1,
+        "h": 1,
+        "script": "furn_shelf"
+      },
+      {
+        "id": "radio_side",
+        "sprite": "fu_radio_side",
+        "x": 10,
+        "y": 4,
+        "w": 1,
+        "h": 1,
+        "script": "furn_table"
+      },
       {
         "id": "radio_records",
         "x": 4,

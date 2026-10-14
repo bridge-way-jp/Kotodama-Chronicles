@@ -54,6 +54,11 @@ rect('H', 4, 14, 7, 15)
 rect('"', 3, 16, 7, 17)         # dry riverside grass (wild Kotodama)
 # --- village centre
 rect('.', 13, 11, 26, 13)       # below the bridge, winery row
+rect('.', 9, 6, 13, 6)          # strip below the word-garden beds
+rect('.', 12, 3, 12, 5)         # east side of the beds
+rect('.', 23, 1, 23, 1)
+rect('.', 27, 17, 28, 17)
+rect('.', 27, 21, 27, 21)
 rect('.', 17, 14, 26, 18)       # the paved square
 rect('.', 20, 9, 35, 9)
 rect('.', 20, 10, 39, 10)       # road east along the river
