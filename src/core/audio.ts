@@ -135,6 +135,12 @@ export const TRACKS: Record<string, string> = {
   lighthouse: 'audio/lighthouse.mp3',
   kyoto: 'audio/kyoto.mp3',
   gion: 'audio/gion.mp3',
+  osaka: 'audio/osaka.mp3',
+  dotonbori: 'audio/dotonbori.mp3',
+  tokyo: 'audio/tokyo.mp3',
+  tokyo_night: 'audio/tokyo_night.mp3',
+  ending: 'audio/ending.mp3',
+  bus_ride: 'audio/bus_ride.mp3',
 };
 
 export const MAP_MUSIC: Record<string, string> = {
@@ -142,8 +148,9 @@ export const MAP_MUSIC: Record<string, string> = {
   ryokan: 'onsen', werkstatt: 'valley', tsuru: 'snow', klinik: 'snow', kneipe: 'harbor', leuchtturm: 'lighthouse',
   k_station: 'kyoto', k_nishiki: 'kyoto', k_kamo: 'kyoto', k_gion: 'gion', k_fushimi: 'gion',
   machiya: 'gion', teehaus: 'gion', kimono: 'kyoto', izakaya: 'kyoto', bahnhofinfo: 'kyoto', nishikiladen: 'kyoto',
-  o_umeda: 'kyoto', t_station: 'kyoto', t_asakusa: 'gion', t_shibuya: 'festival', t_shinjuku: 'festival', t_sumida: 'gion', kissaten: 'cafe', sento: 'onsen', gamecenter: 'festival', yokocho: 'festival', kuyakusho: 'town', radio: 'memory', o_nakanoshima: 'kyoto', o_dotonbori: 'festival', o_shinsekai: 'festival', o_castle: 'gion',
-  buero: 'town', empfang: 'town', takoladen: 'festival', okonomi: 'festival', konbini2: 'town', kushikatsu: 'festival',
+  o_umeda: 'osaka', o_nakanoshima: 'osaka', o_dotonbori: 'dotonbori', o_shinsekai: 'dotonbori', o_castle: 'osaka',
+  t_station: 'tokyo', t_asakusa: 'tokyo_night', t_shibuya: 'tokyo', t_shinjuku: 'tokyo', t_sumida: 'tokyo_night', kissaten: 'cafe', sento: 'onsen', gamecenter: 'tokyo', yokocho: 'tokyo_night', kuyakusho: 'tokyo', radio: 'tokyo_night',
+  buero: 'osaka', empfang: 'osaka', takoladen: 'dotonbori', okonomi: 'dotonbori', konbini2: 'osaka', kushikatsu: 'dotonbori',
 };
 
 let music: HTMLAudioElement | null = null;

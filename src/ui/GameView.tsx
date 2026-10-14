@@ -78,8 +78,16 @@ export function GameView({ onExit }: { onExit: () => void }) {
   }, []);
   useEffect(() => {
     if (!ride) return;
-    duckMusic(0.35);
-    return () => duckMusic(1);
+    duckMusic(ride === 'bus' ? 0.8 : 0.35);
+    // the warp has already switched the map music; put the travel song on top for the bus ride
+    const t = ride === 'bus' ? setTimeout(() => playMusic('bus_ride'), 400) : undefined;
+    return () => {
+      if (t) {
+        clearTimeout(t);
+        playMusic(MAP_MUSIC[store.s.map] ?? 'town');
+      }
+      duckMusic(1);
+    };
   }, [ride]);
 
   const hooks: ActionHooks = {
@@ -195,7 +203,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
             onEnd={() => {
               remove(o.id);
               // a scene's own music (memory, onsen, festival, lighthouse) ends with the scene
-              if (['memory', 'onsen', 'festival', 'lighthouse'].includes(currentMusic())) playMusic(MAP_MUSIC[store.s.map] ?? 'town');
+              if (['memory', 'onsen', 'festival', 'lighthouse', 'ending'].includes(currentMusic())) playMusic(MAP_MUSIC[store.s.map] ?? 'town');
               void saveNow();
             }}
           />
