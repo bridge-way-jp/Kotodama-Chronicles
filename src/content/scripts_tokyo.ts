@@ -252,6 +252,7 @@ export const TOKYO_SCRIPTS: Record<string, DialogueRule[]> = {
             { text: '「ごめんなさい」から、はじめてみては', en: '“Why not start with ‘I’m sorry’?”', then: [say('kotone', '……そうね。まず、「ごめんなさい」。それから、「ありがとう」を。', '…Yes. First “I’m sorry”. Then “thank you”.', 'happy')] },
           ],
         },
+        { do: [{ music: 'ending' }] },
         { cg: 'cg_ending', say: '{川|かわ}の{向|む}こうで、{高|たか}い{塔|とう}が、{静|しず}かに{光|ひか}っていた。{言葉|ことば}は、{保存|ほぞん}するためではなく、{届|とど}けるためにある。\n― 第七章「東京」完 ―', en: 'Across the river the tall tower glowed quietly. Words are not for keeping but for reaching someone.\n— Chapter 7 “Tokyo” complete —' },
         { do: [{ flag: 'game_complete' }] },
         n('ありがとう！ ここまで、マリアと{言霊|ことだま}たちの{旅|たび}に{付|つ}き{合|あ}ってくれて。ストーリーは、これでひとまず{完結|かんけつ}です。{町|まち}は、これからも{自由|じゆう}に{歩|ある}けます。', 'Thank you for travelling with Maria and the Kotodama this far! The main story is now complete. You can keep exploring every town freely.'),
