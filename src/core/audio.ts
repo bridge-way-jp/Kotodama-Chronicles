@@ -247,3 +247,119 @@ if (typeof document !== 'undefined') {
     else tryPlay(music);
   });
 }
+
+// ------------------------------------------------------------------ bus sounds
+/**
+ * Bus noises. If public/audio/sfx_bus_<kind>.mp3 exists it is played; otherwise a
+ * small synthesised version (engine rumble, air brake, door chime) stands in.
+ */
+export type BusSound = 'arrive' | 'ride' | 'leave';
+
+function noiseBuffer(c: AudioContext, seconds: number) {
+  const buf = c.createBuffer(1, Math.floor(c.sampleRate * seconds), c.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  return buf;
+}
+
+function synthBus(kind: BusSound, seconds: number) {
+  const c = (ctx ??= new AudioContext());
+  const t0 = c.currentTime;
+  const out = c.createGain();
+  out.connect(c.destination);
+  const env = (g: GainNode, peak: number, attack: number, hold: number, release: number) => {
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(peak, t0 + attack);
+    g.gain.setValueAtTime(peak, t0 + attack + hold);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + attack + hold + release);
+  };
+  const engine = (len: number, pitch: number, peak: number) => {
+    const g = c.createGain();
+    const lp = c.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 260;
+    env(g, peak, 0.4, Math.max(0.1, len - 1.2), 0.8);
+    for (const f of [pitch, pitch * 1.5, pitch * 2.02]) {
+      const o = c.createOscillator();
+      o.type = 'sawtooth';
+      o.frequency.setValueAtTime(f * 0.8, t0);
+      o.frequency.linearRampToValueAtTime(f, t0 + len * 0.6);
+      o.connect(lp);
+      o.start(t0);
+      o.stop(t0 + len + 0.3);
+    }
+    // idle shudder
+    const lfo = c.createOscillator();
+    const lg = c.createGain();
+    lfo.frequency.value = 11;
+    lg.gain.value = 0.02;
+    lfo.connect(lg).connect(g.gain);
+    lfo.start(t0);
+    lfo.stop(t0 + len + 0.3);
+    lp.connect(g).connect(out);
+  };
+  const noise = (len: number, type: BiquadFilterType, freq: number, peak: number, delay = 0) => {
+    const s = c.createBufferSource();
+    s.buffer = noiseBuffer(c, len + 0.1);
+    const f = c.createBiquadFilter();
+    f.type = type;
+    f.frequency.value = freq;
+    const g = c.createGain();
+    g.gain.setValueAtTime(0.0001, t0 + delay);
+    g.gain.exponentialRampToValueAtTime(peak, t0 + delay + Math.min(0.3, len / 3));
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + delay + len);
+    s.connect(f).connect(g).connect(out);
+    s.start(t0 + delay);
+  };
+  const chime = (delay: number) => {
+    [[880, 0], [660, 0.32]].forEach(([f, d]) => {
+      const o = c.createOscillator();
+      const g = c.createGain();
+      o.type = 'sine';
+      o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t0 + delay + d);
+      g.gain.exponentialRampToValueAtTime(0.12, t0 + delay + d + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + delay + d + 0.7);
+      o.connect(g).connect(out);
+      o.start(t0 + delay + d);
+      o.stop(t0 + delay + d + 0.8);
+    });
+  };
+  if (kind === 'arrive') {
+    engine(1.9, 48, 0.05); // rolls in
+    noise(0.9, 'highpass', 3500, 0.12, 1.5); // air brake
+    chime(2.2); // doors
+  } else if (kind === 'ride') {
+    engine(seconds, 62, 0.06);
+    noise(seconds, 'lowpass', 500, 0.05); // road and wind
+    noise(0.6, 'highpass', 3000, 0.07, seconds - 0.7);
+  } else {
+    engine(2.4, 55, 0.05);
+    noise(0.5, 'highpass', 3500, 0.1, 0);
+  }
+}
+
+let busAudio: HTMLAudioElement | null = null;
+export function busSound(kind: BusSound, seconds = 5) {
+  if (!sfxOn) return;
+  const fallback = () => {
+    try {
+      synthBus(kind, seconds);
+    } catch {
+      /* audio not available */
+    }
+  };
+  try {
+    const a = new Audio(`audio/sfx_bus_${kind}.mp3`);
+    a.volume = 0.7;
+    a.onerror = fallback;
+    a.play().catch(fallback);
+    if (kind === 'ride') busAudio = a;
+  } catch {
+    fallback();
+  }
+}
+export function stopBusSound() {
+  busAudio?.pause();
+  busAudio = null;
+}

@@ -10,6 +10,7 @@ import { FOLK, type FolkDef } from '../content/folk';
 import { DECO_CATALOG } from '../content/creatures';
 import { store } from '../core/store';
 import { bus } from '../core/events';
+import { RIDE_MS } from '../core/ride';
 import type { Dir } from '../core/types';
 import { TEX, TILE, TILE_IMAGES, buildProps, buildTileset } from './textures';
 import { AUTOTILE_KEYS, isForestWall, planCell } from './autotile';
@@ -412,24 +413,40 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
-  /** the bus comes down the road from the north and stops at the bus stop */
+  /** the bus comes down the road from the north, brakes and settles at the stop */
   busArrive() {
     const stop = this.map.busStop;
     if (!stop || !this.textures.exists('bus_front')) return;
     const x = stop.x * TILE;
     const y = (stop.y + 1) * TILE;
-    const b = this.add.image(x, y - 9 * TILE, 'bus_front').setOrigin(0.5, 1).setDepth(y).setAlpha(0);
-    this.tweens.add({ targets: b, y, alpha: 1, duration: 1600, ease: 'Sine.easeOut' });
+    const shadow = this.add.ellipse(x, y - 2, 64, 14, 0x000000, 0.28).setDepth(y - 1).setAlpha(0);
+    const b = this.add.image(x, y - 12 * TILE, 'bus_front').setOrigin(0.5, 1).setDepth(y).setAlpha(0);
+    this.tweens.add({ targets: [b, shadow], alpha: { from: 0, to: 1 }, duration: 500 });
+    this.tweens.add({ targets: shadow, y: y - 2 });
+    // engine noise: rolling in, then easing off with a little nose-dive as the brakes bite
+    this.tweens.add({ targets: b, y, duration: 1900, ease: 'Cubic.easeOut' });
+    this.tweens.add({ targets: b, scaleY: 0.97, delay: 1500, duration: 140, yoyo: true });
+    this.puffs(x - 22, y - 4, 1500, 4);
   }
 
-  /** arriving by bus: it waits at the stop for a moment, then drives off down the road */
+  /** arriving by bus: the ride scene covers the screen first, then the bus waits a moment and pulls away */
   busLeave() {
     const stop = this.map.busStop;
     if (!stop || !this.textures.exists('bus_front')) return;
     const x = stop.x * TILE;
     const y = (stop.y + 1) * TILE;
+    const wait = RIDE_MS + 500;
     const b = this.add.image(x, y, 'bus_front').setOrigin(0.5, 1).setDepth(y);
-    this.tweens.add({ targets: b, y: y + 8 * TILE, alpha: 0, delay: 1100, duration: 1800, ease: 'Sine.easeIn', onComplete: () => b.destroy() });
+    this.puffs(x - 22, y - 4, wait + 700, 5);
+    this.tweens.add({ targets: b, y: y + 12 * TILE, alpha: 0, delay: wait + 900, duration: 2600, ease: 'Cubic.easeIn', onComplete: () => b.destroy() });
+  }
+
+  /** a few grey exhaust puffs drifting up from a point */
+  puffs(x: number, y: number, delay: number, n: number) {
+    for (let i = 0; i < n; i++) {
+      const p = this.add.circle(x + Phaser.Math.Between(-3, 3), y, Phaser.Math.Between(4, 7), 0xc8c8c8, 0.55).setDepth(100000).setAlpha(0);
+      this.tweens.add({ targets: p, alpha: { from: 0.55, to: 0 }, x: p.x - Phaser.Math.Between(6, 18), y: y - Phaser.Math.Between(18, 34), scale: 2.2, delay: delay + i * 260, duration: 1300, onStart: () => p.setAlpha(0.55), onComplete: () => p.destroy() });
+    }
   }
 
   /** a few butterflies drifting over outdoor maps (not in the snow) */
