@@ -1,5 +1,6 @@
 import type { ListeningItem, Question, ReadingText } from '../core/types';
 import { SOCIETY_LISTENING, SOCIETY_READING } from './practice_society';
+import { TOKYO_LISTENING, TOKYO_READING } from './practice_tokyo';
 
 /**
  * Original practice items written in the style of JLPT N2 question types.
@@ -249,3 +250,5 @@ export const PRACTICE_LISTENING: ListeningItem[] = [
 // society and everyday-life texts (see practice_society.ts)
 PRACTICE_READING.push(...SOCIETY_READING);
 PRACTICE_LISTENING.push(...SOCIETY_LISTENING);
+PRACTICE_READING.push(...TOKYO_READING);
+PRACTICE_LISTENING.push(...TOKYO_LISTENING);
