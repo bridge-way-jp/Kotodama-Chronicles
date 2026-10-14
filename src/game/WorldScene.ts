@@ -73,6 +73,9 @@ let busLeavingOnEnter = false;
 
 const DIRS: Record<Dir, [number, number]> = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 const STEP_MS = 170;
+/** after a few steps in one direction without letting go, the hero breaks into a brisk walk */
+const RUN_MS = 118;
+const RUN_AFTER = 4;
 
 interface NpcSprite {
   id: string;
@@ -697,10 +700,15 @@ export class WorldScene extends Phaser.Scene {
     }
     const dir = input.direction();
     if (dir) this.tryMove(dir);
+    else this.streak = 0;
   }
+
+  /** steps taken in a row in the same direction (resets when the key is released or the way is blocked) */
+  streak = 0;
 
   tryMove(dir: Dir) {
     const changed = dir !== this.facing;
+    if (changed) this.streak = 0;
     this.facing = dir;
     this.player.setTexture(this.textureFor('hero', dir));
     const [dx, dy] = DIRS[dir];
@@ -716,10 +724,12 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     if (this.blocked(tx, ty)) {
+      this.streak = 0;
       if (changed) store.update((s) => (s.facing = dir), 'facing');
       return;
     }
     this.moving = true;
+    this.streak++;
     this.grassOverlay?.setVisible(false);
     this.shadow.setVisible(true);
     this.stepCount++;
@@ -732,7 +742,7 @@ export class WorldScene extends Phaser.Scene {
     this.tweens.addCounter({
       from: 0,
       to: 1,
-      duration: STEP_MS,
+      duration: this.streak > RUN_AFTER ? RUN_MS : STEP_MS,
       onUpdate: (tw) => {
         const t = tw.getValue() ?? 0;
         const x = Phaser.Math.Linear(this.player.x, endX, t);
