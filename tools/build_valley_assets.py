@@ -101,7 +101,7 @@ OSAKA_ITEMS = ['i_takoyaki', 'i_okonomiyaki', 'i_kushikatsu', 'i_canned_coffee',
 
 
 TOKYO_BGS = ['bg_tokyo_shibuya', 'bg_tokyo_yokocho', 'bg_tokyo_sumida']
-TOKYO_CGS = ['cg_tokyo_arrival', 'cg_tokyo_radio', 'cg_tokyo_river']
+TOKYO_CGS = ['cg_tokyo_arrival', 'cg_tokyo_radio', 'cg_tokyo_river', 'cg_epilog_stay', 'cg_epilog_home']
 TOKYO_ITEMS = ['i_suica', 'i_headphones', 'i_microphone', 'i_coffee_black', 'i_ramen', 'i_dorayaki',
                'i_purikura', 'i_number_ticket', 'i_juminhyo', 'i_house_key', 'i_umbrella', 'i_omamori_traffic']
 

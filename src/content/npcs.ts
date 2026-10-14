@@ -60,6 +60,6 @@ export const NPCS: Record<string, NpcDef> = {
   yamamoto: { id: 'yamamoto', name: '山本さん', nameEn: 'Yamamoto-san', role: 'Ward-office clerk', sprite: 'npc_yamamoto', portrait: 'portrait_yamamoto', color: '#5a8ab5' },
   priya: { id: 'priya', name: 'プリヤ', nameEn: 'Priya', role: 'IT engineer from India', sprite: 'npc_priya', portrait: 'portrait_priya', color: '#3f3f4a' },
   attendant: { id: 'attendant', name: '駅員さん', nameEn: 'Station attendant', role: 'Tokyo Station attendant', sprite: 'npc_attendant', portrait: 'portrait_attendant', color: '#1f2f5a' },
-  kotone: { id: 'kotone', name: '琴音', nameEn: 'Kotone', role: 'K', sprite: '', color: '#2f5a3f' },
+  kotone: { id: 'kotone', name: '琴音', nameEn: 'Kotone', role: 'K', sprite: 'npc_kotone', portrait: 'portrait_kotone', color: '#2f5a3f' },
   busdriver: { id: 'busdriver', name: '運転手さん', nameEn: 'Bus driver', role: 'Bus driver', sprite: 'npc_busdriver', portrait: 'npc_busdriver_down', color: '#4a86b5' },
 };

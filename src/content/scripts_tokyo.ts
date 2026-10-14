@@ -194,6 +194,11 @@ export const TOKYO_SCRIPTS: Record<string, DialogueRule[]> = {
     { steps: [say('kuroi', 'こんばんは。{夜|よる}は、{長|なが}いですね。……{眠|ねむ}れない{人|ひと}たちのために、{今夜|こんや}も{話|はな}します。', 'Good evening. The night is long, isn’t it. …I’ll talk tonight, too, for the people who cannot sleep.')] },
   ],
 
+  kotone: [
+    { when: { flag: 'epilogue_stay' }, steps: [say('kotone', '{春|はる}になったら、{日野森|ひのもり}の{勉強部屋|べんきょうべや}で{会|あ}いましょう。{楓|かえで}も、{待|ま}っているわ。', 'See you in the study room in Hinomori in spring. Kaede is waiting, too.', 'happy')] },
+    { steps: [say('kotone', '{楓|かえで}と、{毎週|まいしゅう}{電話|でんわ}をしているの。{最初|さいしょ}の{一言|ひとこと}は、「ただいま」だったわ。', 'I phone Kaede every week now. My first words were “I’m home”.', 'happy')] },
+  ],
+
   // ---------------------------------------------------------------- the unheard Kotodama (Shinjuku alley) and the river
   yokocho_counter: [
     {
@@ -239,7 +244,7 @@ export const TOKYO_SCRIPTS: Record<string, DialogueRule[]> = {
         grammarQuiz('dakenokotohaaru', 0),
         { cg: 'cg_tokyo_radio', say: '{白|しろ}い{狐|きつね}の{体|からだ}が、{青|あお}い{光|ひかり}に{包|つつ}まれた。{光|ひかり}の{中|なか}で、{小|ちい}さな{言葉|ことば}の{粒|つぶ}が、{町|まち}じゅうへ{飛|と}んでいく。ラジオから、{黒井|くろい}さんの{声|こえ}。{今|いま}、{初|はじ}めて、{誰|だれ}かが{聞|き}いている。', en: 'The white fox is wrapped in blue light. Within it little grains of words fly out over the whole city. From a radio, Kuroi’s voice — and for the first time someone is truly listening.' },
         say('kotone', '……おかえりなさい、{言ノ葉|ことのは}。', '…Welcome back, Kotonoha.', 'happy'),
-        { do: [{ objective: 'mq30.river' }, { give: 'umbrella' }, { rel: 'kotone', points: 3 }, { learn: ['v:tk_kotonoha', 'g:tekoso', 'g:dakenokotohaaru'] }, { flag: 'kotonoha_awake' }] },
+        { do: [{ recruit: 'kotonoha', level: 40 }, { objective: 'mq30.river' }, { give: 'umbrella' }, { rel: 'kotone', points: 3 }, { learn: ['v:tk_kotonoha', 'g:tekoso', 'g:dakenokotohaaru'] }, { flag: 'kotonoha_awake' }] },
         say('kotone', 'これから、{楓|かえで}に{電話|でんわ}する。……{何|なん}{年|ねん}ぶりだろう。{最初|さいしょ}の{一言|ひとこと}が、{見|み}つからなくて。', 'I’m going to call Kaede now. …How many years has it been? I can’t find the first words.'),
         {
           choice: [
@@ -252,8 +257,8 @@ export const TOKYO_SCRIPTS: Record<string, DialogueRule[]> = {
         n('ありがとう！ ここまで、マリアと{言霊|ことだま}たちの{旅|たび}に{付|つ}き{合|あ}ってくれて。ストーリーは、これでひとまず{完結|かんけつ}です。{町|まち}は、これからも{自由|じゆう}に{歩|ある}けます。', 'Thank you for travelling with Maria and the Kotodama this far! The main story is now complete. You can keep exploring every town freely.'),
         {
           choice: [
-            { text: 'もう一年、日本で勉強を続ける', en: 'Stay in Japan another year and keep studying', then: [{ do: [{ flag: 'epilogue_stay' }] }, n('{春|はる}、{日野森|ひのもり}の{研究所|けんきゅうじょ}には、{小|ちい}さな{勉強部屋|べんきょうべや}ができる。{言葉|ことば}を{使|つか}う{人|ひと}たちの、{新|あたら}しい{場所|ばしょ}だ。', 'In spring, a small study room opens at the Hinomori research facility — a new place for people who use words.')] },
-            { text: '一度、家に帰って、春にまた来る', en: 'Go home for a while and come back in spring', then: [{ do: [{ flag: 'epilogue_home' }] }, n('{空港|くうこう}で、{日本語|にほんご}の{手紙|てがみ}を{書|か}いた。「{春|はる}に、また。」ポケットの{中|なか}で、{言ノ葉|ことのは}が{小|ちい}さく{鳴|な}いた。', 'At the airport you wrote a letter in Japanese: “See you in spring.” In your pocket, Kotonoha gave a small cry.')] },
+            { text: 'もう一年、日本で勉強を続ける', en: 'Stay in Japan another year and keep studying', then: [{ do: [{ flag: 'epilogue_stay' }] }, { cg: 'cg_epilog_stay', say: '{春|はる}、{日野森|ひのもり}の{研究所|けんきゅうじょ}には、{小|ちい}さな{勉強部屋|べんきょうべや}ができる。{言葉|ことば}を{使|つか}う{人|ひと}たちの、{新|あたら}しい{場所|ばしょ}だ。', en: 'In spring, a small study room opens at the Hinomori research facility — a new place for people who use words.' }] },
+            { text: '一度、家に帰って、春にまた来る', en: 'Go home for a while and come back in spring', then: [{ do: [{ flag: 'epilogue_home' }] }, { cg: 'cg_epilog_home', say: '{空港|くうこう}で、{日本語|にほんご}の{手紙|てがみ}を{書|か}いた。「{春|はる}に、また。」ポケットの{中|なか}で、{言ノ葉|ことのは}が{小|ちい}さく{鳴|な}いた。', en: 'At the airport you wrote a letter in Japanese: “See you in spring.” In your pocket, Kotonoha gave a small cry.' }] },
           ],
         },
       ],

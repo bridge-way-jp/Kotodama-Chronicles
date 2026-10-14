@@ -862,7 +862,7 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
 .ride-poles { --w: 388px; top: 56%; height: 19%; background: repeating-linear-gradient(90deg, transparent 0 380px, #4a4f57 380px 388px); animation: ride-scroll 1.8s linear infinite; }
 .ride-road { top: 75%; bottom: 0; background: linear-gradient(#4b4f57, #3a3d44); border-top: 4px solid #e8e8e8; }
 .ride-lane { --w: 190px; position: absolute; left: 0; right: 0; top: 38%; height: 5px; background: repeating-linear-gradient(90deg, #f5f5f0 0 90px, transparent 90px 190px); animation: ride-scroll-lane .5s linear infinite; }
-.ride-bus { left: 50%; right: auto; bottom: 14%; width: min(40vw, 320px); transform: translateX(-50%); animation: ride-bob .9s ease-in-out infinite; }
+.ride-bus { left: 50%; right: auto; bottom: 17%; width: min(40vw, 320px); transform: translateX(-50%); animation: ride-bob .9s ease-in-out infinite; }
 .ride-bus img { width: 100%; image-rendering: pixelated; display: block; }
 .ride-bar { height: 12%; background: #000; z-index: 2; }
 .ride-bar.top { top: 0; }
@@ -891,3 +891,11 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
 .ride-k-local .ride-car:nth-child(n+2) { display: none; }
 .ride-k-shinkansen .ride-car:first-child { border-radius: 40px 16px 6px 6px; }
 @keyframes ride-bob-x { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -2px); } }
+
+/* expressway made from the painted strips (hw_*.webp, 2048 x 512 each: tile width = 4 x height) */
+.ride-k-bus .ride-sky { background: url("../public/assets/hw_sky.webp") center bottom / cover; }
+.ride-k-bus .ride-sun, .ride-k-bus .ride-clouds, .ride-k-bus .ride-trees, .ride-k-bus .ride-rail, .ride-k-bus .ride-poles, .ride-k-bus .ride-lane { display: none; }
+.ride-k-bus .ride-far { --w: 148vh; top: auto; bottom: 42%; height: 37vh; background: url("../public/assets/hw_far.webp") repeat-x 0 100% / auto 100%; animation: ride-scroll 50s linear infinite; }
+.ride-k-bus .ride-mid { --w: 140vh; top: auto; bottom: 28%; height: 35vh; background: url("../public/assets/hw_mid.webp") repeat-x 0 100% / auto 100%; animation: ride-scroll 14s linear infinite; }
+.ride-k-bus .ride-road { --w: 184vh; top: auto; bottom: 9%; height: 46vh; border: 0; background: url("../public/assets/hw_road.webp") repeat-x 0 100% / auto 100%; animation: ride-scroll 2.4s linear infinite; }
+.ride-k-bus .ride-gantry { top: 22%; }

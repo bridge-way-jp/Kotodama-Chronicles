@@ -127,7 +127,20 @@ def main():
     print('hero,', ', '.join(NPC_BLOCKS), ',', ', '.join(FOLK_BLOCKS))
 
 
+def kotone():
+    """One 4 x 4 block in the top-left corner of hm_chars_kotone.webp (cells about 102 x 130 px)."""
+    a = load('hm_chars_kotone.webp')
+    fg = ndimage.binary_opening(~magenta_mask(a))
+    cw, ch = 102, 130
+    imgs = [cut(a, fg, (c * cw, r * ch, (c + 1) * cw + 6, (r + 1) * ch)) for r in range(4) for c in range(4)]
+    tallest = max(i.height for i in imgs)
+    for k, d in enumerate(['down', 'left', 'right', 'up']):
+        resize_px(imgs[k * 4], max(8, round(imgs[k * 4].height * HEIGHT / tallest))).save(os.path.join(OUT, f'npc_kotone_{d}.png'))
+    print('kotone ok')
+
+
 if __name__ == '__main__':
+    kotone()
     main()
 
 
