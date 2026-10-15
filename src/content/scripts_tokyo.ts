@@ -22,13 +22,7 @@ const place = (jp: string, en: string, note?: string): DialogueRule[] => [{ step
 
 export const TOKYO_SCRIPTS: Record<string, DialogueRule[]> = {
   // ---------------------------------------------------------------- places (outdoors)
-  tk_station: [{ steps: [n('東京駅。赤れんがの大きな駅舎に、新幹線のホームから人が流れてくる。', 'Tokyo Station. People stream out of the Shinkansen platforms into the big red-brick building.'), {
-    choice: [
-      { text: '日野森へ帰る', en: 'Take the train back to Hinomori', then: [{ do: [{ train: 'shinkansen' }, { warp: { map: 'town', x: 27, y: 20 } }] }] },
-      { text: '大阪へ行く', en: 'Take the train to Osaka', then: [{ do: [{ train: 'shinkansen' }, { warp: { map: 'o_umeda', x: 20, y: 25 } }] }] },
-      { text: 'やめる', en: 'Not now' },
-    ],
-  }] }],
+  tk_station: [{ steps: [n('東京駅。赤れんがの大きな駅舎に、新幹線のホームから人が流れてくる。', 'Tokyo Station. People stream out of the Shinkansen platforms into the big red-brick building.'), { do: [{ open: 'board:tokyo' }] }] }],
   tk_tower: place('ガラスの高いビルだ。窓の中で、たくさんの人が画面を見つめている。', 'A tall glass tower. Behind the windows many people stare at screens.'),
   tk_kiosk: place('小さな売店だ。コーヒーとおにぎりを買う人が、急ぎ足で通りすぎる。', 'A small kiosk. People hurry past to buy coffee and rice balls.'),
   as_gate: [
@@ -71,7 +65,7 @@ export const TOKYO_SCRIPTS: Record<string, DialogueRule[]> = {
       ],
     },
     { when: { flag: 'chapter7_done' }, steps: [say('attendant', 'お帰りなさい。……最近、あの手紙のように、{返事|へんじ}を{待|ま}っている{忘|わす}れ{物|もの}が、少し{減|へ}った気がします。', 'Welcome back. …Lately, I feel the number of “forgotten things” still waiting for a reply has gone down a little.', 'happy')] },
-    { steps: [say('attendant', '東京駅へようこそ。お{出口|でぐち}は、{丸|まる}の{内|うち}{側|がわ}と、{八重洲|やえす}{側|がわ}。……って、{言|い}われても、{迷|まよ}いますよね。', 'Welcome to Tokyo Station. The exits are the Marunouchi side and the Yaesu side. …Even so, you’ll probably get lost.')] },
+    { steps: [say('attendant', '東京駅へようこそ。お{出口|でぐち}は、{丸|まる}の{内|うち}{側|がわ}と、{八重洲|やえす}{側|がわ}。……って、{言|い}われても、{迷|まよ}いますよね。', 'Welcome to Tokyo Station. The exits are the Marunouchi side and the Yaesu side. …Even so, you’ll probably get lost.'), { choice: [{ text: '案内係を手伝う', en: 'Help at the information desk (listening, pays ¥200 per correct answer)', then: [{ do: [{ open: 'job:station' }] }] }, { text: 'やめる', en: 'Not now' }] }] },
   ],
   yoshie: [
     {
@@ -111,7 +105,7 @@ export const TOKYO_SCRIPTS: Record<string, DialogueRule[]> = {
       ],
     },
     { when: { flag: 'chapter7_done' }, steps: [say('haru', '{最近|さいきん}、{深夜|しんや}ラジオを{聞|き}くようになったんです。……{誰|だれ}かが{話|はな}している{声|こえ}があるだけで、{全然|ぜんぜん}{違|ちが}って。', 'Lately I’ve started listening to late-night radio. …With just someone’s voice talking, it feels completely different.', 'happy')] },
-    { steps: [say('haru', 'このゲーム、ぜったい{取|と}ります。……たぶん。', 'I will catch this prize. …Probably.')] },
+    { steps: [say('haru', 'このゲーム、ぜったい{取|と}ります。……たぶん。', 'I will catch this prize. …Probably.'), { choice: [{ text: '言葉キャッチャーをやる', en: 'Play the word crane game (vocabulary, pays ¥180 per correct answer)', then: [{ do: [{ open: 'job:crane' }] }] }, { text: 'やめる', en: 'Not now' }] }] },
   ],
   priya: [
     {
@@ -156,7 +150,7 @@ export const TOKYO_SCRIPTS: Record<string, DialogueRule[]> = {
       ],
     },
     { when: { flag: 'chapter7_done' }, steps: [say('yamamoto', 'この{頃|ごろ}、{窓口|まどぐち}に、{英語|えいご}とベトナム語の{案内|あんない}も{置|お}きました。……{小|ちい}さな{変化|へんか}ですが、{大事|だいじ}だと{思|おも}って。', 'Recently we put English and Vietnamese guides at the counter. …A small change, but I think it matters.', 'happy')] },
-    { steps: [say('yamamoto', '{番号札|ばんごうふだ}を{取|と}って、お{待|ま}ちください。……{長|なが}くお{待|ま}たせして、{申|もう}し{訳|わけ}ありません。', 'Please take a number and wait. …I’m sorry to keep you waiting so long.')] },
+    { steps: [say('yamamoto', '{番号札|ばんごうふだ}を{取|と}って、お{待|ま}ちください。……{長|なが}くお{待|ま}たせして、{申|もう}し{訳|わけ}ありません。', 'Please take a number and wait. …I’m sorry to keep you waiting so long.'), { choice: [{ text: '窓口を手伝う', en: 'Help at the counter (kanji, pays ¥220 per correct answer)', then: [{ do: [{ open: 'job:kuyakusho' }] }] }, { text: 'やめる', en: 'Not now' }] }] },
   ],
   kuroi: [
     {

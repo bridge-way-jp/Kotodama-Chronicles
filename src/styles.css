@@ -905,3 +905,16 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
 .ride-k-local .ride-train { bottom: 15%; transform: translateX(-50%); }
 .ride-k-local .ride-train img { width: min(62vw, 560px); }
 @keyframes ride-bob-t { 0%, 100% { margin-bottom: 0; } 50% { margin-bottom: 2px; } }
+
+/* station departure board */
+.board { width: min(640px, 94%); display: flex; flex-direction: column; gap: 10px; }
+.board-scene { height: 90px; background: #7fc4ee center bottom / auto 100% repeat-x; border-radius: 8px; image-rendering: pixelated; border: 2px solid rgba(0,0,0,.25); }
+.board h3 small { font-size: .7em; opacity: .75; margin-left: .4em; }
+.board-led { background: #14181d; border: 3px solid #3a4048; border-radius: 6px; padding: 8px; display: flex; flex-direction: column; gap: 4px; font-family: ui-monospace, 'Noto Sans JP', monospace; }
+.board-head, .board-row { display: grid; grid-template-columns: 4.5em 6.5em 1fr 3.5em; gap: 8px; align-items: center; color: #ffb23c; text-align: left; }
+.board-head { font-size: .72em; opacity: .7; padding: 0 8px; }
+.board-row { background: transparent; border: 0; border-radius: 4px; padding: 8px; cursor: pointer; font-size: 1em; font-family: inherit; }
+.board-row:hover, .board-row:focus-visible { background: #2a3038; outline: 1px solid #ffb23c; }
+.board-row small { opacity: .7; margin-left: .3em; font-size: .75em; }
+.board-row .shinkansen { color: #7fd2ff; }
+.board-row .local { color: #9bf08a; }

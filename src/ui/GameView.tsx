@@ -9,6 +9,7 @@ import { healTeam, runAction, type ActionHooks } from '../core/game';
 import { MAP_MUSIC, busSound, currentMusic, duckMusic, playMusic, setMusicVolume, setSfx, sfx, stopBusSound, stopMusic, stopSpeech, stopTrainSound, trainSound } from '../core/audio';
 import { RIDE_MS } from '../core/ride';
 import { BusRide } from './BusRide';
+import { Board, type Dest } from './Board';
 import { SCRIPTS } from '../content/scripts';
 import { saveNow } from '../core/persistence';
 import type { BattleSetup } from '../core/battle';
@@ -29,6 +30,7 @@ type Overlay =
   | { id: number; kind: 'review' }
   | { id: number; kind: 'job'; job: string }
   | { id: number; kind: 'garden' }
+  | { id: number; kind: 'board'; station: string }
   | { id: number; kind: 'exam'; mode: 'practice' | 'mock' | 'diagnostic'; section?: Section };
 
 type NewOverlay = Overlay extends infer O ? (O extends Overlay ? Omit<O, 'id'> : never) : never;
@@ -115,6 +117,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
       else if (what === 'diagnostic') push({ kind: 'exam', mode: 'diagnostic' });
       else if (what === 'menu') push({ kind: 'menu' });
       else if (what === 'garden') push({ kind: 'garden' });
+      else if (what.startsWith('board:')) push({ kind: 'board', station: what.slice(6) });
       else if (what.startsWith('job:')) push({ kind: 'job', job: what.slice(4) });
     },
   };
@@ -241,6 +244,17 @@ export function GameView({ onExit }: { onExit: () => void }) {
               openReview: () => push({ kind: 'review' }),
               openExam: (mode, section) => push({ kind: 'exam', mode, section }),
               toTitle: onExit,
+            }}
+          />
+        );
+      case 'board':
+        return (
+          <Board
+            station={o.station}
+            onClose={() => remove(o.id)}
+            onPick={(d: Dest) => {
+              remove(o.id);
+              push({ kind: 'script', steps: [{ do: [{ train: d.kind }, { warp: { map: d.map, x: d.x, y: d.y } }] }] });
             }}
           />
         );
