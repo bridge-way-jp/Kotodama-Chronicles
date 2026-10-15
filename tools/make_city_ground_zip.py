@@ -2,8 +2,9 @@
 Builds three ZIPs (Kyoto / Osaka / Tokyo) with prompts + reference images to repaint the city ground maps so that
 (1) every building stands on a snug foundation, (2) no bare sand plots remain, (3) repeated blocks differ.
 
-Needs: dump of the maps (maps_objs.json: id -> {image, objects:[{id,x,y,w,h}]}) and full in-game renders (<id>.png).
-Run: python3 tools/make_city_ground_zip.py <output_dir> <dir with maps_objs.json and full/>
+Needs: dump of the maps (maps_objs.json: id -> {image, objects:[{id,x,y,w,h,sprite,at,dy}]}), maps_tiles.json (id -> tiles, plus
+_blocking) and full in-game renders (full/<id>.png).
+Run: python3 tools/make_city_ground_zip.py <output_dir> <dir with the json files and full/>
 """
 import json
 import os
@@ -20,21 +21,27 @@ A = os.path.join(ROOT, 'public', 'assets')
 out = sys.argv[1]
 src = sys.argv[2]
 data = json.load(open(os.path.join(src, 'maps_objs.json')))
+tiles = json.load(open(os.path.join(src, 'maps_tiles.json')))
+BLOCK = set(tiles['_blocking'])
 
 PROMPT = """Repaint the ground map of {place} for a top-down 16-bit pixel-art RPG, in exactly the same painted pixel-art style, but finished and tidy: it must look like a complete, designed place.
 
-Image 1 ({img}) is the CURRENT ground map ({w} x {h} px). KEEP THE LAYOUT PIXEL-FOR-PIXEL: every road, crossing, river, canal, bridge, stair, railway, wall, plaza and walkable path must stay at exactly the same position and shape. Do NOT move or resize anything, and keep the same image size.
+TARGET LOOK: a classic farm-sim / village-sim map like Stardew Valley or Harvest Moon. Three-quarter top-down view with a slight front-facing perspective: cliffs, walls, fences, hedges, stairs, bridges and planter beds are drawn with their FRONT FACES visible (you see a bit of their height and thickness), so everything has depth. Fences, low walls, hedges, flower-bed borders and railings are part of the painted ground and clearly separate walkable ground from non-walkable ground. Paths are wide, clear and continuous, laid out on a 32 px tile grid. This is ONE neutral version of the map: do not make seasonal variants and do not change the existing time of day or colour mood.
+
+Image 1 ({img}) is the CURRENT ground map ({w} x {h} px). KEEP THE LAYOUT: every road, crossing, river, canal, bridge, stair, railway, wall, plaza and the overall route network must stay where they are, and keep the same image size. The only intended changes are the fixes listed below (finished spaces, clean edges, wider paths).
 
 What is wrong now and must be fixed:
-1. RED boxes in image 2 show exactly where the game draws a building on top of this map (the building names are written in the boxes). Everything inside a red box will be hidden by the building, so paint plain neutral paving or gravel there. Directly around each red box the ground must be finished: paving, a small forecourt, a low planter edge, small gardens. There must be NO bare sand or earth left around or beside a building.
-2. Image 2 also shows YELLOW boxes: bare, unfinished sand or earth rectangles that currently have nothing on them. Every bare sand-coloured rectangle in image 1 (the yellow ones and any similar ones) must become a finished space. {fill}
-3. Repeated blocks must not look copy-pasted: where the map has several similar blocks, vary the planting, benches, bicycle racks, small objects and colours so each block is different. Autumn mood is fine; keep the existing colour harmony.
+1. RED boxes in image 2 (footprints_rot_leerflaechen_gelb.jpg) show exactly where the game draws a building on top of this map (the building names are written in the boxes). Everything inside a red box will be hidden by the building, so paint plain neutral paving or gravel there. Directly around each red box the ground must be finished: paving, a small forecourt, a low planter edge, small gardens. There must be NO bare sand or earth left around or beside a building.
+2. Image 2 (footprints_rot_leerflaechen_gelb.jpg) also shows YELLOW boxes: bare, unfinished sand or earth rectangles that currently have nothing on them. Every bare sand-coloured rectangle in image 1 (the yellow ones and any similar ones) must become a finished space. {fill}
+3. Repeated blocks must not look copy-pasted: where the map has several similar blocks, vary the planting, benches, bicycle racks, small objects and colours so each block is different. Keep the existing colour harmony and time of day.
 4. Everything walkable must stay clearly readable as walkable: no tall objects on paths, stairs, crossings or plazas. Low decoration only inside the finished spaces.
+5. WALKABLE MASK (image 3, {mask}): GREEN tiles are where the player can walk, RED tiles are blocked. Paint so that every green area clearly reads as walkable ground (path, paving, lawn, plaza, wooden deck, stairs, bridge) and every red area clearly reads as an obstacle (water, cliff or rock face, fence, hedge, tree cluster, flower bed with a stone rim, wall, railing). Edges between the two must be sharp and follow the 32 px tile grid. Never paint a cliff edge, fence, hedge or flower bed on a green tile, and never paint an open path on a red tile, so the player never seems to walk over a cliff, a bed or a fence.
+6. ORANGE tiles in the mask are corridors narrower than 3 tiles (96 px) and feel cramped. Make every route between the main places at least 3 tiles (96 px) wide: widen the orange corridors into the neighbouring red decoration (flower beds, hedges, bushes, fence lines, grass verges), but NEVER into water, cliff faces, big trees or the building plots. After widening, every route must stay continuous and connect the same places as before; stairs, bridges, plazas and exits keep their positions.
 
 Do NOT paint any buildings, shop fronts, houses, signs with text, people, cars or text of any kind: the game draws buildings and people on top. Keep the light soft and from the top left.
 
-Image 3 ({shot}) shows how the map looks in the game today with the buildings and people on top, so you can judge what stands where.
-Image 4 (style_*.jpg) is a finished map in the target style, for style only, not for layout.
+Image 4 ({shot}) shows how the map looks in the game today with the buildings and people on top, so you can judge what stands where.
+Image 5 (style_*.jpg) is a finished map in the target style, for style only, not for layout.
 
 Output: ONE image, exactly {w} x {h} pixels, no border, no text, no UI.
 """
@@ -48,10 +55,16 @@ MAPS = {
    'Turn them into small working shop yards and market corners: stacked wooden crates, pickle barrels, noren-cloth stands without text, a few bicycles, a stone well, a tiny stone garden with a lantern, a bench with a tea stand, potted plants.'),
   ('k_kamo', 'the Kamo river bank in Kyoto (river, stepping stones, riverside paths and terraces)',
    'Turn them into riverside terraces: wooden decks with low tables, benches, red parasols, bamboo fences, small gardens with stone lanterns and maples, a few stepping-stone paths.'),
+  ('k_station', 'Kyoto Station forecourt (a modern station, a bus terminal, plazas and a convenience-store plot)',
+   'Turn them into tidy city spaces: planted islands with trees, benches, bicycle parking, small paved courtyards, information-stand corners.'),
+  ('k_fushimi', 'the Fushimi Inari shrine mountain path in Kyoto (a forest hillside with a long tunnel of red torii gates, stairs and small shrines)',
+   'Turn them into shrine spaces: small stone courtyards with lanterns, moss and ferns, offering tables corners, stone foxes, benches.'),
   ('k_gion', 'Gion in Kyoto (old tea-house district with canals, willows and stone paving)',
    'Turn them into moss gardens: stone lanterns, small ponds with a stepping stone, bamboo clumps, raked-gravel corners, maple trees, a small wooden bench.'),
  ],
  'Osaka': [
+  ('o_nakanoshima', 'Nakanoshima in Osaka (a riverside park island with a rose garden, paths and a wide river)',
+   'Turn them into park spaces: lawns with trees and benches, flower beds, a small pavilion terrace, stone paths.'),
   ('o_umeda', 'Umeda in Osaka (a big station plaza with office blocks and a fountain)',
    'Turn them into pocket plazas and green spaces: lawns with a few trees, benches around a small fountain, cafe terraces with round tables (no text), bicycle parking, planter beds, a small playground corner.'),
   ('o_dotonbori', 'Dotonbori in Osaka (a canal street with food-shop plots along the water)',
@@ -60,6 +73,16 @@ MAPS = {
    'Turn them into lively retro courtyards: small plazas with benches, game-board tables, lantern posts, planters, stacked crates, a little garden pond.'),
   ('o_castle', 'Osaka Castle park (a castle on a stone base inside a moat, with garden paths)',
    'Turn them into park spaces: lawns with cherry and maple groves, picnic spots, stone paths, a rose garden, a stone lantern garden, low hedges.'),
+ ],
+ 'Doerfer': [
+  ('valley', 'the Hinomori valley (a hillside village with a terraced vineyard, vegetable beds, rice paddies, a hot spring, waterfalls, stairs and a stone plaza)',
+   'Turn them into farm-village spaces: tidy farmyards with fences, stacked firewood, a well, small vegetable beds, drying racks, flower borders.'),
+  ('harbor', 'the Shiomi harbour village (a cliffside fishing town with terraces, stairs, a pier, a beach and a lighthouse)',
+   'Turn them into harbour-village spaces: fish-drying racks, net piles, wooden crates and barrels, small gardens with low fences, stone steps, bollards.'),
+  ('mountain', 'the Yukimi mountain village (snowy village with a stone bridge, a frozen pond, terraced fields and thatched houses)',
+   'Turn them into village spaces: snow-covered yards with firewood stacks, low wooden fences, small snow shrines, kamakura snow huts, straw-covered garden beds.'),
+  ('forest', 'the Midori forest (a forest clearing with a winding dirt path, a cliff with a stair, tall-grass patches and a pond)',
+   'There are few bare plots here; instead clean the edges: make the path wider, the cliff edge clean with a visible rock face, and add low log fences or stone borders where the path meets the tall grass.'),
  ],
  'Tokyo': [
   ('t_station', 'Tokyo Station and the Marunouchi district (a grand station plaza, ginkgo avenue, office blocks, moat)',
@@ -74,7 +97,28 @@ MAPS = {
    'Turn them into riverside park spaces: lawns with cherry trees, benches, a playground (slide, swing, sandbox), paved gathering squares, flower beds, a small garden.'),
  ],
 }
-STYLE = {'Kyoto': 'map_gion.png', 'Osaka': 'map_nakanoshima.png', 'Tokyo': 'map_sumida.png'}
+STYLE = {'Kyoto': 'map_gion.png', 'Osaka': 'map_nakanoshima.png', 'Tokyo': 'map_sumida.png', 'Doerfer': 'map_town.png'}
+
+
+def make_mask(mid, im):
+    T = tiles[mid]['tiles']
+    walk = np.array([[c not in BLOCK for c in row] for row in T])
+    full3 = ndimage.binary_erosion(walk, structure=np.ones((3, 3)))
+    wide = ndimage.binary_dilation(full3, structure=np.ones((3, 3))) & walk
+    narrow = walk & ~wide
+    ov = im.copy().convert('RGBA')
+    layer = Image.new('RGBA', im.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    for y in range(walk.shape[0]):
+        for x in range(walk.shape[1]):
+            box = (x * 32, y * 32, x * 32 + 31, y * 32 + 31)
+            if not walk[y, x]:
+                d.rectangle(box, fill=(220, 0, 0, 105))
+            elif narrow[y, x]:
+                d.rectangle(box, fill=(255, 150, 0, 140))
+            else:
+                d.rectangle(box, fill=(0, 220, 80, 85))
+    return Image.alpha_composite(ov, layer).convert('RGB')
 
 
 def analyse(imgname, objs):
@@ -113,15 +157,16 @@ for city, items in MAPS.items():
     for n, (mid, place, fill) in enumerate(items, 1):
         v = data[mid]
         im, ov = analyse(v['image'], v['objects'])
-        name = f"{n}_{city}_{mid.split('_', 1)[1].capitalize()}"
+        name = f"{n}_{city}_{mid.split('_', 1)[-1].capitalize()}"
         d = os.path.join(stage, name)
         os.makedirs(d)
-        im.save(os.path.join(d, f"{v['image']}_aktuell.jpg"), quality=93)
+        im.save(os.path.join(d, f"{v['image']}_aktuell.jpg"), quality=92)
+        make_mask(mid, im).save(os.path.join(d, 'begehbar_gruen_blockiert_rot_eng_orange.jpg'), quality=90)
         ov.save(os.path.join(d, 'footprints_rot_leerflaechen_gelb.jpg'), quality=93)
-        Image.open(os.path.join(src, 'full', mid + '.png')).convert('RGB').save(os.path.join(d, 'ingame_aktuell.jpg'), quality=90)
-        Image.open(os.path.join(A, STYLE[city])).convert('RGB').save(os.path.join(d, 'style_' + STYLE[city].replace('.png', '.jpg')), quality=90)
+        Image.open(os.path.join(src, 'full', mid + '.png')).convert('RGB').resize((1100, 733)).save(os.path.join(d, 'ingame_aktuell.jpg'), quality=86)
+        Image.open(os.path.join(A, STYLE[city])).convert('RGB').save(os.path.join(d, 'style_' + STYLE[city].replace('.png', '.jpg')), quality=84)
         w, h = im.size
-        open(os.path.join(d, 'PROMPT.txt'), 'w').write(PROMPT.format(place=place, img=f"{v['image']}_aktuell.jpg", w=w, h=h, fill=fill, shot='ingame_aktuell.jpg'))
+        open(os.path.join(d, 'PROMPT.txt'), 'w').write(PROMPT.format(place=place, img=f"{v['image']}_aktuell.jpg", w=w, h=h, fill=fill, shot='ingame_aktuell.jpg', mask='begehbar_gruen_blockiert_rot_eng_orange.jpg'))
         open(os.path.join(d, 'ANLEITUNG.txt'), 'w').write(ANL.format(name=v['image'], w=w, h=h))
     zp = os.path.join(out, f'Kotodama_Staedte_{city}.zip')
     with zipfile.ZipFile(zp, 'w', zipfile.ZIP_DEFLATED) as z:
