@@ -638,6 +638,9 @@ function SettingsTab({ actions }: { actions: MenuActions }) {
       <label>
         Sound effects <input type="checkbox" checked={st.sfx} onChange={(e) => set('sfx', e.target.checked)} />
       </label>
+      <label>
+        Weather and season effects <input type="checkbox" checked={st.effects !== false} onChange={(e) => set('effects', e.target.checked)} />
+      </label>
       <p className="note">
         Audio uses your browser's Japanese text-to-speech ({ttsAvailable() ? (hasJapaneseVoice() ? 'Japanese voice found' : 'no Japanese voice found — install one in your OS for best results') : 'not supported'}). It is synthetic, not a native-speaker recording.
       </p>
