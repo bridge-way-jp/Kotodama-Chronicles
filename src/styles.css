@@ -928,3 +928,38 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
 @keyframes crane-drop { 0% { transform: translate(-50%, 0); } 45% { transform: translate(-30%, 150%); } 70% { transform: translate(-30%, 150%); } 100% { transform: translate(-50%, 0); } }
 @keyframes crane-fall { 0% { opacity: 1; transform: translate(-50%, -300%); } 100% { opacity: 1; transform: translate(-50%, 0); } }
 @media (max-height: 760px) { .crane-art { width: 150px; } }
+
+/* narrow phones: nothing wraps in the middle of a word */
+.menu-btn, .due-box, .tab { white-space: nowrap; }
+.tab { flex: 0 0 auto; }
+@media (max-width: 480px) {
+  .hud-top { gap: 4px; }
+  .hud-box { padding: 4px 6px; font-size: 12px; }
+  .hud-box .small { font-size: 11px; white-space: nowrap; }
+  .player-box { gap: 5px; }
+  .player-box > img { width: 30px; height: 30px; }
+  .hud-right { gap: 4px; }
+  .menu-btn img, .due-box img { width: 18px; height: 18px; }
+  .tab { min-width: 0; padding: 6px 10px; font-size: 13px; }
+  .tab img { width: 22px; height: 22px; }
+}
+@media (max-width: 720px) {
+  /* phones: the current goal sits in a slim line under the status row instead of being hidden */
+  .hud-top { flex-wrap: wrap; }
+  .quest-box { display: block; order: 3; flex: 1 0 100%; max-width: none; padding: 3px 8px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 12px; }
+  .quest-box > span[lang] { font-size: 12px; margin-right: 6px; }
+  .quest-box .small { display: inline; font-size: 11px; }
+  .quest-box .qkind { display: none; }
+}
+.quest-done > summary { cursor: pointer; font-family: var(--pixel); margin: 10px 0; padding: 6px 4px; }
+@media (max-width: 560px) { .crane-art { width: 104px; margin-bottom: 2px; } }
+.board-head, .board-row { grid-template-columns: 4.2em 5em minmax(0, 1fr) 3em; gap: 6px; }
+.board-row > span:last-child, .board-head > span:last-child { text-align: right; }
+@media (max-width: 480px) { .board-row small { display: block; margin-left: 0; } .board-row { padding: 8px 6px; } }
+@media (max-width: 480px) {
+  .board-head, .board-row { grid-template-columns: 3.6em 4em minmax(0, 1fr) 2.6em; gap: 4px; }
+  .board-row [lang='ja'] { white-space: nowrap; }
+  .board-led { padding: 6px 4px; }
+}
+.notebook > .row { flex-wrap: wrap; gap: 6px; }
+.notebook > .row .btn { white-space: nowrap; }

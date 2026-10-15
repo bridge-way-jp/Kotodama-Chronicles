@@ -4,7 +4,7 @@ import { installKeyboard } from './input';
 
 export function createGame(parent: HTMLElement): Phaser.Game {
   installKeyboard();
-  return new Phaser.Game({
+  const game = new Phaser.Game({
     type: Phaser.AUTO,
     parent,
     backgroundColor: '#1d2b3a',
@@ -15,4 +15,6 @@ export function createGame(parent: HTMLElement): Phaser.Game {
     banner: false,
     audio: { noAudio: true },
   });
+  (window as any).__kc && ((window as any).__kc.game = game);
+  return game;
 }

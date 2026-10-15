@@ -47,7 +47,7 @@ export function Board({ station, onPick, onClose }: { station: string; onPick: (
     const t = setInterval(() => setNow(new Date()), 15000);
     return () => clearInterval(t);
   }, []);
-  const rows = useMemo(() => st.dests.map((id) => D[id]).filter((d) => d.when(store.s)), [st]);
+  const rows = useMemo(() => st.dests.map((id) => D[id]).filter((d) => d.when(store.s)).sort((a, b) => a.mins - b.mins), [st]);
   return (
     <div className="menu-backdrop" onClick={onClose}>
       <div className="panel board" onClick={(e) => e.stopPropagation()}>
