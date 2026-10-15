@@ -46,8 +46,29 @@ Image 5 (style_*.jpg) is a finished map in the target style, for style only, not
 Output: ONE image, exactly {w} x {h} pixels, no border, no text, no UI.
 """
 ANL = """Alle Bilder dieses Ordners zusammen mit PROMPT.txt in EINE Nachricht hochladen.
-Ergebnis speichern als: {name}_neu.png (PNG, nicht JPG) ({w} x {h}).
+Ergebnis speichern als: {name}_plain.png (PNG, nicht JPG) ({w} x {h}).\nEs soll NUR flacher Boden sein: keine Bäume, Zäune, Mauern, Laternen, Bänke, Hecken, Häuser. Die kommen als einzelne Objekte aus den Objekt-Sets und werden vom Spiel daraufgesetzt.
 WICHTIG: Straßen, Wasser, Brücken, Treppen, Plätze und Wege müssen an derselben Stelle bleiben. Falls GPT etwas verschiebt, bitte nochmal mit dem Zusatz "Keep every road, river, bridge, stair, plaza and path pixel-exactly where it is in image 1" erzeugen lassen. Ich skaliere leichte Größenabweichungen und prüfe im Spiel, dass alles begehbar bleibt."""
+
+PROMPT = """Repaint the ground map of {place} for a top-down 16-bit pixel-art RPG, as a PLAIN GROUND LAYER only, in exactly the same painted pixel-art style, three-quarter view (Stardew Valley / Harvest Moon look).
+
+HOW THE GAME WORKS: the game draws every upright thing (trees, bushes, hedges, fences, walls, railings, lamp posts, benches, rocks, planters, bicycles, signs, bollards, vending machines, stairs rails, shop fronts, houses) as SEPARATE sprites on top of this ground, so the player can walk behind and in front of them. Therefore this image must contain NO upright objects at all, only flat ground and terrain.
+
+Image 1 ({img}) is the CURRENT map ({w} x {h} px). Keep the same image size and keep the TERRAIN LAYOUT: roads, crossings, paving areas, plazas, paths, rivers, canals, ponds, the sea, bridges (as flat bridge decks), stairs (as flat stair blocks), railway tracks, and cliff or embankment bases stay where they are.
+
+REMOVE from the ground and replace with plain ground that continues the surrounding surface (grass, soil, gravel, paving, forest floor, sand): every tree, bush, hedge, fence, wall, railing, lamp, bench, rock, flower bed with its stone rim, planter, bicycle, vending machine, sign, bollard, pole, barrel, crate, lantern, shrine, torii, and every building. Where the current map has a big tree crown or hedge or wall, paint just the ground below it (dark forest floor, grass, soil, or the base of a wall as a flat strip).
+
+KEEP as flat ground detail: grass texture with tiny flowers and pebbles, worn dirt, paving stone pattern, road markings, crossings, tactile paving lines, manhole covers, drain grates, puddles, fallen leaves, shadows are NOT painted (the game adds shadows). Water with ripples, sand, wet stone edges. Cliffs and sea rocks stay as terrain only where they are part of the shoreline or a flat terrace edge; paint them as low flat rock bands, not tall rock towers.
+
+PERSPECTIVE AND CLARITY: the ground must read very clearly: walkable ground (paving, path, grass, plaza, deck, stairs, bridge) versus areas that will be blocked by objects (water, dense planting areas, wall bases). Use the WALKABLE MASK (image 3, {mask}): GREEN tiles = walkable, keep them as open, clear ground. RED tiles = blocked: these become water, a flat cliff or wall base, a planting strip or forest floor (dark, with leaf litter) that the game will fill with trees, hedges, fences or walls. ORANGE tiles = corridors that are too narrow (< 3 tiles = 96 px): widen them to at least 3 tiles into the neighbouring red area (never into water or building plots), keeping every route connected.
+
+BUILDING PLOTS: the red boxes in image 2 ({boxes}) show where the game draws buildings. Paint plain neutral paving or gravel inside and directly around them (max 1 tile around), no big bare sand yards. The yellow boxes are empty plots without a building: paint them as normal open ground that fits the district ({fill_plain}).
+
+Keep the same time of day and colour harmony, no seasons. Soft light from the top left only on the painted ground texture, no cast shadows. No text, no people, no cars.
+
+Image 4 ({shot}) shows how the map looks in the game today. Image 5 (style_*.jpg) is a finished map in the target style, for style only.
+
+Output: ONE image, exactly {w} x {h} pixels, no border, no text, no UI.
+"""
 
 MAPS = {
  'Kyoto': [
@@ -166,7 +187,7 @@ for city, items in MAPS.items():
         Image.open(os.path.join(src, 'full', mid + '.png')).convert('RGB').resize((1100, 733)).save(os.path.join(d, 'ingame_aktuell.jpg'), quality=86)
         Image.open(os.path.join(A, STYLE[city])).convert('RGB').save(os.path.join(d, 'style_' + STYLE[city].replace('.png', '.jpg')), quality=84)
         w, h = im.size
-        open(os.path.join(d, 'PROMPT.txt'), 'w').write(PROMPT.format(place=place, img=f"{v['image']}_aktuell.jpg", w=w, h=h, fill=fill, shot='ingame_aktuell.jpg', mask='begehbar_gruen_blockiert_rot_eng_orange.jpg'))
+        open(os.path.join(d, 'PROMPT.txt'), 'w').write(PROMPT.format(place=place, img=f"{v['image']}_aktuell.jpg", w=w, h=h, fill=fill, fill_plain='lawn, gravel, plain paving or open soil, whatever suits the place', boxes='footprints_rot_leerflaechen_gelb.jpg', shot='ingame_aktuell.jpg', mask='begehbar_gruen_blockiert_rot_eng_orange.jpg'))
         open(os.path.join(d, 'ANLEITUNG.txt'), 'w').write(ANL.format(name=v['image'], w=w, h=h))
     zp = os.path.join(out, f'Kotodama_Staedte_{city}.zip')
     with zipfile.ZipFile(zp, 'w', zipfile.ZIP_DEFLATED) as z:
