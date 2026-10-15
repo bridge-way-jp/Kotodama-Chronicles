@@ -28,30 +28,17 @@ export function BusRide({ kind = 'bus', onDone }: { kind?: 'bus' | 'local' | 'sh
   if (kind !== 'bus')
     return (
       <div className={`ride ride-${phase} ride-k-${kind} ride-win`} aria-hidden>
-        <div className="tw-cabin">
-          <div className="tw-wall" />
-          <div className="tw-window">
-            <div className="tw-view">
-              <div className="tw-sky" />
-              <div className="tw-far" />
-              <div className="tw-mid" />
-              <div className="tw-wires" />
-              <div className="tw-near" />
-              <div className="tw-poles" />
-              <div className="tw-tunnel" />
-              <div className="tw-glare" />
-            </div>
-            <div className="tw-blind" />
+        <div className="tw-stage">
+          <div className="tw-view">
+            <div className="tw-far" />
+            <div className="tw-mid" />
+            <div className="tw-near" />
+            <div className="tw-tunnel" />
           </div>
-          <div className="tw-ledge">
-            <img className="px" src="assets/i_train_ticket.png" alt="" />
-            <span className="tw-cup" />
-          </div>
-          <img className="tw-hero px" src="assets/hero_up_0.png" alt="" />
-          <img className="tw-fox px" src="assets/k_fox_blue.png" alt="" />
-          <div className="tw-seat" />
-          <div className="tw-route"><i /></div>
+          <img className="tw-wagon" src={`assets/ride_wagon_${kind}.webp`} alt="" />
+          <img className="tw-seat" src={`assets/ride_seat_${kind === 'shinkansen' ? 'blue' : 'red'}.png`} alt="" />
         </div>
+        <div className="tw-route"><i /></div>
         <div className="ride-bar bottom">
           <span className="ride-ann">{ann}</span>
         </div>
