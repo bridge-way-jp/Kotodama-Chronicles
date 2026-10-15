@@ -229,6 +229,7 @@ export class WorldScene extends Phaser.Scene {
       this.spawnButterflies();
       this.spawnSteam();
       if (this.map.snow) this.spawnSnow();
+      else this.spawnWeather();
     }
     if (this.map.image && this.textures.exists(this.map.image)) {
       // pre-drawn room: the tile layer only provides collision
@@ -357,6 +358,61 @@ export class WorldScene extends Phaser.Scene {
     if (!this.textures.exists(key)) return;
     const py = y * TILE + TILE;
     this.add.image(x * TILE + TILE / 2, py, key).setOrigin(0.5, 1).setFlipX(flip).setDepth(py - 4);
+  }
+
+  /**
+   * Seasonal drift and rain over outdoor maps: petals in spring, leaves in autumn, snow in winter (by the real
+   * calendar), fireflies on summer evenings, and rain on every fourth game day. Switch off in Settings.
+   */
+  spawnWeather() {
+    if (store.s.settings.effects === false) return;
+    if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+    const month = new Date().getMonth() + 1;
+    const cam = this.cameras.main;
+    const rain = store.s.day % 4 === 0 && month !== 12 && month > 2;
+    const drift = (colors: number[], size: [number, number], delay: number, fall: [number, number], sway: number, round = false) =>
+      this.time.addEvent({
+        delay,
+        loop: true,
+        callback: () => {
+          const v = cam.worldView;
+          const c = colors[Phaser.Math.Between(0, colors.length - 1)];
+          const w = Phaser.Math.FloatBetween(size[0], size[1]);
+          const p = round
+            ? this.add.circle(v.x + Phaser.Math.Between(-40, v.width + 40), v.y - 8, w, c, 0.85)
+            : this.add.ellipse(v.x + Phaser.Math.Between(-40, v.width + 40), v.y - 8, w * 2, w * 1.3, c, 0.9);
+          p.setDepth(100002);
+          this.tweens.add({ targets: p, y: p.y + v.height + 20, x: p.x + Phaser.Math.Between(-sway, sway), angle: Phaser.Math.Between(-240, 240), duration: Phaser.Math.Between(fall[0], fall[1]), ease: 'Sine.easeInOut', onComplete: () => p.destroy() });
+        },
+      });
+    if (rain) {
+      this.time.addEvent({
+        delay: 30,
+        loop: true,
+        callback: () => {
+          const v = cam.worldView;
+          for (let i = 0; i < 2; i++) {
+            const d = this.add.rectangle(v.x + Phaser.Math.Between(-30, v.width + 60), v.y - 12, 1, Phaser.Math.Between(9, 15), 0xcfe6ff, 0.7).setDepth(100002).setAngle(12);
+            this.tweens.add({ targets: d, y: d.y + v.height + 30, x: d.x - 24, duration: Phaser.Math.Between(520, 760), ease: 'Linear', onComplete: () => d.destroy() });
+          }
+        },
+      });
+      return;
+    }
+    if (month >= 3 && month <= 5) drift([0xffd1dc, 0xffc0cb, 0xffe3ea], [2, 3.4], 220, [5500, 9000], 90);
+    else if (month >= 10 && month <= 11) drift([0xe8742c, 0xc9452a, 0xf2b13c], [2.4, 3.8], 240, [5000, 8500], 70);
+    else if (month === 12 || month <= 2) drift([0xffffff], [1, 2.2], 110, [5000, 9000], 50, true);
+    else if (store.s.timeOfDay === 'evening') {
+      this.time.addEvent({
+        delay: 700,
+        loop: true,
+        callback: () => {
+          const v = cam.worldView;
+          const f = this.add.circle(v.x + Phaser.Math.Between(20, v.width - 20), v.y + Phaser.Math.Between(v.height / 3, v.height - 20), 1.8, 0xf8ee7a, 0).setDepth(100002);
+          this.tweens.add({ targets: f, alpha: { from: 0, to: 0.95 }, y: f.y - Phaser.Math.Between(20, 50), x: f.x + Phaser.Math.Between(-25, 25), yoyo: true, duration: Phaser.Math.Between(1400, 2400), onComplete: () => f.destroy() });
+        },
+      });
+    }
   }
 
   /** gentle snowfall drifting across the camera view (map.snow) */

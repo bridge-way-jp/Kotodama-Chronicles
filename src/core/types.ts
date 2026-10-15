@@ -63,6 +63,8 @@ export interface Settings {
   ttsRate: number;
   sfx: boolean;
   musicVolume: number;
+  /** seasonal particles and rain on outdoor maps (default on) */
+  effects?: boolean;
 }
 
 export interface SkillStat {
