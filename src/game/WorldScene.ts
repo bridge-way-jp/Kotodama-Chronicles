@@ -69,6 +69,15 @@ export const ASSET_KEYS = [
   ...Object.values(ROOMS_GEN).flatMap((r) => [r.image, ...r.objects.flatMap((o) => (o.sprite ? [o.sprite] : []))]),
 ];
 
+/** images a map needs: its painted backdrop and the sprites of its objects */
+function mapKeys(m: MapDef | undefined): string[] {
+  if (!m) return [];
+  return [...(m.image ? [m.image] : []), ...m.objects.flatMap((o) => (o.sprite ? [o.sprite] : []))];
+}
+/** keys only some maps need (painted maps, buildings): loaded when the player gets there, not at start-up */
+const LAZY_KEYS = new Set(Object.values(MAPS).flatMap(mapKeys));
+const CORE_KEYS = ASSET_KEYS.filter((k) => !LAZY_KEYS.has(k));
+
 /** set when the player rides the bus to another map: the bus drives off once the new map is shown */
 let busLeavingOnEnter = false;
 
@@ -139,7 +148,29 @@ export class WorldScene extends Phaser.Scene {
   }
 
   preload() {
-    for (const k of ASSET_KEYS) this.load.image(k, `assets/${k}.png`);
+    const here = MAPS[store.s.map] ?? MAPS.town;
+    for (const k of new Set([...CORE_KEYS, ...mapKeys(here)])) if (!this.textures.exists(k)) this.load.image(k, `assets/${k}.png`);
+    if (this.load.list.size) this.showLoading();
+  }
+
+  /** a quiet progress bar while the first images arrive (the painted maps are large) */
+  private showLoading() {
+    const { width, height } = this.scale;
+    const bg = this.add.rectangle(0, 0, width, height, 0x14121c).setOrigin(0).setDepth(1e6);
+    const label = this.add.text(width / 2, height / 2 - 22, '言の葉  Loading…', { fontFamily: 'sans-serif', fontSize: '18px', color: '#f4e7c8' }).setOrigin(0.5).setDepth(1e6 + 1);
+    const frame = this.add.rectangle(width / 2, height / 2 + 6, 240, 10, 0x3b3550).setDepth(1e6 + 1);
+    const bar = this.add.rectangle(width / 2 - 120, height / 2 + 6, 1, 10, 0xe8a1b6).setOrigin(0, 0.5).setDepth(1e6 + 2);
+    this.load.on('progress', (v: number) => bar.active && bar.setSize(Math.max(1, 240 * v), 10));
+    this.load.once('complete', () => [bg, label, frame, bar].forEach((o) => o.destroy()));
+  }
+
+  /** while the player explores, quietly fetch the maps the exits lead to so crossing is instant */
+  private prefetchNeighbours() {
+    const keys = new Set<string>();
+    for (const w of this.map.warps) for (const k of mapKeys(MAPS[w.to.map])) if (!this.textures.exists(k)) keys.add(k);
+    if (!keys.size) return;
+    for (const k of keys) this.load.image(k, `assets/${k}.png`);
+    this.load.start();
   }
 
   create() {
@@ -196,6 +227,7 @@ export class WorldScene extends Phaser.Scene {
       this.scale.off('resize', this.fitCamera, this);
     });
     bus.emit('map-entered', { id: this.map.id, name: this.map.name, nameJa: this.map.nameJa });
+    this.time.delayedCall(1500, () => this.prefetchNeighbours());
   }
 
   fitCamera() {

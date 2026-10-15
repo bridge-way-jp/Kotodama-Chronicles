@@ -204,20 +204,10 @@ const NEXT_STEPS: { show: (s: typeof store.s) => boolean; ja: string; en: string
 function QuestsTab() {
   const s = store.s;
   const list = Object.values(s.quests).sort((a, b) => (a.status === b.status ? b.startedAt - a.startedAt : a.status === 'active' ? -1 : 1));
-  const next = NEXT_STEPS.find((n) => n.show(s));
-  if (!list.length) return <div className="tab-content"><p>No quests yet.</p></div>;
-  return (
-    <div className="tab-content">
-      {next && (
-        <div className="quest active">
-          <div className="quest-title"><b lang="ja">{next.ja}</b></div>
-          <div className="note">{next.en}</div>
-        </div>
-      )}
-      {list.map((q) => {
-        const def = QUESTS[q.id];
-        return (
-          <div key={q.id} className={`quest ${q.status}`}>
+  const renderQuest = (q: (typeof list)[number]) => {
+    const def = QUESTS[q.id];
+    return (
+      <div key={q.id} className={`quest ${q.status}`}>
             <div className="quest-title">
               <span className={`qkind ${def.kind}`}>{{ main: 'メイン', side: 'サブ', character: 'キャラ' }[def.kind]}</span>
               <b lang="ja">{def.title}</b> <small>{def.titleEn}</small>
@@ -235,8 +225,25 @@ function QuestsTab() {
             )}
             <div className="note">Language focus: <span lang="ja">{def.learning.map((k) => itemLabel(k)).join('・')}</span></div>
           </div>
-        );
-      })}
+    );
+  };
+  const next = NEXT_STEPS.find((n) => n.show(s));
+  if (!list.length) return <div className="tab-content"><p>No quests yet.</p></div>;
+  return (
+    <div className="tab-content">
+      {next && (
+        <div className="quest active">
+          <div className="quest-title"><b lang="ja">{next.ja}</b></div>
+          <div className="note">{next.en}</div>
+        </div>
+      )}
+      {list.filter((q) => q.status !== 'done').map(renderQuest)}
+      {list.some((q) => q.status === 'done') && (
+        <details className="quest-done">
+          <summary>完了 Completed ({list.filter((q) => q.status === 'done').length})</summary>
+          {list.filter((q) => q.status === 'done').map(renderQuest)}
+        </details>
+      )}
     </div>
   );
 }
