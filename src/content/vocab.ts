@@ -6,6 +6,7 @@ import { HARBOR_VOCAB } from './vocab_harbor';
 import { KYOTO_VOCAB } from './vocab_kyoto';
 import { OSAKA_VOCAB } from './vocab_osaka';
 import { TOKYO_VOCAB } from './vocab_tokyo';
+import { KANJIFILL_VOCAB } from './vocab_kanjifill';
 
 /**
  * Chapter 1 vocabulary. Levels are approximate and based on common N2 study
@@ -149,6 +150,7 @@ export const VOCAB: VocabEntry[] = [
   ...KYOTO_VOCAB,
   ...OSAKA_VOCAB,
   ...TOKYO_VOCAB,
+  ...KANJIFILL_VOCAB,
 ];
 
 /** near-synonyms (shared `syn:` tag) must never be offered as wrong answers for each other */

@@ -1,4 +1,5 @@
 import type { KanjiEntry } from '../core/types';
+import { KANJIFILL } from './vocab_kanjifill';
 
 /** Kanji are always taught through the words they appear in (see `words`). */
 export const KANJI: KanjiEntry[] = [
@@ -25,5 +26,7 @@ export const KANJI: KanjiEntry[] = [
   { id: 'jou', char: '常', on: ['ジョウ'], kun: ['つね'], meaning: 'usual, normal', words: ['jouren'], strokes: 11 },
   { id: 'sai', char: '再', on: ['サイ', 'サ'], kun: ['ふたた(び)'], meaning: 'again', words: ['saikai'], strokes: 6 },
 ];
+
+KANJI.push(...KANJIFILL);
 
 export const KANJI_BY_ID: Record<string, KanjiEntry> = Object.fromEntries(KANJI.map((k) => [k.id, k]));

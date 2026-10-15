@@ -55,7 +55,7 @@ export const TOKYO_SCRIPTS: Record<string, DialogueRule[]> = {
       when: { all: [{ questActive: 'mq26' }, { obj: 'mq26.arrive' }, { notObj: 'mq26.attendant' }] },
       steps: [
         say('attendant', 'いらっしゃいませ。……あ、きょろきょろしていますね。東京駅は、初めての方には迷路ですから。', 'Welcome. …Ah, you’re looking around. Tokyo Station is a maze for first-timers.'),
-        n('さっきのホームは、まるで{満員|まんいん|v:tk_manin}の{電車|でんしゃ}だった。{通勤|つうきん|v:tk_tsuukin}の人たちは、だれも{顔|かお}を上げない。', 'The platform just now was like a packed train. The commuters — nobody lifted their face.'),
+        n('さっきのホームも電車も、{満員|まんいん|v:tk_manin}だった。{通勤|つうきん|v:tk_tsuukin}の人たちは、だれも{顔|かお}を上げない。', 'The platform just now was like a packed train. The commuters — nobody lifted their face.'),
         { do: [{ note: 'rushhour' }] },
         say('attendant', 'この{駅|えき}には、一日に、何十万人もの人が来ます。でも、{落|お}とし{物|もの}や{忘|わす}れ{物|もの|v:tk_wasuremono}は、{毎日|まいにち}、{山|やま}のようにあるんです。', 'Hundreds of thousands of people come through this station every day. But lost and forgotten things pile up like a mountain every day.'),
         say('attendant', '{実|じつ}は、{忘|わす}れ{物|もの}センターに、ずっと{引|ひ}き{取|と}り{手|て}のない手紙が{一通|いっつう}あるんです。「あとから来る人へ」と書いてあって。……もしかして、あなたのことでしょうか。', 'Actually, in the lost-property office there is one letter that nobody has ever claimed. It says “To the one who comes after.” …Could it be for you?'),
@@ -82,7 +82,7 @@ export const TOKYO_SCRIPTS: Record<string, DialogueRule[]> = {
         { do: [{ note: 'kissaten' }] },
         say('yoshie', '手紙を{持|も}っているのね。……その{字|じ}、見覚えがあるわ。{私|わたし}は、{芳江|よしえ}。{四十年|よんじゅうねん}、この{店|みせ}をやっています。', 'You have a letter. …I know that handwriting. I am Yoshie. I have run this shop for forty years.'),
         say('yoshie', 'その{人|ひと}は、「Kさん」としか{名乗|なの}らなかったわ。あの{角|かど}の{席|せき}で、{赤|あか}い{手帳|てちょう}に{何|なに}か{書|か}いては、{消|け}して、また{書|か}いて。……{言葉|ことば}を{集|あつ}めているというより、{返|かえ}す{相手|あいて}を{探|さが}している{人|ひと}だった。', 'That person only ever gave the name “K”. In that corner seat they wrote something in a red notebook, erased it, wrote again. …Less someone collecting words than someone looking for whom to return them to.'),
-        say('yoshie', '{私|わたし}も、{店|みせ}を{開|あ}けてから{閉|し}めるまで、{客|きゃく}の{話|はなし}を、つい{聞|き}き{流|なが}して{しまいがち||g:gachi}で。……その{人|ひと}に、{言|い}われたのよ。「{聞|き}こえていることと、{聞|き}いていることは、{違|ちが}います」って。', 'Even I, from opening to closing, tend to let customers’ talk wash over me. …That person said to me: “Hearing and listening are not the same.”'),
+        say('yoshie', '{私|わたし}も、{店|みせ}を{開|あ}けてから{閉|し}めるまで、{客|きゃく}の{話|はなし}を、つい{聞|き}き{流|なが}し{がち||g:gachi}で。……その{人|ひと}に、{言|い}われたのよ。「{聞|き}こえていることと、{聞|き}いていることは、{違|ちが}います」って。', 'Even I, from opening to closing, tend to let customers’ talk wash over me. …That person said to me: “Hearing and listening are not the same.”'),
         {
           quiz: { q: '朝から晩まで忙しくて、お客さんの話を＿＿聞き流してしまった。', qEn: 'I am so busy from morning to night that I ended up letting the customers’ stories go past me ___.',
             options: ['つい', 'ぜひ', 'まさか', 'ちっとも'], answer: 0,
