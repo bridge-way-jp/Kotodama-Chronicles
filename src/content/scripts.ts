@@ -828,16 +828,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       when: { flag: 'tokyo_visited' },
       steps: [
         n('日野森駅。東京、大阪、京都、潮見町、雪見村へ、電車が出ている。', 'Hinomori Station. Trains run to Tokyo, Osaka, Kyoto, Shiomi and Yukimi Village.'),
-        {
-          choice: [
-            { text: '新幹線で東京へ', en: 'Take the Shinkansen to Tokyo', then: [{ do: [{ train: 'shinkansen' }, { warp: { map: 't_station', x: 20, y: 9 } }] }] },
-            { text: '電車で大阪へ', en: 'Take the train to Osaka', then: [{ do: [{ train: 'shinkansen' }, { warp: { map: 'o_umeda', x: 20, y: 25 } }] }] },
-            { text: '電車で京都へ', en: 'Take the train to Kyoto', then: [{ do: [{ train: 'shinkansen' }, { warp: { map: 'k_station', x: 20, y: 9 } }] }] },
-            { text: '電車で潮見町へ', en: 'Take the train to Shiomi', then: [{ do: [{ train: 'local' }, { warp: { map: 'harbor', x: 10, y: 2 } }] }] },
-            { text: '電車で雪見村へ', en: 'Take the train to Yukimi Village', then: [{ do: [{ train: 'local' }, { warp: { map: 'mountain', x: 9, y: 19 } }] }] },
-            { text: 'やめる', en: 'Stay in town' },
-          ],
-        },
+        { do: [{ open: 'board:hinomori' }] },
       ],
     },
     {
@@ -852,54 +843,28 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       when: { flag: 'osaka_visited' },
       steps: [
         n('日野森駅。京都、大阪、潮見町、雪見村へ、電車が出ている。', 'Hinomori Station. Trains run to Kyoto, Osaka, Shiomi and Yukimi Village.'),
-        {
-          choice: [
-            { text: '電車で大阪へ', en: 'Take the train to Osaka', then: [{ do: [{ train: 'shinkansen' }, { warp: { map: 'o_umeda', x: 20, y: 25 } }] }] },
-            { text: '電車で京都へ', en: 'Take the train to Kyoto', then: [{ do: [{ train: 'shinkansen' }, { warp: { map: 'k_station', x: 20, y: 9 } }] }] },
-            { text: '電車で潮見町へ', en: 'Take the train to Shiomi', then: [{ do: [{ train: 'local' }, { warp: { map: 'harbor', x: 10, y: 2 } }] }] },
-            { text: '電車で雪見村へ', en: 'Take the train to Yukimi Village', then: [{ do: [{ train: 'local' }, { warp: { map: 'mountain', x: 9, y: 19 } }] }] },
-            { text: 'やめる', en: 'Stay in town' },
-          ],
-        },
+        { do: [{ open: 'board:hinomori' }] },
       ],
     },
     {
       when: { flag: 'kyoto_visited' },
       steps: [
         n('日野森駅。京都、潮見町、雪見村へ、電車が出ている。谷へのバスは、駅前のバス停からだ。', 'Hinomori Station. Trains run to Kyoto, Shiomi and Yukimi Village. Buses to the valley leave from the bus stop in front.'),
-        {
-          choice: [
-            { text: '電車で京都へ', en: 'Take the train to Kyoto', then: [{ do: [{ train: 'shinkansen' }, { warp: { map: 'k_station', x: 20, y: 9 } }] }] },
-            { text: '電車で潮見町へ', en: 'Take the train to Shiomi', then: [{ do: [{ train: 'local' }, { warp: { map: 'harbor', x: 10, y: 2 } }] }] },
-            { text: '電車で雪見村へ', en: 'Take the train to Yukimi Village', then: [{ do: [{ train: 'local' }, { warp: { map: 'mountain', x: 9, y: 19 } }] }] },
-            { text: 'やめる', en: 'Stay in town' },
-          ],
-        },
+        { do: [{ open: 'board:hinomori' }] },
       ],
     },
     {
       when: { flag: 'shiomi_visited' },
       steps: [
         n('日野森駅。北の山の雪見村と、南の海の潮見町へ、電車が出ている。谷へのバスは、駅前のバス停からだ。', 'Hinomori Station. Trains run north to Yukimi Village and south to Shiomi by the sea. Buses to the valley leave from the bus stop in front of the station.'),
-        {
-          choice: [
-            { text: '電車で潮見町へ', en: 'Take the train to Shiomi', then: [{ do: [{ train: 'local' }, { warp: { map: 'harbor', x: 10, y: 2 } }] }] },
-            { text: '電車で雪見村へ', en: 'Take the train to Yukimi Village', then: [{ do: [{ train: 'local' }, { warp: { map: 'mountain', x: 9, y: 19 } }] }] },
-            { text: 'やめる', en: 'Stay in town' },
-          ],
-        },
+        { do: [{ open: 'board:hinomori' }] },
       ],
     },
     {
       when: { flag: 'yukimi_visited' },
       steps: [
         n('日野森駅。北の山の雪見村へ、電車が出ている。谷へのバスは、駅前のバス停からだ。', 'Hinomori Station. Trains run north to Yukimi Village. Buses to the valley leave from the bus stop in front of the station.'),
-        {
-          choice: [
-            { text: '電車で雪見村へ', en: 'Take the train to Yukimi Village', then: [{ do: [{ train: 'local' }, { warp: { map: 'mountain', x: 9, y: 19 } }] }] },
-            { text: 'やめる', en: 'Stay in town' },
-          ],
-        },
+        { do: [{ open: 'board:hinomori' }] },
       ],
     },
     { when: { flag: 'chapter1_done' }, steps: [n('日野森駅。今は電車が止まっている。谷へのバスは、駅前のバス停から出ている。', 'Hinomori Station. No trains are running right now. Buses to the valley leave from the bus stop in front of the station.')] },
@@ -1264,24 +1229,13 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       when: { flag: 'kyoto_visited' },
       steps: [
         n('潮見駅。単線の線路が、山の向こうの日野森までつながっている。乗り換えれば、京都にも行ける。', 'Shiomi Station. A single-track line runs over the hills to Hinomori. With a change you can reach Kyoto too.'),
-        {
-          choice: [
-            { text: '電車で京都へ', en: 'Take the train to Kyoto', then: [{ do: [{ train: 'shinkansen' }, { warp: { map: 'k_station', x: 20, y: 9 } }] }] },
-            { text: '電車で日野森へ帰る', en: 'Take the train back to Hinomori', then: [{ do: [{ train: 'local' }, { warp: { map: 'town', x: 27, y: 20 } }] }] },
-            { text: 'もう少しいる', en: 'Stay a little longer' },
-          ],
-        },
+        { do: [{ open: 'board:shiomi' }] },
       ],
     },
     {
       steps: [
         n('潮見駅。単線の線路が、山の向こうの日野森までつながっている。', 'Shiomi Station. A single-track line runs over the hills to Hinomori.'),
-        {
-          choice: [
-            { text: '電車で日野森へ帰る', en: 'Take the train back to Hinomori', then: [{ do: [{ train: 'local' }, { warp: { map: 'town', x: 27, y: 20 } }] }] },
-            { text: 'もう少しいる', en: 'Stay a little longer' },
-          ],
-        },
+        { do: [{ open: 'board:shiomi' }] },
       ],
     },
   ],
@@ -1357,12 +1311,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     {
       steps: [
         n('雪見駅。一両だけの電車が、日野森との間を行き来している。', 'Yukimi Station. A one-car train runs back and forth to Hinomori.'),
-        {
-          choice: [
-            { text: '日野森へ帰る', en: 'Ride back to Hinomori town', then: [{ do: [{ train: 'local' }, { warp: { map: 'town', x: 27, y: 20 } }] }] },
-            { text: 'もう少しいる', en: 'Stay a little longer' },
-          ],
-        },
+        { do: [{ open: 'board:yukimi' }] },
       ],
     },
   ],
@@ -2265,15 +2214,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
     {
       steps: [
         n('京都駅。新幹線のホームは上、地下鉄とバスは下だ。{乗り換え|のりかえ|v:norikae}の{案内|あんない|v:ky_annai}が、何か国語もで書いてある。', 'Kyoto Station. The Shinkansen platforms are upstairs, the subway and buses below. Transfer signs are written in several languages.'),
-        {
-          choice: [
-            { text: '伏見稲荷へ行く', en: 'Take the local train to Fushimi Inari', then: [{ do: [{ flag: 'fushimi_visited' }, { warp: { map: 'k_fushimi', x: 20, y: 26 } }] }] },
-            { text: '日野森へ帰る', en: 'Take the train back to Hinomori', then: [{ do: [{ train: 'shinkansen' }, { warp: { map: 'town', x: 27, y: 20 } }] }] },
-            { text: '大阪へ行く', en: 'Take the train to Osaka', then: [{ do: [{ train: 'shinkansen' }, { warp: { map: 'o_umeda', x: 20, y: 25 } }] }] },
-            { text: '潮見町へ行く', en: 'Take the train to Shiomi', then: [{ do: [{ train: 'local' }, { warp: { map: 'harbor', x: 10, y: 2 } }] }] },
-            { text: 'やめる', en: 'Stay in Kyoto' },
-          ],
-        },
+        { do: [{ open: 'board:kyoto' }] },
       ],
     },
   ],
@@ -2625,13 +2566,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   kushi_counter: [{ steps: [n('カウンターに、ソースの入れ物が埋め込んである。みんなで使う、一つのソースだ。', 'Sauce dishes are built into the counter. One shared sauce for everyone.')] }],
   kushi_tv: [{ steps: [n('古いテレビが、天気予報を流している。', 'An old TV plays the weather forecast.')] }],
   osaka_castle: [{ steps: [n('大阪城だ。石垣の上に、白い天守がそびえている。入口は、橋の向こうにあるらしい。', 'Osaka Castle. The white keep towers over the stone walls. The entrance seems to lie beyond the bridge.')] }],
-  umeda_station: [{ steps: [n('梅田駅。ガラスの大きな建物の中を、スーツの人たちが急ぎ足で通っていく。', 'Umeda Station. People in suits hurry through the big glass building.'), {
-    choice: [
-      { text: '日野森へ帰る', en: 'Take the train back to Hinomori', then: [{ do: [{ train: 'shinkansen' }, { warp: { map: 'town', x: 27, y: 20 } }] }] },
-      { text: '京都へ行く', en: 'Take the train to Kyoto', then: [{ do: [{ train: 'shinkansen' }, { warp: { map: 'k_station', x: 20, y: 9 } }] }] },
-      { text: 'やめる', en: 'Not now' },
-    ],
-  }] }],
+  umeda_station: [{ steps: [n('梅田駅。ガラスの大きな建物の中を、スーツの人たちが急ぎ足で通っていく。', 'Umeda Station. People in suits hurry through the big glass building.'), { do: [{ open: 'board:osaka' }] }] }],
   umeda_tower: [{ steps: [n('ガラスのオフィスビルだ。窓の中で、夜までたくさんの人が働いている。', 'A glass office tower. Behind the windows many people work until night.')] }],
   umeda_stall: [{ steps: [n('広場の屋台だ。昼休みになると、スーツの人の行列ができる。', 'A stall on the square. At lunch break a queue of suited people forms.')] }],
   nakano_hall: [{ steps: [n('赤れんがの古い建物だ。屋根が青緑色に光っている。', 'An old red-brick building with a blue-green roof.')] }],

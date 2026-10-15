@@ -39,7 +39,23 @@ def pieces(name, n):
     return res
 
 
+def platform():
+    """The platform strip (magenta removed, cut to its pixels) for the departure board."""
+    a = np.array(Image.open(os.path.join(S, 'hm_platform.webp')).convert('RGB')).astype(int)
+    bg = (a[..., 0] > 170) & (a[..., 2] > 170) & (a[..., 1] < 120)
+    pink = (a[..., 0] - a[..., 1] > 50) & (a[..., 2] - a[..., 1] > 50)
+    m = ~bg
+    for _ in range(2):
+        m &= ~((m & ~ndimage.binary_erosion(m)) & pink)
+    im = Image.fromarray(np.dstack([a.astype('uint8'), (m * 255).astype('uint8')]), 'RGBA')
+    im = im.crop(im.getbbox())
+    im = im.resize((1400, round(im.height * 1400 / im.width)), Image.NEAREST)
+    im.save(os.path.join(OUT, 'platform.png'))
+    print('platform', im.size)
+
+
 def main():
+    platform()
     head, mid, tail = pieces('hm_train_shinkansen.webp', 3)
     for im, n in ((head, 'train_head'), (mid, 'train_mid'), (tail, 'train_tail')):
         im.save(os.path.join(OUT, n + '.png'))
