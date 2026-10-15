@@ -2,6 +2,7 @@ import type { ListeningItem, Question, ReadingText } from '../core/types';
 import { SOCIETY_LISTENING, SOCIETY_READING } from './practice_society';
 import { TOKYO_LISTENING, TOKYO_READING } from './practice_tokyo';
 import { MORE_LISTENING, MORE_READING } from './practice_more';
+import { MORE2_LISTENING, MORE2_READING } from './practice_more2';
 
 /**
  * Original practice items written in the style of JLPT N2 question types.
@@ -255,3 +256,5 @@ PRACTICE_READING.push(...TOKYO_READING);
 PRACTICE_LISTENING.push(...TOKYO_LISTENING);
 PRACTICE_READING.push(...MORE_READING);
 PRACTICE_LISTENING.push(...MORE_LISTENING);
+PRACTICE_READING.push(...MORE2_READING);
+PRACTICE_LISTENING.push(...MORE2_LISTENING);

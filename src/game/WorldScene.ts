@@ -69,10 +69,23 @@ export const ASSET_KEYS = [
   ...Object.values(ROOMS_GEN).flatMap((r) => [r.image, ...r.objects.flatMap((o) => (o.sprite ? [o.sprite] : []))]),
 ];
 
+/** painted seasonal versions of an outdoor map (public/assets/<map image>_<season>.png); spring is the base image.
+ * Add a map here only once its files exist. */
+const SEASONAL: Record<string, string[]> = {};
+function currentSeason(): 'spring' | 'summer' | 'autumn' | 'winter' {
+  const m = new Date().getMonth() + 1;
+  return m >= 3 && m <= 5 ? 'spring' : m >= 6 && m <= 8 ? 'summer' : m >= 9 && m <= 11 ? 'autumn' : 'winter';
+}
+/** the image to draw for a map today: the seasonal variant if there is one */
+function seasonalImage(image: string | undefined): string | undefined {
+  const season = currentSeason();
+  return image && SEASONAL[image]?.includes(season) ? `${image}_${season}` : image;
+}
+
 /** images a map needs: its painted backdrop and the sprites of its objects */
 function mapKeys(m: MapDef | undefined): string[] {
   if (!m) return [];
-  return [...(m.image ? [m.image] : []), ...m.objects.flatMap((o) => (o.sprite ? [o.sprite] : []))];
+  return [...(m.image ? [...new Set([seasonalImage(m.image)!, m.image])] : []), ...m.objects.flatMap((o) => (o.sprite ? [o.sprite] : []))];
 }
 /** keys only some maps need (painted maps, buildings): loaded when the player gets there, not at start-up */
 const LAZY_KEYS = new Set(Object.values(MAPS).flatMap(mapKeys));
@@ -264,10 +277,11 @@ export class WorldScene extends Phaser.Scene {
       if (this.map.snow) this.spawnSnow();
       else this.spawnWeather();
     }
-    if (this.map.image && this.textures.exists(this.map.image)) {
+    const backdrop = [seasonalImage(this.map.image), this.map.image].find((k) => k && this.textures.exists(k));
+    if (backdrop) {
       // pre-drawn room: the tile layer only provides collision
       this.layer.setVisible(false);
-      this.add.image(0, 0, this.map.image).setOrigin(0).setDepth(-9);
+      this.add.image(0, 0, backdrop).setOrigin(0).setDepth(-9);
     }
 
     for (const def of this.map.objects) {
