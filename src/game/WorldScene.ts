@@ -71,7 +71,7 @@ export const ASSET_KEYS = [
 
 /** painted seasonal versions of an outdoor map (public/assets/<map image>_<season>.png); spring is the base image.
  * Add a map here only once its files exist. */
-const SEASONAL: Record<string, string[]> = {};
+const SEASONAL: Record<string, string[]> = { map_town: ['summer', 'autumn', 'winter'] };
 function currentSeason(): 'spring' | 'summer' | 'autumn' | 'winter' {
   const m = new Date().getMonth() + 1;
   return m >= 3 && m <= 5 ? 'spring' : m >= 6 && m <= 8 ? 'summer' : m >= 9 && m <= 11 ? 'autumn' : 'winter';
