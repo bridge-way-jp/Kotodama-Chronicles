@@ -35,6 +35,8 @@ export interface MapObject {
   when?: Cond;
   /** text painted onto the sprite, position relative to the image (0..1) */
   label?: { text: string; x: number; y: number };
+  /** show the quest alert mark above this object while its script would advance a quest */
+  hint?: boolean;
   /** extra vertical offset for the image in px */
   dy?: number;
   /** draw at an absolute world position (bottom-centre, px) instead of the footprint */
@@ -156,7 +158,7 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'lamp3', sprite: 'p_lamp', x: 24, y: 19, w: 1, h: 1, script: 'lamp' },
       { id: 'station_banner', sprite: 'p_banner', x: 8, y: 20, w: 1, h: 1 },
       { id: 'old_board', sprite: 'p_board2', x: 13, y: 20, w: 2, h: 1 },
-      { id: 'timetable', sprite: 'p_sign_nihon', x: 24, y: 20, w: 1, h: 1 },
+      { id: 'timetable', sprite: 'p_departure', x: 22, y: 20, w: 2, h: 1, script: 'station_building', hint: true },
       { id: 'forest_sign', sprite: 'p_sign_small', x: 22, y: 2, w: 1, h: 1 },
       { id: 'lab', sprite: 'bx_lab', x: 36, y: 5, w: 7, h: 5, script: 'lab_door' },
       { id: 'lab_sign', sprite: 'p_board', x: 36, y: 10, w: 1, h: 1 },
@@ -184,7 +186,7 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'nosign', sprite: 'tp_sign', x: 35, y: 14, w: 1, h: 1 },
       { id: 'trash', sprite: 'tp_trash', x: 14, y: 21, w: 1, h: 1 },
       { id: 'barrel', sprite: 'tp_barrel', x: 18, y: 16, w: 1, h: 1 },
-      { id: 'station_building', sprite: 'bx_station', x: 25, y: 18, w: 5, h: 2 },
+      { id: 'station_building', sprite: 'bx_station', x: 25, y: 18, w: 5, h: 2, hint: true },
       // buses to the valley stop by the road in front of the station
       { id: 'town_busstop', sprite: 'bx_busstop', x: 17, y: 19, w: 3, h: 1, interactAt: [{ x: 17, y: 20 }, { x: 18, y: 20 }, { x: 19, y: 20 }, { x: 20, y: 19 }, { x: 16, y: 19 }] },
     ],
@@ -606,7 +608,8 @@ export const MAPS: Record<string, MapDef> = {
   },
   station: {
     id: 'station', name: 'Station waiting room', nameJa: '日野森駅 待合室', tiles: ROOMS_GEN.station.tiles, interior: true, image: ROOMS_GEN.station.image,
-    objects: ROOMS_GEN.station.objects,
+    // the ticket gates open the departure board (the same as the sign on the platform)
+    objects: ROOMS_GEN.station.objects.map((o) => (o.id === 'station_gate' ? { ...o, script: 'station_building', hint: true } : o)),
     npcs: [],
     warps: [
       { x: 10, y: 14, to: { map: 'town', x: 27, y: 20, facing: 'down' } },

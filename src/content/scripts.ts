@@ -605,6 +605,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   ],
   station_banner: [{ steps: [n('のぼりに「夢を追え」と書いてある。', 'The banner says “Chase your dreams”.')] }],
   timetable: [{ steps: [n('時刻表だ。「みどり線　上り・下り」……文字が一部、かすれて読めない。', 'A timetable. “Midori Line — inbound / outbound”… part of the text has faded.')] }],
+
   old_board: [
     {
       when: { all: [{ questActive: 'mq4' }, { obj: 'mq4.staff' }, { notObj: 'mq4.board' }] },

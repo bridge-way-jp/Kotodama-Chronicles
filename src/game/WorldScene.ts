@@ -144,7 +144,7 @@ export class WorldScene extends Phaser.Scene {
   moving = false;
   npcs: NpcSprite[] = [];
   wanderers: Wanderer[] = [];
-  objects: { def: MapObject; img?: Phaser.GameObjects.Image }[] = [];
+  objects: { def: MapObject; img?: Phaser.GameObjects.Image; marker?: Phaser.GameObjects.Image }[] = [];
   tileIndex: Record<string, number> = {};
   tilesetCols = 0;
   animatedCols: number[] = [];
@@ -285,7 +285,7 @@ export class WorldScene extends Phaser.Scene {
     }
 
     for (const def of this.map.objects) {
-      const entry: { def: MapObject; img?: Phaser.GameObjects.Image } = { def };
+      const entry: { def: MapObject; img?: Phaser.GameObjects.Image; marker?: Phaser.GameObjects.Image } = { def };
       if (def.sprite && this.textures.exists(def.sprite)) {
         const w = def.w ?? 1;
         const h = def.h ?? 1;
@@ -294,6 +294,10 @@ export class WorldScene extends Phaser.Scene {
         const img = this.add.image(cx, by, def.sprite).setOrigin(0.5, 1);
         img.setDepth(by - 1);
         entry.img = img;
+        if (def.hint && this.textures.exists('em_alert')) {
+          entry.marker = this.add.image(cx, by - Math.min(img.height, 3 * TILE) - 2, 'em_alert').setOrigin(0.5, 1).setDepth(100001).setVisible(false);
+          this.tweens.add({ targets: entry.marker, y: entry.marker.y - 4, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+        }
         if (def.label) {
           this.add
             .text(cx - img.width / 2 + def.label.x * img.width, by - img.height + def.label.y * img.height, def.label.text, {
@@ -633,7 +637,14 @@ export class WorldScene extends Phaser.Scene {
         n.marker.setVisible(!!steps && advancesQuest(steps));
       }
     }
-    for (const o of this.objects) o.img?.setVisible(check(s, o.def.when));
+    for (const o of this.objects) {
+      o.img?.setVisible(check(s, o.def.when));
+      if (o.marker) {
+        const rules = SCRIPTS[o.def.script ?? o.def.id];
+        const steps = rules ? pickRule(s, rules) : null;
+        o.marker.setVisible(!!steps && advancesQuest(steps));
+      }
+    }
     if (this.tint) this.tint.setVisible(s.timeOfDay === 'evening');
     else if (s.timeOfDay === 'evening' && !this.map.interior) {
       const rows = this.map.tiles;
