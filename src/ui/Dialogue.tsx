@@ -182,7 +182,7 @@ function CgScene({ step, onNext }: { step: Extract<Step, { cg: string }>; onNext
       {step.say && (
         <div className="cg-caption" onClick={(e) => e.stopPropagation()}>
           <div className="dlg-text" onClick={() => onNext()}>
-            <Jp text={step.say} />
+            <Jp text={step.say} auto />
           </div>
           {showEn && step.en && <div className="dlg-en">{withName(step.en)}</div>}
           <div className="dlg-tools">
@@ -276,7 +276,7 @@ function SayBox({ step, onNext }: { step: Extract<Step, { say: string }>; onNext
             </div>
           )}
           <div className="dlg-text">
-            <Jp text={step.say} />
+            <Jp text={step.say} auto />
           </div>
           {showEn && step.en && <div className="dlg-en">{withName(step.en)}</div>}
           <div className="dlg-tools" onClick={(e) => e.stopPropagation()}>

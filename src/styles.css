@@ -899,3 +899,7 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
 .ride-k-bus .ride-mid { --w: 140vh; top: auto; bottom: 28%; height: 35vh; background: url("../public/assets/hw_mid.webp") repeat-x 0 100% / auto 100%; animation: ride-scroll 14s linear infinite; }
 .ride-k-bus .ride-road { --w: 184vh; top: auto; bottom: 9%; height: 46vh; border: 0; background: url("../public/assets/hw_road.webp") repeat-x 0 100% / auto 100%; animation: ride-scroll 2.4s linear infinite; }
 .ride-k-bus .ride-gantry { top: 22%; }
+
+/* words found by the built-in dictionary lookup (not linked by hand): a lighter hint than .jp-word.linked */
+.jp-auto { border-bottom: 1px dotted rgba(181, 100, 60, .55); cursor: help; }
+.jp-auto:hover { background: #fbe6c4; }
