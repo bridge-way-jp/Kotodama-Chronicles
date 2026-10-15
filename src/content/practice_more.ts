@@ -38,7 +38,7 @@ export const MORE_READING: ReadingText[] = [
     en:
       'When studying a foreign language, many people are afraid of mistakes and cannot speak easily. They think they will speak once their grammar is perfect. In reality, though, you do not get good unless you speak. An exchange student I know made mistakes almost every day for the first six months and was laughed at. But she did not mind at all. “If I make a mistake, someone corrects me, so I’m grateful,” she says. A year later her Japanese was far more natural than that of a friend who had only studied. Language is not knowledge for exams but a tool that connects people. Rather than aiming for perfection, first try using it. Mistakes are nothing other than the entrance to improvement.',
     vocab: [],
-    grammar: [],
+    grammar: ['nihokanaranai'],
     questions: [
       { q: '「彼女はまったく気にしなかった」とあるが、それはなぜか。', qEn: 'Why did she not mind at all?', options: ['間違えると直してもらえるので、ありがたいと考えていたから', '日本語が上手で、間違いがほとんどなかったから', '友達が一緒に笑ってくれたから', '間違いを覚えていなかったから'], answer: 0, why: 'She said that being corrected after a mistake is something to be grateful for.', type: 'inference' },
       { q: '一年後、留学生と、勉強ばかりしていた友人は、どうなっていたか。', qEn: 'After a year, how did the exchange student compare to the friend who only studied?', options: ['留学生のほうが、ずっと自然に話せるようになっていた', '二人とも同じくらい上手になっていた', '友人のほうが、ずっと自然に話せていた', '留学生は、話すのをやめてしまった'], answer: 0, why: 'Her Japanese had become far more natural than that of the friend who only studied.', type: 'detail' },
@@ -75,7 +75,7 @@ export const MORE_READING: ReadingText[] = [
       '【B】在宅勤務は便利だが、問題もある。同僚と顔を合わせないと、ちょっとした相談ができず、仕事の悩みを一人でかかえてしまいやすい。特に、入社して間もない人は、周りの仕事のやり方を見て学ぶ機会が少なくなる。便利さだけで判断せず、会社に集まる日と、家で働く日を組み合わせるのがよいと思う。',
     en:
       '[A] Working from home has many advantages. You can use the commuting time to be with family or study. A quiet environment also lets you concentrate and get work done alone. People who can produce results without going to the office have no need to go in. [B] Working from home is convenient but has problems. If you do not see colleagues, you cannot have a quick consultation and tend to carry worries alone. Especially people who have just joined the company have fewer chances to learn by watching how others work. Without judging by convenience alone, I think it is good to combine days gathering at the office with days working at home.',
-    vocab: [],
+    vocab: ['tk_tsuukin'],
     grammar: [],
     questions: [
       { q: 'Aの筆者が、在宅勤務のよい点として挙げているのは何か。', qEn: 'What does writer A give as a good point of working from home?', options: ['集中しやすく、通勤の時間を自由に使えること', '同僚とすぐに相談できること', '新しい仕事のやり方を学べること', '会社の費用が安くなること'], answer: 0, why: 'A mentions free time from commuting and a quiet environment that helps concentration.', type: 'detail' },
@@ -96,7 +96,7 @@ export const MORE_READING: ReadingText[] = [
     en:
       'Dear Mr. Yamada, autumn is deepening; are you well? The other day, thank you very much for coming to my wedding despite being busy. Hearing your speech, I remembered you telling me in high school to “take on challenges without fearing failure”. It is because of those words that I could choose my present job. Next month I will be entrusted with my first project at my new workplace. I am anxious too, but keeping your teaching in mind I intend to do my best. Please take care of yourself. I will visit again soon to greet you.',
     vocab: [],
-    grammar: [],
+    grammar: ['karakoso'],
     questions: [
       { q: '「あの言葉」とは、どんな言葉か。', qEn: 'What are “those words”?', options: ['失敗を恐れずに挑戦しなさい', '結婚してから仕事を探しなさい', '先生のように教師になりなさい', '体に気をつけて頑張りなさい'], answer: 0, why: 'It refers to the teacher’s high-school advice: take on challenges without fearing failure.', type: 'expression' },
       { q: '手紙を書いた人は、来月、何をする予定か。', qEn: 'What is the writer going to do next month?', options: ['新しい職場で初めてのプロジェクトを担当する', '山田先生の家を訪ねる', '新しい職場を探し始める', '結婚式の準備をする'], answer: 0, why: 'She will be entrusted with her first project at the new workplace next month.', type: 'detail' },
@@ -114,7 +114,7 @@ export const MORE_READING: ReadingText[] = [
     en:
       'Nowadays, with just a smartphone you can finish shopping, directions and payment. Certainly there has never been such a convenient age. But as things became convenient, may we not have lost something too? Before, if you got lost in an unfamiliar town you had no choice but to call out to someone nearby. From that, unexpected conversations arose and became memories of the trip. Now, if you walk as the map instructs, you arrive at your destination without talking to anyone. Of course I do not intend to deny convenience. But rather than relying completely on convenient tools, I would like to keep the leeway to deliberately take a detour sometimes.',
     vocab: [],
-    grammar: [],
+    grammar: ['nitsurete'],
     questions: [
       { q: '筆者は、便利になったことで、何を失ったかもしれないと考えているか。', qEn: 'What does the author think we may have lost through convenience?', options: ['見知らぬ人との思いがけない会話', '買い物をする楽しみ', '地図を読む力', '旅行に行く時間'], answer: 0, why: 'Getting lost used to lead to unexpected conversations that became travel memories.', type: 'detail' },
       { q: '「あえて遠回りをしてみる」とは、どういうことか。', qEn: 'What does “deliberately take a detour” mean here?', options: ['便利な方法を選ばず、時間をかけてみること', '道に迷ったまま歩き続けること', '地図を見ないで目的地へ行くこと', '遠い場所へ旅行すること'], answer: 0, why: 'It means not always relying on the convenient way, but sometimes spending extra time on purpose.', type: 'expression' },
