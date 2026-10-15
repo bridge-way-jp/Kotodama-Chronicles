@@ -16,6 +16,7 @@ import type { BattleSetup } from '../core/battle';
 import { ScriptRunner } from './Dialogue';
 import { Battle } from './Battle';
 import { Menu, type MenuTab } from './Menu';
+import { Tournament } from './Tournament';
 import { JobSession } from './Job';
 import { Garden } from './Garden';
 import { ReviewSession, ExamRunner } from './Study';
@@ -30,6 +31,7 @@ type Overlay =
   | { id: number; kind: 'review' }
   | { id: number; kind: 'job'; job: string }
   | { id: number; kind: 'garden' }
+  | { id: number; kind: 'tournament' }
   | { id: number; kind: 'board'; station: string }
   | { id: number; kind: 'exam'; mode: 'practice' | 'mock' | 'diagnostic'; section?: Section };
 
@@ -242,6 +244,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
             onClose={() => remove(o.id)}
             actions={{
               openReview: () => push({ kind: 'review' }),
+              openTournament: () => push({ kind: 'tournament' }),
               openExam: (mode, section) => push({ kind: 'exam', mode, section }),
               toTitle: onExit,
             }}
@@ -257,6 +260,12 @@ export function GameView({ onExit }: { onExit: () => void }) {
               push({ kind: 'script', steps: [{ do: [{ train: d.kind }, { warp: { map: d.map, x: d.x, y: d.y } }] }] });
             }}
           />
+        );
+      case 'tournament':
+        return (
+          <div className="overlay-panel">
+            <Tournament onClose={() => remove(o.id)} />
+          </div>
         );
       case 'garden':
         return (

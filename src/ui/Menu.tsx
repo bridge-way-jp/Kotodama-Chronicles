@@ -41,6 +41,7 @@ const TABS: { id: MenuTab; ja: string; en: string; icon: string }[] = [
 export interface MenuActions {
   openReview: () => void;
   openExam: (mode: 'practice' | 'mock' | 'diagnostic', section?: Section) => void;
+  openTournament: () => void;
   toTitle: () => void;
 }
 
@@ -192,6 +193,7 @@ function memoryText(m: string) {
 // ------------------------------------------------------------------ quests
 /** where to go next when the story is waiting for the player: first match wins */
 const NEXT_STEPS: { show: (s: typeof store.s) => boolean; ja: string; en: string }[] = [
+  { show: (s) => !!s.flags.chapter7_done, ja: '次は：言葉の大会に挑戦！', en: 'The story is complete. Try the Word Tournament (Menu → JLPT N2), work part-time jobs, or take the exam simulation.' },
   { show: (s) => !!s.flags.chapter6_done && !s.quests.mq26, ja: '次は：森さん → 日野森駅から東京へ', en: 'Next: talk to Ms. Mori (in front of the apartment), then take the Shinkansen to Tokyo from Hinomori station.' },
   { show: (s) => !!s.flags.chapter5_done && !s.quests.mq22, ja: '次は：森さん → 大阪へ', en: 'Next: talk to Ms. Mori (in front of the apartment), then take the train to Osaka from Hinomori station.' },
   { show: (s) => !!s.flags.chapter4_done && !s.quests.mq18, ja: '次は：森さん → 京都へ', en: 'Next: talk to Ms. Mori (in front of the apartment), then take the train to Kyoto from Hinomori station.' },
@@ -521,6 +523,7 @@ function JlptTab({ actions }: { actions: MenuActions }) {
         <button className="btn primary" onClick={actions.openReview}>
           復習 Review ({q.due.length} due · {Math.min(q.newAllowed, q.newAvailable.length)} new)
         </button>
+        {s.flags.chapter7_done && <button className="btn" onClick={() => actions.openTournament()}>言葉の大会 Word Tournament{s.flags.tournament_best ? ` (best ${s.flags.tournament_best})` : ''}</button>}
         <button className="btn" onClick={() => actions.openExam('diagnostic')}>実力診断 Diagnostic{s.flags.diagnostic_done ? ' (retake)' : ''}</button>
         <button className="btn" onClick={() => actions.openExam('mock')}>模擬試験 Mock exam (timed)</button>
       </div>
