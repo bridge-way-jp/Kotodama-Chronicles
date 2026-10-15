@@ -46,6 +46,7 @@ export function Tournament({ onClose }: { onClose: () => void }) {
       <div className="panel study job">
         <div className="panel-title">言葉の大会 <span className="note">Word Tournament</span></div>
         <p className="big-score">{pts} pts</p>
+        <img className="px" src={`assets/rank_${RANKS.indexOf(rank)}.png`} alt="" style={{ height: 72 }} onError={(e) => (e.currentTarget.style.display = 'none')} />
         <p lang="ja"><b>{rank.ja}</b> <span className="note">{rank.en}</span> · {right} / {items.length}</p>
         {pts > best && <p>🏆 New best!</p>}
         <p>{gain ? `+¥${gain}` : 'Prize money was already paid today – come back tomorrow.'}</p>
