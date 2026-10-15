@@ -28,6 +28,8 @@ export function JobSession({ id, onClose }: { id: string; onClose: () => void })
   const [items] = useState(() => buildRound(store.s, id));
   const [i, setI] = useState(-1); // -1 = intro
   const [ok, setOk] = useState(0);
+  // crane-game skin: the claw drops after every answer and a capsule falls into the chute when it was right
+  const [claw, setClaw] = useState<{ n: number; good: boolean } | null>(null);
   const portrait = npc.portrait?.startsWith('portrait_') ? `${npc.portrait}_${i >= items.length ? 'happy' : 'neutral'}` : npc.portrait;
 
   const head = (
@@ -92,11 +94,20 @@ export function JobSession({ id, onClose }: { id: string; onClose: () => void })
   }
 
   const ex = items[i];
+  const crane = id === 'crane';
+  const capsule = ['pink', 'blue', 'green', 'yellow', 'orange', 'purple'][(claw?.n ?? 0) % 6];
   return (
-    <div className="panel study job">
+    <div className={`panel study job${crane ? ' crane' : ''}`}>
       {head}
       <div className="progress"><div style={{ width: `${(i / items.length) * 100}%` }} /></div>
       <p className="note job-task" lang="ja">{job.task} <span>· {job.taskEn}</span></p>
+      {crane && (
+        <div className="crane-art" aria-hidden>
+          <img className="crane-machine px" src="assets/crane_machine.png" alt="" />
+          <img key={'c' + (claw?.n ?? 0)} className={`crane-claw px${claw ? ' drop' : ''}`} src={`assets/crane_claw_${claw ? 'closed' : 'open'}.png`} alt="" />
+          {claw?.good && <img key={'p' + claw.n} className="crane-prize px" src={`assets/capsule_${capsule}.png`} alt="" />}
+        </div>
+      )}
       <ExerciseView
         key={ex.id}
         ex={ex}
@@ -113,6 +124,7 @@ export function JobSession({ id, onClose }: { id: string; onClose: () => void })
             grantXp(s, 10 + total * 3);
           }, 'learn');
           setOk(total);
+          setClaw({ n: (claw?.n ?? 0) + 1, good });
           setI(i + 1);
         }}
       />

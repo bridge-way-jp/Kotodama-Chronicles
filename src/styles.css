@@ -918,3 +918,13 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
 .board-row small { opacity: .7; margin-left: .3em; font-size: .75em; }
 .board-row .shinkansen { color: #7fd2ff; }
 .board-row .local { color: #9bf08a; }
+
+/* word crane game (job "crane") */
+.crane-art { position: relative; width: 210px; margin: 0 auto 6px; }
+.crane-machine { width: 100%; display: block; image-rendering: pixelated; }
+.crane-claw { position: absolute; top: 13%; left: 50%; width: 34%; transform: translateX(-50%); image-rendering: pixelated; }
+.crane-claw.drop { animation: crane-drop 1.3s ease-in-out both; }
+.crane-prize { position: absolute; bottom: 8%; left: 50%; width: 22%; transform: translateX(-50%); animation: crane-fall .9s .9s ease-in both; opacity: 0; }
+@keyframes crane-drop { 0% { transform: translate(-50%, 0); } 45% { transform: translate(-30%, 150%); } 70% { transform: translate(-30%, 150%); } 100% { transform: translate(-50%, 0); } }
+@keyframes crane-fall { 0% { opacity: 1; transform: translate(-50%, -300%); } 100% { opacity: 1; transform: translate(-50%, 0); } }
+@media (max-height: 760px) { .crane-art { width: 150px; } }
