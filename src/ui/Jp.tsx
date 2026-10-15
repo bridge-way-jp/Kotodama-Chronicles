@@ -2,6 +2,7 @@ import { Fragment, useState, type ReactNode } from 'react';
 import { store } from '../core/store';
 import { mastery } from '../core/srs';
 import { bus } from '../core/events';
+import { findWords } from './autolink';
 
 /**
  * Renders the game's Japanese markup:
@@ -78,14 +79,75 @@ function Word({ tok, mode }: { tok: Extract<Token, { t: 'word' }>; mode: string 
   );
 }
 
-export function Jp({ text, className, furigana }: { text: string; className?: string; furigana?: string }) {
+export function Jp({ text, className, furigana, auto }: { text: string; className?: string; furigana?: string; auto?: boolean }) {
   const mode = furigana ?? store.state?.settings.furigana ?? 'auto';
   const toks = parseMarkup(text);
   return (
     <span className={className} lang="ja">
-      {toks.map((t, i) => (t.t === 'text' ? <Fragment key={i}>{renderText(t.s, 'k' + i)}</Fragment> : <Word key={i} tok={t} mode={mode} />))}
+      {auto ? <AutoTokens toks={toks} mode={mode} /> : toks.map((t, i) => (t.t === 'text' ? <Fragment key={i}>{renderText(t.s, 'k' + i)}</Fragment> : <Word key={i} tok={t} mode={mode} />))}
     </span>
   );
+}
+
+/**
+ * Like the plain rendering, but every vocabulary word that was not linked by hand gets a light dotted underline and
+ * opens the glossary when tapped (a built-in dictionary for story text).
+ */
+function AutoTokens({ toks, mode }: { toks: Token[]; mode: string }) {
+  type Atom = { ch?: string; tok?: Extract<Token, { t: 'word' }>; len: number };
+  const atoms: Atom[] = [];
+  for (const t of toks) {
+    if (t.t === 'text') for (const ch of withName(t.s)) atoms.push({ ch, len: 1 });
+    else atoms.push({ tok: t, len: t.base.length });
+  }
+  const plain = atoms.map((a) => (a.ch ?? a.tok!.base)).join('');
+  // plain-text offset of every atom
+  const starts: number[] = [];
+  let off = 0;
+  for (const a of atoms) {
+    starts.push(off);
+    off += a.len;
+  }
+  // spans that begin and end on atom boundaries, and do not swallow a hand-linked word
+  const spanAt = new Map<number, { end: number; id: string }>();
+  for (const [a, b, id] of findWords(plain)) spanAt.set(a, { end: b, id });
+  const out: ReactNode[] = [];
+  let run = '';
+  const flush = (k: number) => {
+    if (run) out.push(<Fragment key={'t' + k}>{renderText(run, 'r' + k)}</Fragment>);
+    run = '';
+  };
+  for (let i = 0; i < atoms.length; ) {
+    const sp = spanAt.get(starts[i]);
+    let j = i;
+    let ok = !!sp;
+    if (sp) {
+      while (j < atoms.length && starts[j] < sp.end) {
+        if (atoms[j].tok?.key) ok = false;
+        j++;
+      }
+      if (starts[j - 1] + atoms[j - 1].len !== sp.end) ok = false;
+    }
+    if (sp && ok) {
+      flush(i);
+      const key = 'v:' + sp.id;
+      out.push(
+        <span key={'a' + i} className="jp-auto" onClick={(e) => { e.stopPropagation(); bus.emit('gloss', { key }); }} title="Tap for meaning">
+          {atoms.slice(i, j).map((a, n) => (a.tok ? <Word key={n} tok={a.tok} mode={mode} /> : <Fragment key={n}>{a.ch}</Fragment>))}
+        </span>,
+      );
+      i = j;
+    } else {
+      const a = atoms[i];
+      if (a.tok) {
+        flush(i);
+        out.push(<Word key={'w' + i} tok={a.tok} mode={mode} />);
+      } else run += a.ch;
+      i++;
+    }
+  }
+  flush(atoms.length);
+  return <>{out}</>;
 }
 
 /** Explanation text that may contain **bold** and newlines (no furigana markup). */
