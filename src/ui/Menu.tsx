@@ -194,10 +194,10 @@ function memoryText(m: string) {
 /** where to go next when the story is waiting for the player: first match wins */
 const NEXT_STEPS: { show: (s: typeof store.s) => boolean; ja: string; en: string }[] = [
   { show: (s) => !!s.flags.chapter7_done, ja: '次は：言葉の大会に挑戦！', en: 'The story is complete. Try the Word Tournament (Menu → JLPT N2), work part-time jobs, or take the exam simulation.' },
-  { show: (s) => !!s.flags.chapter6_done && !s.quests.mq26, ja: '次は：森さん → 日野森駅から東京へ', en: 'Next: talk to Ms. Mori (in front of the apartment), then take the Shinkansen to Tokyo from Hinomori station.' },
-  { show: (s) => !!s.flags.chapter5_done && !s.quests.mq22, ja: '次は：森さん → 大阪へ', en: 'Next: talk to Ms. Mori (in front of the apartment), then take the train to Osaka from Hinomori station.' },
-  { show: (s) => !!s.flags.chapter4_done && !s.quests.mq18, ja: '次は：森さん → 京都へ', en: 'Next: talk to Ms. Mori (in front of the apartment), then take the train to Kyoto from Hinomori station.' },
-  { show: (s) => !!s.flags.chapter3_done && !s.quests.mq14, ja: '次は：森さん → 潮見町へ', en: 'Next: talk to Ms. Mori (in front of the apartment), then take the train to Shiomi from Hinomori station.' },
+  { show: (s) => !!s.flags.chapter6_done && !s.quests.mq26, ja: '次は：森さん → 日野森駅から東京へ', en: 'Next: talk to Ms. Mori (in front of the apartment), then take the Shinkansen to Tokyo from Hinomori station (walk into the station and use the ticket gates, or the departure sign on the platform).' },
+  { show: (s) => !!s.flags.chapter5_done && !s.quests.mq22, ja: '次は：森さん → 大阪へ', en: 'Next: talk to Ms. Mori (in front of the apartment), then take the train to Osaka from Hinomori station (walk into the station and use the ticket gates, or the departure sign on the platform).' },
+  { show: (s) => !!s.flags.chapter4_done && !s.quests.mq18, ja: '次は：森さん → 京都へ', en: 'Next: talk to Ms. Mori (in front of the apartment), then take the train to Kyoto from Hinomori station (walk into the station and use the ticket gates, or the departure sign on the platform).' },
+  { show: (s) => !!s.flags.chapter3_done && !s.quests.mq14, ja: '次は：森さん → 潮見町へ', en: 'Next: talk to Ms. Mori (in front of the apartment), then take the train to Shiomi from Hinomori station (walk into the station and use the ticket gates, or the departure sign on the platform).' },
   { show: (s) => !!s.flags.mori_scroll && !s.quests.mq10, ja: '次は：もう一度、森さんと話す', en: 'Next: talk to Ms. Mori again (in front of the apartment in Hinomori town), then take the train to Yukimi.' },
   { show: (s) => !!s.flags.chapter2_done && !s.flags.mori_scroll, ja: '次は：名前の巻物を森さんへ', en: 'Next: take Mr. Ōta’s name scroll back to Hinomori by bus (stop at the lower right of the valley) and show it to Ms. Mori in front of the apartment.' },
   { show: (s) => !!s.flags.chapter1_done && !s.quests.mq6, ja: '次は：森さんと話す', en: 'Next: talk to Ms. Mori in front of the apartment.' },
