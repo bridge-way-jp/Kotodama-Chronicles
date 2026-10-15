@@ -34,12 +34,12 @@ What is wrong now and must be fixed:
 Do NOT paint any buildings, shop fronts, houses, signs with text, people, cars or text of any kind: the game draws buildings and people on top. Keep the light soft and from the top left.
 
 Image 3 ({shot}) shows how the map looks in the game today with the buildings and people on top, so you can judge what stands where.
-Image 4 (style_*.png) is a finished map in the target style, for style only, not for layout.
+Image 4 (style_*.jpg) is a finished map in the target style, for style only, not for layout.
 
 Output: ONE image, exactly {w} x {h} pixels, no border, no text, no UI.
 """
 ANL = """Alle Bilder dieses Ordners zusammen mit PROMPT.txt in EINE Nachricht hochladen.
-Ergebnis speichern als: {name}_neu.png ({w} x {h}).
+Ergebnis speichern als: {name}_neu.png (PNG, nicht JPG) ({w} x {h}).
 WICHTIG: Straßen, Wasser, Brücken, Treppen, Plätze und Wege müssen an derselben Stelle bleiben. Falls GPT etwas verschiebt, bitte nochmal mit dem Zusatz "Keep every road, river, bridge, stair, plaza and path pixel-exactly where it is in image 1" erzeugen lassen. Ich skaliere leichte Größenabweichungen und prüfe im Spiel, dass alles begehbar bleibt."""
 
 MAPS = {
@@ -116,12 +116,12 @@ for city, items in MAPS.items():
         name = f"{n}_{city}_{mid.split('_', 1)[1].capitalize()}"
         d = os.path.join(stage, name)
         os.makedirs(d)
-        im.save(os.path.join(d, f"{v['image']}_aktuell.png"))
-        ov.save(os.path.join(d, 'footprints_rot_leerflaechen_gelb.png'))
-        shutil.copy(os.path.join(src, 'full', mid + '.png'), os.path.join(d, 'ingame_aktuell.png'))
-        shutil.copy(os.path.join(A, STYLE[city]), os.path.join(d, 'style_' + STYLE[city]))
+        im.save(os.path.join(d, f"{v['image']}_aktuell.jpg"), quality=93)
+        ov.save(os.path.join(d, 'footprints_rot_leerflaechen_gelb.jpg'), quality=93)
+        Image.open(os.path.join(src, 'full', mid + '.png')).convert('RGB').save(os.path.join(d, 'ingame_aktuell.jpg'), quality=90)
+        Image.open(os.path.join(A, STYLE[city])).convert('RGB').save(os.path.join(d, 'style_' + STYLE[city].replace('.png', '.jpg')), quality=90)
         w, h = im.size
-        open(os.path.join(d, 'PROMPT.txt'), 'w').write(PROMPT.format(place=place, img=f"{v['image']}_aktuell.png", w=w, h=h, fill=fill, shot='ingame_aktuell.png'))
+        open(os.path.join(d, 'PROMPT.txt'), 'w').write(PROMPT.format(place=place, img=f"{v['image']}_aktuell.jpg", w=w, h=h, fill=fill, shot='ingame_aktuell.jpg'))
         open(os.path.join(d, 'ANLEITUNG.txt'), 'w').write(ANL.format(name=v['image'], w=w, h=h))
     zp = os.path.join(out, f'Kotodama_Staedte_{city}.zip')
     with zipfile.ZipFile(zp, 'w', zipfile.ZIP_DEFLATED) as z:
