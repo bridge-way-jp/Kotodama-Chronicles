@@ -783,6 +783,7 @@ export class WorldScene extends Phaser.Scene {
     const s = store.s;
     for (const { def } of this.objects) {
       if (!check(s, def.when)) continue;
+      if (forInteract && def.decor) continue;
       if (forInteract && def.interactAt) {
         if (def.interactAt.some((p) => p.x === x && p.y === y)) return def;
         continue;
@@ -944,7 +945,7 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     const obj = this.objectAt(fx, fy, true) ?? this.objectAt(fx, fy) ?? this.objectAt(tx, ty, true) ?? this.objectAt(tx, ty);
-    if (obj) bus.emit('interact', { id: obj.script ?? obj.id, kind: 'object' });
+    if (obj && !obj.decor) bus.emit('interact', { id: obj.script ?? obj.id, kind: 'object' });
   }
 
   warpTo(map: string, x: number, y: number, facing: Dir) {
