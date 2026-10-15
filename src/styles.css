@@ -961,3 +961,5 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
   .board-row [lang='ja'] { white-space: nowrap; }
   .board-led { padding: 6px 4px; }
 }
+.notebook > .row { flex-wrap: wrap; gap: 6px; }
+.notebook > .row .btn { white-space: nowrap; }
