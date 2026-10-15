@@ -963,3 +963,46 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
 }
 .notebook > .row { flex-wrap: wrap; gap: 6px; }
 .notebook > .row .btn { white-space: nowrap; }
+
+/* ---------------------------------------------------------------- train ride: the view from inside, out of the window */
+.ride-win > * { position: absolute; left: 0; right: 0; }
+.ride-win .tw-cabin { inset: 0 0 12% 0; animation: tw-sway 1.05s ease-in-out infinite; transform-origin: 50% 100%; --wall1: #ebe8e0; --wall2: #c9c5ba; --frame: #3a3f49; --seat: #27406b; --seat2: #34538a; }
+.ride-k-local.ride-win .tw-cabin { --wall1: #a98156; --wall2: #7c5b3a; --frame: #4a3322; --seat: #7a2f2f; --seat2: #964141; }
+.ride-win .tw-cabin > * { position: absolute; }
+.tw-wall { inset: 0; background: linear-gradient(var(--wall1), var(--wall2) 70%, #2a2f38 70%); }
+.tw-window { left: 11%; right: 11%; top: 7%; height: 54%; border: clamp(10px, 2.2vmin, 20px) solid var(--frame); border-radius: 3.2vmin; box-shadow: inset 0 0 0 3px rgba(0,0,0,.55), 0 6px 0 rgba(0,0,0,.28); overflow: hidden; background: #000; }
+.tw-view { position: absolute; inset: 0; container-type: size; overflow: hidden; }
+.tw-view > * { position: absolute; left: 0; right: 0; }
+.tw-sky { top: 0; bottom: 0; background: url("../public/assets/hw_sky.webp") center bottom / cover; }
+.tw-far { --w: 240cqh; bottom: 30%; height: 60cqh; background: url("../public/assets/hw_far.webp") repeat-x 0 100% / auto 100%; animation: ride-scroll 40s linear infinite; }
+.tw-mid { --w: 224cqh; bottom: 12%; height: 56cqh; background: url("../public/assets/hw_mid.webp") repeat-x 0 100% / auto 100%; animation: ride-scroll 9s linear infinite; }
+.ride-k-shinkansen .tw-mid { animation-duration: 5s; }
+.tw-near { --w: 300px; bottom: -2px; height: 28%; background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='80' viewBox='0 0 300 80' preserveAspectRatio='none'><path d='M0 80V34Q30 14 60 30T120 26 180 34 240 22 300 30V80Z' fill='%231f4a2c'/><path d='M0 80V54Q40 40 80 52T160 50 240 54 300 48V80Z' fill='%23163a22'/></svg>") repeat-x bottom / 300px 100%; animation: ride-scroll .7s linear infinite; }
+.ride-k-local .tw-near { animation-duration: 1.6s; }
+.tw-wires { --w: 360px; top: 12%; height: 30%; background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='360' height='90' viewBox='0 0 360 90' preserveAspectRatio='none'><path d='M0 18Q90 40 180 18T360 18' stroke='%23262a32' stroke-width='3' fill='none'/><path d='M0 54Q90 76 180 54T360 54' stroke='%23262a32' stroke-width='2' fill='none'/></svg>") repeat-x 0 0 / 360px 100%; animation: ride-scroll .5s linear infinite; opacity: .8; }
+.ride-k-local .tw-wires { animation-duration: 1.2s; }
+.tw-poles { --w: 420px; top: 0; bottom: 0; background: repeating-linear-gradient(90deg, transparent 0 408px, rgba(34,37,44,.92) 408px 420px); animation: ride-scroll .55s linear infinite; }
+.ride-k-local .tw-poles { animation-duration: 1.5s; }
+.tw-tunnel { top: 0; bottom: 0; opacity: 0; background: radial-gradient(circle at 50% 24%, rgba(255,170,70,.55) 0 3%, transparent 4%) 0 0 / 22% 100% repeat-x, linear-gradient(#07080c, #0d0f16); animation: tw-tunnel 5.6s linear 1 both; }
+.tw-glare { top: 0; bottom: 0; background: linear-gradient(112deg, rgba(255,255,255,.2) 0 14%, transparent 14% 26%, rgba(255,255,255,.1) 26% 31%, transparent 31%); pointer-events: none; }
+.tw-blind { position: absolute; left: 0; right: 0; top: 0; height: 16%; background: repeating-linear-gradient(#f1eadb 0 5px, #d8ccb1 5px 7px); border-bottom: 3px solid #8d8269; box-shadow: 0 4px 6px rgba(0,0,0,.25); }
+.tw-ledge { left: 9%; right: 9%; top: 65%; height: 5.5%; background: linear-gradient(#8a6b49, #6b4f33); border-top: 3px solid #b99872; border-radius: 4px; }
+.tw-ledge img { position: absolute; left: 14%; bottom: 55%; width: clamp(42px, 8vmin, 70px); image-rendering: pixelated; transform: rotate(-6deg); }
+.tw-cup { position: absolute; right: 18%; bottom: 55%; width: clamp(16px, 3.4vmin, 28px); height: clamp(14px, 3vmin, 24px); background: #f4efe6; border: 2px solid #5c4a35; border-radius: 3px 3px 8px 8px; box-shadow: 0 -5px 0 -2px rgba(255,255,255,.5); }
+.tw-seat { left: 14%; right: 14%; bottom: 0; height: 27%; background: linear-gradient(var(--seat2), var(--seat)); border-radius: 5vmin 5vmin 0 0; box-shadow: inset 0 8px 0 rgba(255,255,255,.1), 0 -4px 0 rgba(0,0,0,.2); z-index: 3; }
+.tw-seat::before { content: ''; position: absolute; left: 36%; right: 36%; top: -3%; height: 14%; background: #f2efe8; border-radius: 0 0 8px 8px; opacity: .9; }
+.tw-hero { left: 36%; bottom: calc(27% - 9vmin); height: 29vmin; width: auto; z-index: 2; }
+.tw-fox { left: 55%; bottom: calc(27% - 1vmin); height: 13vmin; width: auto; z-index: 4; animation: tw-fox 2.4s ease-in-out infinite; }
+.tw-route { left: 22%; right: 22%; bottom: 2.4%; height: 5px; background: rgba(0,0,0,.35); border-radius: 3px; z-index: 4; overflow: hidden; }
+.tw-route i { display: block; height: 100%; width: 100%; background: #ffd36b; transform-origin: 0 50%; animation: tw-route 5.6s linear 1 both; }
+@keyframes tw-sway { 0%, 100% { transform: translate(0, 0) rotate(0) scale(1.012); } 25% { transform: translate(0, -1px) rotate(.12deg) scale(1.012); } 75% { transform: translate(0, 1px) rotate(-.12deg) scale(1.012); } }
+@keyframes tw-fox { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+@keyframes tw-tunnel { 0%, 34% { opacity: 0; } 38%, 52% { opacity: 1; } 56%, 100% { opacity: 0; } }
+@keyframes tw-route { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@media (orientation: portrait) {
+  .tw-window { left: 5%; right: 5%; top: 6%; height: 47%; }
+  .tw-ledge { top: 57%; left: 3%; right: 3%; }
+  .tw-seat { left: 6%; right: 6%; height: 30%; }
+  .tw-hero { left: 29%; height: 24vmin; bottom: calc(30% - 7vmin); }
+  .tw-fox { left: 54%; height: 12vmin; bottom: calc(30% - 1vmin); }
+}
