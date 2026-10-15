@@ -49,11 +49,11 @@ export function BusRide({ kind = 'bus', onDone }: { kind?: 'bus' | 'local' | 'sh
         </div>
       ) : (
         <div className="ride-train">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="ride-car">
-              {[0, 1, 2, 3].map((w) => <i key={w} />)}
-            </div>
-          ))}
+          {kind === 'shinkansen' ? (
+            ['mid', 'mid', 'head'].map((p, i) => <img key={i} src={`assets/train_${p}.png`} alt="" />)
+          ) : (
+            <img src="assets/train_local.png" alt="" />
+          )}
         </div>
       )}
       <div className="ride-bar top" />
