@@ -2219,10 +2219,9 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       ],
     },
   ],
-  dep_kyoto: [{ steps: [n('京都駅の出発案内だ。', 'The departure board of Kyoto Station.'), { do: [{ open: 'board:kyoto' }] }] }],
-  dep_osaka: [{ steps: [n('梅田駅の出発案内だ。', 'The departure board of Umeda Station.'), { do: [{ open: 'board:osaka' }] }] }],
-  dep_tokyo: [{ steps: [n('東京駅の出発案内だ。', 'The departure board of Tokyo Station.'), { do: [{ open: 'board:tokyo' }] }] }],
-  k_station_front: [{ steps: [n('京都駅の入口だ。ガラスの大きな建物の中に、案内所とホームへの階段がある。', 'The entrance of Kyoto Station. Inside the big glass building are the information desk and stairs to the platforms.'), { do: [{ open: 'board:kyoto' }] }] }],
+  dep_osaka: [{ steps: [n('梅田駅の改札だ。どこへ行こう？', 'The ticket gates of Umeda Station. Where to?'), { do: [{ open: 'board:osaka' }] }] }],
+  dep_tokyo: [{ steps: [n('東京駅の改札だ。どこへ行こう？', 'The ticket gates of Tokyo Station. Where to?'), { do: [{ open: 'board:tokyo' }] }] }],
+  k_station_front: [{ steps: [n('京都駅の入口だ。ガラスの大きな建物の中に、案内所と改札がある。', 'The entrance of Kyoto Station. Inside the big glass building are the information desk and the ticket gates.')] }],
   ikeda: [
     {
       when: { all: [{ questActive: 'mq18' }, { obj: 'mq18.arrive' }, { notObj: 'mq18.ikeda' }] },
@@ -2570,7 +2569,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   kushi_counter: [{ steps: [n('カウンターに、ソースの入れ物が埋め込んである。みんなで使う、一つのソースだ。', 'Sauce dishes are built into the counter. One shared sauce for everyone.')] }],
   kushi_tv: [{ steps: [n('古いテレビが、天気予報を流している。', 'An old TV plays the weather forecast.')] }],
   osaka_castle: [{ steps: [n('大阪城だ。石垣の上に、白い天守がそびえている。入口は、橋の向こうにあるらしい。', 'Osaka Castle. The white keep towers over the stone walls. The entrance seems to lie beyond the bridge.')] }],
-  umeda_station: [{ steps: [n('梅田駅。ガラスの大きな建物の中を、スーツの人たちが急ぎ足で通っていく。', 'Umeda Station. People in suits hurry through the big glass building.'), { do: [{ open: 'board:osaka' }] }] }],
+  umeda_station: [{ steps: [n('梅田駅。ガラスの大きな建物の中を、スーツの人たちが急ぎ足で通っていく。改札は、入口から入ってすぐだ。', 'Umeda Station. People in suits hurry through the big glass building. The ticket gates are just inside the entrance.')] }],
   umeda_tower: [{ steps: [n('ガラスのオフィスビルだ。窓の中で、夜までたくさんの人が働いている。', 'A glass office tower. Behind the windows many people work until night.')] }],
   umeda_stall: [{ steps: [n('広場の屋台だ。昼休みになると、スーツの人の行列ができる。', 'A stall on the square. At lunch break a queue of suited people forms.')] }],
   nakano_hall: [{ steps: [n('赤れんがの古い建物だ。屋根が青緑色に光っている。', 'An old red-brick building with a blue-green roof.')] }],

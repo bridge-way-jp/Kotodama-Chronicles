@@ -22,7 +22,7 @@ const place = (jp: string, en: string, note?: string): DialogueRule[] => [{ step
 
 export const TOKYO_SCRIPTS: Record<string, DialogueRule[]> = {
   // ---------------------------------------------------------------- places (outdoors)
-  tk_station: [{ steps: [n('東京駅。赤れんがの大きな駅舎に、新幹線のホームから人が流れてくる。', 'Tokyo Station. People stream out of the Shinkansen platforms into the big red-brick building.'), { do: [{ open: 'board:tokyo' }] }] }],
+  tk_station: [{ steps: [n('東京駅。赤れんがの大きな駅舎に、新幹線のホームから人が流れてくる。', 'Tokyo Station. People stream out of the Shinkansen platforms into the big red-brick building. The ticket gates are just inside.')] }],
   tk_tower: place('ガラスの高いビルだ。窓の中で、たくさんの人が画面を見つめている。', 'A tall glass tower. Behind the windows many people stare at screens.'),
   tk_kiosk: place('小さな売店だ。コーヒーとおにぎりを買う人が、急ぎ足で通りすぎる。', 'A small kiosk. People hurry past to buy coffee and rice balls.'),
   as_gate: [

@@ -144,7 +144,7 @@ export const TRACKS: Record<string, string> = {
 };
 
 export const MAP_MUSIC: Record<string, string> = {
-  town: 'town', apartment: 'home', cafe: 'cafe', konbini: 'town', library: 'home', station: 'town', forest: 'forest', valley: 'valley', mountain: 'snow', harbor: 'harbor',
+  town: 'town', apartment: 'home', cafe: 'cafe', konbini: 'town', library: 'home', station: 'town', o_station_hall: 'town', t_station_hall: 'tokyo', forest: 'forest', valley: 'valley', mountain: 'snow', harbor: 'harbor',
   ryokan: 'onsen', werkstatt: 'valley', tsuru: 'snow', klinik: 'snow', kneipe: 'harbor', leuchtturm: 'lighthouse',
   k_station: 'kyoto', k_nishiki: 'kyoto', k_kamo: 'kyoto', k_gion: 'gion', k_fushimi: 'gion',
   machiya: 'gion', teehaus: 'gion', kimono: 'kyoto', izakaya: 'kyoto', bahnhofinfo: 'kyoto', nishikiladen: 'kyoto',
