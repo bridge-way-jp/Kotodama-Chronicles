@@ -40,6 +40,7 @@ const TABS: { id: MenuTab; ja: string; en: string; icon: string }[] = [
 
 export interface MenuActions {
   openReview: () => void;
+  openWeak: () => void;
   openExam: (mode: 'practice' | 'mock' | 'diagnostic', section?: Section) => void;
   openTournament: () => void;
   toTitle: () => void;
@@ -553,6 +554,7 @@ function JlptTab({ actions }: { actions: MenuActions }) {
 
       <h3>練習 Practice</h3>
       <div className="row wrap">
+        <button className="btn" onClick={actions.openWeak}>苦手を練習 Practise weak spots</button>
         <button className="btn primary" onClick={actions.openReview}>
           復習 Review ({q.due.length} due · {Math.min(q.newAllowed, q.newAvailable.length)} new)
         </button>
@@ -680,6 +682,20 @@ function SettingsTab({ actions }: { actions: MenuActions }) {
       </label>
       <label>
         Sound effects <input type="checkbox" checked={st.sfx} onChange={(e) => set('sfx', e.target.checked)} />
+      </label>
+      <label>
+        Text size
+        <select value={st.uiScale ?? 'normal'} onChange={(e) => set('uiScale', e.target.value as Settings['uiScale'])}>
+          <option value="normal">Normal</option>
+          <option value="large">Large</option>
+          <option value="xlarge">Extra large</option>
+        </select>
+      </label>
+      <label>
+        High contrast <input type="checkbox" checked={!!st.highContrast} onChange={(e) => set('highContrast', e.target.checked)} />
+      </label>
+      <label>
+        Read dialogue aloud <input type="checkbox" checked={!!st.readAloud} onChange={(e) => set('readAloud', e.target.checked)} />
       </label>
       <label>
         Weather and season effects <input type="checkbox" checked={st.effects !== false} onChange={(e) => set('effects', e.target.checked)} />

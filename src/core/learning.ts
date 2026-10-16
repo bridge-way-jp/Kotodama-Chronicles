@@ -367,6 +367,21 @@ function isNewCandidate(s: GameState, key: string): boolean {
 }
 
 /** A focused review session: due first, then contrast drills, then limited new items. */
+/** the items you get wrong most often (at least two tries, under 70 % correct), worst first */
+export function buildWeakSession(s: GameState, size = 10, r = Math.random): Exercise[] {
+  const weak = Object.values(s.cards)
+    .filter((c) => c.introduced && keyExists(c.key))
+    .map((c) => {
+      const ok = c.isoOk + c.ctxOk;
+      const fail = c.isoFail + c.ctxFail;
+      return { key: c.key, total: ok + fail, rate: ok / Math.max(1, ok + fail) };
+    })
+    .filter((x) => x.total >= 2 && x.rate < 0.7)
+    .sort((a, b) => a.rate - b.rate || b.total - a.total)
+    .slice(0, size);
+  return weak.map((w) => exerciseFor(s, w.key, { r }));
+}
+
 export function buildReviewSession(s: GameState, size = 12, now = Date.now(), r = Math.random): Exercise[] {
   const q = queueInfo(s, now);
   const out: Exercise[] = [];

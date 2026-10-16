@@ -1,7 +1,7 @@
 import { toast } from '../core/events';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { store } from '../core/store';
-import { buildReviewSession, encounter, queueInfo, recordAnswer, recordComprehension, labelOfKey, type Exercise } from '../core/learning';
+import { buildReviewSession, buildWeakSession, encounter, queueInfo, recordAnswer, recordComprehension, labelOfKey, type Exercise } from '../core/learning';
 import { tipFor } from '../content/examtypes';
 import { buildDiagnostic, buildMockExam, buildSectionPractice, MOCK_TIME_LIMIT_MS, SECTIONS, type Section, type TestItem } from '../core/exam';
 import { review } from '../core/srs';
@@ -13,8 +13,8 @@ import type { PracticeResult } from '../core/types';
 
 // ================================================================== review
 
-export function ReviewSession({ onClose }: { onClose: () => void }) {
-  const [items, setItems] = useState<Exercise[]>(() => buildReviewSession(store.s));
+export function ReviewSession({ onClose, weak }: { onClose: () => void; weak?: boolean }) {
+  const [items, setItems] = useState<Exercise[]>(() => (weak ? buildWeakSession(store.s) : buildReviewSession(store.s)));
   const [i, setI] = useState(0);
   const [results, setResults] = useState<{ key?: string; ok: boolean }[]>([]);
   const info = queueInfo(store.s);
@@ -22,9 +22,14 @@ export function ReviewSession({ onClose }: { onClose: () => void }) {
   if (!items.length)
     return (
       <div className="panel study">
-        <div className="panel-title">復習 Review</div>
-        <p>Nothing is due right now and today's new-item limit ({store.s.settings.newPerDay}/day) is reached or nothing new is unlocked.</p>
-        <p className="note">Explore, talk to people, and come back later — items return when they are due. (You can raise the daily limit in Settings.)</p>
+        <div className="panel-title">{weak ? '苦手 Weak spots' : '復習 Review'}</div>
+        {weak && <p>No weak spots yet: you have no item that you answered wrongly more than once. Keep going — they appear here once they do.</p>}
+        {!weak && (
+          <>
+            <p>Nothing is due right now and today's new-item limit ({store.s.settings.newPerDay}/day) is reached or nothing new is unlocked.</p>
+            <p className="note">Explore, talk to people, and come back later — items return when they are due. (You can raise the daily limit in Settings.)</p>
+          </>
+        )}
         <button className="btn primary" autoFocus onClick={onClose}>
           閉じる
         </button>
@@ -52,7 +57,7 @@ export function ReviewSession({ onClose }: { onClose: () => void }) {
           <button
             className="btn"
             onClick={() => {
-              const more = buildReviewSession(store.s);
+              const more = weak ? buildWeakSession(store.s) : buildReviewSession(store.s);
               setItems(more);
               setI(0);
               setResults([]);

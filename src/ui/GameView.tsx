@@ -30,7 +30,7 @@ type Overlay =
   | { id: number; kind: 'script'; steps: Step[] }
   | { id: number; kind: 'battle'; setup: BattleSetup }
   | { id: number; kind: 'menu'; tab?: MenuTab }
-  | { id: number; kind: 'review' }
+  | { id: number; kind: 'review'; weak?: boolean }
   | { id: number; kind: 'job'; job: string }
   | { id: number; kind: 'garden' }
   | { id: number; kind: 'tournament' }
@@ -246,6 +246,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
             onClose={() => remove(o.id)}
             actions={{
               openReview: () => push({ kind: 'review' }),
+              openWeak: () => push({ kind: 'review', weak: true }),
               openTournament: () => push({ kind: 'tournament' }),
               openExam: (mode, section) => push({ kind: 'exam', mode, section }),
               toTitle: onExit,
@@ -284,7 +285,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
       case 'review':
         return (
           <div className="overlay-panel">
-            <ReviewSession onClose={() => remove(o.id)} />
+            <ReviewSession weak={o.weak} onClose={() => remove(o.id)} />
           </div>
         );
       case 'exam':
