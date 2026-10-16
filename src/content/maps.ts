@@ -317,10 +317,10 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'harbor_office', sprite: 'bx_harbor_office', x: 25, y: 13, w: 4, h: 2 },
       { id: 'harbor_genhouse', sprite: 'bx_townhouse', x: 25, y: 4, w: 3, h: 2 },
       { id: 'harbor_lighthouse', sprite: 'bx_lighthouse', x: 38, y: 3, w: 3, h: 2, interactAt: [{ x: 37, y: 3 }, { x: 37, y: 4 }] },
-      { id: 'harbor_lemon', x: 15, y: 4, w: 5, h: 2, solid: false },
-      { id: 'harbor_bottle', x: 3, y: 15, w: 1, h: 1, solid: false },
+      { id: 'harbor_lemon', sprite: 'ob_crates_b', x: 15, y: 4, w: 5, h: 2, solid: false },
+      { id: 'harbor_bottle', sprite: 'ob_jar_blue', x: 3, y: 15, w: 1, h: 1, solid: false },
       { id: 'harbor_hokora', sprite: 'tp_hokora', x: 40, y: 21, w: 1, h: 1 },
-      { id: 'harbor_light', x: 23, y: 20, w: 1, h: 1 },
+      { id: 'harbor_light', sprite: 'ob_lamp_old', x: 23, y: 20, w: 1, h: 1 },
     ],
     npcs: [
       { id: 'nagisa', x: 21, y: 14, facing: 'down' },
@@ -368,7 +368,7 @@ export const MAPS: Record<string, MapDef> = {
         { id: `k_shop_t${i}`, sprite: `bx_k_nishiki_shop_t${i}`, x, y: 8, w: 4, h: 2, script: i % 2 === 0 ? 'k_shop_veg' : 'k_shop_old' },
         { id: `k_shop_b${i}`, sprite: `bx_k_nishiki_shop_b${i}`, x, y: 17, w: 4, h: 2, script: i % 2 === 0 ? 'k_shop_veg' : 'k_shop_old' },
       ]),
-      { id: 'k_nishiki_sign', x: 20, y: 11, w: 2, h: 1, solid: false, interactAt: [{ x: 20, y: 12 }, { x: 21, y: 12 }], script: 'k_nishiki_sign' },
+      { id: 'k_nishiki_sign', sprite: 'ob_sign_board', hint: true, x: 20, y: 11, w: 2, h: 1, solid: false, interactAt: [{ x: 20, y: 12 }, { x: 21, y: 12 }], script: 'k_nishiki_sign' },
     ],
     npcs: [],
     warps: [
@@ -404,8 +404,8 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'k_machiya3', sprite: 'bx_k_gion_machiya3', x: 3, y: 12, w: 3, h: 2, solid: false },
       { id: 'k_machiya4', sprite: 'bx_k_gion_machiya4', x: 6, y: 12, w: 3, h: 2, solid: false },
       { id: 'k_machiya5', sprite: 'bx_k_gion_machiya5', x: 25, y: 4, w: 3, h: 2, solid: false },
-      { id: 'k_gion_hokora', x: 20, y: 2, w: 3, h: 1, solid: false, script: 'k_gion_hokora' },
-      { id: 'k_gion_lantern', x: 20, y: 9, w: 2, h: 3, solid: false, script: 'k_gion_lantern' },
+      { id: 'k_gion_hokora', sprite: 'ob_hokora', x: 20, y: 2, w: 3, h: 1, solid: false, script: 'k_gion_hokora' },
+      { id: 'k_gion_lantern', sprite: 'ob_stone_lantern', x: 20, y: 9, w: 2, h: 3, solid: false, script: 'k_gion_lantern' },
     ],
     npcs: [],
     warps: [
