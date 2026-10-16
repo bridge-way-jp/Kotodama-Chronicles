@@ -1019,3 +1019,16 @@ html.hc .panel, html.hc .hud-box { border-color: #000; }
 html.hc .dialogue, html.hc .dlg-box { background: #fff; color: #000; border: 3px solid #000; }
 html.hc ruby rt { color: #000; }
 html.hc .btn { border: 2px solid #000; }
+
+/* karaoke */
+.kar-stage { background: radial-gradient(circle at 50% 0%, #4b2a7a, #1a1230 70%); border: 2px solid #ff77c8; border-radius: 10px; padding: 14px 10px; margin: 8px 0; text-align: center; color: #fff; min-height: 96px; display: grid; align-content: center; gap: 4px; box-shadow: 0 0 18px rgba(255,119,200,.45) inset; }
+.kar-neon { font-family: var(--pixel); font-size: 22px; color: #ffe14d; text-shadow: 0 0 10px #ff77c8; }
+.kar-grade { font-family: var(--pixel); font-size: 64px; color: #ffe14d; text-shadow: 0 0 14px #ff77c8; }
+.kar-old { opacity: .55; font-size: 14px; }
+.kar-line { font-size: clamp(18px, 4.5vw, 26px); line-height: 1.6; text-shadow: 0 0 8px rgba(255,119,200,.8); }
+.kar-gap { display: inline-block; min-width: 3.2em; border-bottom: 3px solid #ffe14d; padding: 0 4px; color: #ffe14d; }
+.kar-gap.ok { color: #7dffa8; border-color: #7dffa8; }
+.kar-gap.ng { color: #ff8a8a; border-color: #ff8a8a; }
+.kar-bar { height: 10px; background: rgba(0,0,0,.35); border-radius: 5px; overflow: hidden; margin: 6px 0; }
+.kar-bar div { height: 100%; background: linear-gradient(90deg, #ff77c8, #ffe14d); }
+.kar-list { display: grid; gap: 8px; margin: 8px 0; }

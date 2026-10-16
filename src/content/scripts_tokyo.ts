@@ -104,8 +104,8 @@ export const TOKYO_SCRIPTS: Record<string, DialogueRule[]> = {
         { do: [{ objective: 'mq28.haru' }, { give: 'purikura' }, { rel: 'haru', points: 2 }, { learn: ['v:tk_kodoku', 'g:gachi'] }] },
       ],
     },
-    { when: { flag: 'chapter7_done' }, steps: [say('haru', '{最近|さいきん}、{深夜|しんや}ラジオを{聞|き}くようになったんです。……{誰|だれ}かが{話|はな}している{声|こえ}があるだけで、{全然|ぜんぜん}{違|ちが}って。', 'Lately I’ve started listening to late-night radio. …With just someone’s voice talking, it feels completely different.', 'happy')] },
-    { steps: [say('haru', 'このゲーム、ぜったい{取|と}ります。……たぶん。', 'I will catch this prize. …Probably.'), { choice: [{ text: '言葉キャッチャーをやる', en: 'Play the word crane game (vocabulary, pays ¥180 per correct answer)', then: [{ do: [{ open: 'job:crane' }] }] }, { text: 'やめる', en: 'Not now' }] }] },
+    { when: { flag: 'chapter7_done' }, steps: [say('haru', '{最近|さいきん}、{深夜|しんや}ラジオを{聞|き}くようになったんです。……{誰|だれ}かが{話|はな}している{声|こえ}があるだけで、{全然|ぜんぜん}{違|ちが}って。', 'Lately I’ve started listening to late-night radio. …With just someone’s voice talking, it feels completely different.', 'happy'), { choice: [{ text: '言葉キャッチャーをやる', en: 'Play the word crane game (vocabulary, pays ¥180 per correct answer)', then: [{ do: [{ open: 'job:crane' }] }] }, { text: 'カラオケをやる', en: 'Sing karaoke (fill in the grammar; pays once per song per day)', then: [{ do: [{ open: 'karaoke' }] }] }, { text: 'やめる', en: 'Not now' }] }] },
+    { steps: [say('haru', 'このゲーム、ぜったい{取|と}ります。……たぶん。', 'I will catch this prize. …Probably.'), { choice: [{ text: '言葉キャッチャーをやる', en: 'Play the word crane game (vocabulary, pays ¥180 per correct answer)', then: [{ do: [{ open: 'job:crane' }] }] }, { text: 'カラオケをやる', en: 'Sing karaoke (fill in the grammar; pays once per song per day)', then: [{ do: [{ open: 'karaoke' }] }] }, { text: 'やめる', en: 'Not now' }] }] },
   ],
   priya: [
     {

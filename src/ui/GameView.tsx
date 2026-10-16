@@ -17,6 +17,7 @@ import { ScriptRunner } from './Dialogue';
 import { Battle } from './Battle';
 import { Menu, type MenuTab } from './Menu';
 import { Tournament } from './Tournament';
+import { Karaoke } from './Karaoke';
 import { JobSession } from './Job';
 import { EditorPanel } from './EditorPanel';
 import { editor } from '../game/editorState';
@@ -34,6 +35,7 @@ type Overlay =
   | { id: number; kind: 'job'; job: string }
   | { id: number; kind: 'garden' }
   | { id: number; kind: 'tournament' }
+  | { id: number; kind: 'karaoke' }
   | { id: number; kind: 'board'; station: string }
   | { id: number; kind: 'exam'; mode: 'practice' | 'mock' | 'diagnostic'; section?: Section };
 
@@ -121,6 +123,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
       else if (what === 'diagnostic') push({ kind: 'exam', mode: 'diagnostic' });
       else if (what === 'menu') push({ kind: 'menu' });
       else if (what === 'garden') push({ kind: 'garden' });
+      else if (what === 'karaoke') push({ kind: 'karaoke' });
       else if (what.startsWith('board:')) push({ kind: 'board', station: what.slice(6) });
       else if (what.startsWith('job:')) push({ kind: 'job', job: what.slice(4) });
     },
@@ -263,6 +266,12 @@ export function GameView({ onExit }: { onExit: () => void }) {
               push({ kind: 'script', steps: [{ do: [{ train: d.kind }, { warp: { map: d.map, x: d.x, y: d.y } }] }] });
             }}
           />
+        );
+      case 'karaoke':
+        return (
+          <div className="overlay-panel">
+            <Karaoke onClose={() => remove(o.id)} />
+          </div>
         );
       case 'tournament':
         return (
