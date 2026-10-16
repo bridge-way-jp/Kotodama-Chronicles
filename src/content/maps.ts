@@ -7,6 +7,7 @@ import { HARBOR_GEN } from './harbor.gen';
 import { KYOTO_GEN } from './kyoto.gen';
 import { OSAKA_GEN } from './osaka.gen';
 import { TOKYO_GEN } from './tokyo.gen';
+import { PLAIN_GEN } from './plain.gen';
 import type { Dir } from '../core/types';
 
 /**
@@ -35,6 +36,8 @@ export interface MapObject {
   when?: Cond;
   /** text painted onto the sprite, position relative to the image (0..1) */
   label?: { text: string; x: number; y: number };
+  /** pure decoration (planting, street furniture): blocks like a solid object but cannot be interacted with */
+  decor?: boolean;
   /** show the quest alert mark above this object while its script would advance a quest */
   hint?: boolean;
   /** extra vertical offset for the image in px */
@@ -710,3 +713,13 @@ export const MAPS: Record<string, MapDef> = {
     ],
   },
 };
+
+// maps repainted as a flat ground image plus separate sprites (tools/build_plain.py): the ground, its collision
+// tiles and the planted/placed decor replace the old painted-in versions, buildings and interactions stay
+for (const [id, p] of Object.entries(PLAIN_GEN)) {
+  const m = MAPS[id];
+  if (!m) continue;
+  m.image = p.image;
+  m.tiles = p.tiles;
+  m.objects = [...m.objects, ...p.decor.map((d) => ({ ...d, decor: true }))];
+}
