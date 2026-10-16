@@ -642,7 +642,7 @@ export class WorldScene extends Phaser.Scene {
       if (o.marker) {
         const rules = SCRIPTS[o.def.script ?? o.def.id];
         const steps = rules ? pickRule(s, rules) : null;
-        o.marker.setVisible(!!steps && advancesQuest(steps));
+        o.marker.setVisible(o.def.hint === 'always' || (!!steps && advancesQuest(steps)));
       }
     }
     if (this.tint) this.tint.setVisible(s.timeOfDay === 'evening');
