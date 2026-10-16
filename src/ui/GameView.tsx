@@ -18,6 +18,8 @@ import { Battle } from './Battle';
 import { Menu, type MenuTab } from './Menu';
 import { Tournament } from './Tournament';
 import { JobSession } from './Job';
+import { EditorPanel } from './EditorPanel';
+import { editor } from '../game/editorState';
 import { Garden } from './Garden';
 import { ReviewSession, ExamRunner } from './Study';
 import { GlossPopup } from './Cards';
@@ -300,6 +302,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
     <div className="game-root">
       <div className="world" ref={hostRef} />
       <Hud onMenu={(tab) => push({ kind: 'menu', tab })} />
+      {editor.enabled && <EditorPanel />}
       <MapBanner />
       {!top && <TouchControls />}
       {overlays.map((o) => (

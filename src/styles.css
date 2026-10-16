@@ -994,3 +994,14 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
   .tw-seat { width: 52%; top: 55%; }
   .tw-route { bottom: 13%; }
 }
+
+/* map editor panel (?edit) */
+.edit-panel { position: absolute; right: 8px; top: 64px; z-index: 30; width: min(300px, 70vw); max-height: 70vh; overflow: auto; background: rgba(30, 24, 40, .94); color: #fff; border: 2px solid #ffe14d; border-radius: 8px; padding: 8px; font-size: 13px; pointer-events: auto; }
+.edit-head { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.edit-head .btn { margin-left: auto; }
+.edit-row { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0; }
+.edit-pal { display: grid; grid-template-columns: repeat(auto-fill, minmax(52px, 1fr)); gap: 4px; margin: 6px 0; max-height: 28vh; overflow: auto; }
+.edit-item { background: rgba(255,255,255,.08); border: 2px solid transparent; border-radius: 6px; height: 52px; display: grid; place-items: center; padding: 2px; cursor: pointer; }
+.edit-item.on { border-color: #ffe14d; background: rgba(255,225,77,.2); }
+.edit-item img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.edit-note { font-size: 12px; opacity: .85; margin: 4px 0; }

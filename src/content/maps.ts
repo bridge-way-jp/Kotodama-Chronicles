@@ -8,6 +8,7 @@ import { KYOTO_GEN } from './kyoto.gen';
 import { OSAKA_GEN } from './osaka.gen';
 import { TOKYO_GEN } from './tokyo.gen';
 import { PLAIN_GEN } from './plain.gen';
+import { EDITS_BASE, applyEdits, loadLocalEdits } from './edits';
 import type { Dir } from '../core/types';
 
 /**
@@ -737,4 +738,10 @@ for (const [id, nameJa, name, gate, from, back, entry] of [
   };
   const outdoor = MAPS[from];
   for (const dx of [0, 1]) outdoor.warps.push({ x: entry.x + dx, y: entry.y, to: { map: id, x: 10 + dx, y: 13, facing: 'up' } });
+}
+
+// hand edits: committed ones first, then the ones made in this browser's editor
+{
+  const local = typeof localStorage !== 'undefined' ? loadLocalEdits() : {};
+  for (const m of Object.values(MAPS)) m.objects = applyEdits(applyEdits(m.objects, EDITS_BASE[m.id]), local[m.id]);
 }

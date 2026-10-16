@@ -1,5 +1,8 @@
 import Phaser from 'phaser';
 import { MAPS, BLOCKING, type MapDef, type MapObject } from '../content/maps';
+import { editor } from './editorState';
+import { emptyEdits, loadLocalEdits, saveLocalEdits } from '../content/edits';
+import { OBJECT_PALETTE } from '../content/plain.gen';
 import { ROOMS_GEN } from '../content/rooms.gen';
 import { OSAKA_GEN } from '../content/osaka.gen';
 import { TOKYO_GEN } from '../content/tokyo.gen';
@@ -241,6 +244,127 @@ export class WorldScene extends Phaser.Scene {
     });
     bus.emit('map-entered', { id: this.map.id, name: this.map.name, nameJa: this.map.nameJa });
     this.time.delayedCall(1500, () => this.prefetchNeighbours());
+    if (editor.enabled) this.setupEditor();
+  }
+
+  // ------------------------------------------------------------ map editor (?edit)
+  private editSel?: { def: MapObject; img: Phaser.GameObjects.Image };
+  private editBox?: Phaser.GameObjects.Rectangle;
+  private dragging = false;
+
+  private setupEditor() {
+    const grid = this.add.graphics().setDepth(100010);
+    this.editBox = this.add.rectangle(0, 0, 10, 10).setStrokeStyle(2, 0xffe14d).setFillStyle(0xffe14d, 0.12).setDepth(100011).setVisible(false);
+    const drawGrid = () => {
+      grid.clear();
+      if (!editor.grid) return;
+      const cam = this.cameras.main.worldView;
+      grid.lineStyle(1, 0xffffff, 0.22);
+      for (let x = Math.floor(cam.x / TILE) * TILE; x < cam.right + TILE; x += TILE) grid.lineBetween(x, cam.y, x, cam.bottom);
+      for (let y = Math.floor(cam.y / TILE) * TILE; y < cam.bottom + TILE; y += TILE) grid.lineBetween(cam.x, y, cam.right, y);
+    };
+    this.events.on('postupdate', drawGrid);
+    this.unsub.push(editor.subscribe(drawGrid));
+    const edits = () => {
+      const all = loadLocalEdits();
+      return { all, me: (all[this.map.id] ??= emptyEdits()) };
+    };
+    const pick = (wx: number, wy: number) => {
+      for (let i = this.objects.length - 1; i >= 0; i--) {
+        const o = this.objects[i];
+        if (o.def.decor && o.img && o.img.visible && o.img.getBounds().contains(wx, wy)) return o as { def: MapObject; img: Phaser.GameObjects.Image };
+      }
+      return undefined;
+    };
+    const place = (o: { def: MapObject; img?: Phaser.GameObjects.Image }, tx: number, ty: number) => {
+      o.def.x = tx;
+      o.def.y = ty;
+      const w = o.def.w ?? 1;
+      const h = o.def.h ?? 1;
+      if (o.img) {
+        o.img.setPosition((tx + w / 2) * TILE, (ty + h) * TILE + (o.def.dy ?? 0));
+        o.img.setDepth(o.img.y - 1);
+      }
+    };
+    const select = (o: typeof this.editSel) => {
+      this.editSel = o;
+      if (o) {
+        const b = o.img.getBounds();
+        this.editBox!.setPosition(b.centerX, b.centerY).setSize(b.width, b.height).setVisible(true);
+        editor.set({ info: `${o.def.sprite} · ${o.def.x},${o.def.y}` });
+      } else this.editBox!.setVisible(false);
+    };
+    this.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
+      const tx = Math.floor(p.worldX / TILE);
+      const ty = Math.floor(p.worldY / TILE);
+      if (editor.brush) {
+        const key = editor.brush;
+        const pal = OBJECT_PALETTE.find((q) => q.name === key);
+        const w = Math.max(1, Math.round((pal?.w ?? TILE) / TILE));
+        const def: MapObject = { id: `${this.map.id}_u${Date.now().toString(36)}`, sprite: key, x: tx, y: ty, w, h: 1, solid: true, decor: true };
+        const add = () => {
+          const w2 = def.w ?? 1;
+          const img = this.add.image((tx + w2 / 2) * TILE, (ty + 1) * TILE, key).setOrigin(0.5, 1);
+          img.setDepth(img.y - 1);
+          this.objects.push({ def, img });
+          this.map.objects.push(def);
+          const e = edits();
+          e.me.added.push({ ...def });
+          saveLocalEdits(e.all);
+          select({ def, img });
+        };
+        if (this.textures.exists(key)) add();
+        else this.load.once('complete', add).image(key, `assets/${key}.png`).start();
+        return;
+      }
+      const hit = pick(p.worldX, p.worldY);
+      if (editor.eraser) {
+        if (!hit) return;
+        const e = edits();
+        const idx = e.me.added.findIndex((a) => a.id === hit.def.id);
+        if (idx >= 0) e.me.added.splice(idx, 1);
+        else e.me.removed.push(hit.def.id);
+        saveLocalEdits(e.all);
+        hit.img.destroy();
+        this.objects = this.objects.filter((o) => o !== hit);
+        this.map.objects = this.map.objects.filter((o) => o !== hit.def);
+        select(undefined);
+        return;
+      }
+      select(hit);
+      this.dragging = !!hit;
+    });
+    this.input.on('pointermove', (p: Phaser.Input.Pointer) => {
+      if (!this.dragging || !this.editSel || !p.isDown) return;
+      place(this.editSel, Math.floor(p.worldX / TILE), Math.floor(p.worldY / TILE));
+      select(this.editSel);
+    });
+    this.input.on('pointerup', () => {
+      if (!this.dragging || !this.editSel) return;
+      this.dragging = false;
+      const e = edits();
+      const a = e.me.added.find((q) => q.id === this.editSel!.def.id);
+      if (a) {
+        a.x = this.editSel.def.x;
+        a.y = this.editSel.def.y;
+      } else e.me.moved[this.editSel.def.id] = [this.editSel.def.x, this.editSel.def.y];
+      saveLocalEdits(e.all);
+    });
+    this.input.keyboard?.on('keydown-DELETE', () => {
+      if (!this.editSel) return;
+      editor.set({ eraser: true });
+      const o = this.editSel;
+      const e = edits();
+      const idx = e.me.added.findIndex((a) => a.id === o.def.id);
+      if (idx >= 0) e.me.added.splice(idx, 1);
+      else e.me.removed.push(o.def.id);
+      saveLocalEdits(e.all);
+      o.img.destroy();
+      this.objects = this.objects.filter((x) => x.def !== o.def);
+      this.map.objects = this.map.objects.filter((d) => d !== o.def);
+      editor.set({ eraser: false });
+      select(undefined);
+    });
   }
 
   fitCamera() {
