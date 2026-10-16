@@ -4,7 +4,7 @@ import { store } from '../core/store';
 import { QUESTS } from '../content/quests';
 import { SPECIES } from '../content/creatures';
 import { maxHp } from '../core/game';
-import { queueInfo } from '../core/learning';
+import { DAILY_GOAL, answersToday, queueInfo, streakDays } from '../core/learning';
 import { saveStatus } from '../core/persistence';
 import { input } from '../game/input';
 import type { Dir } from '../core/types';
@@ -47,6 +47,9 @@ export function Hud({ onMenu }: { onMenu: (tab?: any) => void }) {
           </button>
         )}
         <div className="hud-right">
+          <div className="hud-box goal-box" title="Daily goal: answer 20 questions to keep your streak">
+            🔥{streakDays(s)} <small>{Math.min(answersToday(s), DAILY_GOAL)}/{DAILY_GOAL}</small>
+          </div>
           {due > 0 && (
             <button className="hud-box due-box" onClick={() => onMenu('jlpt')} title="Items due for review">
               復習 {due}

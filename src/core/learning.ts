@@ -2,7 +2,8 @@ import { VOCAB, VOCAB_BY_ID, confusable, hasKanji, wordForm } from '../content/v
 import { GRAMMAR, GRAMMAR_BY_ID } from '../content/grammar';
 import { KANJI, KANJI_BY_ID } from '../content/kanji';
 import { gradeFromAnswer, isDue, mastery, needsContext, newCard, review } from './srs';
-import { rollDaily } from './store';
+import { rollDaily, todayKey } from './store';
+import { toast } from './events';
 import type { VocabEntry, Card, GameState, SkillArea } from './types';
 
 /**
@@ -431,6 +432,34 @@ export function battleExercise(s: GameState, area: 'vocab' | 'grammar' | 'kanji'
 // ------------------------------------------------------------------
 // recording
 
+export const DAILY_GOAL = 20;
+const dayNum = (now: number) => Number(todayKey(now).replace(/-/g, ''));
+/** answers given today (any mode) */
+export function answersToday(s: GameState, now = Date.now()): number {
+  const k = todayKey(now);
+  let n = 0;
+  for (let i = s.exerciseLog.length - 1; i >= 0 && todayKey(s.exerciseLog[i].t) === k; i--) n++;
+  return n;
+}
+/** current streak in days (still alive if the goal was reached today or yesterday) */
+export function streakDays(s: GameState, now = Date.now()): number {
+  const last = Number(s.flags.streak_day ?? 0);
+  if (!last) return 0;
+  const yesterday = dayNum(now - 86400000);
+  return last === dayNum(now) || last === yesterday ? Number(s.flags.streak_n ?? 0) : 0;
+}
+function touchStreak(s: GameState, now: number) {
+  if (answersToday(s, now) < DAILY_GOAL) return;
+  const today = dayNum(now);
+  if (s.flags.streak_day === today) return;
+  const yesterday = dayNum(now - 86400000);
+  s.flags.streak_n = s.flags.streak_day === yesterday ? Number(s.flags.streak_n ?? 0) + 1 : 1;
+  s.flags.streak_day = today;
+  s.flags.streak_best = Math.max(Number(s.flags.streak_best ?? 0), Number(s.flags.streak_n));
+  s.money += 50 * Math.min(7, Number(s.flags.streak_n));
+  toast(`今日の目標達成！ ${s.flags.streak_n}日連続 · +¥${50 * Math.min(7, Number(s.flags.streak_n))}`, 'level');
+}
+
 export function recordAnswer(s: GameState, ex: Exercise, ok: boolean, ms: number, chosen?: Option, now = Date.now()) {
   rollDaily(s, now);
   const st = s.skills[ex.area];
@@ -439,6 +468,7 @@ export function recordAnswer(s: GameState, ex: Exercise, ok: boolean, ms: number
   if (ok) st.ok++;
   s.exerciseLog.push({ t: now, key: ex.key ?? ex.id, area: ex.area, mode: ex.mode, ok, ms });
   if (s.exerciseLog.length > 600) s.exerciseLog.splice(0, s.exerciseLog.length - 600);
+  touchStreak(s, now);
   if (!ex.key) return;
   let card = s.cards[ex.key];
   if (!card) card = s.cards[ex.key] = newCard(ex.key, now);

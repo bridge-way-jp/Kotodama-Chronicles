@@ -11,7 +11,7 @@ import { CONFUSIONS } from '../content/confusions';
 import { EXAM_TYPES } from '../content/examtypes';
 import { creatureXpToNext, maxHp, xpToNext } from '../core/game';
 import { readiness } from '../core/readiness';
-import { queueInfo } from '../core/learning';
+import { DAILY_GOAL, answersToday, queueInfo, streakDays } from '../core/learning';
 import { mastery } from '../core/srs';
 import { SECTIONS, type Section } from '../core/exam';
 import { exportToJson, makeEnvelope } from '../core/save';
@@ -88,6 +88,32 @@ function Bar({ value, color = '#3d8bd9', label }: { value: number; color?: strin
 }
 
 // ------------------------------------------------------------------ status
+function AlbumGrid() {
+  const s = store.s;
+  const cards = Object.values(s.cards);
+  const known = (p: string) => cards.filter((c) => c.key.startsWith(p) && c.introduced).length;
+  const entries: { label: string; ja: string; have: number; of: number }[] = [
+    { ja: '図鑑', label: 'Kotodama met', have: Object.keys(s.dex).length, of: Object.keys(SPECIES).length },
+    { ja: '仲間', label: 'Kotodama befriended', have: Object.values(s.dex).filter((d) => d === 'caught').length, of: Object.keys(SPECIES).length },
+    { ja: '日本ノート', label: 'Japan notes', have: foundNotes(s), of: Object.keys(NOTES).length },
+    { ja: 'ひみつ', label: 'Secrets', have: foundSecrets(s), of: Object.keys(SECRETS).length },
+    { ja: '語彙', label: 'Words studied', have: known('v:'), of: VOCAB.length },
+    { ja: '文法', label: 'Grammar patterns', have: known('g:'), of: GRAMMAR.length },
+    { ja: '漢字', label: 'Kanji', have: known('k:'), of: KANJI.length },
+    { ja: '旅', label: 'Places visited', have: ['yukimi', 'shiomi', 'kyoto', 'osaka', 'tokyo'].filter((k) => s.flags[`${k}_visited`]).length, of: 5 },
+  ];
+  return (
+    <div className="album-grid">
+      {entries.map((e) => (
+        <div key={e.ja} className={`album-card ${e.have >= e.of && e.of > 0 ? 'full' : ''}`}>
+          <b lang="ja">{e.ja}</b> <small className="note">{e.label}</small>
+          <Bar value={e.of ? e.have / e.of : 0} color="#2fa58b" label={`${e.have}/${e.of}`} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function StatusTab() {
   const s = store.s;
   const r = readiness(s);
@@ -104,6 +130,13 @@ function StatusTab() {
           <div className="note">Play time {hours}h {mins}m · {s.stats.battlesWon} battles · {s.stats.recruited} Kotodama befriended</div>
         </div>
       </div>
+      <h3>今日の目標 Daily goal</h3>
+      <p className="note">
+        {Math.min(answersToday(s), DAILY_GOAL)} / {DAILY_GOAL} answers today · streak <b>🔥 {streakDays(s)}</b> days (best {Number(s.flags.streak_best ?? 0)}). Reaching the goal pays ¥50 per streak day (up to ¥350).
+      </p>
+      <Bar value={Math.min(1, answersToday(s) / DAILY_GOAL)} color="#e8903c" label={`${Math.min(answersToday(s), DAILY_GOAL)}/${DAILY_GOAL}`} />
+      <h3>アルバム Album</h3>
+      <AlbumGrid />
       <h3>言語スキル Language skills</h3>
       <p className="note">Separate from your RPG level — based only on demonstrated answers.</p>
       {r.areas.map((a) => (
