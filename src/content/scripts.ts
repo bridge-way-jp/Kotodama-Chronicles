@@ -2219,7 +2219,10 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       ],
     },
   ],
-  k_station_front: [{ steps: [n('京都駅の入口だ。ガラスの大きな建物の中に、案内所とホームへの階段がある。', 'The entrance of Kyoto Station. Inside the big glass building are the information desk and stairs to the platforms.')] }],
+  dep_kyoto: [{ steps: [n('京都駅の出発案内だ。', 'The departure board of Kyoto Station.'), { do: [{ open: 'board:kyoto' }] }] }],
+  dep_osaka: [{ steps: [n('梅田駅の出発案内だ。', 'The departure board of Umeda Station.'), { do: [{ open: 'board:osaka' }] }] }],
+  dep_tokyo: [{ steps: [n('東京駅の出発案内だ。', 'The departure board of Tokyo Station.'), { do: [{ open: 'board:tokyo' }] }] }],
+  k_station_front: [{ steps: [n('京都駅の入口だ。ガラスの大きな建物の中に、案内所とホームへの階段がある。', 'The entrance of Kyoto Station. Inside the big glass building are the information desk and stairs to the platforms.'), { do: [{ open: 'board:kyoto' }] }] }],
   ikeda: [
     {
       when: { all: [{ questActive: 'mq18' }, { obj: 'mq18.arrive' }, { notObj: 'mq18.ikeda' }] },

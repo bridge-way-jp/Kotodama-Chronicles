@@ -105,6 +105,10 @@ MAPS = {
   ('forest', 'the Midori forest (a forest clearing with a winding dirt path, a cliff with a stair, tall-grass patches and a pond)',
    'There are few bare plots here; instead clean the edges: make the path wider, the cliff edge clean with a visible rock face, and add low log fences or stone borders where the path meets the tall grass.'),
  ],
+ 'Hinomori': [
+  ('town', 'Hinomori, the small starting town (a main road, a station platform with tracks, a river with a bridge, a pond, a shrine corner, apartment, cafe, library, ramen shop, konbini and a lab in the north-east)',
+   'Turn them into small-town spaces: neat gravel or paved yards, a vegetable-bed corner, a bicycle parking spot, a little garden, a bench corner, plain lawn.'),
+ ],
  'Tokyo': [
   ('t_station', 'Tokyo Station and the Marunouchi district (a grand station plaza, ginkgo avenue, office blocks, moat)',
    'Turn them into tidy city spaces: lawns with ginkgo trees, formal flower beds, benches, small paved courtyards in front of office blocks, bicycle racks, planters.'),
@@ -118,7 +122,7 @@ MAPS = {
    'Turn them into riverside park spaces: lawns with cherry trees, benches, a playground (slide, swing, sandbox), paved gathering squares, flower beds, a small garden.'),
  ],
 }
-STYLE = {'Kyoto': 'map_gion.png', 'Osaka': 'map_nakanoshima.png', 'Tokyo': 'map_sumida.png', 'Doerfer': 'map_town.png'}
+STYLE = {'Kyoto': 'map_gion.png', 'Osaka': 'map_nakanoshima.png', 'Tokyo': 'map_sumida.png', 'Doerfer': 'map_town.png', 'Hinomori': 'map_valley.png'}
 
 
 def make_mask(mid, im):

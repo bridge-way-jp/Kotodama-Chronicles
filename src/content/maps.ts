@@ -39,7 +39,7 @@ export interface MapObject {
   /** pure decoration (planting, street furniture): blocks like a solid object but cannot be interacted with */
   decor?: boolean;
   /** show the quest alert mark above this object while its script would advance a quest */
-  hint?: boolean;
+  hint?: boolean | 'always';
   /** extra vertical offset for the image in px */
   dy?: number;
   /** draw at an absolute world position (bottom-centre, px) instead of the footprint */
@@ -161,7 +161,7 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'lamp3', sprite: 'p_lamp', x: 24, y: 19, w: 1, h: 1, script: 'lamp' },
       { id: 'station_banner', sprite: 'p_banner', x: 8, y: 20, w: 1, h: 1 },
       { id: 'old_board', sprite: 'p_board2', x: 13, y: 20, w: 2, h: 1 },
-      { id: 'timetable', sprite: 'p_departure', x: 22, y: 20, w: 2, h: 1, script: 'station_building', hint: true },
+      { id: 'timetable', sprite: 'p_departure', x: 22, y: 20, w: 2, h: 1, script: 'station_building', hint: 'always' },
       { id: 'forest_sign', sprite: 'p_sign_small', x: 22, y: 2, w: 1, h: 1 },
       { id: 'lab', sprite: 'bx_lab', x: 36, y: 5, w: 7, h: 5, script: 'lab_door' },
       { id: 'lab_sign', sprite: 'p_board', x: 36, y: 10, w: 1, h: 1 },
@@ -346,7 +346,8 @@ export const MAPS: Record<string, MapDef> = {
   k_station: {
     id: 'k_station', name: 'Kyoto Station', nameJa: '京都駅前', tiles: KYOTO_GEN.bahnhof, image: 'map_bahnhof',
     objects: [
-      { id: 'k_station', sprite: 'bx_k_bahnhof_station', x: 15, y: 5, w: 12, h: 2, script: 'k_station_front' },
+      { id: 'k_station', sprite: 'bx_k_bahnhof_station', x: 15, y: 5, w: 12, h: 2, script: 'k_station_front', hint: true },
+      { id: 'k_departures', sprite: 'p_departure', x: 24, y: 9, w: 2, h: 1, script: 'dep_kyoto', hint: 'always' },
       { id: 'k_kiosk', sprite: 'bx_k_bahnhof_kiosk', x: 4, y: 17, w: 5, h: 2, solid: false },
       { id: 'k_konbini', sprite: 'bx_k_bahnhof_konbini', x: 35, y: 12, w: 6, h: 2, solid: false },
     ],
@@ -612,7 +613,7 @@ export const MAPS: Record<string, MapDef> = {
   station: {
     id: 'station', name: 'Station waiting room', nameJa: '日野森駅 待合室', tiles: ROOMS_GEN.station.tiles, interior: true, image: ROOMS_GEN.station.image,
     // the ticket gates open the departure board (the same as the sign on the platform)
-    objects: ROOMS_GEN.station.objects.map((o) => (o.id === 'station_gate' ? { ...o, script: 'station_building', hint: true } : o)),
+    objects: ROOMS_GEN.station.objects.map((o) => (o.id === 'station_gate' ? { ...o, script: 'station_building', hint: 'always' } : o)),
     npcs: [],
     warps: [
       { x: 10, y: 14, to: { map: 'town', x: 27, y: 20, facing: 'down' } },
@@ -722,4 +723,14 @@ for (const [id, p] of Object.entries(PLAIN_GEN)) {
   m.image = p.image;
   m.tiles = p.tiles;
   m.objects = [...m.objects, ...p.decor.map((d) => ({ ...d, decor: true }))];
+}
+
+// big departure signs in front of the stations (the same board as the one in Hinomori)
+const DEPARTURE_SIGNS: Record<string, MapObject> = {
+  o_umeda: { id: 'o_departures', sprite: 'p_departure', x: 16, y: 9, w: 2, h: 1, script: 'dep_osaka', hint: 'always' },
+  t_station: { id: 't_departures', sprite: 'p_departure', x: 14, y: 9, w: 2, h: 1, script: 'dep_tokyo', hint: 'always' },
+};
+for (const [id, o] of Object.entries(DEPARTURE_SIGNS)) MAPS[id]?.objects.push(o);
+for (const [id, hint] of [['o_umeda_station', true], ['t_station_station', true]] as const) {
+  for (const m of Object.values(MAPS)) for (const o of m.objects) if (o.id === id) o.hint = hint;
 }
