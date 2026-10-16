@@ -1,5 +1,6 @@
 import type { MapObject } from './maps';
 
+
 /**
  * Hand edits of placed objects (made in the in-game map editor, `?edit` in the address).
  * Two layers: `EDITS_BASE` is what is committed to the game (merged from exported files), `local` is what this browser changed.
@@ -12,7 +13,8 @@ export interface MapEdits {
 }
 export type Edits = Record<string, MapEdits>;
 
-export const EDITS_BASE: Edits = {};
+import base from './edits.base.json';
+export const EDITS_BASE: Edits = base as unknown as Edits;
 
 const KEY = 'kc_map_edits_v1';
 export const emptyEdits = (): MapEdits => ({ removed: [], moved: {}, added: [] });
