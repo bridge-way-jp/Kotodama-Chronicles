@@ -5,10 +5,10 @@ import { store } from '../core/store';
 import { runAction, type ActionHooks } from '../core/game';
 import { encounter, recordAnswer, recordComprehension, type Exercise } from '../core/learning';
 import { toast } from '../core/events';
-import { sfx } from '../core/audio';
+import { sfx, speak, stopSpeech, ttsAvailable } from '../core/audio';
 import { NPCS } from '../content/npcs';
 import { ITEMS } from '../content/creatures';
-import { Jp, withName } from './Jp';
+import { Jp, plainText, withName } from './Jp';
 import { QuestionBlock } from './Question';
 import { ReadingChallenge, ListeningChallenge } from './Challenges';
 import { TeachCard } from './Cards';
@@ -222,6 +222,13 @@ function SayBox({ step, onNext }: { step: Extract<Step, { say: string }>; onNext
   const npc = step.who ? NPCS[step.who] : undefined;
   const [showEn, setShowEn] = useState(store.state?.settings.translation === 'always');
   const [showLog, setShowLog] = useState(false);
+
+  // read the line aloud when the player switched this on in Settings
+  useEffect(() => {
+    if (!store.state?.settings.readAloud || !ttsAvailable()) return;
+    void speak([{ text: plainText(step.say) }], store.state.settings.ttsRate ?? 1);
+    return () => stopSpeech();
+  }, [step]);
 
   useEffect(() => {
     backlog.push({ who: npc?.name ?? '', text: step.say, en: step.en });

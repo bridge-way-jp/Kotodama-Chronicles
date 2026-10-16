@@ -65,6 +65,12 @@ export interface Settings {
   musicVolume: number;
   /** seasonal particles and rain on outdoor maps (default on) */
   effects?: boolean;
+  /** text size of the whole interface */
+  uiScale?: 'normal' | 'large' | 'xlarge';
+  /** stronger contrast for text and panels */
+  highContrast?: boolean;
+  /** read dialogue lines aloud with the browser voice */
+  readAloud?: boolean;
 }
 
 export interface SkillStat {

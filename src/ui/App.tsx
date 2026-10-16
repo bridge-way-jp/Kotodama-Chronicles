@@ -8,6 +8,7 @@ import { cloud, initCloud, adoptBase, fetchPack } from '../core/cloud';
 import { loadCurriculum } from '../core/curriculum';
 import { loadLocalPack, packInfo, parsePack, registerPack, seedProgress, storeLocalPack } from '../core/packs';
 import { bus, toast } from '../core/events';
+import { applyDisplaySettings } from '../core/display';
 
 /** this device may overwrite the cloud save it has seen (the player chose a save on the title screen) */
 const acceptRemote = () => adoptBase(cloud.remote?.savedAt ?? 0);
@@ -54,7 +55,13 @@ export function App() {
       store.update(() => undefined, 'learn');
       toast(`Anki-Lernstand übernommen: ${n} Einträge`, 'learn');
     }
-    return startAutosave();
+    applyDisplaySettings(store.state?.settings);
+    const offDisplay = store.subscribe(() => applyDisplaySettings(store.state?.settings));
+    const offSave = startAutosave();
+    return () => {
+      offDisplay();
+      offSave();
+    };
   }, [screen]);
 
   if (screen === 'boot') return <div className="boot">読み込み中… Loading…</div>;
