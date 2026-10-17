@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync, unlinkSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 /** writes dist/precache.json: every built file, used by public/sw.js for offline play */
@@ -10,6 +10,11 @@ function precacheList() {
     apply: 'build' as const,
     closeBundle() {
       const root = 'dist';
+      // the painted maps ship as .webp (tools/webp_maps.py); their PNG sources stay out of the build
+      const assets = join(root, 'assets');
+      for (const f of readdirSync(assets)) {
+        if (/^(map_|room).*\.png$/.test(f) && existsSync(join(assets, f.replace(/\.png$/, '.webp')))) unlinkSync(join(assets, f));
+      }
       const files: string[] = [];
       const walk = (dir: string) => {
         for (const f of readdirSync(dir)) {

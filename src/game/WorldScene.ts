@@ -94,6 +94,9 @@ function mapKeys(m: MapDef | undefined): string[] {
 const LAZY_KEYS = new Set(Object.values(MAPS).flatMap(mapKeys));
 const CORE_KEYS = ASSET_KEYS.filter((k) => !LAZY_KEYS.has(k));
 
+/** painted maps and room backdrops ship as WebP (tools/webp_maps.py), everything else as PNG */
+const assetUrl = (key: string) => `assets/${key}.${/^(map_|room)/.test(key) ? 'webp' : 'png'}`;
+
 /** set when the player rides the bus to another map: the bus drives off once the new map is shown */
 let busLeavingOnEnter = false;
 
@@ -165,7 +168,7 @@ export class WorldScene extends Phaser.Scene {
 
   preload() {
     const here = MAPS[store.s.map] ?? MAPS.town;
-    for (const k of new Set([...CORE_KEYS, ...mapKeys(here)])) if (!this.textures.exists(k)) this.load.image(k, `assets/${k}.png`);
+    for (const k of new Set([...CORE_KEYS, ...mapKeys(here)])) if (!this.textures.exists(k)) this.load.image(k, assetUrl(k));
     if (this.load.list.size) this.showLoading();
   }
 
@@ -185,7 +188,7 @@ export class WorldScene extends Phaser.Scene {
     const keys = new Set<string>();
     for (const w of this.map.warps) for (const k of mapKeys(MAPS[w.to.map])) if (!this.textures.exists(k)) keys.add(k);
     if (!keys.size) return;
-    for (const k of keys) this.load.image(k, `assets/${k}.png`);
+    for (const k of keys) this.load.image(k, assetUrl(k));
     this.load.start();
   }
 
@@ -314,7 +317,7 @@ export class WorldScene extends Phaser.Scene {
           select({ def, img });
         };
         if (this.textures.exists(key)) add();
-        else this.load.once('complete', add).image(key, `assets/${key}.png`).start();
+        else this.load.once('complete', add).image(key, assetUrl(key)).start();
         return;
       }
       const hit = pick(p.worldX, p.worldY);
