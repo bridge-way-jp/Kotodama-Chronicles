@@ -276,6 +276,13 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
   .abtns .a small { display: block; font-size: 10px; }
   .abtns .b { left: 0; top: 60px; border-radius: 50%; }
   .toasts { bottom: 170px; }
+  .stick-zone { position: absolute; inset: 0; z-index: 4; touch-action: none; user-select: none; -webkit-user-select: none; }
+  .stick-base { position: absolute; width: 104px; height: 104px; margin: -52px 0 0 -52px; border-radius: 50%; border: 2px solid rgba(255,255,255,.55); background: rgba(20,18,28,.28); pointer-events: none; }
+  .stick-knob { position: absolute; left: 32px; top: 32px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,.8); box-shadow: 0 1px 6px rgba(0,0,0,.4); }
+  .touch.stick { justify-content: flex-end; }
+  .touch.stick .abtns { height: 96px; }
+  .touch.stick .abtns .b { top: 40px; }
+  .touch.stick .abtns .a { top: 14px; }
 }
 
 /* ---------------------------------------------------------------- dialogue */

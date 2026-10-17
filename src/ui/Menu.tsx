@@ -692,6 +692,13 @@ function SettingsTab({ actions }: { actions: MenuActions }) {
         </select>
       </label>
       <label>
+        Touch controls
+        <select value={st.touchMode ?? 'stick'} onChange={(e) => set('touchMode', e.target.value as Settings['touchMode'])}>
+          <option value="stick">Drag anywhere (stick)</option>
+          <option value="dpad">Arrow buttons</option>
+        </select>
+      </label>
+      <label>
         High contrast <input type="checkbox" checked={!!st.highContrast} onChange={(e) => set('highContrast', e.target.checked)} />
       </label>
       <label>
