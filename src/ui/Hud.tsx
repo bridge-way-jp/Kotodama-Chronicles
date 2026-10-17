@@ -110,7 +110,73 @@ export function MapBanner() {
   );
 }
 
+/** a stick that appears under the thumb: touch the world anywhere and drag to walk, tap to talk or examine */
+function StickZone() {
+  const [stick, setStick] = useState<{ x: number; y: number; dx: number; dy: number } | null>(null);
+  const g = useRef<{ id: number; x: number; y: number; t: number; moved: boolean; dir: Dir | null } | null>(null);
+  const RADIUS = 52;
+  const setDir = (d: Dir | null) => {
+    const cur = g.current;
+    if (!cur || cur.dir === d) return;
+    if (cur.dir) input.release(cur.dir);
+    if (d) input.press(d);
+    cur.dir = d;
+  };
+  const end = (e: React.PointerEvent) => {
+    const cur = g.current;
+    if (!cur || cur.id !== e.pointerId) return;
+    setDir(null);
+    if (!cur.moved && Date.now() - cur.t < 300 && e.type === 'pointerup') input.tap('a');
+    g.current = null;
+    setStick(null);
+  };
+  useEffect(() => () => input.releaseAll(), []);
+  return (
+    <div
+      className="stick-zone"
+      onPointerDown={(e) => {
+        if (g.current) return;
+        e.preventDefault();
+        e.currentTarget.setPointerCapture?.(e.pointerId);
+        g.current = { id: e.pointerId, x: e.clientX, y: e.clientY, t: Date.now(), moved: false, dir: null };
+        setStick({ x: e.clientX, y: e.clientY, dx: 0, dy: 0 });
+      }}
+      onPointerMove={(e) => {
+        const cur = g.current;
+        if (!cur || cur.id !== e.pointerId) return;
+        let dx = e.clientX - cur.x;
+        let dy = e.clientY - cur.y;
+        const len = Math.hypot(dx, dy);
+        if (len > 10) cur.moved = true;
+        if (len > RADIUS) {
+          // the stick follows the thumb, so a long drag never needs a re-centre
+          cur.x += (dx / len) * (len - RADIUS);
+          cur.y += (dy / len) * (len - RADIUS);
+          dx = e.clientX - cur.x;
+          dy = e.clientY - cur.y;
+        }
+        // a small dead zone, and a bias towards the direction already walked so diagonals do not jitter
+        if (len < 16) setDir(null);
+        else {
+          const horiz = Math.abs(dx) > Math.abs(dy) * (cur.dir === 'up' || cur.dir === 'down' ? 1.4 : 0.71);
+          setDir(horiz ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up');
+        }
+        setStick({ x: cur.x, y: cur.y, dx, dy });
+      }}
+      onPointerUp={end}
+      onPointerCancel={end}
+    >
+      {stick && (
+        <div className="stick-base" style={{ left: stick.x, top: stick.y }}>
+          <div className="stick-knob" style={{ transform: `translate(${stick.dx}px, ${stick.dy}px)` }} />
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function TouchControls() {
+  const mode = store.s.settings.touchMode ?? 'stick';
   const hold = (d: Dir) => ({
     onPointerDown: (e: React.PointerEvent) => {
       e.preventDefault();
@@ -122,17 +188,20 @@ export function TouchControls() {
     onPointerLeave: () => input.release(d),
   });
   return (
-    <div className="touch">
-      <div className="dpad">
+    <>
+    {mode === 'stick' && <StickZone />}
+    <div className={`touch ${mode}`}>
+      {mode === 'dpad' ? <div className="dpad">
         <button className="up" {...hold('up')}>▲</button>
         <button className="left" {...hold('left')}>◀</button>
         <button className="right" {...hold('right')}>▶</button>
         <button className="down" {...hold('down')}>▼</button>
-      </div>
+      </div> : <div />}
       <div className="abtns">
         <button className="a" onPointerDown={(e) => (e.preventDefault(), input.tap('a'))}>A<small>話す</small></button>
         <button className="b" onPointerDown={(e) => (e.preventDefault(), input.tap('menu'))}>☰</button>
       </div>
     </div>
+    </>
   );
 }

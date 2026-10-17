@@ -67,6 +67,8 @@ export interface Settings {
   effects?: boolean;
   /** text size of the whole interface */
   uiScale?: 'normal' | 'large' | 'xlarge';
+  /** touch screens: a floating stick anywhere on the world (default) or the fixed arrow pad */
+  touchMode?: 'stick' | 'dpad';
   /** stronger contrast for text and panels */
   highContrast?: boolean;
   /** read dialogue lines aloud with the browser voice */
