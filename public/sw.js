@@ -43,14 +43,20 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   if (isMedia(url.pathname)) {
-    // show what we have at once and refresh it quietly, so edited pictures still arrive
+    // a cached picture or sound is used as it is; after a new release each one is re-checked once
+    // (quietly, on first use), so edited pictures arrive without a network request per file on every start
     event.respondWith(
       (async () => {
         const cache = await caches.open(MEDIA);
         const hit = await cache.match(req, { ignoreSearch: true });
+        if (hit && hit.headers.get('x-build') === BUILD) return hit;
         const fresh = fetch(req)
-          .then((res) => {
-            if (res.ok && res.status === 200) cache.put(req, res.clone());
+          .then(async (res) => {
+            if (res.ok && res.status === 200) {
+              const headers = new Headers(res.headers);
+              headers.set('x-build', BUILD);
+              await cache.put(req, new Response(await res.clone().blob(), { status: 200, headers }));
+            }
             return res;
           })
           .catch(() => undefined);
