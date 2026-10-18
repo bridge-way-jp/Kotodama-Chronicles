@@ -2,6 +2,7 @@ import type { DialogueRule, Mood, Step } from '../core/script';
 import { GRAMMAR_BY_ID } from './grammar';
 import { DECO_CATALOG, SPECIES } from './creatures';
 import { TOKYO_SCRIPTS } from './scripts_tokyo';
+import { ROOMS2_SCRIPTS } from './scripts_rooms2.gen';
 
 /**
  * All interaction scripts, keyed by NPC id or map-object id.
@@ -2784,4 +2785,5 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   trash: [{ steps: [n('駅のゴミ箱だ。「カン・ビン」「ペットボトル」「その他」に分かれている。', 'The station bins: “cans & bottles”, “PET bottles”, “other”.'), { do: [{ note: 'bunbetsu' }] }] }],
   barrel: [{ steps: [n('ラーメン屋の裏の{雨水|あまみず}をためる{樽|たる}だ。', 'A rain barrel behind the ramen shop.')] }],
   ...TOKYO_SCRIPTS,
+  ...ROOMS2_SCRIPTS,
 };
