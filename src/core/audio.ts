@@ -144,12 +144,15 @@ export const TRACKS: Record<string, string> = {
 };
 
 export const MAP_MUSIC: Record<string, string> = {
-  town: 'town', apartment: 'home', cafe: 'cafe', konbini: 'town', library: 'home', station: 'town', o_station_hall: 'town', t_station_hall: 'tokyo', forest: 'forest', valley: 'valley', mountain: 'snow', harbor: 'harbor',
+  town: 'town', apartment: 'home', cafe: 'cafe', konbini: 'town', library: 'home', station: 'town', o_station_hall: 'osaka', t_station_hall: 'tokyo', k_station_hall: 'kyoto', forest: 'forest', valley: 'valley', mountain: 'snow', harbor: 'harbor',
   ryokan: 'onsen', werkstatt: 'valley', tsuru: 'snow', klinik: 'snow', kneipe: 'harbor', leuchtturm: 'lighthouse',
   k_station: 'kyoto', k_nishiki: 'kyoto', k_kamo: 'kyoto', k_gion: 'gion', k_fushimi: 'gion',
   machiya: 'gion', teehaus: 'gion', kimono: 'kyoto', izakaya: 'kyoto', bahnhofinfo: 'kyoto', nishikiladen: 'kyoto',
   o_umeda: 'osaka', o_nakanoshima: 'osaka', o_dotonbori: 'dotonbori', o_shinsekai: 'dotonbori', o_castle: 'osaka',
   t_station: 'tokyo', t_asakusa: 'tokyo_night', t_shibuya: 'tokyo', t_shinjuku: 'tokyo', t_sumida: 'tokyo_night', kissaten: 'cafe', sento: 'onsen', gamecenter: 'tokyo', yokocho: 'tokyo_night', kuyakusho: 'tokyo', radio: 'tokyo_night',
+  kyoto_wagashi: 'kyoto', kyoto_fushimi_teestand: 'gion', osaka_kaufhaus: 'osaka', osaka_kino: 'dotonbori', osaka_burg_museum: 'osaka',
+  tokyo_koban: 'tokyo', tokyo_karaoke: 'tokyo', tokyo_buchhandlung: 'tokyo', tokyo_souvenirladen: 'tokyo_night', tokyo_wohnung: 'tokyo_night', tokyo_aussichtsdeck: 'tokyo_night',
+  tal_bauernhaus: 'valley', tal_weingut: 'valley', hafen_restaurant: 'harbor', hafen_amt: 'harbor', berg_tempel: 'snow',
   buero: 'osaka', empfang: 'osaka', takoladen: 'dotonbori', okonomi: 'dotonbori', konbini2: 'osaka', kushikatsu: 'dotonbori',
 };
 

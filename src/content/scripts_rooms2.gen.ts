@@ -1147,5 +1147,95 @@ export const ROOMS2_SCRIPTS: Record<string, DialogueRule[]> = {
     }
    ]
   }
+ ],
+ "hall_map": [
+  {
+   "steps": [
+    {
+     "say": "{路線図|ろせんず}が{貼|は}ってある。{行|い}き{先|さき}ごとに{色|いろ}が{分|わ}かれていて、{見|み}ているだけで{旅|たび}に{出|で}たくなる。",
+     "en": "A route map. Each line has its own colour, and just looking makes you want to travel."
+    }
+   ]
+  }
+ ],
+ "hall_window": [
+  {
+   "steps": [
+    {
+     "say": "{窓口|まどぐち}だ。{駅員|えきいん}さんが、{旅行者|りょこうしゃ}に{切符|きっぷ}の{買い方|かいかた}を{説明|せつめい}している。",
+     "en": "The ticket window. A station attendant is explaining to a traveller how to buy a ticket."
+    }
+   ]
+  }
+ ],
+ "hall_ticket": [
+  {
+   "steps": [
+    {
+     "say": "{切符|きっぷ}の{券売機|けんばいき}だ。{行|い}き{先|さき}を{選|えら}んでお{金|かね}を{入|い}れる。ICカードのチャージもできる。",
+     "en": "A ticket machine. You choose a destination and insert money. You can also top up an IC card."
+    }
+   ]
+  }
+ ],
+ "hall_board": [
+  {
+   "steps": [
+    {
+     "say": "{発車|はっしゃ}{案内|あんない}の{掲示板|けいじばん}だ。{電車|でんしゃ}の{名前|なまえ}と{時刻|じこく}が、{順番|じゅんばん}に{並|なら}んでいる。{改札|かいさつ}の{向|む}こうが、ホームだ。",
+     "en": "The departure board with train names and times in order. The platforms lie beyond the gates."
+    }
+   ]
+  }
+ ],
+ "hall_poster": [
+  {
+   "steps": [
+    {
+     "say": "{旅行|りょこう}のポスターだ。{行|い}ったことのない{町|まち}の{景色|けしき}が、{写真|しゃしん}になっている。",
+     "en": "A travel poster with photographs of towns you have not yet visited."
+    }
+   ]
+  }
+ ],
+ "hall_locker": [
+  {
+   "steps": [
+    {
+     "say": "コインロッカーだ。{大|おお}きな{荷物|にもつ}を{預|あず}けて、{身軽|みがる}に{街|まち}を{歩|ある}ける。",
+     "en": "Coin lockers. Leave your big luggage and walk through town unburdened."
+    }
+   ]
+  }
+ ],
+ "hall_bench": [
+  {
+   "steps": [
+    {
+     "say": "{駅|えき}のベンチだ。{電車|でんしゃ}を{待|ま}つ{人|ひと}が、{荷物|にもつ}を{膝|ひざ}にのせて{座|すわ}っている。",
+     "en": "A station bench. People waiting for trains sit with their luggage on their knees."
+    }
+   ]
+  }
+ ],
+ "hall_cart": [
+  {
+   "steps": [
+    {
+     "say": "{小|ちい}さな{売店|ばいてん}だ。お{弁当|べんとう}や{飲|の}み{物|もの}、お{土産|みやげ}が{並|なら}んでいる。{電車|でんしゃ}の{中|なか}で{食|た}べる{人|ひと}が{多|おお}い。",
+     "en": "A small stall with bento, drinks and souvenirs. Many people eat on the train."
+    }
+   ]
+  }
+ ],
+ "hall_clock": [
+  {
+   "steps": [
+    {
+     "say": "{古|ふる}い{時計|とけい}が、{正確|せいかく}に{時|とき}を{刻|きざ}んでいる。{日本|にほん}の{電車|でんしゃ}は、{一分|いっぷん}の{遅|おく}れも{珍|めずら}しいのだ。",
+     "en": "An old clock keeps exact time. In Japan even a one-minute delay of a train is rare."
+    }
+   ]
+  }
  ]
 };
