@@ -9,6 +9,7 @@ import { OSAKA_GEN } from './osaka.gen';
 import { TOKYO_GEN } from './tokyo.gen';
 import { PLAIN_GEN } from './plain.gen';
 import { ROOMS2_GEN } from './rooms2.gen';
+import { HOUSE_SWAPS } from './houses.gen';
 import { EDITS_BASE, applyEdits, loadLocalEdits } from './edits';
 import type { Dir } from '../core/types';
 
@@ -725,6 +726,9 @@ for (const [id, p] of Object.entries(PLAIN_GEN)) {
   m.tiles = p.tiles;
   m.objects = [...m.objects, ...p.decor.map((d) => ({ ...d, decor: true }))];
 }
+
+// buildings that used to repeat: the new house variants (tools/build_houses.py)
+for (const m of Object.values(MAPS)) for (const o of m.objects) if (HOUSE_SWAPS[o.id]) o.sprite = HOUSE_SWAPS[o.id];
 
 // shops, halls and houses that were added later (tools/build_new_rooms.py): a room map plus the door tiles in its outdoor map
 for (const [id, r] of Object.entries(ROOMS2_GEN)) {
