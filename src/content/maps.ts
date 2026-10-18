@@ -726,31 +726,19 @@ for (const [id, p] of Object.entries(PLAIN_GEN)) {
   m.objects = [...m.objects, ...p.decor.map((d) => ({ ...d, decor: true }))];
 }
 
-// ticket-gate halls of the big stations: the same hall as in Hinomori, the gate opens that station's departures
-for (const [id, nameJa, name, gate, from, back, entry] of [
-  ['o_station_hall', '梅田駅 改札', 'Umeda Station hall', 'dep_osaka', 'o_umeda', { x: 20, y: 8 }, { x: 20, y: 7 }],
-  ['t_station_hall', '東京駅 改札', 'Tokyo Station hall', 'dep_tokyo', 't_station', { x: 20, y: 10 }, { x: 20, y: 8 }],
-] as const) {
-  MAPS[id] = {
-    id, name, nameJa, tiles: ROOMS_GEN.station.tiles, interior: true, image: ROOMS_GEN.station.image,
-    objects: ROOMS_GEN.station.objects.map((o) => (o.id === 'station_gate' ? { ...o, script: gate, hint: 'always' as const } : o)),
-    npcs: [],
-    warps: [10, 11].map((x) => ({ x, y: 14, to: { map: from, x: back.x + x - 10, y: back.y, facing: 'down' as const } })),
-  };
-  const outdoor = MAPS[from];
-  for (const dx of [0, 1]) outdoor.warps.push({ x: entry.x + dx, y: entry.y, to: { map: id, x: 10 + dx, y: 13, facing: 'up' } });
-}
-
 // shops, halls and houses that were added later (tools/build_new_rooms.py): a room map plus the door tiles in its outdoor map
 for (const [id, r] of Object.entries(ROOMS2_GEN)) {
   const [, H] = r.size;
   const e = r.ext;
   MAPS[id] = {
-    id, name: r.name, nameJa: r.nameJa, tiles: r.tiles, interior: true, image: r.image, objects: r.objects, npcs: [r.npc],
-    warps: r.doors.map((x) => ({ x, y: H - 1, to: { map: e.map, x: e.stand.x, y: e.stand.y, facing: e.stand.facing } })),
+    id, name: r.name, nameJa: r.nameJa, tiles: r.tiles, interior: true, image: r.image, objects: r.objects, npcs: r.npc ? [r.npc] : [],
+    // a hall: each door leads back to its own tile; a shop: all doors lead to the one in front of the entrance
+    warps: r.doors.map((x, i) => ({ x, y: H - 1, to: { map: e.map, x: e.stand.x + (r.spread ? i : 0), y: e.stand.y, facing: e.stand.facing } })),
   };
+  const outdoor = MAPS[e.map];
+  outdoor.warps = outdoor.warps.filter((w) => !e.tiles.some(([x, y]) => w.x === x && w.y === y)); // a hall replaces the old door
   const inX = r.doors[Math.floor((r.doors.length - 1) / 2)];
-  for (const [x, y] of e.tiles) MAPS[e.map].warps.push({ x, y, to: { map: id, x: inX, y: H - 2, facing: 'up' } });
+  e.tiles.forEach(([x, y], i) => outdoor.warps.push({ x, y, to: { map: id, x: r.spread ? r.doors[Math.min(i, r.doors.length - 1)] : inX, y: H - 2, facing: 'up' } }));
 }
 
 // hand edits: committed ones first, then the ones made in this browser's editor

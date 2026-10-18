@@ -255,6 +255,54 @@ ROOMS = {
     ),
 }
 
+# the three big station halls: the Hinomori hall layout (22 x 15, ticket gates in row 5), a hall of their own each
+HALL_SPOTS = [  # (name, x, y, w, h, script) the painted features; the gate script differs per hall
+    ('map', 2, 5, 1, 1, 'hall_map'), ('window', 3, 5, 4, 1, 'hall_window'), ('ticket', 7, 5, 2, 1, 'hall_ticket'),
+    ('timetable', 9, 5, 3, 1, 'hall_board'), ('poster', 12, 5, 1, 1, 'hall_poster'), ('gate', 13, 5, 7, 1, None),
+    ('lockers', 2, 6, 1, 5, 'hall_locker'), ('plant', 2, 11, 1, 2, 'plant'), ('posters', 20, 5, 1, 3, 'hall_poster'), ('vending', 19, 8, 2, 4, 'vending'),
+]
+HALLS = {
+    'k_station_hall': dict(
+        sheet='hall_kyoto', furniture_dir='hall_kyoto', name='Kyoto Station hall', nameJa='京都駅 改札', gate='kyoto_station',
+        ext=('k_station', [(20, 6), (21, 6)], (20, 7, 'down')),
+        furniture=[
+            ('bench1', 2, 4, 8, 3, 1, 3.1, 'hall_bench'), ('bench2', 2, 4, 11, 3, 1, 3.1, 'hall_bench'), ('bamboo', 1, 8, 7, 1, 1, 1.1, None),
+            ('lantern', 5, 12, 10, 1, 1, 0.8, None), ('cart', 4, 15, 9, 2, 1, 2.4, 'hall_cart'), ('luggage', 7, 17, 11, 1, 1, 1.1, None),
+            ('trolley', 3, 7, 12, 1, 1, 1.0, None), ('bins', 6, 3, 13, 1, 1, 1.2, 'station_trash'),
+        ],
+    ),
+    'o_station_hall': dict(
+        sheet='hall_osaka_umeda', furniture_dir='hall_osaka_umeda', name='Umeda Station hall', nameJa='梅田駅 改札', gate='dep_osaka',
+        ext=('o_umeda', [(20, 7), (21, 7)], (20, 8, 'down')),
+        furniture=[
+            ('bench1', 2, 4, 8, 3, 1, 3.1, 'hall_bench'), ('bench2', 2, 13, 11, 3, 1, 3.1, 'hall_bench'), ('kiosk', 1, 15, 8, 2, 1, 2.4, 'hall_cart'),
+            ('screen', 3, 8, 7, 1, 1, 1.0, None), ('plant', 5, 3, 12, 1, 1, 1.2, None), ('pump', 6, 6, 12, 1, 1, 0.9, None),
+            ('trolley', 4, 12, 8, 1, 1, 1.0, None), ('bins', 7, 17, 12, 1, 1, 1.2, 'station_trash'), ('post', 8, 8, 10, 1, 1, 0.8, None),
+        ],
+    ),
+    't_station_hall': dict(
+        sheet='hall_tokyo', furniture_dir='hall_tokyo', name='Tokyo Station hall', nameJa='東京駅 改札', gate='dep_tokyo',
+        ext=('t_station', [(20, 8), (21, 8)], (20, 10, 'down')),
+        furniture=[
+            ('bench1', 0, 4, 8, 3, 1, 3.1, 'hall_bench'), ('bench2', 0, 14, 11, 3, 1, 3.1, 'hall_bench'), ('lamp1', 2, 8, 7, 1, 1, 0.8, None),
+            ('lamp2', 2, 12, 7, 1, 1, 0.8, None), ('trolley', 3, 16, 9, 1, 1, 1.4, None), ('palm', 4, 3, 12, 1, 1, 1.3, None),
+            ('kiosk', 5, 6, 12, 2, 1, 2.4, 'hall_cart'), ('clock', 6, 9, 9, 1, 1, 0.8, 'hall_clock'), ('bins', 7, 17, 12, 1, 1, 1.2, 'station_trash'),
+        ],
+    ),
+}
+
+HALL_TEXT = {
+    'hall_map': ('{路線図|ろせんず}が{貼|は}ってある。{行|い}き{先|さき}ごとに{色|いろ}が{分|わ}かれていて、{見|み}ているだけで{旅|たび}に{出|で}たくなる。', 'A route map. Each line has its own colour, and just looking makes you want to travel.'),
+    'hall_window': ('{窓口|まどぐち}だ。{駅員|えきいん}さんが、{旅行者|りょこうしゃ}に{切符|きっぷ}の{買い方|かいかた}を{説明|せつめい}している。', 'The ticket window. A station attendant is explaining to a traveller how to buy a ticket.'),
+    'hall_ticket': ('{切符|きっぷ}の{券売機|けんばいき}だ。{行|い}き{先|さき}を{選|えら}んでお{金|かね}を{入|い}れる。ICカードのチャージもできる。', 'A ticket machine. You choose a destination and insert money. You can also top up an IC card.'),
+    'hall_board': ('{発車|はっしゃ}{案内|あんない}の{掲示板|けいじばん}だ。{電車|でんしゃ}の{名前|なまえ}と{時刻|じこく}が、{順番|じゅんばん}に{並|なら}んでいる。{改札|かいさつ}の{向|む}こうが、ホームだ。', 'The departure board with train names and times in order. The platforms lie beyond the gates.'),
+    'hall_poster': ('{旅行|りょこう}のポスターだ。{行|い}ったことのない{町|まち}の{景色|けしき}が、{写真|しゃしん}になっている。', 'A travel poster with photographs of towns you have not yet visited.'),
+    'hall_locker': ('コインロッカーだ。{大|おお}きな{荷物|にもつ}を{預|あず}けて、{身軽|みがる}に{街|まち}を{歩|ある}ける。', 'Coin lockers. Leave your big luggage and walk through town unburdened.'),
+    'hall_bench': ('{駅|えき}のベンチだ。{電車|でんしゃ}を{待|ま}つ{人|ひと}が、{荷物|にもつ}を{膝|ひざ}にのせて{座|すわ}っている。', 'A station bench. People waiting for trains sit with their luggage on their knees.'),
+    'hall_cart': ('{小|ちい}さな{売店|ばいてん}だ。お{弁当|べんとう}や{飲|の}み{物|もの}、お{土産|みやげ}が{並|なら}んでいる。{電車|でんしゃ}の{中|なか}で{食|た}べる{人|ひと}が{多|おお}い。', 'A small stall with bento, drinks and souvenirs. Many people eat on the train.'),
+    'hall_clock': ('{古|ふる}い{時計|とけい}が、{正確|せいかく}に{時|とき}を{刻|きざ}んでいる。{日本|にほん}の{電車|でんしゃ}は、{一分|いっぷん}の{遅|おく}れも{珍|めずら}しいのだ。', 'An old clock keeps exact time. In Japan even a one-minute delay of a train is rare.'),
+}
+
 TEXT = {
     # ---- wagashi
     'wagashi_ten': [

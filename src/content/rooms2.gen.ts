@@ -8,7 +8,9 @@ export interface Room2 {
   image: string;
   tiles: string[];
   objects: MapObject[];
-  npc: { id: string; x: number; y: number; facing: 'up' | 'down' | 'left' | 'right' };
+  npc?: { id: string; x: number; y: number; facing: 'up' | 'down' | 'left' | 'right' };
+  /** a hall: every door tile leads to its own tile outside (otherwise all lead to the same one) */
+  spread?: boolean;
   doors: number[];
   size: [number, number];
   ext: { map: string; tiles: [number, number][]; stand: { x: number; y: number; facing: 'up' | 'down' | 'left' | 'right' } };
@@ -1985,6 +1987,636 @@ export const ROOMS2_GEN: Record<string, Room2> = {
    "stand": {
     "x": 20,
     "y": 4,
+    "facing": "down"
+   }
+  }
+ },
+ "k_station_hall": {
+  "name": "Kyoto Station hall",
+  "nameJa": "京都駅 改札",
+  "image": "room2_k_station_hall",
+  "tiles": [
+   "WWWWWWWWWWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWWWWWWWWWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWWWWWWWWWDDWWWWWWWWWW"
+  ],
+  "objects": [
+   {
+    "id": "k_station_hall_bench1",
+    "sprite": "fu_hall_kyoto_k_station_hall_bench1",
+    "x": 4,
+    "y": 8,
+    "w": 3,
+    "h": 1,
+    "script": "hall_bench"
+   },
+   {
+    "id": "k_station_hall_bench2",
+    "sprite": "fu_hall_kyoto_k_station_hall_bench2",
+    "x": 4,
+    "y": 11,
+    "w": 3,
+    "h": 1,
+    "script": "hall_bench"
+   },
+   {
+    "id": "k_station_hall_bamboo",
+    "sprite": "fu_hall_kyoto_k_station_hall_bamboo",
+    "x": 8,
+    "y": 7,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "k_station_hall_lantern",
+    "sprite": "fu_hall_kyoto_k_station_hall_lantern",
+    "x": 12,
+    "y": 10,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "k_station_hall_cart",
+    "sprite": "fu_hall_kyoto_k_station_hall_cart",
+    "x": 15,
+    "y": 9,
+    "w": 2,
+    "h": 1,
+    "script": "hall_cart"
+   },
+   {
+    "id": "k_station_hall_luggage",
+    "sprite": "fu_hall_kyoto_k_station_hall_luggage",
+    "x": 17,
+    "y": 11,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "k_station_hall_trolley",
+    "sprite": "fu_hall_kyoto_k_station_hall_trolley",
+    "x": 7,
+    "y": 12,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "k_station_hall_bins",
+    "sprite": "fu_hall_kyoto_k_station_hall_bins",
+    "x": 3,
+    "y": 13,
+    "w": 1,
+    "h": 1,
+    "script": "station_trash"
+   },
+   {
+    "id": "k_station_hall_map",
+    "x": 2,
+    "y": 5,
+    "w": 1,
+    "h": 1,
+    "script": "hall_map"
+   },
+   {
+    "id": "k_station_hall_window",
+    "x": 3,
+    "y": 5,
+    "w": 4,
+    "h": 1,
+    "script": "hall_window"
+   },
+   {
+    "id": "k_station_hall_ticket",
+    "x": 7,
+    "y": 5,
+    "w": 2,
+    "h": 1,
+    "script": "hall_ticket"
+   },
+   {
+    "id": "k_station_hall_timetable",
+    "x": 9,
+    "y": 5,
+    "w": 3,
+    "h": 1,
+    "script": "hall_board"
+   },
+   {
+    "id": "k_station_hall_poster",
+    "x": 12,
+    "y": 5,
+    "w": 1,
+    "h": 1,
+    "script": "hall_poster"
+   },
+   {
+    "id": "k_station_hall_gate",
+    "x": 13,
+    "y": 5,
+    "w": 7,
+    "h": 1,
+    "script": "kyoto_station",
+    "hint": "always"
+   },
+   {
+    "id": "k_station_hall_lockers",
+    "x": 2,
+    "y": 6,
+    "w": 1,
+    "h": 5,
+    "script": "hall_locker"
+   },
+   {
+    "id": "k_station_hall_plant",
+    "x": 2,
+    "y": 11,
+    "w": 1,
+    "h": 2,
+    "script": "plant"
+   },
+   {
+    "id": "k_station_hall_posters",
+    "x": 20,
+    "y": 5,
+    "w": 1,
+    "h": 3,
+    "script": "hall_poster"
+   },
+   {
+    "id": "k_station_hall_vending",
+    "x": 19,
+    "y": 8,
+    "w": 2,
+    "h": 4,
+    "script": "vending"
+   }
+  ],
+  "doors": [
+   10,
+   11
+  ],
+  "size": [
+   22,
+   15
+  ],
+  "spread": true,
+  "ext": {
+   "map": "k_station",
+   "tiles": [
+    [
+     20,
+     6
+    ],
+    [
+     21,
+     6
+    ]
+   ],
+   "stand": {
+    "x": 20,
+    "y": 7,
+    "facing": "down"
+   }
+  }
+ },
+ "o_station_hall": {
+  "name": "Umeda Station hall",
+  "nameJa": "梅田駅 改札",
+  "image": "room2_o_station_hall",
+  "tiles": [
+   "WWWWWWWWWWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWWWWWWWWWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWWWWWWWWWDDWWWWWWWWWW"
+  ],
+  "objects": [
+   {
+    "id": "o_station_hall_bench1",
+    "sprite": "fu_hall_osaka_umeda_o_station_hall_bench1",
+    "x": 4,
+    "y": 8,
+    "w": 3,
+    "h": 1,
+    "script": "hall_bench"
+   },
+   {
+    "id": "o_station_hall_bench2",
+    "sprite": "fu_hall_osaka_umeda_o_station_hall_bench2",
+    "x": 13,
+    "y": 11,
+    "w": 3,
+    "h": 1,
+    "script": "hall_bench"
+   },
+   {
+    "id": "o_station_hall_kiosk",
+    "sprite": "fu_hall_osaka_umeda_o_station_hall_kiosk",
+    "x": 15,
+    "y": 8,
+    "w": 2,
+    "h": 1,
+    "script": "hall_cart"
+   },
+   {
+    "id": "o_station_hall_screen",
+    "sprite": "fu_hall_osaka_umeda_o_station_hall_screen",
+    "x": 8,
+    "y": 7,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "o_station_hall_plant",
+    "sprite": "fu_hall_osaka_umeda_o_station_hall_plant",
+    "x": 3,
+    "y": 12,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "o_station_hall_pump",
+    "sprite": "fu_hall_osaka_umeda_o_station_hall_pump",
+    "x": 6,
+    "y": 12,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "o_station_hall_trolley",
+    "sprite": "fu_hall_osaka_umeda_o_station_hall_trolley",
+    "x": 12,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "o_station_hall_bins",
+    "sprite": "fu_hall_osaka_umeda_o_station_hall_bins",
+    "x": 17,
+    "y": 12,
+    "w": 1,
+    "h": 1,
+    "script": "station_trash"
+   },
+   {
+    "id": "o_station_hall_post",
+    "sprite": "fu_hall_osaka_umeda_o_station_hall_post",
+    "x": 8,
+    "y": 10,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "o_station_hall_map",
+    "x": 2,
+    "y": 5,
+    "w": 1,
+    "h": 1,
+    "script": "hall_map"
+   },
+   {
+    "id": "o_station_hall_window",
+    "x": 3,
+    "y": 5,
+    "w": 4,
+    "h": 1,
+    "script": "hall_window"
+   },
+   {
+    "id": "o_station_hall_ticket",
+    "x": 7,
+    "y": 5,
+    "w": 2,
+    "h": 1,
+    "script": "hall_ticket"
+   },
+   {
+    "id": "o_station_hall_timetable",
+    "x": 9,
+    "y": 5,
+    "w": 3,
+    "h": 1,
+    "script": "hall_board"
+   },
+   {
+    "id": "o_station_hall_poster",
+    "x": 12,
+    "y": 5,
+    "w": 1,
+    "h": 1,
+    "script": "hall_poster"
+   },
+   {
+    "id": "o_station_hall_gate",
+    "x": 13,
+    "y": 5,
+    "w": 7,
+    "h": 1,
+    "script": "dep_osaka",
+    "hint": "always"
+   },
+   {
+    "id": "o_station_hall_lockers",
+    "x": 2,
+    "y": 6,
+    "w": 1,
+    "h": 5,
+    "script": "hall_locker"
+   },
+   {
+    "id": "o_station_hall_plant",
+    "x": 2,
+    "y": 11,
+    "w": 1,
+    "h": 2,
+    "script": "plant"
+   },
+   {
+    "id": "o_station_hall_posters",
+    "x": 20,
+    "y": 5,
+    "w": 1,
+    "h": 3,
+    "script": "hall_poster"
+   },
+   {
+    "id": "o_station_hall_vending",
+    "x": 19,
+    "y": 8,
+    "w": 2,
+    "h": 4,
+    "script": "vending"
+   }
+  ],
+  "doors": [
+   10,
+   11
+  ],
+  "size": [
+   22,
+   15
+  ],
+  "spread": true,
+  "ext": {
+   "map": "o_umeda",
+   "tiles": [
+    [
+     20,
+     7
+    ],
+    [
+     21,
+     7
+    ]
+   ],
+   "stand": {
+    "x": 20,
+    "y": 8,
+    "facing": "down"
+   }
+  }
+ },
+ "t_station_hall": {
+  "name": "Tokyo Station hall",
+  "nameJa": "東京駅 改札",
+  "image": "room2_t_station_hall",
+  "tiles": [
+   "WWWWWWWWWWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWWWWWWWWWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWffffffffffffffffffWW",
+   "WWWWWWWWWWDDWWWWWWWWWW"
+  ],
+  "objects": [
+   {
+    "id": "t_station_hall_bench1",
+    "sprite": "fu_hall_tokyo_t_station_hall_bench1",
+    "x": 4,
+    "y": 8,
+    "w": 3,
+    "h": 1,
+    "script": "hall_bench"
+   },
+   {
+    "id": "t_station_hall_bench2",
+    "sprite": "fu_hall_tokyo_t_station_hall_bench2",
+    "x": 14,
+    "y": 11,
+    "w": 3,
+    "h": 1,
+    "script": "hall_bench"
+   },
+   {
+    "id": "t_station_hall_lamp1",
+    "sprite": "fu_hall_tokyo_t_station_hall_lamp1",
+    "x": 8,
+    "y": 7,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "t_station_hall_lamp2",
+    "sprite": "fu_hall_tokyo_t_station_hall_lamp2",
+    "x": 12,
+    "y": 7,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "t_station_hall_trolley",
+    "sprite": "fu_hall_tokyo_t_station_hall_trolley",
+    "x": 16,
+    "y": 9,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "t_station_hall_palm",
+    "sprite": "fu_hall_tokyo_t_station_hall_palm",
+    "x": 3,
+    "y": 12,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "t_station_hall_kiosk",
+    "sprite": "fu_hall_tokyo_t_station_hall_kiosk",
+    "x": 6,
+    "y": 12,
+    "w": 2,
+    "h": 1,
+    "script": "hall_cart"
+   },
+   {
+    "id": "t_station_hall_clock",
+    "sprite": "fu_hall_tokyo_t_station_hall_clock",
+    "x": 9,
+    "y": 9,
+    "w": 1,
+    "h": 1,
+    "script": "hall_clock"
+   },
+   {
+    "id": "t_station_hall_bins",
+    "sprite": "fu_hall_tokyo_t_station_hall_bins",
+    "x": 17,
+    "y": 12,
+    "w": 1,
+    "h": 1,
+    "script": "station_trash"
+   },
+   {
+    "id": "t_station_hall_map",
+    "x": 2,
+    "y": 5,
+    "w": 1,
+    "h": 1,
+    "script": "hall_map"
+   },
+   {
+    "id": "t_station_hall_window",
+    "x": 3,
+    "y": 5,
+    "w": 4,
+    "h": 1,
+    "script": "hall_window"
+   },
+   {
+    "id": "t_station_hall_ticket",
+    "x": 7,
+    "y": 5,
+    "w": 2,
+    "h": 1,
+    "script": "hall_ticket"
+   },
+   {
+    "id": "t_station_hall_timetable",
+    "x": 9,
+    "y": 5,
+    "w": 3,
+    "h": 1,
+    "script": "hall_board"
+   },
+   {
+    "id": "t_station_hall_poster",
+    "x": 12,
+    "y": 5,
+    "w": 1,
+    "h": 1,
+    "script": "hall_poster"
+   },
+   {
+    "id": "t_station_hall_gate",
+    "x": 13,
+    "y": 5,
+    "w": 7,
+    "h": 1,
+    "script": "dep_tokyo",
+    "hint": "always"
+   },
+   {
+    "id": "t_station_hall_lockers",
+    "x": 2,
+    "y": 6,
+    "w": 1,
+    "h": 5,
+    "script": "hall_locker"
+   },
+   {
+    "id": "t_station_hall_plant",
+    "x": 2,
+    "y": 11,
+    "w": 1,
+    "h": 2,
+    "script": "plant"
+   },
+   {
+    "id": "t_station_hall_posters",
+    "x": 20,
+    "y": 5,
+    "w": 1,
+    "h": 3,
+    "script": "hall_poster"
+   },
+   {
+    "id": "t_station_hall_vending",
+    "x": 19,
+    "y": 8,
+    "w": 2,
+    "h": 4,
+    "script": "vending"
+   }
+  ],
+  "doors": [
+   10,
+   11
+  ],
+  "size": [
+   22,
+   15
+  ],
+  "spread": true,
+  "ext": {
+   "map": "t_station",
+   "tiles": [
+    [
+     20,
+     8
+    ],
+    [
+     21,
+     8
+    ]
+   ],
+   "stand": {
+    "x": 20,
+    "y": 10,
     "facing": "down"
    }
   }
