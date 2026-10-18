@@ -1,3 +1,5 @@
+import { ROOMS2_NPCS } from './rooms2.gen';
+
 export interface NpcDef {
   id: string;
   name: string;
@@ -63,3 +65,6 @@ export const NPCS: Record<string, NpcDef> = {
   kotone: { id: 'kotone', name: '琴音', nameEn: 'Kotone', role: 'K', sprite: 'npc_kotone', portrait: 'portrait_kotone', color: '#2f5a3f' },
   busdriver: { id: 'busdriver', name: '運転手さん', nameEn: 'Bus driver', role: 'Bus driver', sprite: 'npc_busdriver', portrait: 'npc_busdriver_down', color: '#4a86b5' },
 };
+
+// shopkeepers of the later interiors (tools/build_new_rooms.py)
+Object.assign(NPCS, ROOMS2_NPCS);

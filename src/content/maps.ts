@@ -8,6 +8,7 @@ import { KYOTO_GEN } from './kyoto.gen';
 import { OSAKA_GEN } from './osaka.gen';
 import { TOKYO_GEN } from './tokyo.gen';
 import { PLAIN_GEN } from './plain.gen';
+import { ROOMS2_GEN } from './rooms2.gen';
 import { EDITS_BASE, applyEdits, loadLocalEdits } from './edits';
 import type { Dir } from '../core/types';
 
@@ -738,6 +739,18 @@ for (const [id, nameJa, name, gate, from, back, entry] of [
   };
   const outdoor = MAPS[from];
   for (const dx of [0, 1]) outdoor.warps.push({ x: entry.x + dx, y: entry.y, to: { map: id, x: 10 + dx, y: 13, facing: 'up' } });
+}
+
+// shops, halls and houses that were added later (tools/build_new_rooms.py): a room map plus the door tiles in its outdoor map
+for (const [id, r] of Object.entries(ROOMS2_GEN)) {
+  const [, H] = r.size;
+  const e = r.ext;
+  MAPS[id] = {
+    id, name: r.name, nameJa: r.nameJa, tiles: r.tiles, interior: true, image: r.image, objects: r.objects, npcs: [r.npc],
+    warps: r.doors.map((x) => ({ x, y: H - 1, to: { map: e.map, x: e.stand.x, y: e.stand.y, facing: e.stand.facing } })),
+  };
+  const inX = r.doors[Math.floor((r.doors.length - 1) / 2)];
+  for (const [x, y] of e.tiles) MAPS[e.map].warps.push({ x, y, to: { map: id, x: inX, y: H - 2, facing: 'up' } });
 }
 
 // hand edits: committed ones first, then the ones made in this browser's editor

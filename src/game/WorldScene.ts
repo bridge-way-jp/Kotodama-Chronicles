@@ -4,6 +4,7 @@ import { editor } from './editorState';
 import { emptyEdits, loadLocalEdits, saveLocalEdits } from '../content/edits';
 import { OBJECT_PALETTE } from '../content/plain.gen';
 import { ROOMS_GEN } from '../content/rooms.gen';
+import { ROOMS2_GEN } from '../content/rooms2.gen';
 import { OSAKA_GEN } from '../content/osaka.gen';
 import { TOKYO_GEN } from '../content/tokyo.gen';
 import { NPCS } from '../content/npcs';
@@ -70,6 +71,7 @@ export const ASSET_KEYS = [
   ...['petal', 'leaf', 'snow', 'rain', 'glow'].flatMap((k) => [0, 1, 2, 3, 4].map((i) => `fx_${k}_${i}`)),
   'map_valley', 'bx_farmhouse', 'bx_winery', 'bx_stand', 'bx_workshop', 'bx_busstop', 'bx_ryokan',
   ...Object.values(ROOMS_GEN).flatMap((r) => [r.image, ...r.objects.flatMap((o) => (o.sprite ? [o.sprite] : []))]),
+  ...Object.values(ROOMS2_GEN).flatMap((r) => [r.image, ...r.objects.flatMap((o) => (o.sprite ? [o.sprite] : []))]),
 ];
 
 /** painted seasonal versions of an outdoor map (public/assets/<map image>_<season>.png); spring is the base image.
