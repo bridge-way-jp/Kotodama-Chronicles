@@ -35547,5 +35547,1092 @@ export const PLAIN_GEN: Record<string, { image: string; tiles: string[]; decor: 
     "dy": 0
    }
   ]
+ },
+ "town": {
+  "image": "map_town",
+  "tiles": [
+   "TTTTTTTTTTTTTTTTTTTT::TTTTTTTTTTT~~TTTTTTTTT",
+   "TTT.................::........TTT~~T......TT",
+   "TT..................::.........TT~~........T",
+   "T.JJJJJJ............::..,........~~........T",
+   "T...............TTTT::.,.........~~........T",
+   "TTT............,TTTT::......,....~~........T",
+   "TTT...........,.....::...........~~........T",
+   "T..,................::...........~~........T",
+   "T...,...............::...........~~........T",
+   "T......,............::...........~~........T",
+   "T================================~~xxxxxxxxT",
+   "T================================bbxxxxxxxxT",
+   "T================================bbxxxxxxxxT",
+   "T...................::...........~~xxxxxxxxT",
+   "T...................::...........~~.......TT",
+   "TTT.................::..~~~~.....~~......TTT",
+   "TTT.................::..~~~~.....~~..,....TT",
+   "T...................::..~~~~,....~~.....,..T",
+   "T.......,....,......::.......,...~~....,...T",
+   "T....,...,..........::....,......~~........T",
+   "T...ppppppppppppppppppppppppppp..~~........T",
+   "T...ppppppppppppppppppppppppppp..~~........T",
+   "T...PPPPPPPPPPPPPPPPPPPPPPPPPPP..~~........T",
+   "Trrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr~~rrrrrrrrT",
+   "Trrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr~~rrrrrrrrT",
+   "TT##############################T~~........T",
+   "TTT............................TT~~.......TT",
+   "TTTT..........................TTT~~TT.....TT",
+   "T................................~~........T",
+   "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT~~TTTTTTTTT"
+  ],
+  "decor": [
+   {
+    "id": "town_d0",
+    "sprite": "ob_bush_round",
+    "x": 0,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d1",
+    "sprite": "ob_bush_round",
+    "x": 2,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d2",
+    "sprite": "ob_tree_cedar",
+    "x": 4,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d3",
+    "sprite": "ob_bush_round",
+    "x": 5,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d4",
+    "sprite": "ob_grass_clump",
+    "x": 6,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d5",
+    "sprite": "ob_bush_round",
+    "x": 7,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d6",
+    "sprite": "ob_tree_cedar",
+    "x": 8,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d7",
+    "sprite": "ob_bush_round",
+    "x": 9,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d8",
+    "sprite": "ob_tree_pine",
+    "x": 12,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d9",
+    "sprite": "ob_bush_round",
+    "x": 13,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d10",
+    "sprite": "ob_bush_round",
+    "x": 14,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d11",
+    "sprite": "ob_fern",
+    "x": 15,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d12",
+    "sprite": "ob_tree_round",
+    "x": 16,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d13",
+    "sprite": "ob_grass_clump",
+    "x": 17,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d14",
+    "sprite": "ob_bush_round",
+    "x": 22,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d15",
+    "sprite": "ob_fern",
+    "x": 23,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d16",
+    "sprite": "ob_tree_cedar",
+    "x": 24,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d17",
+    "sprite": "ob_bush_round",
+    "x": 26,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d18",
+    "sprite": "ob_tree_round",
+    "x": 28,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d19",
+    "sprite": "ob_bush_round",
+    "x": 30,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d20",
+    "sprite": "ob_bush_round",
+    "x": 31,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d21",
+    "sprite": "ob_grass_clump",
+    "x": 35,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d22",
+    "sprite": "ob_tree_pine",
+    "x": 36,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d23",
+    "sprite": "ob_bush_round",
+    "x": 37,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d24",
+    "sprite": "ob_tree_round",
+    "x": 40,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d25",
+    "sprite": "ob_bush_round",
+    "x": 41,
+    "y": 0,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d26",
+    "sprite": "ob_tree_pine",
+    "x": 1,
+    "y": 1,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d27",
+    "sprite": "ob_grass_clump",
+    "x": 31,
+    "y": 1,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d28",
+    "sprite": "ob_bush_round",
+    "x": 35,
+    "y": 1,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d29",
+    "sprite": "ob_bush_round",
+    "x": 43,
+    "y": 1,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d30",
+    "sprite": "ob_grass_clump",
+    "x": 43,
+    "y": 2,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d31",
+    "sprite": "ob_grass_clump",
+    "x": 43,
+    "y": 3,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d32",
+    "sprite": "ob_grass_clump",
+    "x": 0,
+    "y": 4,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d33",
+    "sprite": "ob_bush_round",
+    "x": 16,
+    "y": 4,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d34",
+    "sprite": "ob_grass_clump",
+    "x": 17,
+    "y": 4,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d35",
+    "sprite": "ob_fern",
+    "x": 43,
+    "y": 4,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d36",
+    "sprite": "ob_fern",
+    "x": 0,
+    "y": 5,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d37",
+    "sprite": "ob_bush_round",
+    "x": 1,
+    "y": 5,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d38",
+    "sprite": "ob_fern",
+    "x": 2,
+    "y": 5,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d39",
+    "sprite": "ob_bush_round",
+    "x": 16,
+    "y": 5,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d40",
+    "sprite": "ob_bush_round",
+    "x": 19,
+    "y": 5,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d41",
+    "sprite": "ob_fern",
+    "x": 43,
+    "y": 5,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d42",
+    "sprite": "ob_grass_clump",
+    "x": 0,
+    "y": 6,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d43",
+    "sprite": "ob_grass_clump",
+    "x": 2,
+    "y": 6,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d44",
+    "sprite": "ob_bush_round",
+    "x": 0,
+    "y": 7,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d45",
+    "sprite": "ob_fern",
+    "x": 0,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d46",
+    "sprite": "ob_bush_round",
+    "x": 43,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d47",
+    "sprite": "ob_grass_clump",
+    "x": 0,
+    "y": 9,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d48",
+    "sprite": "ob_fern",
+    "x": 0,
+    "y": 10,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d49",
+    "sprite": "ob_bush_round",
+    "x": 43,
+    "y": 10,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d50",
+    "sprite": "ob_bush_round",
+    "x": 0,
+    "y": 11,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d51",
+    "sprite": "ob_grass_clump",
+    "x": 43,
+    "y": 11,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d52",
+    "sprite": "ob_bush_round",
+    "x": 0,
+    "y": 12,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d53",
+    "sprite": "ob_bush_round",
+    "x": 0,
+    "y": 13,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d54",
+    "sprite": "ob_fern",
+    "x": 43,
+    "y": 13,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d55",
+    "sprite": "ob_fern",
+    "x": 42,
+    "y": 14,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d56",
+    "sprite": "ob_bush_round",
+    "x": 43,
+    "y": 14,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d57",
+    "sprite": "ob_bush_round",
+    "x": 1,
+    "y": 15,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d58",
+    "sprite": "ob_bush_round",
+    "x": 41,
+    "y": 15,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d59",
+    "sprite": "ob_bush_round",
+    "x": 43,
+    "y": 15,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d60",
+    "sprite": "ob_fern",
+    "x": 2,
+    "y": 16,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d61",
+    "sprite": "ob_bush_round",
+    "x": 0,
+    "y": 19,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d62",
+    "sprite": "ob_bush_round",
+    "x": 43,
+    "y": 19,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d63",
+    "sprite": "ob_fern",
+    "x": 43,
+    "y": 20,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d64",
+    "sprite": "ob_grass_clump",
+    "x": 0,
+    "y": 22,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d65",
+    "sprite": "ob_fern",
+    "x": 43,
+    "y": 22,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d66",
+    "sprite": "ob_grass_clump",
+    "x": 0,
+    "y": 23,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d67",
+    "sprite": "ob_grass_clump",
+    "x": 43,
+    "y": 24,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d68",
+    "sprite": "ob_bush_round",
+    "x": 0,
+    "y": 25,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d69",
+    "sprite": "ob_bush_round",
+    "x": 1,
+    "y": 26,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d70",
+    "sprite": "ob_fern",
+    "x": 2,
+    "y": 26,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d71",
+    "sprite": "ob_bush_round",
+    "x": 32,
+    "y": 26,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d72",
+    "sprite": "ob_fern",
+    "x": 42,
+    "y": 26,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d73",
+    "sprite": "ob_bush_round",
+    "x": 43,
+    "y": 26,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d74",
+    "sprite": "ob_grass_clump",
+    "x": 0,
+    "y": 27,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d75",
+    "sprite": "ob_fern",
+    "x": 3,
+    "y": 27,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d76",
+    "sprite": "ob_bush_round",
+    "x": 30,
+    "y": 27,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d77",
+    "sprite": "ob_fern",
+    "x": 36,
+    "y": 27,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d78",
+    "sprite": "ob_grass_clump",
+    "x": 0,
+    "y": 28,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d79",
+    "sprite": "ob_bush_round",
+    "x": 43,
+    "y": 28,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d80",
+    "sprite": "ob_bush_round",
+    "x": 2,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d81",
+    "sprite": "ob_fern",
+    "x": 3,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d82",
+    "sprite": "ob_grass_clump",
+    "x": 4,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d83",
+    "sprite": "ob_grass_clump",
+    "x": 7,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d84",
+    "sprite": "ob_bush_round",
+    "x": 8,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d85",
+    "sprite": "ob_bush_round",
+    "x": 11,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d86",
+    "sprite": "ob_fern",
+    "x": 13,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d87",
+    "sprite": "ob_bush_round",
+    "x": 14,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d88",
+    "sprite": "ob_grass_clump",
+    "x": 15,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d89",
+    "sprite": "ob_bush_round",
+    "x": 16,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d90",
+    "sprite": "ob_fern",
+    "x": 17,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d91",
+    "sprite": "ob_bush_round",
+    "x": 19,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d92",
+    "sprite": "ob_bush_round",
+    "x": 21,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d93",
+    "sprite": "ob_bush_round",
+    "x": 22,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d94",
+    "sprite": "ob_grass_clump",
+    "x": 24,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d95",
+    "sprite": "ob_bush_round",
+    "x": 26,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d96",
+    "sprite": "ob_fern",
+    "x": 27,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d97",
+    "sprite": "ob_bush_round",
+    "x": 30,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d98",
+    "sprite": "ob_grass_clump",
+    "x": 31,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d99",
+    "sprite": "ob_grass_clump",
+    "x": 32,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d100",
+    "sprite": "ob_fern",
+    "x": 36,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d101",
+    "sprite": "ob_fern",
+    "x": 37,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d102",
+    "sprite": "ob_grass_clump",
+    "x": 39,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d103",
+    "sprite": "ob_bush_round",
+    "x": 40,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   },
+   {
+    "id": "town_d104",
+    "sprite": "ob_grass_clump",
+    "x": 43,
+    "y": 29,
+    "w": 1,
+    "h": 1,
+    "solid": false,
+    "dy": 0
+   }
+  ]
  }
 };
