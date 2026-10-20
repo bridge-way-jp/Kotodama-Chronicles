@@ -84,6 +84,16 @@ describe('first trips from Kyoto', () => {
   });
 });
 
+describe('the way back to Fushimi', () => {
+  it('stays open after the first ride until the summit is done', () => {
+    const s = createInitialState('T');
+    startQuest(s, 'mq21');
+    completeObjective(s, 'mq21.fushimi');
+    s.flags.fushimi_visited = true;
+    expect(JSON.stringify(pickRule(s, SCRIPTS.kyoto_station))).toContain('k_fushimi');
+  });
+});
+
 describe('maps', () => {
   it('every map is rectangular, NPCs stand on walkable tiles and warps target valid maps', () => {
     for (const m of Object.values(MAPS)) {

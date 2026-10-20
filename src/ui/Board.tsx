@@ -25,13 +25,14 @@ const D: Record<string, Dest> = {
   kyoto: { id: 'kyoto', ja: '京都', en: 'Kyoto', kind: 'shinkansen', map: 'k_station', x: 20, y: 9, when: (s) => !!s.flags.kyoto_visited, train: 'のぞみ', mins: 8 },
   osaka: { id: 'osaka', ja: '大阪', en: 'Osaka', kind: 'shinkansen', map: 'o_umeda', x: 20, y: 25, when: (s) => !!s.flags.osaka_visited, train: 'のぞみ', mins: 15 },
   tokyo: { id: 'tokyo', ja: '東京', en: 'Tokyo', kind: 'shinkansen', map: 't_station', x: 20, y: 9, when: (s) => !!s.flags.tokyo_visited, train: 'のぞみ', mins: 5 },
+  fushimi: { id: 'fushimi', ja: '伏見稲荷', en: 'Fushimi Inari', kind: 'local', map: 'k_fushimi', x: 20, y: 26, when: (s) => !!s.flags.fushimi_visited, train: '奈良線', mins: 6 },
   shiomi: { id: 'shiomi', ja: '潮見町', en: 'Shiomi', kind: 'local', map: 'harbor', x: 10, y: 2, when: (s) => !!s.flags.shiomi_visited, train: '各駅停車', mins: 20 },
   yukimi: { id: 'yukimi', ja: '雪見村', en: 'Yukimi Village', kind: 'local', map: 'mountain', x: 9, y: 19, when: (s) => !!s.flags.yukimi_visited, train: '各駅停車', mins: 25 },
 };
 
 export const STATIONS: Record<string, { ja: string; en: string; dests: string[] }> = {
   hinomori: { ja: '日野森駅', en: 'Hinomori', dests: ['tokyo', 'osaka', 'kyoto', 'shiomi', 'yukimi'] },
-  kyoto: { ja: '京都駅', en: 'Kyoto', dests: ['hinomori', 'osaka', 'tokyo'] },
+  kyoto: { ja: '京都駅', en: 'Kyoto', dests: ['fushimi', 'hinomori', 'osaka', 'tokyo'] },
   osaka: { ja: '梅田駅', en: 'Umeda', dests: ['hinomori', 'kyoto', 'tokyo'] },
   tokyo: { ja: '東京駅', en: 'Tokyo', dests: ['hinomori', 'osaka', 'kyoto'] },
   shiomi: { ja: '潮見駅', en: 'Shiomi', dests: ['hinomori'] },
