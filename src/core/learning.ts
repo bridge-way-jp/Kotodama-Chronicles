@@ -431,6 +431,12 @@ export function battleExercise(s: GameState, area: 'vocab' | 'grammar' | 'kanji'
   const fresh = (list: Card[]) => list.filter((c) => !recentBattleKeys.includes(c.key));
   if (fresh(pool).length) pool = fresh(pool);
   else if (fresh(cards).length) pool = fresh(cards);
+  else if (cards.length > 1) {
+    // everything was asked recently (few studied items): take the one asked longest ago, never the one just before
+    const age = (c: Card) => recentBattleKeys.lastIndexOf(c.key);
+    const oldest = Math.min(...cards.map(age));
+    pool = cards.filter((c) => age(c) === oldest);
+  }
   let key: string;
   if (pool.length) key = pool[Math.floor(r() * pool.length)].key;
   else {
