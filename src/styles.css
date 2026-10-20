@@ -1053,3 +1053,8 @@ html.hc .btn { border: 2px solid #000; }
 .kar-bar { height: 10px; background: rgba(0,0,0,.35); border-radius: 5px; overflow: hidden; margin: 6px 0; }
 .kar-bar div { height: 100%; background: linear-gradient(90deg, #ff77c8, #ffe14d); }
 .kar-list { display: grid; gap: 8px; margin: 8px 0; }
+
+/* where the next step of the main quest is (HUD quest box) */
+.quest-box .guide { margin-top: 2px; color: #7a3b2a; font-weight: bold; }
+.quest-box .guide-en { font-weight: normal; opacity: .75; font-size: 90%; }
+.quest-box .guide-far { color: #3a6a8a; font-weight: normal; }

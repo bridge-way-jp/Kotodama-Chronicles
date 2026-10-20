@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { MAPS, BLOCKING, type MapDef, type MapObject } from '../content/maps';
+import { MAPS, BLOCKING, type MapDef, type MapObject, type Warp } from '../content/maps';
 import { editor } from './editorState';
 import { emptyEdits, loadLocalEdits, saveLocalEdits } from '../content/edits';
 import { OBJECT_PALETTE } from '../content/plain.gen';
@@ -9,8 +9,9 @@ import { OSAKA_GEN } from '../content/osaka.gen';
 import { TOKYO_GEN } from '../content/tokyo.gen';
 import { NPCS } from '../content/npcs';
 import { ENCOUNTERS } from '../content/creatures';
-import { check, pickRule, type Step } from '../core/script';
+import { check, pickRule } from '../core/script';
 import { SCRIPTS } from '../content/scripts';
+import { advancesQuest, roomHasQuestScene } from '../core/guide';
 import { FOLK, type FolkDef } from '../content/folk';
 import { DECO_CATALOG } from '../content/creatures';
 import { store } from '../core/store';
@@ -131,17 +132,6 @@ interface Wanderer {
   moving: boolean;
 }
 
-/** true if these steps advance a quest (start it or complete an objective) */
-function advancesQuest(steps: Step[]): boolean {
-  return steps.some((st) => {
-    if ('do' in st) return st.do.some((a) => 'objective' in a || 'startQuest' in a || 'recruit' in a);
-    if ('choice' in st) return st.choice.some((c) => c.then && advancesQuest(c.then));
-    if ('if' in st) return advancesQuest(st.then) || (!!st.else && advancesQuest(st.else));
-    if ('battle' in st) return true;
-    return false;
-  });
-}
-
 export class WorldScene extends Phaser.Scene {
   map!: MapDef;
   layer!: Phaser.Tilemaps.TilemapLayer;
@@ -153,7 +143,7 @@ export class WorldScene extends Phaser.Scene {
   moving = false;
   npcs: NpcSprite[] = [];
   wanderers: Wanderer[] = [];
-  objects: { def: MapObject; img?: Phaser.GameObjects.Image; marker?: Phaser.GameObjects.Image }[] = [];
+  objects: { def: MapObject; img?: Phaser.GameObjects.Image; marker?: Phaser.GameObjects.Image; doors?: Warp[] }[] = [];
   tileIndex: Record<string, number> = {};
   tilesetCols = 0;
   animatedCols: number[] = [];
@@ -416,7 +406,14 @@ export class WorldScene extends Phaser.Scene {
     }
 
     for (const def of this.map.objects) {
-      const entry: { def: MapObject; img?: Phaser.GameObjects.Image; marker?: Phaser.GameObjects.Image } = { def };
+      const entry: { def: MapObject; img?: Phaser.GameObjects.Image; marker?: Phaser.GameObjects.Image; doors?: Warp[] } = { def };
+      // a building: the door tiles of its facade; walking into it, or pressing the button facing it, goes in
+      if (!this.map.interior && def.sprite && !def.decor && def.solid !== false && (def.w ?? 1) >= 2) {
+        const w = def.w ?? 1;
+        const h = def.h ?? 1;
+        const doors = this.map.warps.filter((wp) => wp.x >= def.x && wp.x < def.x + w && wp.y >= def.y && wp.y <= def.y + h && MAPS[wp.to.map]?.interior);
+        if (doors.length) entry.doors = doors;
+      }
       if (def.sprite && this.textures.exists(def.sprite)) {
         const w = def.w ?? 1;
         const h = def.h ?? 1;
@@ -425,7 +422,7 @@ export class WorldScene extends Phaser.Scene {
         const img = this.add.image(cx, by, def.sprite).setOrigin(0.5, 1);
         img.setDepth(by - 1);
         entry.img = img;
-        if (def.hint && this.textures.exists('em_alert')) {
+        if ((def.hint || entry.doors) && this.textures.exists('em_alert')) {
           entry.marker = this.add.image(cx, by - Math.min(img.height, 3 * TILE) - 2, 'em_alert').setOrigin(0.5, 1).setDepth(100001).setVisible(false);
           this.tweens.add({ targets: entry.marker, y: entry.marker.y - 4, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
         }
@@ -773,7 +770,8 @@ export class WorldScene extends Phaser.Scene {
       if (o.marker) {
         const rules = SCRIPTS[o.def.script ?? o.def.id];
         const steps = rules ? pickRule(s, rules) : null;
-        o.marker.setVisible(o.def.hint === 'always' || (!!steps && advancesQuest(steps)));
+        const inside = !!o.doors?.some((d) => roomHasQuestScene(s, d.to.map)); // the quest person or thing is inside this building
+        o.marker.setVisible(o.def.hint === 'always' || inside || (!!steps && advancesQuest(steps)));
       }
     }
     if (this.tint) this.tint.setVisible(s.timeOfDay === 'evening');
@@ -979,6 +977,8 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     if (this.blocked(tx, ty)) {
+      const b = this.buildingAt(tx, ty);
+      if (b) return void this.enter(b, tx);
       this.streak = 0;
       if (changed) store.update((s) => (s.facing = dir), 'facing');
       return;
@@ -1101,7 +1101,28 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     const obj = this.objectAt(fx, fy, true) ?? this.objectAt(fx, fy) ?? this.objectAt(tx, ty, true) ?? this.objectAt(tx, ty);
-    if (obj && !obj.decor) bus.emit('interact', { id: obj.script ?? obj.id, kind: 'object' });
+    if (obj && !obj.decor) {
+      // a building with a door: the button goes in, unless this object has a quest scene right now
+      const b = this.objects.find((o) => o.def === obj && o.doors);
+      const rules = SCRIPTS[obj.script ?? obj.id];
+      const steps = rules ? pickRule(store.s, rules) : null;
+      if (b && !(steps && advancesQuest(steps))) return void this.enter(b, fx);
+      bus.emit('interact', { id: obj.script ?? obj.id, kind: 'object' });
+    }
+  }
+
+  /** the building (an object with a facade door) covering this tile */
+  buildingAt(x: number, y: number) {
+    return this.objects.find((o) => o.doors && check(store.s, o.def.when) && x >= o.def.x && x < o.def.x + (o.def.w ?? 1) && y >= o.def.y && y < o.def.y + (o.def.h ?? 1));
+  }
+
+  /** go in through the door of this building that is nearest to column x */
+  enter(b: { doors?: Warp[] }, x: number) {
+    const open = (b.doors ?? []).filter((d) => check(store.s, d.when));
+    const d = open.sort((p, q) => Math.abs(p.x - x) - Math.abs(q.x - x))[0] ?? b.doors?.[0];
+    if (!d) return;
+    if (!check(store.s, d.when)) return void (d.locked && bus.emit('message', { text: d.locked }));
+    this.warpTo(d.to.map, d.to.x, d.to.y, d.to.facing);
   }
 
   warpTo(map: string, x: number, y: number, facing: Dir) {

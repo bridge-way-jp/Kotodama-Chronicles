@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { bus, type ToastMsg } from '../core/events';
 import { store } from '../core/store';
 import { QUESTS } from '../content/quests';
+import { guideFor } from '../core/guide';
 import { SPECIES } from '../content/creatures';
 import { maxHp } from '../core/game';
 import { DAILY_GOAL, answersToday, queueInfo, streakDays } from '../core/learning';
@@ -15,6 +16,7 @@ export function Hud({ onMenu }: { onMenu: (tab?: any) => void }) {
   useEffect(() => bus.on('save-status', () => setV((v) => v + 1)), []);
   const main = Object.values(s.quests).find((q) => q.status === 'active' && QUESTS[q.id].kind === 'main');
   const objective = main ? QUESTS[main.id].objectives.find((o) => !main.objectives[o.id]) : null;
+  const guide = main ? guideFor(s, main.id, s.map) : null;
   const lead = s.team[0];
   const due = queueInfo(s).due.length;
   return (
@@ -44,6 +46,12 @@ export function Hud({ onMenu }: { onMenu: (tab?: any) => void }) {
             <span className="qkind main">メイン</span>
             <span lang="ja">{QUESTS[main.id].title}</span>
             <div className="small">▸ {objective.text}</div>
+            {guide && (
+              <div className="small guide" title={guide.en}>
+                📍 <span lang="ja">{guide.ja}</span> <span className="guide-en">{guide.en}</span>
+                {guide.far && <span className="guide-far"> · 駅・バスで</span>}
+              </div>
+            )}
           </button>
         )}
         <div className="hud-right">
