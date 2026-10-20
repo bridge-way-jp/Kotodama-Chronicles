@@ -115,6 +115,7 @@ interface NpcSprite {
   y: number;
   base: string;
   when?: any;
+  auto?: boolean;
   marker?: Phaser.GameObjects.Image;
 }
 
@@ -198,6 +199,7 @@ export class WorldScene extends Phaser.Scene {
     this.moving = false;
     this.animFrame = 0;
     this.npcs = [];
+    this.autoSeen.clear();
     this.wanderers = [];
     this.objects = [];
     this.tint = undefined;
@@ -449,7 +451,7 @@ export class WorldScene extends Phaser.Scene {
       const img = this.add.image(n.x * TILE + TILE / 2, n.y * TILE + TILE - 2, key).setOrigin(0.5, 1);
       if (def.tint) img.setTint(def.tint);
       img.setDepth(img.y);
-      const entry: NpcSprite = { id: n.id, sprite: img, x: n.x, y: n.y, base, when: n.when };
+      const entry: NpcSprite = { id: n.id, sprite: img, x: n.x, y: n.y, base, when: n.when, auto: n.auto };
       if (this.textures.exists('em_alert')) {
         entry.marker = this.add.image(img.x, img.y - img.height - 2, 'em_alert').setOrigin(0.5, 1).setDepth(100001).setVisible(false);
         this.tweens.add({ targets: entry.marker, y: entry.marker.y - 4, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
@@ -1020,8 +1022,33 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 
+  /** story spots and people that start their scene by themselves (a quest-gated rule must apply); each fires once per visit */
+  private autoSeen = new Set<string>();
+  private autoScenes() {
+    const s = store.s;
+    const fire = (key: string, script: string, inside: boolean) => {
+      if (!inside) return void this.autoSeen.delete(key);
+      if (this.autoSeen.has(key)) return;
+      const rule = SCRIPTS[script]?.find((r) => check(s, r.when));
+      if (!rule?.when) return;
+      this.autoSeen.add(key);
+      bus.emit('interact', { id: script, kind: 'object' });
+    };
+    for (const { def } of this.objects) {
+      if (!def.auto || !check(s, def.when)) continue;
+      const w = def.w ?? 1;
+      const h = def.h ?? 1;
+      fire('o:' + def.id, def.script ?? def.id, this.px >= def.x && this.px < def.x + w && this.py >= def.y && this.py < def.y + h);
+    }
+    for (const n of this.npcs) {
+      if (!n.auto || !check(s, n.when)) continue;
+      fire('n:' + n.id, n.id, Math.abs(n.x - this.px) + Math.abs(n.y - this.py) <= 1);
+    }
+  }
+
   afterStep() {
     const s = store.s;
+    this.autoScenes();
     if (s.stats.steps >= 10000 && !s.flags.secret_manpo && !this.manpoShown) {
       this.manpoShown = true;
       bus.emit('interact', { id: 'egg_manpo', kind: 'object' });
