@@ -28,27 +28,27 @@ from extract_sheets import OUT, ROOT, components, load, magenta_mask, resize_px,
 SWAPS = {
     'kyoto': {
         'k_kamo_house': 2, 'k_machiya1': 0, 'k_machiya2': 1, 'k_machiya3': 3, 'k_machiya4': 5, 'k_machiya5': 6,
-        'k_souvenir': 8, 'k_shrine_office': 4, 'k_kamo_kimono': 10,
+        'k_souvenir': 8, 'k_shrine_office': 4, 'k_kamo_kimono': 10, 'k_kamo_shop': 7,
         'k_shop_t2': 9, 'k_shop_t3': 7, 'k_shop_t4': 8, 'k_shop_t5': 5, 'k_shop_b0': 8, 'k_shop_b1': 9, 'k_shop_b2': 7, 'k_shop_b3': 6,
     },
     'osaka': {
-        'o_dotonbori_d': 3, 'o_dotonbori_e': 2, 'o_shinsekai_a': 4, 'o_shinsekai_b': 6, 'o_shinsekai_c': 1, 'o_shinsekai_d': 5,
+        'o_dotonbori_d': 3, 'o_dotonbori_e': 2, 'o_shinsekai_b': 6, 'o_shinsekai_c': 1, 'o_shinsekai_d': 5,
         'o_shinsekai_e': 0, 'o_shinsekai_f': 10, 'o_shinsekai_g': 9, 'o_shinsekai_h': 2, 'o_nakanoshima_c2': 7,
         'o_osakajo_t1': 0, 'o_osakajo_t2': 1, 'o_umeda_s1': 5, 'o_umeda_t3': 8,
     },
     'tokyo': {
         't_asakusa_kissaten': 8, 't_asakusa_s1': 7, 't_asakusa_s2': 10, 't_asakusa_s3': 11, 't_asakusa_s4': 6,
-        't_shibuya_k1': 11, 't_shinjuku_a1': 7, 't_shinjuku_a2': 8, 't_shinjuku_a3': 10, 't_shinjuku_a4': 6, 't_shinjuku_yokocho': 7,
+        't_shibuya_k1': 11, 't_shinjuku_a1': 7, 't_shinjuku_a2': 8, 't_shinjuku_a3': 10, 't_shinjuku_a4': 6,
         't_station_k1': 6, 't_station_k2': 11,
         't_shibuya_t2': 1, 't_shibuya_t3': 2, 't_shinjuku_t1': 10, 't_shinjuku_t3': 3, 't_station_t1': 4, 't_station_t2': 5,
-        't_station_t5': 0, 't_station_t6': 6, 't_station_t4': 11, 't_shibuya_game': 9, 't_shibuya_t4': 4,
+        't_station_t5': 0, 't_station_t4': 11, 't_shibuya_game': 9, 't_shibuya_t4': 4,
     },
     'doerfer': {
         'valley_farmhouse': 0, 'valley_stand': 9, 'yukimi_gassho': 6, 'harbor_genhouse': 3,
     },
 }
-# the one Asakusa souvenir shop borrows a Kyoto look (a wooden sweets shop with lanterns)
-CROSS = {'t_asakusa_h1': ('kyoto', 8)}
+# a building borrows the look of another city where that fits what is inside (Asakusa souvenir shop: a wooden sweets shop with lanterns)
+CROSS = {'t_asakusa_h1': ('kyoto', 8), 't_shinjuku_yokocho': ('osaka', 3), 'o_umeda_t4': ('tokyo', 6)}  # a red-lantern izakaya for the yokocho, a konbini for the Umeda konbini
 
 
 def pieces(sheet):
