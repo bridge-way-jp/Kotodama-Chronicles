@@ -2787,3 +2787,21 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   ...TOKYO_SCRIPTS,
   ...ROOMS2_SCRIPTS,
 };
+
+// the first trips to Osaka and Tokyo start in Hinomori (station_building) but the quest also names Kyoto station: the same
+// arrival there, so nobody is stuck in Kyoto; and a hint when Ms. Mori has not been talked to yet
+{
+  const hinomori = SCRIPTS.station_building;
+  const arrival = (quest: string) => hinomori.find((r) => JSON.stringify(r.when ?? {}).includes(`"questActive":"${quest}"`) && JSON.stringify(r.when).includes(`${quest}.arrive`))!;
+  const fromKyoto = (quest: string, city: string): DialogueRule[] => {
+    const a = arrival(quest);
+    return [
+      { when: a.when, steps: [n(`京都駅。${city}へ向かう新幹線が、ホームで待っている。`, `Kyoto Station. The Shinkansen to ${city === '大阪' ? 'Osaka' : 'Tokyo'} waits at the platform.`), ...a.steps.slice(1)] },
+      {
+        when: { all: [{ questActive: quest }, { notObj: `${quest}.mori` }] },
+        steps: [n(`${city}へ行く前に、日野森の森さんに話を聞こう。まず、日野森へ戻る電車に乗る。`, `Before going to ${city === '大阪' ? 'Osaka' : 'Tokyo'}, talk to Ms. Mori in Hinomori. First take the train back to Hinomori.`), { do: [{ open: 'board:kyoto' }] }],
+      },
+    ];
+  };
+  SCRIPTS.kyoto_station.unshift(...fromKyoto('mq22', '大阪'), ...fromKyoto('mq26', '東京'));
+}
