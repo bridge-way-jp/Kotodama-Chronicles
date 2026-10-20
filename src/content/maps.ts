@@ -41,6 +41,8 @@ export interface MapObject {
   label?: { text: string; x: number; y: number };
   /** pure decoration (planting, street furniture): blocks like a solid object but cannot be interacted with */
   decor?: boolean;
+  /** a story spot: walking onto it starts its script by itself (only while a quest-gated scene applies), no button needed */
+  auto?: boolean;
   /** show the quest alert mark above this object while its script would advance a quest */
   hint?: boolean | 'always';
   /** extra vertical offset for the image in px */
@@ -51,6 +53,8 @@ export interface MapObject {
 
 export interface NpcPlacement {
   id: string;
+  /** a story person: walking up to them starts the scene by itself (only while a quest-gated scene applies) */
+  auto?: boolean;
   x: number;
   y: number;
   facing?: Dir;
@@ -89,6 +93,11 @@ export interface MapDef {
   /** wandering townsfolk: FOLK id, home tile, wander radius in tiles */
   wanderers?: { id: string; x: number; y: number; r: number }[];
 }
+
+/** the tunnel of torii gates along the path up the mountain (the flat ground has none painted in): you walk through them */
+const FUSHIMI_TORII: MapObject[] = [[20, 25], [20, 23], [20, 21], [20, 19], [20, 17], [19, 15], [19, 13], [19, 11], [20, 9], [24, 9], [24, 7], [18, 6], [21, 6], [19, 4], [22, 3], [25, 3], [28, 3]].map(
+  ([cx, y], i) => ({ id: `k_torii${i}`, sprite: 'tp_torii', x: cx - 1, y, w: 3, h: 1, solid: false, decor: true }),
+);
 
 const TOWN = [
   'TTTTTTTTTTTTTTTTTTTT::TTTTTTTTTTT~~TTTTTTTTT',
@@ -330,7 +339,7 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'kaito', x: 6, y: 15, facing: 'down' },
       { id: 'shiraishi', x: 22, y: 20, facing: 'up', when: { questDone: 'mq15' } },
       { id: 'umino', x: 36, y: 4, facing: 'up', when: { not: { item: 'lighthouse_key' } } },
-      { id: 'traveller', x: 36, y: 2, facing: 'down', when: { all: [{ obj: 'mq17.master' }, { notObj: 'mq17.lighthouse' }] } },
+      { id: 'traveller', x: 36, y: 2, facing: 'down', auto: true, when: { all: [{ obj: 'mq17.master' }, { notObj: 'mq17.lighthouse' }] } },
     ],
     warps: [
       ...[16, 17, 18].map((x) => ({ x, y: 12, to: { map: 'kneipe', x: 6, y: 8, facing: 'up' as const } })),
@@ -426,7 +435,8 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'k_shrine', sprite: 'bx_k_fushimi_shrine', x: 21, y: 15, w: 4, h: 2, script: 'k_shrine' },
       { id: 'k_shrine_office', sprite: 'bx_k_fushimi_tea_house', x: 11, y: 18, w: 4, h: 2, script: 'k_shrine_office' },
       { id: 'k_souvenir', sprite: 'bx_k_fushimi_market_shop', x: 27, y: 18, w: 4, h: 2, script: 'k_souvenir' },
-      { id: 'k_fushimi_summit', x: 28, y: 1, w: 6, h: 1, solid: false, script: 'k_fushimi_summit' },
+      { id: 'k_fushimi_summit', x: 28, y: 1, w: 6, h: 1, solid: false, script: 'k_fushimi_summit', auto: true },
+      ...FUSHIMI_TORII,
     ],
     npcs: [],
     zones: [{ x0: 17, y0: 3, x1: 26, y1: 10, encounters: 'fushimi', bg: 'bg_kyoto_fushimi.webp' }],
