@@ -11,7 +11,8 @@ import { NPCS } from '../content/npcs';
 import { ENCOUNTERS } from '../content/creatures';
 import { check, pickRule } from '../core/script';
 import { SCRIPTS } from '../content/scripts';
-import { advancesQuest, roomHasQuestScene } from '../core/guide';
+import { advancesQuest, guideFor, nextExit, outdoorOf, roomHasQuestScene } from '../core/guide';
+import { QUESTS } from '../content/quests';
 import { FOLK, type FolkDef } from '../content/folk';
 import { DECO_CATALOG } from '../content/creatures';
 import { store } from '../core/store';
@@ -153,6 +154,9 @@ export class WorldScene extends Phaser.Scene {
   unsub: (() => void)[] = [];
   lastStepEncounter = 0;
   manpoShown = false;
+  /** points to the next quest target at the screen edge when it is out of view */
+  questArrow?: Phaser.GameObjects.Triangle;
+  arrowTick = 0;
   stepCount = 0;
 
   constructor() {
@@ -190,6 +194,7 @@ export class WorldScene extends Phaser.Scene {
     this.animFrame = 0;
     this.npcs = [];
     this.autoSeen.clear();
+    this.questArrow = undefined;
     this.wanderers = [];
     this.objects = [];
     this.tint = undefined;
@@ -437,6 +442,12 @@ export class WorldScene extends Phaser.Scene {
             .setResolution(4)
             .setDepth(by);
         }
+      }
+      if (!entry.img && !def.decor && (def.w ?? 1) > 0 && this.textures.exists('em_alert')) {
+        // an invisible story spot (an alley, a bridge, a river bank): the "!" floats above the place itself
+        const w = def.w ?? 1;
+        entry.marker = this.add.image((def.x + w / 2) * TILE, def.y * TILE + 6, 'em_alert').setOrigin(0.5, 1).setDepth(100001).setVisible(false);
+        this.tweens.add({ targets: entry.marker, y: entry.marker.y - 4, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
       }
       this.objects.push(entry);
     }
@@ -940,6 +951,7 @@ export class WorldScene extends Phaser.Scene {
   // ------------------------------------------------------------ update loop
   update() {
     if (!store.state) return;
+    if (++this.arrowTick % 10 === 0) this.updateQuestArrow();
     if (input.consume('menu')) {
       if (!input.locked) bus.emit('open-menu');
     }
@@ -1044,6 +1056,56 @@ export class WorldScene extends Phaser.Scene {
       if (!n.auto || !check(s, n.when)) continue;
       fire('n:' + n.id, n.id, Math.abs(n.x - this.px) + Math.abs(n.y - this.py) <= 1);
     }
+  }
+
+  /** where the quest goes on from this map: a "!" (person, thing, door) on this map, else the exit towards the target */
+  questPoint(): { x: number; y: number } | null {
+    const pts: { x: number; y: number }[] = [];
+    for (const n of this.npcs) if (n.marker?.visible && n.sprite.visible) pts.push({ x: n.sprite.x, y: n.sprite.y - 16 });
+    for (const o of this.objects) if (o.marker?.visible && !o.def.hint) pts.push({ x: o.marker.x, y: o.marker.y + 16 });
+    if (!pts.length) {
+      const s = store.s;
+      const main = Object.values(s.quests).find((q) => q.status === 'active' && QUESTS[q.id]?.kind === 'main');
+      const g = main ? guideFor(s, main.id, this.map.id) : null;
+      if (g && !g.far && g.map !== this.map.id) {
+        if (this.map.interior) {
+          const w = this.map.warps[0];
+          if (w) pts.push({ x: w.x * TILE + TILE / 2, y: w.y * TILE });
+        } else if (outdoorOf(g.map) !== this.map.id) {
+          const hop = nextExit(this.map.id, g.map);
+          if (hop) pts.push({ x: hop.x * TILE + TILE / 2, y: hop.y * TILE + TILE / 2 });
+        }
+      }
+    }
+    if (!pts.length) return null;
+    const px = this.player.x;
+    const py = this.player.y;
+    return pts.sort((a, b) => Math.hypot(a.x - px, a.y - py) - Math.hypot(b.x - px, b.y - py))[0];
+  }
+
+  /** the arrow at the screen edge towards the quest point while it is off screen */
+  updateQuestArrow() {
+    if (!this.questArrow) {
+      this.questArrow = this.add.triangle(0, 0, 0, -16, 13, 13, -13, 13, 0xe8879f).setStrokeStyle(3, 0x4f2e17).setDepth(100002).setVisible(false);
+      this.tweens.add({ targets: this.questArrow, alpha: 0.55, duration: 600, yoyo: true, repeat: -1 });
+    }
+    const pt = this.questPoint();
+    const cam = this.cameras.main;
+    const view = cam.worldView;
+    if (!pt || view.contains(pt.x, pt.y) || input.locked) return void this.questArrow.setVisible(false);
+    // screen position of the point, clamped to a margin inside the view
+    const sx = (pt.x - view.x) * cam.zoom;
+    const sy = (pt.y - view.y) * cam.zoom;
+    const cx = cam.width / 2;
+    const cy = cam.height / 2;
+    const ang = Math.atan2(sy - cy, sx - cx);
+    const m = 28;
+    const k = Math.min(Math.abs((cx - m) / Math.cos(ang) || Infinity), Math.abs((cy - m - 40) / Math.sin(ang) || Infinity));
+    // drawn in world space (camera zoom applies), placed at that screen position inside the current view
+    this.questArrow
+      .setPosition(view.x + (cx + Math.cos(ang) * k) / cam.zoom, view.y + (cy + Math.sin(ang) * k) / cam.zoom)
+      .setRotation(ang + Math.PI / 2)
+      .setVisible(true);
   }
 
   afterStep() {

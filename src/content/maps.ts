@@ -300,7 +300,7 @@ export const MAPS: Record<string, MapDef> = {
       { id: 'yukimi_station', sprite: 'bx_yukimi_station', x: 1, y: 19, w: 4, h: 2, interactAt: [{ x: 5, y: 19 }, { x: 6, y: 20 }, { x: 3, y: 18 }, { x: 4, y: 18 }] },
       { id: 'yukimi_kamakura', sprite: 'bx_kamakura', x: 17, y: 15, w: 3, h: 1 },
       // the festival field (snow lanterns are lit in the story)
-      { id: 'yukimi_festival', x: 13, y: 21, w: 6, h: 3, solid: false },
+      { id: 'yukimi_festival', x: 13, y: 21, w: 6, h: 3, solid: false, auto: true },
     ],
     npcs: [
       { id: 'hina', x: 19, y: 16, facing: 'down' },
@@ -453,7 +453,9 @@ export const MAPS: Record<string, MapDef> = {
   },
   o_dotonbori: {
     id: 'o_dotonbori', name: 'Dotonbori', nameJa: '道頓堀', tiles: OSAKA_GEN.dotonbori.tiles, image: 'map_dotonbori',
-    objects: [...OSAKA_GEN.dotonbori.objects, { id: 'doton_alley', x: 15, y: 10, w: 2, h: 1, solid: false, script: 'doton_alley' }],
+    objects: [...OSAKA_GEN.dotonbori.objects, { id: 'doton_alley', x: 15, y: 10, w: 2, h: 1, solid: false, script: 'doton_alley', auto: true },
+      // the tired lantern Kotodama is visible in the alley while the quest waits for it
+      { id: 'doton_lantern_k', sprite: 'k_lantern1', x: 15, y: 9, w: 2, h: 1, solid: false, decor: true, when: { all: [{ questActive: 'mq24' }, { notObj: 'mq24.lamp' }] } }],
     npcs: [], warps: OSAKA_GEN.dotonbori.warps, bg: 'bg_osaka_dotonbori.webp',
     // the alley between the shops: the worn-out lantern lives there
     // (objects are appended below)
@@ -464,7 +466,7 @@ export const MAPS: Record<string, MapDef> = {
   },
   o_castle: {
     id: 'o_castle', name: 'Osaka Castle', nameJa: '大阪城', tiles: OSAKA_GEN.osakajo.tiles, image: 'map_osakajo',
-    objects: [...OSAKA_GEN.osakajo.objects, { id: 'castle_bridge', x: 20, y: 12, w: 4, h: 1, solid: false, script: 'castle_bridge' }], encounters: 'osaka_castle', bg: 'bg_osaka_castle.webp',
+    objects: [...OSAKA_GEN.osakajo.objects, { id: 'castle_bridge', x: 20, y: 12, w: 4, h: 1, solid: false, script: 'castle_bridge', auto: true }], encounters: 'osaka_castle', bg: 'bg_osaka_castle.webp',
     npcs: [], warps: OSAKA_GEN.osakajo.warps,
     zones: [{ x0: 3, y0: 6, x1: 7, y1: 12, encounters: 'osaka_castle', bg: 'bg_osaka_castle.webp' }],
   },
@@ -488,7 +490,7 @@ export const MAPS: Record<string, MapDef> = {
   },
   t_sumida: {
     id: 't_sumida', name: 'Sumida Riverside', nameJa: '隅田川', tiles: TOKYO_GEN.sumida.tiles, image: 'map_sumida', encounters: 'tokyo_river',
-    objects: [...TOKYO_GEN.sumida.objects, { id: 'sm_river', x: 31, y: 8, w: 4, h: 1, solid: false, script: 'sm_river' }, { id: 'sm_dock', x: 20, y: 19, w: 3, h: 1, solid: false, script: 'sm_dock' }],
+    objects: [...TOKYO_GEN.sumida.objects, { id: 'sm_river', x: 31, y: 8, w: 4, h: 1, solid: false, script: 'sm_river', auto: true }, { id: 'sm_dock', x: 20, y: 19, w: 3, h: 1, solid: false, script: 'sm_dock' }],
     npcs: [{ id: 'kotone', x: 33, y: 8, facing: 'down', when: { flag: 'chapter7_done' } }], warps: TOKYO_GEN.sumida.warps, bg: 'bg_tokyo_sumida.webp',
     zones: [{ x0: 1, y0: 21, x1: 12, y1: 25, encounters: 'tokyo_river', bg: 'bg_tokyo_sumida.webp' }],
   },

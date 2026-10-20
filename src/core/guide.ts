@@ -66,7 +66,7 @@ export function regionOf(mapId: string): string {
 }
 
 /** the way to another outdoor map of the same region: which exit to take next, and where it leads */
-export function nextExit(from: string, to: string): { dirJa: string; dirEn: string; viaJa: string; viaEn: string } | null {
+export function nextExit(from: string, to: string): { dirJa: string; dirEn: string; viaJa: string; viaEn: string; x: number; y: number } | null {
   const start = outdoorOf(from);
   const goal = outdoorOf(to);
   if (start === goal) return null;
@@ -98,7 +98,7 @@ export function nextExit(from: string, to: string): { dirJa: string; dirEn: stri
   if (hop.x <= W * 0.2) dirs.push(['西', 'west']);
   if (hop.x >= W * 0.8) dirs.push(['東', 'east']);
   const d = dirs[0] ?? ['出口', 'exit'];
-  return { dirJa: d[0], dirEn: d[1], viaJa: MAPS[at].nameJa, viaEn: MAPS[at].name };
+  return { dirJa: d[0], dirEn: d[1], viaJa: MAPS[at].nameJa, viaEn: MAPS[at].name, x: hop.x, y: hop.y };
 }
 
 export interface Guide {
