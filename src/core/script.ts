@@ -79,7 +79,9 @@ export type Step =
   | { do: Action[] }
   | { if: Cond; then: Step[]; else?: Step[] }
   | { toast: string }
-  | { shop: string[] };
+  | { shop: string[] }
+  /** a short check of studied items that must be passed (the ticket check at the station gates) */
+  | { check: 'ticket' };
 
 export interface DialogueRule {
   when?: Cond;

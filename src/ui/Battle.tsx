@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AFFINITY_INFO, ATTACK_SPRITES, IDLE_SPRITES, ITEMS, MOVES, SPECIES } from '../content/creatures';
 import { store } from '../core/store';
-import { battleExercise, recordAnswer, type Exercise, type Option } from '../core/learning';
+import { battleExercise, exerciseFor, recordAnswer, type Exercise, type Option } from '../core/learning';
 import { enemyDamage, enemyMaxHp, makeEnemy, playerDamage, recruitSucceeds, xpReward, type BattleSetup } from '../core/battle';
 import { KotodamaScene, type SceneSpec } from './KotodamaScene';
 import { addCreature, completeObjective, giveCreatureXp, grantXp, healTeam, maxHp } from '../core/game';
@@ -168,6 +168,18 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
   const [tools, setTools] = useState<ExerciseTools>({});
   const usedAbility = useRef(new Set<string>());
   const bond = useRef(0);
+  /** items answered wrongly in this battle: they come back (in another form) on a later turn of the same area */
+  const missed = useRef<string[]>([]);
+  const nextExercise = (area: 'vocab' | 'grammar' | 'kanji' | 'listening'): Exercise => {
+    const prefix = area === 'grammar' ? 'g:' : area === 'kanji' ? 'k:' : 'v:';
+    const i = missed.current.findIndex((k) => k.startsWith(prefix));
+    if (i >= 0) {
+      const [k] = missed.current.splice(i, 1);
+      const ex = exerciseFor(store.s, k, { prefer: area === 'listening' ? 'listen' : 'context' });
+      return { ...ex, instruction: 'もう一度！ ' + ex.instruction };
+    }
+    return battleExercise(store.s, area);
+  };
   const usedTalk = useRef(new Set<string>());
   const enemy = enemyRef.current;
   const me = s.team[active];
@@ -263,6 +275,7 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
 
   const onAnswer = (moveId: string, ex: Exercise, ok: boolean, ms: number, chosen?: Option) => {
     store.update((st) => recordAnswer(st, ex, ok, ms, chosen), 'learn');
+    if (!ok && ex.key && !missed.current.includes(ex.key)) missed.current.push(ex.key);
     const hit = playerDamage(me, moveId, enemy, ok, ms);
     enemy.hp = Math.max(0, enemy.hp - hit.dmg);
     setShake('enemy');
@@ -383,7 +396,7 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
               {SPECIES[me.speciesId].moves.map((id) => {
                 const m = MOVES[id];
                 return (
-                  <button key={id} className="btn cmd move" onClick={() => setPhase({ k: 'question', moveId: id, ex: battleExercise(store.s, m.area) })}>
+                  <button key={id} className="btn cmd move" onClick={() => setPhase({ k: 'question', moveId: id, ex: nextExercise(m.area) })}>
                     <b>{m.name}</b>
                     <small>
                       {AFFINITY_INFO[m.affinity].ja} · {{ vocab: '語彙', grammar: '文法', kanji: '漢字', listening: '聴解' }[m.area]} · 威力{m.power}
