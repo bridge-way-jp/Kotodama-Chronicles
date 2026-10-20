@@ -65,7 +65,45 @@ export function regionOf(mapId: string): string {
   return REGIONS.find(([re]) => re.test(o))?.[2] ?? o;
 }
 
+/** the way to another outdoor map of the same region: which exit to take next, and where it leads */
+export function nextExit(from: string, to: string): { dirJa: string; dirEn: string; viaJa: string; viaEn: string } | null {
+  const start = outdoorOf(from);
+  const goal = outdoorOf(to);
+  if (start === goal) return null;
+  const prev = new Map<string, { map: string; x: number; y: number }>();
+  const q = [start];
+  const seen = new Set([start]);
+  while (q.length) {
+    const cur = q.shift()!;
+    if (cur === goal) break;
+    for (const w of MAPS[cur].warps) {
+      const t = MAPS[w.to.map];
+      if (!t || t.interior || seen.has(t.id)) continue;
+      seen.add(t.id);
+      prev.set(t.id, { map: cur, x: w.x, y: w.y });
+      q.push(t.id);
+    }
+  }
+  if (!prev.has(goal)) return null;
+  // walk back to the first hop
+  let at = goal;
+  while (prev.get(at)!.map !== start) at = prev.get(at)!.map;
+  const hop = prev.get(at)!;
+  const m = MAPS[start];
+  const W = m.tiles[0].length;
+  const H = m.tiles.length;
+  const dirs: [string, string][] = [];
+  if (hop.y <= H * 0.2) dirs.push(['北', 'north']);
+  if (hop.y >= H * 0.8) dirs.push(['南', 'south']);
+  if (hop.x <= W * 0.2) dirs.push(['西', 'west']);
+  if (hop.x >= W * 0.8) dirs.push(['東', 'east']);
+  const d = dirs[0] ?? ['出口', 'exit'];
+  return { dirJa: d[0], dirEn: d[1], viaJa: MAPS[at].nameJa, viaEn: MAPS[at].name };
+}
+
 export interface Guide {
+  /** the way on from where you are: an exit to take, or going outside first */
+  route?: string;
   ja: string;
   en: string;
   /** the map the next step happens in */
@@ -95,11 +133,21 @@ export function guideFor(s: GameState, questId: string, current: string): Guide 
   const best = pool.find((p) => outdoorOf(p.map) === outdoorOf(current)) ?? pool[0];
   const out = MAPS[outdoorOf(best.map)];
   const room = best.map !== out.id ? MAPS[best.map] : null;
+  const far = regionOf(best.map) !== regionOf(current);
+  let route: string | undefined;
+  if (!far && current !== best.map) {
+    const here = outdoorOf(current);
+    const hop = here !== out.id ? nextExit(current, best.map) : null;
+    const hopText = hop ? `${hop.dirJa}の出口（${hop.dirEn}）から${hop.viaJa}へ` : '';
+    if (MAPS[current].interior) route = hopText ? `まず外へ出て、${hopText}` : 'まず外へ出る';
+    else if (hopText) route = hopText;
+  }
   return {
     ja: room ? `${out.nameJa} › ${room.nameJa}` : out.nameJa,
     en: room ? `${out.name} › ${room.name}` : out.name,
+    route,
     map: best.map,
-    far: regionOf(best.map) !== regionOf(current),
+    far,
   };
 }
 
