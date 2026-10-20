@@ -935,10 +935,11 @@ export class WorldScene extends Phaser.Scene {
     return undefined;
   }
 
-  blocked(x: number, y: number): boolean {
+  /** passersby only block each other: the player slips past them, so they never close a narrow way */
+  blocked(x: number, y: number, forPlayer = false): boolean {
     if (BLOCKING.has(this.tileAt(x, y))) return true;
     if (this.npcAt(x, y)) return true;
-    if (this.wandererAt(x, y)) return true;
+    if (!forPlayer && this.wandererAt(x, y)) return true;
     const s = store.s;
     return this.objects.some(({ def }) => {
       if (def.solid === false || !check(s, def.when)) return false;
@@ -988,7 +989,7 @@ export class WorldScene extends Phaser.Scene {
       this.warpTo(warp.to.map, warp.to.x, warp.to.y, warp.to.facing);
       return;
     }
-    if (this.blocked(tx, ty)) {
+    if (this.blocked(tx, ty, true)) {
       const b = this.buildingAt(tx, ty);
       if (b) return void this.enter(b, tx);
       this.streak = 0;
