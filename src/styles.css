@@ -272,16 +272,30 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
   .dpad .up { left: 46px; top: 0; } .dpad .down { left: 46px; bottom: 0; }
   .dpad .left { left: 0; top: 46px; } .dpad .right { right: 0; top: 46px; }
   .abtns { position: relative; width: 130px; height: 120px; pointer-events: auto; }
-  .abtns .a { right: 0; top: 30px; width: 66px; height: 66px; border-radius: 50%; background: var(--blue); color: #fff; font-family: var(--pixel); }
-  .abtns .a small { display: block; font-size: 10px; }
-  .abtns .b { left: 0; top: 60px; border-radius: 50%; }
+  /* the wooden sakura look of the rest of the interface: a pink petal button with a cream ring, a cream menu button */
+  .abtns .a {
+    right: 0; top: 30px; width: 70px; height: 70px; border-radius: 50%; font-family: var(--pixel); color: #fff8ec;
+    border: 3px solid var(--blue-dark);
+    background: radial-gradient(circle at 35% 30%, #f6b3c4 0%, var(--sakura) 55%, #cf6a86 100%);
+    box-shadow: 0 0 0 3px var(--panel), 0 0 0 5px var(--blue), 0 4px 8px rgba(0,0,0,.45), inset 0 -4px 0 rgba(120,40,70,.35);
+    text-shadow: 0 1px 0 #8f3a55, 0 0 4px rgba(120,40,70,.6);
+  }
+  .abtns .a b { display: block; font-size: 22px; line-height: 1; font-weight: normal; }
+  .abtns .a small { display: block; font-size: 12px; margin-top: 1px; }
+  .abtns .a:active { transform: translateY(2px) scale(.96); box-shadow: 0 0 0 3px var(--panel), 0 0 0 5px var(--blue), 0 1px 3px rgba(0,0,0,.45), inset 0 3px 0 rgba(120,40,70,.35); }
+  .abtns .b {
+    left: 0; top: 60px; border-radius: 50%; width: 46px; height: 46px; color: var(--blue-dark); font-size: 20px;
+    background: var(--panel); border: 3px solid var(--blue);
+    box-shadow: 0 0 0 2px var(--blue-light), 0 3px 6px rgba(0,0,0,.4);
+  }
+  .abtns .b:active { transform: translateY(2px) scale(.96); }
   .toasts { bottom: 170px; }
   .stick-zone { position: absolute; inset: 0; z-index: 4; touch-action: none; user-select: none; -webkit-user-select: none; }
   .stick-base { position: absolute; width: 104px; height: 104px; margin: -52px 0 0 -52px; border-radius: 50%; border: 2px solid rgba(255,255,255,.55); background: rgba(20,18,28,.28); pointer-events: none; }
   .stick-knob { position: absolute; left: 32px; top: 32px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,.8); box-shadow: 0 1px 6px rgba(0,0,0,.4); }
   .touch.stick { justify-content: flex-end; }
   .touch.stick .abtns { height: 96px; }
-  .touch.stick .abtns .b { top: 40px; }
+  .touch.stick .abtns .b { top: 44px; }
   .touch.stick .abtns .a { top: 14px; }
 }
 

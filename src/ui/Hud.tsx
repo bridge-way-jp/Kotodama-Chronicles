@@ -198,7 +198,7 @@ export function TouchControls() {
         <button className="down" {...hold('down')}>▼</button>
       </div> : <div />}
       <div className="abtns">
-        <button className="a" onPointerDown={(e) => (e.preventDefault(), input.tap('a'))}>A<small>話す</small></button>
+        <button className="a" onPointerDown={(e) => (e.preventDefault(), input.tap('a'))}><b>A</b><small>話す</small></button>
         <button className="b" onPointerDown={(e) => (e.preventDefault(), input.tap('menu'))}>☰</button>
       </div>
     </div>
