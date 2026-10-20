@@ -1062,3 +1062,11 @@ html.hc .btn { border: 2px solid #000; }
 .quest-box .guide-en { font-weight: normal; opacity: .75; font-size: 90%; }
 .quest-box .guide-far { color: #3a6a8a; font-weight: normal; }
 .quest-box .guide-route { color: #3a6a8a; font-weight: bold; }
+
+/* a check that must be passed (after a new expression, after a wrong story answer, ticket check at the gates) */
+.mastery-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-family: var(--pixel); margin-bottom: 4px; }
+.mastery-dots { display: inline-flex; gap: 5px; }
+.mastery-dots i { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--blue); background: transparent; display: inline-block; }
+.mastery-dots i.on { background: var(--ok); border-color: var(--ok); }
+.mastery-sub { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+.mastery-again { font-size: 13px; color: #9a3412; font-weight: bold; margin-bottom: 4px; }

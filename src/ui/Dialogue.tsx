@@ -13,6 +13,7 @@ import { QuestionBlock } from './Question';
 import { ReadingChallenge, ListeningChallenge } from './Challenges';
 import { TeachCard } from './Cards';
 import { Battle, type BattleResult } from './Battle';
+import { MasteryCheck, checkKeys } from './Mastery';
 
 /** Session-only dialogue backlog (not saved). */
 export const backlog: { who: string; text: string; en?: string }[] = [];
@@ -96,44 +97,11 @@ export function ScriptRunner({ steps, onEnd, hooks }: { steps: Step[]; onEnd: ()
       </div>
     );
 
-  if ('quiz' in step)
-    return (
-      <div className="dialogue-wrap">
-        <div className="panel quiz-box">
-          <QuestionBlock
-            key={stackKey(stack)}
-            q={step.quiz}
-            retry={step.retry}
-            onDone={(ok, ms) => {
-              store.update((s) => {
-                const [first, ...rest] = step.keys ?? [];
-                if (first) {
-                  const ex: Exercise = { id: 'quiz', key: first, area: step.area, mode: 'story-quiz', context: true, instruction: '', prompt: step.quiz.q, explanation: '' };
-                  recordAnswer(s, ex, ok, ms);
-                } else recordComprehension(s, step.area, ok, ms);
-                encounter(s, rest);
-              }, 'learn');
-              advance();
-            }}
-          />
-        </div>
-      </div>
-    );
+  if ('quiz' in step) return <QuizStep key={stackKey(stack)} step={step} onDone={() => advance()} />;
 
-  if ('teach' in step)
-    return (
-      <div className="dialogue-wrap">
-        <div className="panel">
-          <TeachCard
-            k={step.teach}
-            onDone={() => {
-              store.update((s) => encounter(s, [step.teach]), 'learn');
-              advance();
-            }}
-          />
-        </div>
-      </div>
-    );
+  if ('teach' in step) return <TeachStep key={stackKey(stack)} k={step.teach} onDone={() => advance()} />;
+
+  if ('check' in step) return <TicketCheck key={stackKey(stack)} onDone={() => advance()} />;
 
   if ('battle' in step)
     return (
@@ -145,6 +113,79 @@ export function ScriptRunner({ steps, onEnd, hooks }: { steps: Step[]; onEnd: ()
   if ('shop' in step) return <Shop items={step.shop} onDone={() => advance()} />;
 
   return null;
+}
+
+/** a story question; a wrong first answer brings the same item back in another form until it is right */
+function QuizStep({ step, onDone }: { step: Extract<Step, { quiz: unknown }>; onDone: () => void }) {
+  const [again, setAgain] = useState<string | null>(null);
+  if (again)
+    return (
+      <div className="dialogue-wrap">
+        <div className="panel quiz-box">
+          <MasteryCheck keys={[again]} title="もう一度 — once more" sub="That one did not sit yet. Here it is again in another form." onDone={onDone} />
+        </div>
+      </div>
+    );
+  return (
+    <div className="dialogue-wrap">
+      <div className="panel quiz-box">
+        <QuestionBlock
+          q={step.quiz}
+          retry={step.retry}
+          onDone={(ok, ms) => {
+            const [first, ...rest] = step.keys ?? [];
+            store.update((s) => {
+              if (first) {
+                const ex: Exercise = { id: 'quiz', key: first, area: step.area, mode: 'story-quiz', context: true, instruction: '', prompt: step.quiz.q, explanation: '' };
+                recordAnswer(s, ex, ok, ms);
+              } else recordComprehension(s, step.area, ok, ms);
+              encounter(s, rest);
+            }, 'learn');
+            if (!ok && first) setAgain(first);
+            else onDone();
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+/** a new expression: the card, then straight away one question on it that has to be answered right */
+function TeachStep({ k, onDone }: { k: string; onDone: () => void }) {
+  const [checking, setChecking] = useState(false);
+  return (
+    <div className="dialogue-wrap">
+      <div className="panel">
+        {checking ? (
+          <MasteryCheck keys={[k]} title="確認 — quick check" sub="Use what you just read." onDone={onDone} />
+        ) : (
+          <TeachCard
+            k={k}
+            onDone={() => {
+              store.update((s) => encounter(s, [k]), 'learn');
+              setChecking(true);
+            }}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** the ticket check at the gates: three studied items (due ones first); skipped while nothing has been studied yet */
+function TicketCheck({ onDone }: { onDone: () => void }) {
+  const [keys] = useState(() => checkKeys(store.s, 3));
+  useEffect(() => {
+    if (!keys.length) onDone();
+  }, []);
+  if (!keys.length) return null;
+  return (
+    <div className="dialogue-wrap">
+      <div className="panel quiz-box">
+        <MasteryCheck keys={keys} title="🎫 改札チェック — ticket check" sub="Three words you have learned. Answer them to pass the gate." onDone={onDone} />
+      </div>
+    </div>
+  );
 }
 
 function stackKey(stack: Frame[]) {

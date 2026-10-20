@@ -263,7 +263,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
             onClose={() => remove(o.id)}
             onPick={(d: Dest) => {
               remove(o.id);
-              push({ kind: 'script', steps: [{ do: [{ train: d.kind }, { warp: { map: d.map, x: d.x, y: d.y } }] }] });
+              push({ kind: 'script', steps: [{ check: 'ticket' }, { do: [{ train: d.kind }, { warp: { map: d.map, x: d.x, y: d.y } }] }] });
             }}
           />
         );
