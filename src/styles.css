@@ -1058,3 +1058,4 @@ html.hc .btn { border: 2px solid #000; }
 .quest-box .guide { margin-top: 2px; color: #7a3b2a; font-weight: bold; }
 .quest-box .guide-en { font-weight: normal; opacity: .75; font-size: 90%; }
 .quest-box .guide-far { color: #3a6a8a; font-weight: normal; }
+.quest-box .guide-route { color: #3a6a8a; font-weight: bold; }

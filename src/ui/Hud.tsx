@@ -50,6 +50,7 @@ export function Hud({ onMenu }: { onMenu: (tab?: any) => void }) {
               <div className="small guide" title={guide.en}>
                 📍 <span lang="ja">{guide.ja}</span> <span className="guide-en">{guide.en}</span>
                 {guide.far && <span className="guide-far"> · 駅・バスで</span>}
+                {guide.route && <div className="guide-route" lang="ja">➜ {guide.route}</div>}
               </div>
             )}
           </button>
