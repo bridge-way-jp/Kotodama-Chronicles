@@ -68,6 +68,22 @@ describe('quests & scripts', () => {
   });
 });
 
+describe('first trips from Kyoto', () => {
+  it('Kyoto station starts the Osaka and Tokyo arrivals, or points the way back to Mori', () => {
+    for (const [quest, flag] of [['mq22', 'osaka_visited'], ['mq26', 'tokyo_visited']] as const) {
+      const s = createInitialState('T');
+      startQuest(s, quest);
+      s.flags.kyoto_visited = true;
+      const hint = pickRule(s, SCRIPTS.kyoto_station)!;
+      expect(JSON.stringify(hint)).toContain('open');
+      completeObjective(s, `${quest}.mori`);
+      const rule = pickRule(s, SCRIPTS.kyoto_station)!;
+      expect(JSON.stringify(rule)).toContain(`${quest}.arrive`);
+      expect(JSON.stringify(rule)).toContain(flag);
+    }
+  });
+});
+
 describe('maps', () => {
   it('every map is rectangular, NPCs stand on walkable tiles and warps target valid maps', () => {
     for (const m of Object.values(MAPS)) {
