@@ -10,6 +10,7 @@ export const HOUSE_SWAPS: Record<string, string> = {
   "k_souvenir": "bx_n_k_souvenir",
   "k_shrine_office": "bx_n_k_shrine_office",
   "k_kamo_kimono": "bx_n_k_kamo_kimono",
+  "k_kamo_shop": "bx_n_k_kamo_shop",
   "k_shop_t2": "bx_n_k_shop_t2",
   "k_shop_t3": "bx_n_k_shop_t3",
   "k_shop_t4": "bx_n_k_shop_t4",
@@ -20,7 +21,6 @@ export const HOUSE_SWAPS: Record<string, string> = {
   "k_shop_b3": "bx_n_k_shop_b3",
   "o_dotonbori_d": "bx_n_o_dotonbori_d",
   "o_dotonbori_e": "bx_n_o_dotonbori_e",
-  "o_shinsekai_a": "bx_n_o_shinsekai_a",
   "o_shinsekai_b": "bx_n_o_shinsekai_b",
   "o_shinsekai_c": "bx_n_o_shinsekai_c",
   "o_shinsekai_d": "bx_n_o_shinsekai_d",
@@ -43,7 +43,6 @@ export const HOUSE_SWAPS: Record<string, string> = {
   "t_shinjuku_a2": "bx_n_t_shinjuku_a2",
   "t_shinjuku_a3": "bx_n_t_shinjuku_a3",
   "t_shinjuku_a4": "bx_n_t_shinjuku_a4",
-  "t_shinjuku_yokocho": "bx_n_t_shinjuku_yokocho",
   "t_station_k1": "bx_n_t_station_k1",
   "t_station_k2": "bx_n_t_station_k2",
   "t_shibuya_t2": "bx_n_t_shibuya_t2",
@@ -53,7 +52,6 @@ export const HOUSE_SWAPS: Record<string, string> = {
   "t_station_t1": "bx_n_t_station_t1",
   "t_station_t2": "bx_n_t_station_t2",
   "t_station_t5": "bx_n_t_station_t5",
-  "t_station_t6": "bx_n_t_station_t6",
   "t_station_t4": "bx_n_t_station_t4",
   "t_shibuya_game": "bx_n_t_shibuya_game",
   "t_shibuya_t4": "bx_n_t_shibuya_t4",
@@ -61,5 +59,7 @@ export const HOUSE_SWAPS: Record<string, string> = {
   "valley_stand": "bx_n_valley_stand",
   "yukimi_gassho": "bx_n_yukimi_gassho",
   "harbor_genhouse": "bx_n_harbor_genhouse",
-  "t_asakusa_h1": "bx_n_t_asakusa_h1"
+  "t_asakusa_h1": "bx_n_t_asakusa_h1",
+  "t_shinjuku_yokocho": "bx_n_t_shinjuku_yokocho",
+  "o_umeda_t4": "bx_n_o_umeda_t4"
 };
