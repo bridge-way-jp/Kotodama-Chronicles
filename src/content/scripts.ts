@@ -2202,7 +2202,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   // ================================================================ Kyoto (chapter 5)
   kyoto_station: [
     {
-      when: { all: [{ questActive: 'mq21' }, { notObj: 'mq21.fushimi' }] },
+      when: { questActive: 'mq21' }, // also after the first ride, so the way back to Fushimi stays open until the summit is done
       steps: [
         n('京都駅。構内は、朝から{大勢|おおぜい}の人でごった返している。伏見稲荷へは、{奈良線|ならせん}の{各駅停車|かくえきていしゃ}で、二つ目の駅だ。', 'Kyoto Station, crowded from early morning. Fushimi Inari is two stops away on the local Nara Line.'),
         {
