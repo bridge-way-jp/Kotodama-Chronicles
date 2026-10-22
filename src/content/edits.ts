@@ -10,6 +10,8 @@ export interface MapEdits {
   removed: string[];
   moved: Record<string, [number, number]>;
   added: MapObject[];
+  /** painted walkability, "x,y" -> 1 walkable / 0 blocked (beats the map's own collision and objects) */
+  walk?: Record<string, 0 | 1>;
 }
 export type Edits = Record<string, MapEdits>;
 
@@ -17,7 +19,7 @@ import base from './edits.base.json';
 export const EDITS_BASE: Edits = base as unknown as Edits;
 
 const KEY = 'kc_map_edits_v1';
-export const emptyEdits = (): MapEdits => ({ removed: [], moved: {}, added: [] });
+export const emptyEdits = (): MapEdits => ({ removed: [], moved: {}, added: [], walk: {} });
 
 export function loadLocalEdits(): Edits {
   try {
@@ -41,4 +43,9 @@ export function applyEdits(objects: MapObject[], e: MapEdits | undefined): MapOb
   const out = objects.filter((o) => !gone.has(o.id)).map((o) => (e.moved[o.id] ? { ...o, x: e.moved[o.id][0], y: e.moved[o.id][1] } : o));
   for (const a of e.added) if (!out.some((o) => o.id === a.id)) out.push(e.moved[a.id] ? { ...a, x: e.moved[a.id][0], y: e.moved[a.id][1] } : a);
   return out;
+}
+
+/** the painted walkability of both layers for one map (the browser's own paint wins) */
+export function walkOverrides(...layers: (MapEdits | undefined)[]): Record<string, 0 | 1> {
+  return Object.assign({}, ...layers.map((e) => e?.walk ?? {}));
 }

@@ -265,6 +265,45 @@ export class WorldScene extends Phaser.Scene {
       for (let x = Math.floor(cam.x / TILE) * TILE; x < cam.right + TILE; x += TILE) grid.lineBetween(x, cam.y, x, cam.bottom);
       for (let y = Math.floor(cam.y / TILE) * TILE; y < cam.bottom + TILE; y += TILE) grid.lineBetween(cam.x, y, cam.right, y);
     };
+    // walkability view while a walk brush is picked: red = blocked, green outline = painted walkable
+    const walkLayer = this.add.graphics().setDepth(100009);
+    const origTiles = [...this.map.tiles];
+    const drawWalk = () => {
+      walkLayer.clear();
+      if (!editor.walkBrush) return;
+      const v = this.cameras.main.worldView;
+      const H = this.map.tiles.length;
+      const W = this.map.tiles[0].length;
+      for (let y = Math.max(0, Math.floor(v.y / TILE)); y < Math.min(H, Math.ceil(v.bottom / TILE)); y++)
+        for (let x = Math.max(0, Math.floor(v.x / TILE)); x < Math.min(W, Math.ceil(v.right / TILE)); x++) {
+          const painted = this.map.walk?.[`${x},${y}`];
+          if (this.blocked(x, y, true)) walkLayer.fillStyle(painted === 0 ? 0xff2030 : 0xff6060, painted === 0 ? 0.55 : 0.35).fillRect(x * TILE, y * TILE, TILE, TILE);
+          else if (painted === 1) walkLayer.lineStyle(2, 0x30e060, 0.9).strokeRect(x * TILE + 2, y * TILE + 2, TILE - 4, TILE - 4);
+        }
+    };
+    this.events.on('postupdate', drawWalk);
+    const paintWalk = (tx: number, ty: number) => {
+      if (tx < 0 || ty < 0 || ty >= this.map.tiles.length || tx >= this.map.tiles[0].length) return;
+      const k = `${tx},${ty}`;
+      const e = edits();
+      e.me.walk ??= {};
+      this.map.walk ??= {};
+      const rows = this.map.tiles.map((r) => [...r]);
+      if (editor.walkBrush === 'reset') {
+        delete e.me.walk[k];
+        delete this.map.walk[k];
+        rows[ty][tx] = origTiles[ty][tx];
+      } else {
+        const v = editor.walkBrush === 'open' ? 1 : 0;
+        if (this.map.walk[k] === v) return;
+        e.me.walk[k] = v;
+        this.map.walk[k] = v;
+        rows[ty][tx] = v ? (BLOCKING.has(origTiles[ty][tx]) ? '.' : origTiles[ty][tx]) : '#';
+      }
+      this.map.tiles = rows.map((r) => r.join(''));
+      saveLocalEdits(e.all);
+      editor.set({ info: `${k}: ${editor.walkBrush === 'reset' ? 'Original' : editor.walkBrush === 'open' ? 'begehbar' : 'gesperrt'}` });
+    };
     this.events.on('postupdate', drawGrid);
     this.unsub.push(editor.subscribe(drawGrid));
     const edits = () => {
@@ -299,6 +338,7 @@ export class WorldScene extends Phaser.Scene {
     this.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
       const tx = Math.floor(p.worldX / TILE);
       const ty = Math.floor(p.worldY / TILE);
+      if (editor.walkBrush) return void paintWalk(tx, ty);
       if (editor.brush) {
         const key = editor.brush;
         const pal = OBJECT_PALETTE.find((q) => q.name === key);
@@ -337,6 +377,7 @@ export class WorldScene extends Phaser.Scene {
       this.dragging = !!hit;
     });
     this.input.on('pointermove', (p: Phaser.Input.Pointer) => {
+      if (editor.walkBrush && p.isDown) return void paintWalk(Math.floor(p.worldX / TILE), Math.floor(p.worldY / TILE));
       if (!this.dragging || !this.editSel || !p.isDown) return;
       place(this.editSel, Math.floor(p.worldX / TILE), Math.floor(p.worldY / TILE));
       select(this.editSel);
@@ -937,6 +978,11 @@ export class WorldScene extends Phaser.Scene {
 
   /** passersby only block each other: the player slips past them, so they never close a narrow way */
   blocked(x: number, y: number, forPlayer = false): boolean {
+    const painted = this.map.walk?.[`${x},${y}`];
+    if (painted !== undefined && x >= 0 && y >= 0 && y < this.map.tiles.length && x < this.map.tiles[0].length) {
+      if (painted === 0) return true;
+      return !!this.npcAt(x, y) || (!forPlayer && !!this.wandererAt(x, y));
+    }
     if (BLOCKING.has(this.tileAt(x, y))) return true;
     if (this.npcAt(x, y)) return true;
     if (!forPlayer && this.wandererAt(x, y)) return true;
