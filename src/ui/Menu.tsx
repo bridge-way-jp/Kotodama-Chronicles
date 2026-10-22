@@ -24,6 +24,7 @@ import { setSfx, setMusicVolume, hasJapaneseVoice, ttsAvailable } from '../core/
 import { ItemDetail, MASTERY_LABEL } from './Cards';
 import type { Settings } from '../core/types';
 import { DiaryTab } from './Diary';
+import { MixupsSection } from './Mixups';
 
 export type MenuTab = 'status' | 'diary' | 'quests' | 'kotodama' | 'bag' | 'notebook' | 'japan' | 'jlpt' | 'map' | 'settings';
 
@@ -43,6 +44,7 @@ const TABS: { id: MenuTab; ja: string; en: string; icon: string }[] = [
 export interface MenuActions {
   openReview: () => void;
   openWeak: () => void;
+  openMixups: () => void;
   openExam: (mode: 'practice' | 'mock' | 'diagnostic', section?: Section) => void;
   openTournament: () => void;
   toTitle: () => void;
@@ -555,6 +557,7 @@ function JlptTab({ actions }: { actions: MenuActions }) {
         ))}
       </div>
 
+      <MixupsSection onPractice={actions.openMixups} />
       <h3>練習 Practice</h3>
       <div className="row wrap">
         <button className="btn" onClick={actions.openWeak}>苦手を練習 Practise weak spots</button>
