@@ -7,3 +7,7 @@
   Research and Development Group (CC BY-SA 4.0).
 
 The JLPT does not publish official lists; these are community lists commonly used for study.
+- `public/data/lookup.json` (tools/build_lookup.py): readings and meanings of all school-grade and JLPT kanji from
+  [kanji-data](https://github.com/davidluzgouveia/kanji-data) (MIT License, Copyright (c) 2019 David Gouveia), based on
+  KANJIDIC2 by the Electronic Dictionary Research and Development Group (CC BY-SA 4.0), plus the readings written in the
+  game's own texts.

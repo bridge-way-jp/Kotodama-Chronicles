@@ -24,6 +24,7 @@ import { editor } from '../game/editorState';
 import { Garden } from './Garden';
 import { ReviewSession, ExamRunner } from './Study';
 import { GlossPopup } from './Cards';
+import { LookupPopup, installHoldLookup } from './Lookup';
 import { Hud, MapBanner, Toasts, TouchControls } from './Hud';
 import type { Section } from '../core/exam';
 
@@ -61,6 +62,8 @@ const INTRO: Step[] = [
   },
   { do: [{ flag: 'intro_done' }, { startQuest: 'mq1' }] },
 ];
+
+installHoldLookup();
 
 export function GameView({ onExit }: { onExit: () => void }) {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -322,6 +325,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
       ))}
       {ride && <BusRide kind={ride} onDone={endRide} />}
       <GlossPopup />
+      <LookupPopup />
       <Toasts />
     </div>
   );
