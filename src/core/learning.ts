@@ -476,6 +476,7 @@ function touchStreak(s: GameState, now: number) {
   const yesterday = dayNum(now - 86400000);
   s.flags.streak_n = s.flags.streak_day === yesterday ? Number(s.flags.streak_n ?? 0) + 1 : 1;
   s.flags.streak_day = today;
+  s.flags.goal_days = Number(s.flags.goal_days ?? 0) + 1;
   s.flags.streak_best = Math.max(Number(s.flags.streak_best ?? 0), Number(s.flags.streak_n));
   s.money += 50 * Math.min(7, Number(s.flags.streak_n));
   toast(`今日の目標達成！ ${s.flags.streak_n}日連続 · +¥${50 * Math.min(7, Number(s.flags.streak_n))}`, 'level');

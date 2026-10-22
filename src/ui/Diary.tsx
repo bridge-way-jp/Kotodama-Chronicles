@@ -5,6 +5,7 @@ import { HEART_EVENTS } from '../content/social';
 import { guideFor } from '../core/guide';
 import { hearts, profileOf } from '../core/social';
 import type { GameState } from '../core/types';
+import { MilestonesSection, RequestsSection, WeekSection } from './Progress';
 
 const CHAPTER_NAMES: Record<number, [string, string]> = {
   1: ['日野森の春', 'Spring in Hinomori'],
@@ -47,6 +48,9 @@ export function DiaryTab() {
           {now.where && <p className="note">📍 {now.where}</p>}
         </section>
       )}
+      <RequestsSection />
+      <WeekSection />
+      <MilestonesSection />
       <section>
         <h3>これまで — The story so far</h3>
         {!done.length && <p className="note">Nothing yet. Your story starts in Hinomori.</p>}

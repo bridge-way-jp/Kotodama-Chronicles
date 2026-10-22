@@ -123,6 +123,10 @@ export interface GameState {
   practice: PracticeResult[];
   settings: Settings;
   stats: { battlesWon: number; recruited: number; steps: number; playMs: number };
+  /** today's requests from people (core/daily.ts) */
+  requests?: { day: number; list: import('./daily').DailyRequest[] };
+  /** learning progress at the start of this week, and the review of the last one (core/progress.ts) */
+  week?: { key: number; start: import('./progress').Snapshot; review?: { from: import('./progress').Snapshot; to: import('./progress').Snapshot } };
 }
 
 // ---------- content models ----------

@@ -26,6 +26,8 @@ import { ReviewSession, ExamRunner } from './Study';
 import { GlossPopup } from './Cards';
 import { LookupPopup, installHoldLookup } from './Lookup';
 import { socialMenu } from '../core/social';
+import { checkMilestones, rollWeek } from '../core/progress';
+import { WeekReview } from './Progress';
 import { advancesQuest } from '../core/guide';
 import { nowText } from './Diary';
 import { Hud, MapBanner, Toasts, TouchControls } from './Hud';
@@ -40,6 +42,7 @@ type Overlay =
   | { id: number; kind: 'garden' }
   | { id: number; kind: 'tournament' }
   | { id: number; kind: 'karaoke' }
+  | { id: number; kind: 'week' }
   | { id: number; kind: 'board'; station: string }
   | { id: number; kind: 'exam'; mode: 'practice' | 'mock' | 'diagnostic'; section?: Section };
 
@@ -183,6 +186,20 @@ export function GameView({ onExit }: { onExit: () => void }) {
           ],
         });
     }
+    // a new week: a short review of the last one; milestones reached elsewhere (or in an older version) arrive now
+    let review = false;
+    store.update((s) => {
+      review = rollWeek(s);
+      checkMilestones(s);
+    }, 'week');
+    if (review) push({ kind: 'week' });
+    const progress = (reason: string) => {
+      if (reason !== 'learn' && reason !== 'script' && reason !== 'request') return;
+      const s = store.s;
+      if (rollWeek(s) && s.week?.review) push({ kind: 'week' });
+      checkMilestones(s);
+    };
+    offs.push(store.subscribe(progress));
     const seen = () => store.update((s) => void (s.flags.last_seen = Date.now()), 'seen');
     seen();
     const seenTimer = setInterval(seen, 5 * 60_000);
@@ -299,6 +316,8 @@ export function GameView({ onExit }: { onExit: () => void }) {
             <Karaoke onClose={() => remove(o.id)} />
           </div>
         );
+      case 'week':
+        return <WeekReview onClose={() => remove(o.id)} />;
       case 'tournament':
         return (
           <div className="overlay-panel">
