@@ -9,6 +9,7 @@ import { DAILY_GOAL, answersToday, queueInfo, streakDays } from '../core/learnin
 import { saveStatus } from '../core/persistence';
 import { input } from '../game/input';
 import type { Dir } from '../core/types';
+import { openRequests } from './Progress';
 
 export function Hud({ onMenu }: { onMenu: (tab?: any) => void }) {
   const s = store.s;
@@ -59,6 +60,11 @@ export function Hud({ onMenu }: { onMenu: (tab?: any) => void }) {
           <div className="hud-box goal-box" title="Daily goal: answer 20 questions to keep your streak">
             🔥{streakDays(s)} <small>{Math.min(answersToday(s), DAILY_GOAL)}/{DAILY_GOAL}</small>
           </div>
+          {openRequests() > 0 && (
+            <button className="hud-box req-box" onClick={() => onMenu('diary')} title="Today's requests from people">
+              ✉ {openRequests()}
+            </button>
+          )}
           {due > 0 && (
             <button className="hud-box due-box" onClick={() => onMenu('jlpt')} title="Items due for review">
               復習 {due}

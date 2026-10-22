@@ -5,6 +5,7 @@ import { ITEMS } from '../content/creatures';
 import { GREETINGS, HEART_EVENTS, PROFILES, REACT, REPLIES, TALK, type Profile, type Register, type TalkLine } from '../content/social';
 import { regionOf } from './guide';
 import { ttsAvailable } from './audio';
+import { bringChoice } from './daily';
 
 /**
  * Conversations with people outside the story scenes: after what a person usually says, the player can talk a
@@ -142,6 +143,7 @@ export function socialMenu(s: GameState, id: string): Step[] {
   if (!p) return [];
   const heart = HEART_EVENTS[id] && (s.relationships[id]?.points ?? 0) >= 6 && !s.flags['heart_' + id];
   const gifts = Object.entries(s.inventory).filter(([k, n]) => n > 0 && ITEMS[k]?.kind === 'heal');
+  const bring = bringChoice(s, id);
   return [
     { do: [{ rel: id, points: 0 }] }, // you have met them: they appear in the diary
     {
@@ -149,6 +151,7 @@ export function socialMenu(s: GameState, id: string): Step[] {
         ...(heart
           ? [{ text: '♥ ゆっくり話す', en: '♥ Take time to talk', then: [...HEART_EVENTS[id], { do: [{ flag: 'heart_' + id }, { rel: id, points: 2, memory: 'heart1' }] }, { toast: `♥ ${NPCS[id].name}と仲良くなった！` }] }]
           : []),
+        ...(bring ? [bring] : []),
         { text: 'もう少し話す', en: 'Talk a little more', then: [{ talk: id }] },
         ...(gifts.length ? [{ text: 'プレゼントを渡す', en: 'Give a gift', then: [{ gift: id }] }] : []),
         { text: 'またね', en: 'See you' },

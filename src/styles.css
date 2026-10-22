@@ -1109,3 +1109,27 @@ html.hc .btn { border: 2px solid #000; }
 .person img { width: 44px; height: 44px; border-radius: 6px; }
 .hearts span { color: #d9c4c9; font-size: 16px; }
 .hearts span.on { color: #e8879f; }
+
+/* today's requests, room rewards, weekly progress */
+.request { display: flex; gap: 8px; align-items: center; background: #fffaf0; border: 1px solid #ead9b8; border-radius: 8px; padding: 6px 8px; margin-bottom: 6px; }
+.request.done { opacity: 0.6; }
+.request > img { width: 44px; height: 44px; border-radius: 6px; flex: none; }
+.request-body { flex: 1; min-width: 0; font-size: 14px; }
+.request-body .icon, .milestone .icon { width: 20px; height: 20px; vertical-align: middle; }
+.request-act { flex: none; }
+.milestones { display: grid; gap: 6px; }
+.milestone { display: flex; gap: 8px; align-items: center; background: #fffaf0; border: 1px solid #ead9b8; border-radius: 8px; padding: 6px 8px; font-size: 14px; }
+.milestone .icon { width: 36px; height: 36px; flex: none; }
+.milestone > div { flex: 1; min-width: 0; }
+.milestone.done { background: #eef8e6; border-color: #b9dca2; }
+.ms-bar { height: 6px; background: #ead9b8; border-radius: 3px; margin: 4px 0 2px; overflow: hidden; }
+.ms-bar > div { height: 100%; background: #e0a030; }
+.milestone.done .ms-bar > div { background: #5aa83c; }
+.diary-week, .week-delta { font-size: 14px; }
+.week-delta ul { list-style: none; padding: 0; margin: 4px 0; display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.week-ready { font-size: 16px; }
+.week-ready .up { color: #2f8a2f; }
+.week-ready .down { color: #b33; }
+.week-review { max-width: 420px; margin: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.week-review h2 { margin: 0; font-family: var(--pixel); }
+.req-box { cursor: pointer; }
