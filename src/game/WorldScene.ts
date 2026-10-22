@@ -13,6 +13,8 @@ import { check, pickRule } from '../core/script';
 import { SCRIPTS } from '../content/scripts';
 import { advancesQuest, guideFor, nextExit, outdoorOf, roomHasQuestScene } from '../core/guide';
 import { QUESTS } from '../content/quests';
+import { greetingFor } from '../core/social';
+import { withName } from '../ui/Jp';
 import { FOLK, type FolkDef } from '../content/folk';
 import { DECO_CATALOG } from '../content/creatures';
 import { store } from '../core/store';
@@ -999,6 +1001,7 @@ export class WorldScene extends Phaser.Scene {
   update() {
     if (!store.state) return;
     if (++this.arrowTick % 10 === 0) this.updateQuestArrow();
+    if (this.arrowTick % 90 === 0) this.speechBubble();
     if (input.consume('menu')) {
       if (!input.locked) bus.emit('open-menu');
     }
@@ -1153,6 +1156,36 @@ export class WorldScene extends Phaser.Scene {
       .setPosition(view.x + (cx + Math.cos(ang) * k) / cam.zoom, view.y + (cy + Math.sin(ang) * k) / cam.zoom)
       .setRotation(ang + Math.PI / 2)
       .setVisible(true);
+  }
+
+  /** people near the player now and then call out a short line (speech bubble); each at most every 25 s */
+  private bubbleAt = new Map<string, number>();
+  private bubble?: Phaser.GameObjects.Container;
+  speechBubble() {
+    if (input.locked || this.bubble?.active) return;
+    const now = Date.now();
+    const near = (x: number, y: number) => Math.abs(x - this.px) + Math.abs(y - this.py) <= 3;
+    const cands: { key: string; sprite: Phaser.GameObjects.Image; text: string }[] = [];
+    for (const w of this.wanderers) {
+      if (!near(w.x, w.y)) continue;
+      const short = w.def.lines.filter((l) => l.jp.length <= 22);
+      cands.push({ key: 'w:' + w.def.id, sprite: w.sprite, text: short.length && Math.random() < 0.6 ? short[Math.floor(Math.random() * short.length)].jp : greetingFor('', Math.random) });
+    }
+    for (const n of this.npcs) {
+      if (!n.sprite.visible || n.marker?.visible || !near(n.x, n.y)) continue;
+      cands.push({ key: 'n:' + n.id, sprite: n.sprite, text: greetingFor(n.id) });
+    }
+    const fresh = cands.filter((c) => now - (this.bubbleAt.get(c.key) ?? 0) > 25_000);
+    if (!fresh.length || Math.random() < 0.4) return;
+    const c = fresh[Math.floor(Math.random() * fresh.length)];
+    this.bubbleAt.set(c.key, now);
+    const txt = this.add.text(0, 0, withName(c.text).replace(/\{([^|}]+)\|[^}]*\}/g, '$1'), { fontFamily: 'DotGothic16, "Noto Sans JP", sans-serif', fontSize: '11px', color: '#2a2018' }).setOrigin(0.5).setResolution(4);
+    const bg = this.add.rectangle(0, 0, txt.width + 10, txt.height + 6, 0xfffaf0, 0.95).setStrokeStyle(1, 0x8a5530);
+    const tail = this.add.triangle(0, txt.height / 2 + 5, -3, 0, 3, 0, 0, 4, 0xfffaf0);
+    const box = this.add.container(c.sprite.x, c.sprite.y - c.sprite.height - 8, [bg, tail, txt]).setDepth(100003);
+    this.bubble = box;
+    this.tweens.add({ targets: box, y: box.y - 3, duration: 400, yoyo: true, repeat: 2 });
+    this.time.delayedCall(2600, () => box.destroy());
   }
 
   afterStep() {

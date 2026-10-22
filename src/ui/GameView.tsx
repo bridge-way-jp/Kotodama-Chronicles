@@ -25,6 +25,9 @@ import { Garden } from './Garden';
 import { ReviewSession, ExamRunner } from './Study';
 import { GlossPopup } from './Cards';
 import { LookupPopup, installHoldLookup } from './Lookup';
+import { socialMenu } from '../core/social';
+import { advancesQuest } from '../core/guide';
+import { nowText } from './Diary';
 import { Hud, MapBanner, Toasts, TouchControls } from './Hud';
 import type { Section } from '../core/exam';
 
@@ -149,13 +152,15 @@ export function GameView({ onExit }: { onExit: () => void }) {
     setMusicVolume(store.s.settings.musicVolume ?? 0.5);
     if (!gameRef.current && hostRef.current) gameRef.current = createGame(hostRef.current);
     const offs = [
-      bus.on('interact', ({ id }) => {
+      bus.on('interact', ({ id, kind }) => {
         const rules = SCRIPTS[id];
         if (!rules) return;
         const steps = pickRule(store.s, rules);
         if (steps) {
           sfx('open');
-          push({ kind: 'script', steps });
+          // a person outside a story scene: after their usual words you can talk more, give a gift, or hear their story
+          const social = kind === 'npc' && !advancesQuest(steps) ? socialMenu(store.s, id) : [];
+          push({ kind: 'script', steps: [...steps, ...social] });
         }
       }),
       bus.on('message', ({ text, en }) => push({ kind: 'script', steps: [{ say: text, en }] })),
@@ -164,7 +169,25 @@ export function GameView({ onExit }: { onExit: () => void }) {
       bus.on('map-entered', ({ id }) => playMusic(MAP_MUSIC[id] ?? 'town')),
     ];
     if (!store.s.flags.intro_done) push({ kind: 'script', steps: INTRO });
+    else {
+      // back after a break: a short recap of where the story stands
+      const last = Number(store.s.flags.last_seen ?? 0);
+      const now = nowText(store.s);
+      if (last && Date.now() - last > 3 * 3600_000 && now)
+        push({
+          kind: 'script',
+          steps: [
+            { say: '（前回までのあらすじ）', en: '(Previously…)' },
+            { say: `いまの目的：「${now.title}」`, en: `${now.titleEn} — ${now.desc}` },
+            ...(now.next ? [{ say: `次は：${now.where ? now.where.split(' (')[0] : ''}`, en: `Next: ${now.next}${now.where ? ` · ${now.where}` : ''}` }] : []),
+          ],
+        });
+    }
+    const seen = () => store.update((s) => void (s.flags.last_seen = Date.now()), 'seen');
+    seen();
+    const seenTimer = setInterval(seen, 5 * 60_000);
     return () => {
+      clearInterval(seenTimer);
       offs.forEach((o) => o());
       stopSpeech();
       stopMusic();

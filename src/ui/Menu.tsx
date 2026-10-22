@@ -23,11 +23,13 @@ import { NOTES, foundNotes } from '../content/society';
 import { setSfx, setMusicVolume, hasJapaneseVoice, ttsAvailable } from '../core/audio';
 import { ItemDetail, MASTERY_LABEL } from './Cards';
 import type { Settings } from '../core/types';
+import { DiaryTab } from './Diary';
 
-export type MenuTab = 'status' | 'quests' | 'kotodama' | 'bag' | 'notebook' | 'japan' | 'jlpt' | 'map' | 'settings';
+export type MenuTab = 'status' | 'diary' | 'quests' | 'kotodama' | 'bag' | 'notebook' | 'japan' | 'jlpt' | 'map' | 'settings';
 
 const TABS: { id: MenuTab; ja: string; en: string; icon: string }[] = [
   { id: 'quests', ja: 'クエスト', en: 'Quests', icon: 'mi_quests' },
+  { id: 'diary', ja: '日記', en: 'Diary & people', icon: 'mi_notebook' },
   { id: 'kotodama', ja: 'コトダマ', en: 'Kotodama', icon: 'mi_kotodama' },
   { id: 'notebook', ja: 'ノート', en: 'Notebook', icon: 'mi_notebook' },
   { id: 'japan', ja: '日本ノート', en: 'Japan notes', icon: 'mi_notebook' },
@@ -66,6 +68,7 @@ export function Menu({ tab: initial, onClose, actions }: { tab?: MenuTab; onClos
         <div className="menu-body">
           {tab === 'status' && <StatusTab />}
           {tab === 'quests' && <QuestsTab />}
+          {tab === 'diary' && <DiaryTab />}
           {tab === 'kotodama' && <KotodamaTab />}
           {tab === 'bag' && <BagTab />}
           {tab === 'notebook' && <NotebookTab />}
