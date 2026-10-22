@@ -12,7 +12,7 @@ import { ROOMS2_GEN } from './rooms2.gen';
 import { HOUSE_SWAPS } from './houses.gen';
 import { EDGES_GEN } from './edges.gen';
 import { FLOW_GEN } from './flow.gen';
-import { EDITS_BASE, applyEdits, loadLocalEdits } from './edits';
+import { EDITS_BASE, applyEdits, loadLocalEdits, walkOverrides } from './edits';
 import type { Dir } from '../core/types';
 
 /**
@@ -73,6 +73,8 @@ export interface Warp {
 
 export interface MapDef {
   id: string;
+  /** painted in the map editor: "x,y" -> 1 walkable / 0 blocked, beats tiles and objects */
+  walk?: Record<string, 0 | 1>;
   name: string;
   nameJa: string;
   tiles: string[];
@@ -768,5 +770,19 @@ for (const [id, r] of Object.entries(ROOMS2_GEN)) {
 // hand edits: committed ones first, then the ones made in this browser's editor
 {
   const local = typeof localStorage !== 'undefined' ? loadLocalEdits() : {};
-  for (const m of Object.values(MAPS)) m.objects = applyEdits(applyEdits(m.objects, EDITS_BASE[m.id]), local[m.id]);
+  for (const m of Object.values(MAPS)) {
+    m.objects = applyEdits(applyEdits(m.objects, EDITS_BASE[m.id]), local[m.id]);
+    const walk = walkOverrides(EDITS_BASE[m.id], local[m.id]);
+    if (!Object.keys(walk).length) continue;
+    m.walk = walk;
+    // keep the tile grid in step (paths, checks and passersby read it)
+    const rows = m.tiles.map((r) => [...r]);
+    for (const [k, v] of Object.entries(walk)) {
+      const [x, y] = k.split(',').map(Number);
+      if (!rows[y] || rows[y][x] === undefined) continue;
+      if (v === 0) rows[y][x] = '#';
+      else if (BLOCKING.has(rows[y][x])) rows[y][x] = '.';
+    }
+    m.tiles = rows.map((r) => r.join(''));
+  }
 }

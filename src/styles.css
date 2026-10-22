@@ -1070,3 +1070,4 @@ html.hc .btn { border: 2px solid #000; }
 .mastery-dots i.on { background: var(--ok); border-color: var(--ok); }
 .mastery-sub { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
 .mastery-again { font-size: 13px; color: #9a3412; font-weight: bold; margin-bottom: 4px; }
+.edit-label { font-size: 12px; align-self: center; margin-right: 2px; }
