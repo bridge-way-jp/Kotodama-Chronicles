@@ -748,7 +748,7 @@ function SettingsTab({ actions }: { actions: MenuActions }) {
       <h3>📚 Lernpaket (Anki)</h3>
       <PackSettings />
       <h3>操作 Controls</h3>
-      <p className="note">Move: arrow keys / WASD · Talk / examine: Space, Enter, Z · Menu: Esc or M · On touch screens use the on-screen pad.</p>
+      <p className="note">Move: arrow keys / WASD · Talk / examine: Space, Enter, Z · Menu: Esc or M · On touch screens use the on-screen pad. · Press and hold any kanji word (or tap a word with furigana) for its reading and meaning.</p>
     </div>
   );
 }

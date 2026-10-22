@@ -1071,3 +1071,14 @@ html.hc .btn { border: 2px solid #000; }
 .mastery-sub { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
 .mastery-again { font-size: 13px; color: #9a3412; font-weight: bold; margin-bottom: 4px; }
 .edit-label { font-size: 12px; align-self: center; margin-right: 2px; }
+
+/* looking up a word: hold a kanji, or tap a word with a reading (ui/Lookup.tsx) */
+.jp-k { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+.lookup .lk-word { font-size: 34px; font-family: var(--pixel); display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.lookup .lk-word rt { font-size: 14px; }
+.lookup .lk-meaning { font-size: 18px; font-weight: bold; margin: 4px 0 8px; }
+.lookup .lk-example { font-size: 15px; line-height: 1.7; margin-bottom: 8px; }
+.lookup .lk-example small { display: block; color: var(--muted); font-size: 13px; }
+.lookup .lk-kanji { border-top: 1px solid #ead9b8; margin: 8px 0; padding-top: 6px; display: grid; gap: 4px; font-size: 14px; }
+.lookup .lk-k b { font-size: 22px; margin-right: 8px; font-weight: normal; }
+.lookup .muted { color: var(--muted); }

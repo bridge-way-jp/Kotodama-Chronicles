@@ -35,12 +35,27 @@ export function withName(s: string): string {
   return s.replace(/@name/g, store.state?.playerName ?? 'マリア');
 }
 
+/** kanji runs in plain text: press and hold one to look it up (ui/Lookup.tsx) */
+function holdable(s: string, keyBase: string): ReactNode {
+  const parts = s.split(/([一-鿿々]+)/);
+  if (parts.length === 1) return s;
+  return parts.map((p, i) =>
+    i % 2 ? (
+      <span key={keyBase + i} className="jp-k" data-k={p} data-tail={(parts[i + 1] ?? '').slice(0, 4)}>
+        {p}
+      </span>
+    ) : (
+      p
+    ),
+  );
+}
+
 function renderText(s: string, keyBase: string): ReactNode[] {
   const parts = withName(s).split(/(\*\*[^*]+\*\*|\n)/);
   return parts.map((p, i) => {
     if (p === '\n') return <br key={keyBase + i} />;
-    if (p.startsWith('**') && p.endsWith('**')) return <b key={keyBase + i}>{p.slice(2, -2)}</b>;
-    return <Fragment key={keyBase + i}>{p}</Fragment>;
+    if (p.startsWith('**') && p.endsWith('**')) return <b key={keyBase + i}>{holdable(p.slice(2, -2), keyBase + i + 'b')}</b>;
+    return <Fragment key={keyBase + i}>{holdable(p, keyBase + i + 'p')}</Fragment>;
   });
 }
 
@@ -53,7 +68,7 @@ function showRuby(key: string | undefined, mode: string): boolean {
   return !(m === 'young' || m === 'mature');
 }
 
-function Word({ tok, mode }: { tok: Extract<Token, { t: 'word' }>; mode: string }) {
+function Word({ tok, mode, tail }: { tok: Extract<Token, { t: 'word' }>; mode: string; tail?: string }) {
   const [revealed, setRevealed] = useState(false);
   // a reading over a word that is already written in kana adds nothing
   const hasRuby = !!tok.ruby && tok.ruby !== tok.base;
@@ -62,6 +77,8 @@ function Word({ tok, mode }: { tok: Extract<Token, { t: 'word' }>; mode: string 
     e.stopPropagation();
     if (hasRuby) setRevealed(true);
     if (tok.key) bus.emit('gloss', { key: tok.key });
+    // a word with a reading: first tap shows the reading, a tap on a shown reading opens reading + meaning
+    else if (hasRuby && (ruby || revealed)) bus.emit('lookup', { text: tok.base, reading: tok.ruby, tail });
   };
   const cls = tok.key ? 'jp-word linked' : hasRuby ? 'jp-word' : undefined;
   const inner = ruby ? (
@@ -73,10 +90,16 @@ function Word({ tok, mode }: { tok: Extract<Token, { t: 'word' }>; mode: string 
     tok.base
   );
   return (
-    <span className={cls} onClick={tok.key || (hasRuby && !ruby) ? onClick : undefined} title={tok.key ? 'Tap for meaning' : undefined}>
+    <span className={cls} onClick={tok.key || hasRuby ? onClick : undefined} title={tok.key ? 'Tap for meaning' : hasRuby ? 'Tap for reading and meaning' : undefined}>
       {inner}
     </span>
   );
+}
+
+/** the few characters after a word (its okurigana: 並+んでいる), so a lookup finds the dictionary form */
+function tailAfter(toks: Token[], i: number): string {
+  const n = toks[i + 1];
+  return n ? (n.t === 'text' ? n.s : n.base).slice(0, 4) : '';
 }
 
 export function Jp({ text, className, furigana, auto }: { text: string; className?: string; furigana?: string; auto?: boolean }) {
@@ -84,7 +107,7 @@ export function Jp({ text, className, furigana, auto }: { text: string; classNam
   const toks = parseMarkup(text);
   return (
     <span className={className} lang="ja">
-      {auto ? <AutoTokens toks={toks} mode={mode} /> : toks.map((t, i) => (t.t === 'text' ? <Fragment key={i}>{renderText(t.s, 'k' + i)}</Fragment> : <Word key={i} tok={t} mode={mode} />))}
+      {auto ? <AutoTokens toks={toks} mode={mode} /> : toks.map((t, i) => (t.t === 'text' ? <Fragment key={i}>{renderText(t.s, 'k' + i)}</Fragment> : <Word key={i} tok={t} mode={mode} tail={tailAfter(toks, i)} />))}
     </span>
   );
 }
