@@ -14,6 +14,7 @@ import { ReadingChallenge, ListeningChallenge } from './Challenges';
 import { TeachCard } from './Cards';
 import { Battle, type BattleResult } from './Battle';
 import { MasteryCheck, checkKeys } from './Mastery';
+import { giftPhrase, profileOf, smallTalk } from '../core/social';
 
 /** Session-only dialogue backlog (not saved). */
 export const backlog: { who: string; text: string; en?: string }[] = [];
@@ -59,6 +60,8 @@ export function ScriptRunner({ steps, onEnd, hooks }: { steps: Step[]; onEnd: ()
     } else if ('toast' in step) {
       toast(step.toast);
       advance();
+    } else if ('talk' in step) {
+      advance(smallTalk(store.s, step.talk));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stack]);
@@ -102,6 +105,12 @@ export function ScriptRunner({ steps, onEnd, hooks }: { steps: Step[]; onEnd: ()
   if ('teach' in step) return <TeachStep key={stackKey(stack)} k={step.teach} onDone={() => advance()} />;
 
   if ('check' in step) return <TicketCheck key={stackKey(stack)} onDone={() => advance()} />;
+
+  if ('hear' in step) return <HearStep key={stackKey(stack)} h={step.hear} onDone={() => advance()} />;
+
+  if ('build' in step) return <BuildStep key={stackKey(stack)} b={step.build} onDone={() => advance()} />;
+
+  if ('gift' in step) return <GiftStep key={stackKey(stack)} who={step.gift} onDone={(steps) => advance(steps)} />;
 
   if ('battle' in step)
     return (
@@ -188,6 +197,145 @@ function TicketCheck({ onDone }: { onDone: () => void }) {
   );
 }
 
+/** listening first: the line is only spoken; pick what it meant, then the text appears */
+function HearStep({ h, onDone }: { h: Extract<Step, { hear: unknown }>['hear']; onDone: () => void }) {
+  const [picked, setPicked] = useState<number | null>(null);
+  const npc = h.who ? NPCS[h.who] : undefined;
+  const play = () => void speak([{ text: plainText(h.text), voice: h.voice }], store.s.settings.ttsRate ?? 1);
+  useEffect(() => {
+    play();
+    return () => stopSpeech();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const ok = picked === h.answer;
+  return (
+    <div className="dialogue-wrap">
+      <div className="panel quiz-box hear">
+        <div className="hear-head">
+          <b>{npc?.name ?? ''}</b> <span className="note">🎧 聞き取り — listen first</span>
+          <button className="btn small" onClick={play}>🔊 もう一度</button>
+        </div>
+        {picked === null ? (
+          <div className="hear-hidden">……</div>
+        ) : (
+          <div className="hear-text">
+            <Jp text={h.text} />
+          </div>
+        )}
+        <div className="options">
+          {h.options.map((o, i) => (
+            <button
+              key={i}
+              className={`opt ${picked !== null && i === h.answer ? 'correct' : ''} ${picked === i && !ok ? 'wrong' : ''}`}
+              disabled={picked !== null}
+              onClick={() => {
+                setPicked(i);
+                sfx(i === h.answer ? 'ok' : 'bad');
+                store.update((s) => recordComprehension(s, 'listening', i === h.answer, 3000), 'learn');
+              }}
+            >
+              {withName(o)}
+            </button>
+          ))}
+        </div>
+        {picked !== null && (
+          <button className="btn primary" autoFocus onClick={onDone}>
+            次へ ▶
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** put a sentence together from blocks */
+function BuildStep({ b, onDone }: { b: Extract<Step, { build: unknown }>['build']; onDone: () => void }) {
+  const [order] = useState(() => {
+    const idx = b.chunks.map((_, i) => i);
+    for (let n = 0; n < 6 && idx.every((v, i) => v === i); n++) idx.sort(() => Math.random() - 0.5);
+    return idx;
+  });
+  const [used, setUsed] = useState<number[]>([]);
+  const [wrong, setWrong] = useState(false);
+  const done = used.length === b.chunks.length;
+  return (
+    <div className="dialogue-wrap">
+      <div className="panel quiz-box build">
+        <div className="note">✎ 文を作ろう — build your answer: {b.en}</div>
+        <div className="build-line" lang="ja">
+          {used.map((i) => (
+            <span key={i} className="build-chip on">
+              {b.chunks[i]}
+            </span>
+          ))}
+          {!done && <span className="build-cursor">＿</span>}
+        </div>
+        <div className="build-pool" lang="ja">
+          {order.map((i) =>
+            used.includes(i) ? null : (
+              <button
+                key={i}
+                className={`build-chip ${wrong ? 'shake' : ''}`}
+                onClick={() => {
+                  // blocks only go in the right order: a wrong one shakes and teaches the order
+                  if (i === used.length) {
+                    setUsed([...used, i]);
+                    setWrong(false);
+                    sfx('blip');
+                  } else {
+                    setWrong(true);
+                    sfx('bad');
+                    setTimeout(() => setWrong(false), 400);
+                  }
+                }}
+              >
+                {b.chunks[i]}
+              </button>
+            ),
+          )}
+        </div>
+        {done && (
+          <button
+            className="btn primary"
+            autoFocus
+            onClick={() => {
+              if (ttsAvailable()) void speak([{ text: b.chunks.join('') }]);
+              onDone();
+            }}
+          >
+            言う ▶
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** choose something from the bag to give */
+function GiftStep({ who, onDone }: { who: string; onDone: (steps: Step[]) => void }) {
+  const items = Object.entries(store.s.inventory).filter(([k, n]) => n > 0 && ITEMS[k]?.kind === 'heal');
+  const npc = NPCS[who];
+  return (
+    <div className="dialogue-wrap">
+      <div className="panel quiz-box gift">
+        <div className="note">🎁 {npc?.name}さんに何をあげる？ — what will you give?</div>
+        <div className="gift-grid">
+          {items.map(([k, n]) => (
+            <button key={k} className="gift-item" onClick={() => onDone(giftPhrase(store.s, who, k))}>
+              <img className="px" src={`assets/${ITEMS[k].icon}.png`} alt="" />
+              <span lang="ja">{ITEMS[k].name}</span>
+              <small>×{n}</small>
+            </button>
+          ))}
+        </div>
+        <button className="btn" onClick={() => onDone([])}>
+          やめる
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function stackKey(stack: Frame[]) {
   return stack.map((f) => f.i).join('.') + ':' + stack.length;
 }
@@ -267,7 +415,7 @@ function SayBox({ step, onNext }: { step: Extract<Step, { say: string }>; onNext
   // read the line aloud when the player switched this on in Settings
   useEffect(() => {
     if (!store.state?.settings.readAloud || !ttsAvailable()) return;
-    void speak([{ text: plainText(step.say) }], store.state.settings.ttsRate ?? 1);
+    void speak([{ text: plainText(step.say), voice: step.who ? profileOf(step.who)?.voice : undefined }], store.state.settings.ttsRate ?? 1);
     return () => stopSpeech();
   }, [step]);
 

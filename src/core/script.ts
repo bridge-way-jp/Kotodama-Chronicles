@@ -81,7 +81,15 @@ export type Step =
   | { toast: string }
   | { shop: string[] }
   /** a short check of studied items that must be passed (the ticket check at the station gates) */
-  | { check: 'ticket' };
+  | { check: 'ticket' }
+  /** a line that is first only heard (spoken), then the player picks what it meant, then it is shown */
+  | { hear: { text: string; en: string; who?: string; voice?: 'f' | 'm'; options: string[]; answer: number } }
+  /** the player puts a sentence together from blocks (given in the right order, shown shuffled) */
+  | { build: { chunks: string[]; en: string } }
+  /** small talk with a person (core/social.ts), built when it is reached */
+  | { talk: string }
+  /** pick a gift from the bag for this person */
+  | { gift: string };
 
 export interface DialogueRule {
   when?: Cond;
