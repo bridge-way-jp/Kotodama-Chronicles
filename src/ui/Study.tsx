@@ -1,7 +1,7 @@
 import { toast } from '../core/events';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { store } from '../core/store';
-import { buildReviewSession, buildWeakSession, encounter, queueInfo, recordAnswer, recordComprehension, labelOfKey, type Exercise } from '../core/learning';
+import { buildConfusionSession, buildReviewSession, buildWeakSession, encounter, queueInfo, recordAnswer, recordComprehension, labelOfKey, type Exercise } from '../core/learning';
 import { tipFor } from '../content/examtypes';
 import { buildDiagnostic, buildMockExam, buildSectionPractice, MOCK_TIME_LIMIT_MS, SECTIONS, type Section, type TestItem } from '../core/exam';
 import { review } from '../core/srs';
@@ -13,8 +13,9 @@ import type { PracticeResult } from '../core/types';
 
 // ================================================================== review
 
-export function ReviewSession({ onClose, weak }: { onClose: () => void; weak?: boolean }) {
-  const [items, setItems] = useState<Exercise[]>(() => (weak ? buildWeakSession(store.s) : buildReviewSession(store.s)));
+export function ReviewSession({ onClose, weak, mixups }: { onClose: () => void; weak?: boolean; mixups?: boolean }) {
+  const build = () => (mixups ? buildConfusionSession(store.s) : weak ? buildWeakSession(store.s) : buildReviewSession(store.s));
+  const [items, setItems] = useState<Exercise[]>(build);
   const [i, setI] = useState(0);
   const [results, setResults] = useState<{ key?: string; ok: boolean }[]>([]);
   const info = queueInfo(store.s);
@@ -22,9 +23,10 @@ export function ReviewSession({ onClose, weak }: { onClose: () => void; weak?: b
   if (!items.length)
     return (
       <div className="panel study">
-        <div className="panel-title">{weak ? '苦手 Weak spots' : '復習 Review'}</div>
+        <div className="panel-title">{mixups ? '間違えやすい Mix-ups' : weak ? '苦手 Weak spots' : '復習 Review'}</div>
+        {mixups && <p>No mix-ups yet. When you pick a word or pattern instead of another one, the pair shows up here to train the difference.</p>}
         {weak && <p>No weak spots yet: you have no item that you answered wrongly more than once. Keep going — they appear here once they do.</p>}
-        {!weak && (
+        {!weak && !mixups && (
           <>
             <p>Nothing is due right now and today's new-item limit ({store.s.settings.newPerDay}/day) is reached or nothing new is unlocked.</p>
             <p className="note">Explore, talk to people, and come back later — items return when they are due. (You can raise the daily limit in Settings.)</p>
@@ -57,8 +59,7 @@ export function ReviewSession({ onClose, weak }: { onClose: () => void; weak?: b
           <button
             className="btn"
             onClick={() => {
-              const more = weak ? buildWeakSession(store.s) : buildReviewSession(store.s);
-              setItems(more);
+              setItems(build());
               setI(0);
               setResults([]);
             }}

@@ -4,6 +4,7 @@ import { KANJI, KANJI_BY_ID } from '../content/kanji';
 import { gradeFromAnswer, isDue, mastery, needsContext, newCard, review } from './srs';
 import { rollDaily, todayKey } from './store';
 import { toast } from './events';
+import { ttsAvailable } from './audio';
 import type { VocabEntry, Card, GameState, SkillArea } from './types';
 
 /**
@@ -134,19 +135,56 @@ export function encounter(s: GameState, keys: string[], now = Date.now()): strin
 // ------------------------------------------------------------------
 // exercise builders
 
-function vocabExercise(id: string, mode: string, s: GameState, r: () => number): Exercise {
+function vocabExercise(id: string, mode: string, s: GameState, r: () => number, partner?: string): Exercise {
   const v = VOCAB_BY_ID[id];
   const lang = s.settings.meaningLang;
   const others = VOCAB.filter(
     (x) => x.id !== id && !confusable(v, x) && x.word !== v.word && x.de !== v.de && x.en !== v.en && x.exampleEn !== v.exampleEn && (x.example || (mode !== 'sentence' && mode !== 'listen')),
   );
-  const distract = similarWords(v, others, 3, r);
+  // a word the player mixed this one up with is always among the options of a contrast drill
+  const mixed = partner ? VOCAB_BY_ID[partner] : undefined;
+  const distract = mixed ? [mixed, ...similarWords(v, others.filter((x) => x.id !== mixed.id), 2, r)] : similarWords(v, others, 3, r);
   const form = wordForm(v);
   const key = 'v:' + id;
   const base = { id: `${key}:${mode}:${Math.floor(r() * 1e6)}`, key, area: 'vocab' as SkillArea, mode };
   const tr = (x: VocabEntry) => (lang === 'de' && x.exampleDe) || x.exampleEn;
   const expl = `**${form}**（${v.reading}）— ${lang === 'de' ? v.de : v.en}\n${v.example}\n${tr(v)}`;
+  const meaning = lang === 'de' ? v.de : v.en;
+  const blank = v.example.includes(v.word) ? v.example.replace(v.word, '＿＿＿') : null;
   switch (mode) {
+    case 'contrast': {
+      const vs = mixed ? `${wordForm(mixed)}（${mixed.reading}）— ${lang === 'de' ? mixed.de : mixed.en}` : '';
+      const why = vs ? `\n\n⚖ ${vs}\n${mixed!.example}\n${tr(mixed!)}` : '';
+      if (!blank)
+        return {
+          ...base, mode: 'contrast', context: false, instruction: 'Words you mixed up — which one means this?',
+          prompt: meaning,
+          options: shuffle([{ text: form, correct: true }, ...distract.map((d) => ({ text: wordForm(d), correct: false, key: 'v:' + d.id }))], r),
+          explanation: expl + why,
+        };
+      return {
+        ...base, mode: 'contrast', context: true, instruction: 'Words you mixed up — which one fits the blank?',
+        prompt: blank, promptEn: tr(v),
+        options: shuffle([{ text: v.word, correct: true }, ...distract.map((d) => ({ text: d.word, correct: false, key: 'v:' + d.id }))], r),
+        explanation: expl + why,
+      };
+    }
+    case 'produce':
+      // write the word yourself: the sentence with a gap and the meaning as the only hint
+      if (!blank) return vocabExercise(id, 'type', s, r);
+      return {
+        ...base, context: true, instruction: `Write the missing word: “${meaning}” (hiragana or romaji).`,
+        prompt: blank, promptEn: tr(v), accept: [v.reading, v.word], explanation: expl,
+      };
+    case 'listencloze':
+      // Japanese only: hear the whole sentence, then pick the word that was in the gap
+      if (!blank) return vocabExercise(id, 'cloze', s, r);
+      return {
+        ...base, context: true, instruction: 'Listen. Which word goes in the gap?',
+        prompt: blank, promptEn: tr(v), audio: v.example,
+        options: shuffle([{ text: v.word, correct: true }, ...distract.map((d) => ({ text: d.word, correct: false, key: 'v:' + d.id }))], r),
+        explanation: expl,
+      };
     case 'reading':
       return {
         ...base, context: false, instruction: 'How is this word read?',
@@ -273,6 +311,12 @@ function kanjiExercise(id: string, mode: string, r: () => number): Exercise {
   }
   // reading of the kanji inside a real word, shown in a sentence
   const sentence = word.example.includes(word.word) ? word.example.replace(word.word, `【${word.word}】`) : `【${word.word}】`;
+  if (mode === 'type')
+    return {
+      id: `${key}:type:${Math.floor(r() * 1e6)}`, key, area: 'kanji', mode: 'type', context: true,
+      instruction: 'Write the reading of the word in 【 】 (hiragana or romaji).', prompt: sentence, promptEn: word.exampleEn,
+      accept: [word.reading], explanation: expl,
+    };
   return {
     id: `${key}:reading:${Math.floor(r() * 1e6)}`, key, area: 'kanji', mode: 'reading', context: true,
     instruction: 'How is the word in 【 】 read?', prompt: sentence, promptEn: word.exampleEn,
@@ -293,23 +337,32 @@ export function exerciseFor(s: GameState, key: string, opts: { prefer?: 'listen'
     if (m === 'seen' && r() < 0.5) return grammarExercise(id, 'meaning', r);
     return grammarExercise(id, 'cloze', r);
   }
-  if (t === 'k') return kanjiExercise(id, m === 'seen' || r() < 0.3 ? 'meaning' : 'reading', r);
-  // vocab
+  if (t === 'k') {
+    if (m === 'seen' || r() < 0.3) return kanjiExercise(id, 'meaning', r);
+    // well-known kanji: write the reading yourself now and then instead of picking it
+    return kanjiExercise(id, (m === 'mature' || m === 'young') && !opts.prefer && r() < 0.4 ? 'type' : 'reading', r);
+  }
+  // vocab: a word mixed up with another one twice or more comes back as a drill between the two
+  const partner = opts.prefer ? null : confusedWith(s, key);
+  if (partner?.startsWith('v:') && VOCAB_BY_ID[partner.slice(2)] && !VOCAB_BY_ID[id]?.affix) return vocabExercise(id, 'contrast', s, r, partner.slice(2));
+  // the better a word is known, the less English: from picking a meaning to Japanese-only gaps and writing it yourself
   let modes: string[];
   if (opts.prefer === 'listen') modes = ['listen'];
   else if (card && needsContext(card)) modes = ['cloze', 'sentence', 'listen'];
   else if (m === 'seen') modes = ['meaning', 'reading'];
-  else if (m === 'learning' || m === 'struggling') modes = ['meaning', 'reading', 'cloze', 'reverse'];
-  else modes = ['cloze', 'sentence', 'listen', 'type', 'reverse'];
+  else if (m === 'learning' || m === 'struggling') modes = ['meaning', 'reading', 'cloze', 'reverse', 'type'];
+  else if (m === 'young') modes = ['cloze', 'listencloze', 'type', 'produce', 'reverse', 'sentence'];
+  else modes = ['cloze', 'listencloze', 'produce', 'produce', 'type'];
   if (opts.prefer === 'isolated') modes = ['meaning', 'reading', 'reverse'];
   if (opts.prefer === 'context') modes = ['cloze', 'sentence'];
   // an affix is only asked for its reading or meaning (it never stands alone in a sentence)
   if (VOCAB_BY_ID[id]?.affix) modes = modes.filter((x) => x === 'meaning' || x === 'reading' || x === 'reverse');
   // kana-only words (conjunctions, onomatopoeia) have nothing to read or type
   if (!hasKanji(VOCAB_BY_ID[id]?.word ?? '')) modes = modes.filter((x) => x !== 'reading' && x !== 'type');
+  if (!ttsAvailable()) modes = modes.filter((x) => x !== 'listencloze');
   // curriculum words without an example sentence yet are drilled without context
   const noExample = !VOCAB_BY_ID[id]?.example;
-  if (noExample) modes = modes.filter((x) => x !== 'cloze' && x !== 'sentence' && x !== 'listen');
+  if (noExample) modes = modes.filter((x) => x !== 'cloze' && x !== 'sentence' && x !== 'listen' && x !== 'listencloze' && x !== 'produce');
   if (!modes.length) modes = noExample ? ['meaning', 'reverse'] : ['meaning', 'cloze'];
   return vocabExercise(id, modes[Math.floor(r() * modes.length)], s, r);
 }
@@ -503,7 +556,7 @@ export function recordAnswer(s: GameState, ex: Exercise, ok: boolean, ms: number
   if (!card.introduced || card.due <= now || !ok) review(card, gradeFromAnswer(ok, ms), now);
   card.history.push({ t: now, ok, mode: ex.mode, ms });
   if (card.history.length > 20) card.history.splice(0, card.history.length - 20);
-  if (!ok && chosen?.key && chosen.key !== ex.key && chosen.key.startsWith('g:')) {
+  if (!ok && chosen?.key && chosen.key !== ex.key && chosen.key[0] === ex.key[0]) {
     const pair = `${ex.key}|${chosen.key}`;
     s.confusions[pair] = (s.confusions[pair] ?? 0) + 1;
   }
@@ -521,4 +574,68 @@ export function recordComprehension(s: GameState, area: SkillArea, ok: boolean, 
     if (!c) continue;
     ok ? c.ctxOk++ : c.ctxFail++;
   }
+}
+
+// ------------------------------------------------------------------
+// mix-ups
+
+/** the item this one was mixed up with most (twice or more), if any */
+export function confusedWith(s: GameState, key: string): string | null {
+  let best: string | null = null;
+  let n = 1;
+  for (const [pair, c] of Object.entries(s.confusions)) {
+    const [a, b] = pair.split('|');
+    if (a === key && c > n && keyExists(b)) {
+      best = b;
+      n = c;
+    }
+  }
+  return best;
+}
+
+/** pairs of items the player mixed up (both directions counted together), most often first */
+export function confusionPairs(s: GameState): { a: string; b: string; n: number }[] {
+  const m = new Map<string, { a: string; b: string; n: number }>();
+  for (const [pair, c] of Object.entries(s.confusions)) {
+    const [a, b] = pair.split('|');
+    if (!keyExists(a) || !keyExists(b)) continue;
+    const id = [a, b].sort().join('|');
+    const e = m.get(id) ?? { a, b, n: 0 };
+    e.n += c;
+    m.set(id, e);
+  }
+  return [...m.values()].sort((x, y) => y.n - x.n);
+}
+
+/** a drill of the pairs mixed up most: each item asked against the other one */
+export function buildConfusionSession(s: GameState, size = 10, r = Math.random): Exercise[] {
+  const out: Exercise[] = [];
+  for (const { a, b } of confusionPairs(s)) {
+    for (const [x, y] of [[a, b], [b, a]]) {
+      if (out.length >= size) break;
+      const [t, id] = x.split(':');
+      if (t === 'v' && !VOCAB_BY_ID[id].affix) out.push(vocabExercise(id, 'contrast', s, r, y.slice(2)));
+      else if (t === 'g') out.push(grammarExercise(id, 'contrast', r));
+      else out.push(exerciseFor(s, x, { r }));
+    }
+  }
+  return out;
+}
+
+/** the written form, reading and meaning of an item, for showing two mixed-up items side by side */
+export function describeKey(key: string, lang: 'en' | 'de' = 'en'): { label: string; reading?: string; meaning: string; example?: string } {
+  const [t, id] = key.split(':');
+  if (t === 'v' && VOCAB_BY_ID[id]) {
+    const v = VOCAB_BY_ID[id];
+    return { label: wordForm(v), reading: v.reading, meaning: lang === 'de' ? v.de : v.en, example: v.example || undefined };
+  }
+  if (t === 'g' && GRAMMAR_BY_ID[id]) {
+    const g = GRAMMAR_BY_ID[id];
+    return { label: g.pattern, meaning: g.meaning, example: g.examples[0]?.jp };
+  }
+  if (t === 'k' && KANJI_BY_ID[id]) {
+    const k = KANJI_BY_ID[id];
+    return { label: k.char, reading: [...k.on, ...k.kun].join('・'), meaning: k.meaning };
+  }
+  return { label: key, meaning: '' };
 }

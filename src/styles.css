@@ -1133,3 +1133,12 @@ html.hc .btn { border: 2px solid #000; }
 .week-review { max-width: 420px; margin: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
 .week-review h2 { margin: 0; font-family: var(--pixel); }
 .req-box { cursor: pointer; }
+
+/* mix-ups: two confused items side by side */
+.mix-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.mix-pair { flex: 1; display: flex; align-items: stretch; gap: 6px; font-size: 14px; }
+.mix-side { flex: 1; min-width: 0; background: #fffaf0; border: 1px solid #ead9b8; border-radius: 8px; padding: 6px 8px; }
+.mix-side b { font-size: 18px; }
+.mix-ex { margin-top: 3px; font-size: 13px; opacity: 0.85; }
+.mix-vs { align-self: center; font-size: 18px; color: #b07a2a; }
+.feedback .mix-pair { margin-top: 8px; color: inherit; }

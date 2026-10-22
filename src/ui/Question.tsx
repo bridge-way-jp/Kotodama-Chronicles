@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Jp, Rich, plainText, withName } from './Jp';
 import { speak, stopSpeech, ttsAvailable, sfx } from '../core/audio';
 import { normalizeKana } from '../core/romaji';
+import { MixPair } from './Mixups';
 import { shuffle, type Exercise, type Option } from '../core/learning';
 import { store } from '../core/store';
 import type { Question } from '../core/types';
@@ -276,6 +277,12 @@ export function ExerciseView({
             {!ok && ex.accept && <> 答え：{ex.accept[0]}</>}
           </div>
           {ex.hideTextUntilAnswered && <div className="fb-why"><Jp text={ex.prompt} /></div>}
+          {!ok && ex.key && chosen?.key && chosen.key !== ex.key && (
+            <div className="fb-mix">
+              <div className="note">⚖ 取り違え — you picked another item. The difference:</div>
+              <MixPair a={ex.key} b={chosen.key} />
+            </div>
+          )}
           <div className="fb-why">
             <Rich text={ex.explanation} />
           </div>
