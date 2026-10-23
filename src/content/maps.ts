@@ -11,6 +11,7 @@ import { PLAIN_GEN } from './plain.gen';
 import { ROOMS2_GEN } from './rooms2.gen';
 import { HOUSE_SWAPS } from './houses.gen';
 import { EDGES_GEN } from './edges.gen';
+import { BORDER_GEN } from './border.gen';
 import { FLOW_GEN } from './flow.gen';
 import { EDITS_BASE, applyEdits, loadLocalEdits, walkOverrides } from './edits';
 import type { Dir } from '../core/types';
@@ -744,6 +745,14 @@ for (const [id, p] of Object.entries(PLAIN_GEN)) {
 }
 
 // map borders where a painted way would run into the edge without an exit are closed by hedges and bollards (tools/build_edges.py)
+// the outermost tiles the repainted ground shows as wall, rim or planting (tools/build_border.py)
+for (const [id, tiles] of Object.entries(BORDER_GEN)) {
+  const m = MAPS[id];
+  if (!m) continue;
+  const rows = m.tiles.map((r) => [...r]);
+  for (const [x, y] of tiles) if (rows[y]?.[x] !== undefined) rows[y][x] = '#';
+  m.tiles = rows.map((r) => r.join(''));
+}
 for (const [id, objs] of Object.entries(EDGES_GEN)) if (MAPS[id]) MAPS[id].objects.push(...objs);
 
 // decor that squeezed a walkway to a single tile is walk-through (tools/find_squeezes.mts)
