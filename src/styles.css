@@ -1151,3 +1151,4 @@ html.hc .btn { border: 2px solid #000; }
 .mem.locked { display: flex; align-items: center; justify-content: center; color: #b9a98a; background: #f3ead8; cursor: default; }
 .mem-view { display: flex; align-items: center; justify-content: center; }
 .mem-view img { max-width: 96vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 6px 30px rgba(0, 0, 0, 0.5); }
+.edit-map { max-width: 100%; font-size: 12px; padding: 2px; }
