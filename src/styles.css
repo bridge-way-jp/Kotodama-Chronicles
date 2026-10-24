@@ -1142,3 +1142,12 @@ html.hc .btn { border: 2px solid #000; }
 .mix-ex { margin-top: 3px; font-size: 13px; opacity: 0.85; }
 .mix-vs { align-self: center; font-size: 18px; color: #b07a2a; }
 .feedback .mix-pair { margin-top: 8px; color: inherit; }
+
+/* memories album */
+.mem-title { font-size: 13px; margin: 8px 0 4px; opacity: 0.8; }
+.memories { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; }
+.mem { padding: 0; border: 2px solid #ead9b8; border-radius: 6px; overflow: hidden; aspect-ratio: 16 / 9; background: #2a2018; cursor: pointer; }
+.mem img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mem.locked { display: flex; align-items: center; justify-content: center; color: #b9a98a; background: #f3ead8; cursor: default; }
+.mem-view { display: flex; align-items: center; justify-content: center; }
+.mem-view img { max-width: 96vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 6px 30px rgba(0, 0, 0, 0.5); }
