@@ -4,7 +4,7 @@ import { check, type Mood } from '../core/script';
 import { store } from '../core/store';
 import { runAction, type ActionHooks } from '../core/game';
 import { encounter, recordAnswer, recordComprehension, type Exercise } from '../core/learning';
-import { toast } from '../core/events';
+import { bus, toast } from '../core/events';
 import { sfx, speak, stopSpeech, ttsAvailable } from '../core/audio';
 import { NPCS } from '../content/npcs';
 import { ITEMS } from '../content/creatures';
@@ -48,6 +48,7 @@ export function ScriptRunner({ steps, onEnd, hooks }: { steps: Step[]; onEnd: ()
   // automatic (non-interactive) steps
   useEffect(() => {
     if (!top) {
+      bus.emit('stage-reset');
       onEnd();
       return;
     }
@@ -62,6 +63,18 @@ export function ScriptRunner({ steps, onEnd, hooks }: { steps: Step[]; onEnd: ()
       advance();
     } else if ('talk' in step) {
       advance(smallTalk(store.s, step.talk));
+    } else if ('stage' in step) {
+      // the world plays the little scene; without a world (or if it gets stuck) the dialogue goes on anyway
+      let done = false;
+      const next = () => {
+        if (done) return;
+        done = true;
+        clearTimeout(guard);
+        advance();
+      };
+      const guard = setTimeout(next, 12000);
+      if (!bus.has('stage')) next();
+      else bus.emit('stage', { cmds: step.stage, done: next });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stack]);

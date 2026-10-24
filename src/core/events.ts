@@ -11,6 +11,9 @@ class Bus {
   off(evt: string, fn: Handler) {
     this.map.get(evt)?.delete(fn);
   }
+  has(evt: string) {
+    return !!this.map.get(evt)?.size;
+  }
   emit(evt: string, payload?: any) {
     for (const fn of [...(this.map.get(evt) ?? [])]) fn(payload);
   }

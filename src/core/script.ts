@@ -1,4 +1,4 @@
-import type { GameState, Question } from './types';
+import type { Dir, GameState, Question } from './types';
 
 /** Data-driven dialogue / event scripting used by NPCs, objects and quests. */
 
@@ -89,7 +89,23 @@ export type Step =
   /** small talk with a person (core/social.ts), built when it is reached */
   | { talk: string }
   /** pick a gift from the bag for this person */
-  | { gift: string };
+  | { gift: string }
+  /** a little scene in the world while the dialogue waits: people walk, turn, show feelings; the camera moves */
+  | { stage: StageCmd[] };
+
+export type Emote = 'alert' | 'question' | 'heart' | 'music' | 'idea' | 'sweat' | 'dots' | 'angry' | 'sparkle' | 'sleep';
+/** who: 'player' or a person's id on the current map */
+export type StageCmd =
+  | { emote: Emote; who?: string }
+  | { walk: string; path: Dir[] }
+  /** turn to a direction or towards another person */
+  | { face: string; to: string }
+  /** pan to a person or a tile ('back' follows the player again); zoom is relative to the normal zoom */
+  | { camera: string | [number, number]; zoom?: number; ms?: number }
+  | { fade: 'out' | 'in'; ms?: number }
+  | { shake: number }
+  | { flash: true }
+  | { wait: number };
 
 export interface DialogueRule {
   when?: Cond;
