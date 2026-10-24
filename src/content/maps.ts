@@ -13,6 +13,8 @@ import { HOUSE_SWAPS } from './houses.gen';
 import { EDGES_GEN } from './edges.gen';
 import { BORDER_GEN } from './border.gen';
 import { FLOW_GEN } from './flow.gen';
+import { DECORFIX_GEN } from './decorfix.gen';
+import { CITYDECOR_GEN } from './citydecor.gen';
 import { EDITS_BASE, applyEdits, loadLocalEdits, walkOverrides } from './edits';
 import type { Dir } from '../core/types';
 
@@ -754,6 +756,24 @@ for (const [id, tiles] of Object.entries(BORDER_GEN)) {
   m.tiles = rows.map((r) => r.join(''));
 }
 for (const [id, objs] of Object.entries(EDGES_GEN)) if (MAPS[id]) MAPS[id].objects.push(...objs);
+
+// decor that stood on a painted way is moved beside it or taken away (tools/build_decor_fix.py; its input is the map without this)
+if (!(globalThis as { __KC_RAW_DECOR__?: boolean }).__KC_RAW_DECOR__)
+  for (const [id, fix] of Object.entries(DECORFIX_GEN)) {
+    const m = MAPS[id];
+    if (!m) continue;
+    m.objects = m.objects
+      .filter((o) => fix[o.id] !== null)
+      .map((o) => {
+        const to = fix[o.id];
+        if (!to) return o;
+        const [dx, dy] = [to[0] - o.x, to[1] - o.y];
+        return { ...o, x: to[0], y: to[1], ...(o.at ? { at: [o.at[0] + dx * 32, o.at[1] + dy * 32] as [number, number] } : {}) };
+      });
+  }
+
+// the objects of each town, placed beside the ways (tools/place_city_objects.py)
+if (!(globalThis as { __KC_RAW_DECOR__?: boolean }).__KC_RAW_DECOR__) for (const [id, objs] of Object.entries(CITYDECOR_GEN)) MAPS[id]?.objects.push(...objs);
 
 // decor that squeezed a walkway to a single tile is walk-through (tools/find_squeezes.mts)
 for (const [id, ids] of Object.entries(FLOW_GEN)) for (const o of MAPS[id]?.objects ?? []) if (ids.includes(o.id)) o.solid = false;

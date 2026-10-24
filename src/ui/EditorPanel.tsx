@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { editor } from '../game/editorState';
 import { OBJECT_PALETTE } from '../content/plain.gen';
+import { CITY_PALETTE } from '../content/citydecor.gen';
 import { loadLocalEdits, saveLocalEdits } from '../content/edits';
 import { store } from '../core/store';
 
@@ -10,7 +11,9 @@ const GROUPS: [string, RegExp][] = [
   ['Straße', /lamp|bench|bollard|vend|rack|scooter|planter|tree_pot|bonsai|trash|recycle|sign|bus_pole|pole|shelter|phone|postbox|aframe/],
   ['Markt & Hof', /stall|crates|barrel|jar|sack|laundry|drying|firewood|well|table|beer|cafe_|noren|stone_lantern|fox|hokora|chozuya/],
 ];
-const groupOf = (n: string) => GROUPS.find(([, re]) => re.test(n))?.[0] ?? 'Sonstiges';
+const TOWN_NAMES: Record<string, string> = { hinomori: 'Hinomori', yukimi: 'Yukimi', shiomi: 'Shiomi', kyoto: 'Kyoto', osaka: 'Osaka', tokyo: 'Tokyo' };
+const groupOf = (n: string) => (n.startsWith('co_') ? TOWN_NAMES[n.split('_')[1]] : undefined) ?? GROUPS.find(([, re]) => re.test(n))?.[0] ?? 'Sonstiges';
+const PALETTE = [...OBJECT_PALETTE, ...CITY_PALETTE];
 
 /** map editor panel (`?edit`): pick an object, click the map to place it, drag to move, erase, export for the game */
 export function EditorPanel() {
@@ -19,8 +22,8 @@ export function EditorPanel() {
   const [group, setGroup] = useState('Natur');
   const [msg, setMsg] = useState('');
   useEffect(() => editor.subscribe(() => tick((n) => n + 1)), []);
-  const groups = useMemo(() => ['Natur', 'Zäune', 'Straße', 'Markt & Hof', 'Sonstiges'], []);
-  const items = OBJECT_PALETTE.filter((p) => groupOf(p.name) === group);
+  const groups = useMemo(() => ['Natur', 'Zäune', 'Straße', 'Markt & Hof', 'Sonstiges', ...[...new Set(CITY_PALETTE.map((p) => groupOf(p.name)))]], []);
+  const items = PALETTE.filter((p) => groupOf(p.name) === group);
   const exportJson = async () => {
     const txt = JSON.stringify(loadLocalEdits());
     try {
