@@ -58,7 +58,7 @@ export type Action =
   | { seen: string }
   | { warp: { map: string; x: number; y: number } }
   | { time: 'morning' | 'evening' }
-  | { open: 'review' | 'dashboard' | 'diagnostic' | 'shop' | 'menu' | 'garden' | 'karaoke' | `job:${string}` | `board:${string}` }
+  | { open: 'review' | 'dashboard' | 'diagnostic' | 'shop' | 'menu' | 'garden' | 'karaoke' | `job:${string}` | `board:${string}` | `alltag:${string}` }
   | { chapter: number }
   /** switch the music for a scene: a track key, or 'map' for the current map's track (memory ends with the scene) */
   | { music: string }
