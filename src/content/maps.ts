@@ -14,6 +14,7 @@ import { EDGES_GEN } from './edges.gen';
 import { BORDER_GEN } from './border.gen';
 import { FLOW_GEN } from './flow.gen';
 import { DECORFIX_GEN } from './decorfix.gen';
+import { CITYDECOR_GEN } from './citydecor.gen';
 import { EDITS_BASE, applyEdits, loadLocalEdits, walkOverrides } from './edits';
 import type { Dir } from '../core/types';
 
@@ -770,6 +771,9 @@ if (!(globalThis as { __KC_RAW_DECOR__?: boolean }).__KC_RAW_DECOR__)
         return { ...o, x: to[0], y: to[1], ...(o.at ? { at: [o.at[0] + dx * 32, o.at[1] + dy * 32] as [number, number] } : {}) };
       });
   }
+
+// the objects of each town, placed beside the ways (tools/place_city_objects.py)
+if (!(globalThis as { __KC_RAW_DECOR__?: boolean }).__KC_RAW_DECOR__) for (const [id, objs] of Object.entries(CITYDECOR_GEN)) MAPS[id]?.objects.push(...objs);
 
 // decor that squeezed a walkway to a single tile is walk-through (tools/find_squeezes.mts)
 for (const [id, ids] of Object.entries(FLOW_GEN)) for (const o of MAPS[id]?.objects ?? []) if (ids.includes(o.id)) o.solid = false;

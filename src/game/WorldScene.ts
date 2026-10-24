@@ -3,6 +3,7 @@ import { MAPS, BLOCKING, type MapDef, type MapObject, type Warp } from '../conte
 import { editor } from './editorState';
 import { emptyEdits, loadLocalEdits, saveLocalEdits } from '../content/edits';
 import { OBJECT_PALETTE } from '../content/plain.gen';
+import { CITY_PALETTE } from '../content/citydecor.gen';
 import { ROOMS_GEN } from '../content/rooms.gen';
 import { ROOMS2_GEN } from '../content/rooms2.gen';
 import { OSAKA_GEN } from '../content/osaka.gen';
@@ -346,7 +347,7 @@ export class WorldScene extends Phaser.Scene {
       if (editor.walkBrush) return void paintWalk(tx, ty);
       if (editor.brush) {
         const key = editor.brush;
-        const pal = OBJECT_PALETTE.find((q) => q.name === key);
+        const pal = [...OBJECT_PALETTE, ...CITY_PALETTE].find((q) => q.name === key);
         const w = Math.max(1, Math.round((pal?.w ?? TILE) / TILE));
         const def: MapObject = { id: `${this.map.id}_u${Date.now().toString(36)}`, sprite: key, x: tx, y: ty, w, h: 1, solid: true, decor: true };
         const add = () => {
