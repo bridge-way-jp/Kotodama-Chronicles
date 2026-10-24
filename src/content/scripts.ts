@@ -3,7 +3,7 @@ import { GRAMMAR_BY_ID } from './grammar';
 import { DECO_CATALOG, SPECIES } from './creatures';
 import { TOKYO_SCRIPTS } from './scripts_tokyo';
 import { ROOMS2_SCRIPTS } from './scripts_rooms2.gen';
-import { applyBeats } from './scenes';
+import { applyBeats, sleepScenes } from './scenes';
 
 /**
  * All interaction scripts, keyed by NPC id or map-object id.
@@ -108,7 +108,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
           choice: [
             {
               text: '休む', en: 'Sleep (heals your team, advances the day)',
-              then: [{ do: [{ sleep: true }] }, n('ぐっすり眠った。言霊たちも元気になった！', 'You slept well. Your Kotodama are fully healed!')],
+              then: [{ do: [{ sleep: true }] }, ...sleepScenes(), n('ぐっすり眠った。言霊たちも元気になった！', 'You slept well. Your Kotodama are fully healed!')],
             },
             { text: 'まだ起きている', en: 'Stay up' },
           ],

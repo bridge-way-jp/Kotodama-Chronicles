@@ -6,6 +6,7 @@ import { guideFor } from '../core/guide';
 import { hearts, profileOf } from '../core/social';
 import type { GameState } from '../core/types';
 import { MilestonesSection, RequestsSection, WeekSection } from './Progress';
+import { MemoriesSection } from './Memories';
 
 const CHAPTER_NAMES: Record<number, [string, string]> = {
   1: ['日野森の春', 'Spring in Hinomori'],
@@ -95,6 +96,7 @@ export function DiaryTab() {
         </div>
         <p className="note">Talk a little more, answer in the right register and give gifts they like to grow closer. Close friends share a story of their own.</p>
       </section>
+      <MemoriesSection />
     </div>
   );
 }

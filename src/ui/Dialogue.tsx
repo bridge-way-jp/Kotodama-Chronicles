@@ -367,6 +367,8 @@ function CgScene({ step, onNext }: { step: Extract<Step, { cg: string }>; onNext
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (step.say) backlog.push({ who: '', text: step.say, en: step.en });
+    // the memories album in the diary keeps every story picture once seen
+    if (!store.state?.flags['seen_' + step.cg]) store.update((s) => void (s.flags['seen_' + step.cg] = true), 'seen');
     const onKey = (e: KeyboardEvent) => {
       if (!['Enter', 'Space', 'KeyZ'].includes(e.code)) return;
       if (!ref.current || ref.current.getClientRects().length === 0) return;

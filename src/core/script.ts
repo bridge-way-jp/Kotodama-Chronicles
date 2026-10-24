@@ -25,6 +25,8 @@ export type Cond =
       name?: string[];
       /** not yet done this real year (see the yearFlag action) */
       notYearFlag?: string;
+      /** the real month (1–12) is one of these */
+      months?: number[];
       /** random chance 0–1; only use inside an `if` step, never in a rule's `when` */
       chance?: number;
     }
@@ -147,6 +149,7 @@ export function check(s: GameState, c: Cond | undefined): boolean {
     const [a, b] = c.hours;
     if (a <= b ? h < a || h >= b : h < a && h >= b) return false;
   }
+  if (c.months && !c.months.includes(new Date().getMonth() + 1)) return false;
   if (c.name && !c.name.includes(s.playerName.trim())) return false;
   if (c.chance !== undefined && Math.random() >= c.chance) return false;
   return true;

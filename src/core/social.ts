@@ -6,6 +6,7 @@ import { GREETINGS, HEART_EVENTS, PROFILES, REACT, REPLIES, TALK, type Profile, 
 import { regionOf } from './guide';
 import { ttsAvailable } from './audio';
 import { bringChoice } from './daily';
+import { HEART_PICTURES } from '../content/scenes';
 
 /**
  * Conversations with people outside the story scenes: after what a person usually says, the player can talk a
@@ -149,7 +150,7 @@ export function socialMenu(s: GameState, id: string): Step[] {
     {
       choice: [
         ...(heart
-          ? [{ text: '♥ ゆっくり話す', en: '♥ Take time to talk', then: [...HEART_EVENTS[id], { do: [{ flag: 'heart_' + id }, { rel: id, points: 2, memory: 'heart1' }] }, { toast: `♥ ${NPCS[id].name}と仲良くなった！` }] }]
+          ? [{ text: '♥ ゆっくり話す', en: '♥ Take time to talk', then: [...(HEART_PICTURES[id] ? [{ cg: `cg_heart_${id}`, say: HEART_PICTURES[id].ja, en: HEART_PICTURES[id].en } as Step] : []), ...HEART_EVENTS[id], { do: [{ flag: 'heart_' + id }, { rel: id, points: 2, memory: 'heart1' }] }, { toast: `♥ ${NPCS[id].name}と仲良くなった！` }] }]
           : []),
         ...(bring ? [bring] : []),
         { text: 'もう少し話す', en: 'Talk a little more', then: [{ talk: id }] },
