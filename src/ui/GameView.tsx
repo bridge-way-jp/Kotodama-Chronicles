@@ -19,6 +19,7 @@ import { Menu, type MenuTab } from './Menu';
 import { Tournament } from './Tournament';
 import { Karaoke } from './Karaoke';
 import { JobSession } from './Job';
+import { Everyday } from './Everyday';
 import { EditorPanel } from './EditorPanel';
 import { editor } from '../game/editorState';
 import { Garden } from './Garden';
@@ -39,6 +40,7 @@ type Overlay =
   | { id: number; kind: 'menu'; tab?: MenuTab }
   | { id: number; kind: 'review'; weak?: boolean; mixups?: boolean }
   | { id: number; kind: 'job'; job: string }
+  | { id: number; kind: 'alltag'; scene: string }
   | { id: number; kind: 'garden' }
   | { id: number; kind: 'tournament' }
   | { id: number; kind: 'karaoke' }
@@ -135,6 +137,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
       else if (what === 'karaoke') push({ kind: 'karaoke' });
       else if (what.startsWith('board:')) push({ kind: 'board', station: what.slice(6) });
       else if (what.startsWith('job:')) push({ kind: 'job', job: what.slice(4) });
+      else if (what.startsWith('alltag:')) push({ kind: 'alltag', scene: what.slice(7) });
     },
   };
 
@@ -330,6 +333,12 @@ export function GameView({ onExit }: { onExit: () => void }) {
         return (
           <div className="overlay-panel">
             <Garden onClose={() => remove(o.id)} onWater={() => (remove(o.id), push({ kind: 'review' }))} />
+          </div>
+        );
+      case 'alltag':
+        return (
+          <div className="overlay-panel">
+            <Everyday scene={o.scene} onClose={() => remove(o.id)} />
           </div>
         );
       case 'job':

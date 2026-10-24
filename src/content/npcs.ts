@@ -1,4 +1,5 @@
 import { ROOMS2_NPCS } from './rooms2.gen';
+import { PEOPLE_LOOKS } from './people.gen';
 
 export interface NpcDef {
   id: string;
@@ -68,3 +69,5 @@ export const NPCS: Record<string, NpcDef> = {
 
 // shopkeepers of the later interiors (tools/build_new_rooms.py)
 Object.assign(NPCS, ROOMS2_NPCS);
+// people who borrowed someone else's look have one of their own now (tools/build_people.py)
+for (const [id, look] of Object.entries(PEOPLE_LOOKS)) if (NPCS[id]) NPCS[id] = { ...NPCS[id], ...look };

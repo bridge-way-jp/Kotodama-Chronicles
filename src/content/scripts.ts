@@ -4,6 +4,7 @@ import { DECO_CATALOG, SPECIES } from './creatures';
 import { TOKYO_SCRIPTS } from './scripts_tokyo';
 import { ROOMS2_SCRIPTS } from './scripts_rooms2.gen';
 import { applyBeats, sleepScenes } from './scenes';
+import { EVERYDAY_SPOTS } from './everyday';
 
 /**
  * All interaction scripts, keyed by NPC id or map-object id.
@@ -2809,3 +2810,8 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
 
 // little scenes in the world and chapter pictures at the lines they belong to (content/scenes.ts)
 applyBeats(SCRIPTS);
+
+// "Japan im Alltag": the ticket machine, the café board, the kushikatsu plates, the departure board, the lost-property form
+for (const [id, spot] of Object.entries(EVERYDAY_SPOTS))
+  for (const r of SCRIPTS[id] ?? [])
+    if (!r.when) r.steps = [...r.steps, { choice: [{ text: spot.text, en: spot.en, then: [{ do: [{ open: `alltag:${spot.scene}` }] }] }, { text: 'やめる', en: 'Leave it' }] }];

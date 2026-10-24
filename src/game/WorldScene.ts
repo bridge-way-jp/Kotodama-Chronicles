@@ -4,6 +4,7 @@ import { editor } from './editorState';
 import { emptyEdits, loadLocalEdits, saveLocalEdits } from '../content/edits';
 import { OBJECT_PALETTE } from '../content/plain.gen';
 import { CITY_PALETTE } from '../content/citydecor.gen';
+import { WALKERS } from '../content/people.gen';
 import { ROOMS_GEN } from '../content/rooms.gen';
 import { ROOMS2_GEN } from '../content/rooms2.gen';
 import { OSAKA_GEN } from '../content/osaka.gen';
@@ -81,7 +82,11 @@ export const ASSET_KEYS = [
 
 /** painted seasonal versions of an outdoor map (public/assets/<map image>_<season>.png); spring is the base image.
  * Add a map here only once its files exist. */
-const SEASONAL: Record<string, string[]> = {};
+const SEASONAL: Record<string, string[]> = {
+  map_town: ['summer', 'autumn', 'winter'], map_forest: ['summer', 'autumn', 'winter'],
+  map_valley: ['summer', 'autumn', 'winter'], map_harbor: ['summer', 'autumn', 'winter'],
+  map_gion: ['spring'], map_kamogawa: ['spring'], map_fushimi: ['spring'],
+};
 function currentSeason(): 'spring' | 'summer' | 'autumn' | 'winter' {
   const m = new Date().getMonth() + 1;
   return m >= 3 && m <= 5 ? 'spring' : m >= 6 && m <= 8 ? 'summer' : m >= 9 && m <= 11 ? 'autumn' : 'winter';
@@ -92,10 +97,25 @@ function seasonalImage(image: string | undefined): string | undefined {
   return image && SEASONAL[image]?.includes(season) ? `${image}_${season}` : image;
 }
 
+/** trees and plants with seasonal versions (tools/build_seasons.py): drawn in the season's look on the seasonal maps */
+const SEASONAL_PLANTS = new Set(['ob_tree_round', 'ob_tree_cedar', 'ob_tree_pine', 'ob_tree_maple', 'ob_tree_sakura', 'ob_tree_ginkgo', 'ob_tree_willow', 'ob_bush_round',
+  'ob_bush_pink', 'ob_bush_yellow', 'ob_bush_blue', 'ob_hedge_block', 'ob_flower_pink', 'ob_flower_red', 'ob_grass_clump', 'ob_fern']);
+function seasonalSprite(m: MapDef, sprite: string): string {
+  const season = currentSeason();
+  return season !== 'spring' && SEASONAL_PLANTS.has(sprite) && m.image && SEASONAL[m.image]?.includes(season) ? `${sprite}_${season}` : sprite;
+}
+
 /** images a map needs: its painted backdrop and the sprites of its objects */
+const WALKER_SET = new Set(WALKERS);
 function mapKeys(m: MapDef | undefined): string[] {
   if (!m) return [];
-  return [...(m.image ? [...new Set([seasonalImage(m.image)!, m.image])] : []), ...m.objects.flatMap((o) => (o.sprite ? [o.sprite] : []))];
+  // the people of the map: their standing frames, and their steps when they have a walk cycle
+  const people = m.npcs.flatMap((n) => {
+    const base = NPCS[n.id]?.sprite;
+    if (!base) return [];
+    return DIR_NAMES.flatMap((d) => [`${base}_${d}`, ...(WALKER_SET.has(base.replace(/^npc_/, '')) ? [0, 1, 2, 3].map((f) => `${base}_${d}_${f}`) : [])]);
+  });
+  return [...(m.image ? [...new Set([seasonalImage(m.image)!, m.image])] : []), ...m.objects.flatMap((o) => (o.sprite ? [...new Set([seasonalSprite(m, o.sprite), o.sprite])] : [])), ...people];
 }
 /** keys only some maps need (painted maps, buildings): loaded when the player gets there, not at start-up */
 const LAZY_KEYS = new Set(Object.values(MAPS).flatMap(mapKeys));
@@ -687,7 +707,8 @@ export class WorldScene extends Phaser.Scene {
         const h = def.h ?? 1;
         const cx = def.at ? def.at[0] : (def.x + w / 2) * TILE;
         const by = def.at ? def.at[1] : (def.y + h) * TILE + (def.dy ?? 0);
-        const img = this.add.image(cx, by, def.sprite).setOrigin(0.5, 1);
+        const look = seasonalSprite(this.map, def.sprite);
+        const img = this.add.image(cx, by, this.textures.exists(look) ? look : def.sprite).setOrigin(0.5, 1);
         img.setDepth(by - 1);
         entry.img = img;
         if ((def.hint || entry.doors) && this.textures.exists('em_alert')) {
@@ -1080,9 +1101,10 @@ export class WorldScene extends Phaser.Scene {
             onUpdate: (tw) => {
               const t = tw.getValue() ?? 0;
               const frame = t < 0.75 ? (i % 2 ? 1 : 3) : 0;
-              a.sprite.setTexture(this.textureFor(a.base, dir, a.npc ? 0 : frame));
+              const steps = !a.npc || this.textures.exists(`${a.base}_${dir}_1`);
+              a.sprite.setTexture(this.textureFor(a.base, dir, steps ? frame : 0));
               // people without step frames bob a little instead
-              const bob = a.npc ? -Math.sin(t * Math.PI) * 2 : 0;
+              const bob = steps ? 0 : -Math.sin(t * Math.PI) * 2;
               a.sprite.setPosition(sx + dx * TILE * t, sy + dy * TILE * t + bob);
               a.sprite.setDepth(a.sprite.y);
               if (!a.npc) this.shadow.setPosition(a.sprite.x, a.sprite.y + 4);
