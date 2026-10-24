@@ -3,6 +3,7 @@ import { GRAMMAR_BY_ID } from './grammar';
 import { DECO_CATALOG, SPECIES } from './creatures';
 import { TOKYO_SCRIPTS } from './scripts_tokyo';
 import { ROOMS2_SCRIPTS } from './scripts_rooms2.gen';
+import { applyBeats } from './scenes';
 
 /**
  * All interaction scripts, keyed by NPC id or map-object id.
@@ -2805,3 +2806,6 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   };
   SCRIPTS.kyoto_station.unshift(...fromKyoto('mq22', '大阪'), ...fromKyoto('mq26', '東京'));
 }
+
+// little scenes in the world and chapter pictures at the lines they belong to (content/scenes.ts)
+applyBeats(SCRIPTS);

@@ -9,7 +9,7 @@ import { OSAKA_GEN } from '../content/osaka.gen';
 import { TOKYO_GEN } from '../content/tokyo.gen';
 import { NPCS } from '../content/npcs';
 import { ENCOUNTERS } from '../content/creatures';
-import { check, pickRule } from '../core/script';
+import { check, pickRule, type StageCmd } from '../core/script';
 import { SCRIPTS } from '../content/scripts';
 import { advancesQuest, guideFor, nextExit, outdoorOf, roomHasQuestScene } from '../core/guide';
 import { QUESTS } from '../content/quests';
@@ -49,7 +49,7 @@ export const ASSET_KEYS = [
   'p_sign_nihon', 'p_banner', 'p_sign_small',
   ...Object.values(FOLK).flatMap((f) => DIR_NAMES.flatMap((d) => Array.from({ length: f.frames }, (_, i) => `folk_${f.sprite}_${d}_${i}`))),
   ...DECO_CATALOG, 'deco_certificate',
-  'em_alert', 'map_forest', 'map_town', 'b_station', 'b_lab', 'b_apartment2', 'b_konbini2', 'b_ramen2', 'b_library2', 'p_hokora',
+  'em_alert', 'em_question', 'em_heart', 'em_music', 'em_idea', 'em_sweat', 'em_dots', 'em_angry', 'em_sparkle', 'em_sleep', 'map_forest', 'map_town', 'b_station', 'b_lab', 'b_apartment2', 'b_konbini2', 'b_ramen2', 'b_library2', 'p_hokora',
   ...new Set(Object.values(TILE_IMAGES).flat().filter((k): k is string => !!k)),
   ...AUTOTILE_KEYS,
   ...DETAIL_KEYS,
@@ -218,6 +218,7 @@ export class WorldScene extends Phaser.Scene {
     this.py = s.pos.y;
     this.facing = s.facing;
     this.buildMap();
+    this.exitSigns();
     this.buildPlayer();
     this.refreshVisibility();
 
@@ -231,6 +232,8 @@ export class WorldScene extends Phaser.Scene {
     this.time.addEvent({ delay: 550, loop: true, callback: () => this.animateTiles() });
     this.unsub.push(store.subscribe(() => this.refreshVisibility()));
     this.unsub.push(bus.on('warp', (p) => this.warpTo(p.map, p.x, p.y, p.facing ?? 'down')));
+    this.unsub.push(bus.on('stage', ({ cmds, done }) => void this.runStage(cmds).then(done, done)));
+    this.unsub.push(bus.on('stage-reset', () => this.resetStage()));
     this.unsub.push(
       bus.on('bus', ({ mode }) => {
         if (mode === 'arrive') this.busArrive();
@@ -412,11 +415,51 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 
+  baseZoom = 1;
+
+  /**
+   * A sign at every exit on the map border: an arrow pointing out and the name of the place it leads to, so a way
+   * out is always visible, whatever the ground picture shows there.
+   */
+  exitSigns() {
+    if (this.map.interior) return;
+    const H = this.map.tiles.length;
+    const W = this.map.tiles[0].length;
+    const side = (x: number, y: number): Dir | null => (x === 0 ? 'left' : x === W - 1 ? 'right' : y === 0 ? 'up' : y === H - 1 ? 'down' : null);
+    // neighbouring exit tiles to the same place on the same side form one exit
+    const runs: { to: string; dir: Dir; tiles: [number, number][] }[] = [];
+    for (const w of this.map.warps) {
+      const dir = side(w.x, w.y);
+      if (!dir || !MAPS[w.to.map]) continue;
+      const run = runs.find((r) => r.to === w.to.map && r.dir === dir && r.tiles.some(([x, y]) => Math.abs(x - w.x) + Math.abs(y - w.y) === 1));
+      if (run) run.tiles.push([w.x, w.y]);
+      else runs.push({ to: w.to.map, dir, tiles: [[w.x, w.y]] });
+    }
+    const arrow = { left: '◀', right: '▶', up: '▲', down: '▼' };
+    for (const r of runs) {
+      const cx = (r.tiles.reduce((a, [x]) => a + x, 0) / r.tiles.length) * TILE + TILE / 2;
+      const cy = (r.tiles.reduce((a, [, y]) => a + y, 0) / r.tiles.length) * TILE + TILE / 2;
+      // one tile inside the map, so the sign is never cut off by the edge
+      const [dx, dy] = DIRS[r.dir];
+      const x = Phaser.Math.Clamp(cx - dx * TILE * 1.2, 40, W * TILE - 40);
+      const y = Phaser.Math.Clamp(cy - dy * TILE * 1.2, 14, H * TILE - 14);
+      const label = r.dir === 'right' || r.dir === 'down' ? `${MAPS[r.to].nameJa} ${arrow[r.dir]}` : `${arrow[r.dir]} ${MAPS[r.to].nameJa}`;
+      const text = this.add
+        .text(0, 0, label, { fontFamily: 'DotGothic16, "Noto Sans JP", sans-serif', fontSize: '10px', color: '#fff8e6' })
+        .setOrigin(0.5)
+        .setResolution(4);
+      const bg = this.add.rectangle(0, 0, text.width + 10, text.height + 4, 0x2a2018, 0.78).setStrokeStyle(1, 0xf2c14e);
+      const sign = this.add.container(x, y, [bg, text]).setDepth(99990);
+      this.tweens.add({ targets: sign, x: x + dx * 3, y: y + dy * 3, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    }
+  }
+
   fitCamera() {
     const cam = this.cameras.main;
     const w = this.scale.width;
     const h = this.scale.height;
     const zoom = Math.max(1, Math.floor(Math.min(w / (14 * TILE), h / (9 * TILE))));
+    this.baseZoom = zoom;
     cam.setZoom(zoom);
     const mw = this.map.tiles[0].length * TILE;
     const mh = this.map.tiles.length * TILE;
@@ -772,6 +815,144 @@ export class WorldScene extends Phaser.Scene {
           onComplete: fly,
         });
       fly();
+    }
+  }
+
+  // ------------------------------------------------------------ little scenes in the world ({ stage } steps)
+  private staged = false;
+
+  private actor(who = 'player'): { sprite: Phaser.GameObjects.Image; base: string; npc?: NpcSprite } | null {
+    if (who === 'player') return { sprite: this.player, base: 'hero' };
+    const npc = this.npcs.find((n) => n.id === who && n.sprite.visible);
+    return npc ? { sprite: npc.sprite, base: npc.base, npc } : null;
+  }
+
+  private wait(ms: number) {
+    return new Promise<void>((res) => this.time.delayedCall(ms, () => res()));
+  }
+
+  async runStage(cmds: StageCmd[]) {
+    this.staged = true;
+    this.bubble?.destroy();
+    for (const c of cmds) await this.stageCmd(c);
+  }
+
+  /** after a scene: the camera follows the player again at the normal zoom, the screen is never left dark */
+  resetStage() {
+    if (!this.staged) return;
+    this.staged = false;
+    const cam = this.cameras.main;
+    cam.resetFX();
+    cam.setAlpha(1);
+    this.fitCamera();
+    cam.startFollow(this.player, true, 1, 1, 0, -16);
+  }
+
+  private async stageCmd(c: StageCmd): Promise<void> {
+    const cam = this.cameras.main;
+    if ('wait' in c) return this.wait(c.wait);
+    if ('flash' in c) {
+      cam.flash(250, 255, 255, 255);
+      return this.wait(250);
+    }
+    if ('shake' in c) {
+      cam.shake(c.shake, 0.006);
+      return this.wait(c.shake);
+    }
+    if ('fade' in c) {
+      const ms = c.fade === 'out' ? (c.ms ?? 500) : (c.ms ?? 400);
+      if (c.fade === 'out') cam.fadeOut(ms, 0, 0, 0);
+      else cam.fadeIn(ms, 0, 0, 0);
+      return this.wait(ms);
+    }
+    if ('emote' in c) {
+      const a = this.actor(c.who);
+      if (!a || !this.textures.exists('em_' + c.emote)) return;
+      const img = this.add.image(a.sprite.x, a.sprite.y - a.sprite.displayHeight - 2, 'em_' + c.emote).setOrigin(0.5, 1).setDepth(100002).setScale(0);
+      this.tweens.add({ targets: img, scale: 1, duration: 180, ease: 'Back.easeOut' });
+      this.tweens.add({ targets: img, alpha: 0, delay: 1100, duration: 250, onComplete: () => img.destroy() });
+      return this.wait(650);
+    }
+    if ('face' in c) {
+      const a = this.actor(c.face);
+      if (!a) return;
+      let dir = c.to as Dir;
+      if (!(c.to in DIRS)) {
+        const b = this.actor(c.to);
+        if (!b) return;
+        const dx = b.sprite.x - a.sprite.x;
+        const dy = b.sprite.y - a.sprite.y;
+        dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up';
+      }
+      a.sprite.setTexture(this.textureFor(a.base, dir));
+      if (c.face === 'player') this.facing = dir;
+      return;
+    }
+    if ('walk' in c) {
+      const a = this.actor(c.walk);
+      if (!a) return;
+      for (const [i, dir] of c.path.entries()) {
+        const [dx, dy] = DIRS[dir];
+        const sx = a.sprite.x;
+        const sy = a.sprite.y;
+        await new Promise<void>((res) =>
+          this.tweens.addCounter({
+            from: 0,
+            to: 1,
+            duration: 230,
+            onUpdate: (tw) => {
+              const t = tw.getValue() ?? 0;
+              const frame = t < 0.75 ? (i % 2 ? 1 : 3) : 0;
+              a.sprite.setTexture(this.textureFor(a.base, dir, a.npc ? 0 : frame));
+              // people without step frames bob a little instead
+              const bob = a.npc ? -Math.sin(t * Math.PI) * 2 : 0;
+              a.sprite.setPosition(sx + dx * TILE * t, sy + dy * TILE * t + bob);
+              a.sprite.setDepth(a.sprite.y);
+              if (!a.npc) this.shadow.setPosition(a.sprite.x, a.sprite.y + 4);
+            },
+            onComplete: () => res(),
+          }),
+        );
+        if (a.npc) {
+          a.npc.x += dx;
+          a.npc.y += dy;
+          a.npc.marker?.setPosition(a.sprite.x, a.sprite.y - a.sprite.height - 2);
+        } else {
+          this.px += dx;
+          this.py += dy;
+          this.facing = dir;
+        }
+      }
+      if (!a.npc) {
+        this.placePlayer();
+        store.update((s) => {
+          s.pos = { x: this.px, y: this.py };
+          s.facing = this.facing;
+        }, 'move');
+      }
+      return;
+    }
+    if ('camera' in c) {
+      const ms = c.ms ?? 700;
+      if (c.camera === 'back') {
+        cam.pan(this.player.x, this.player.y - 16, ms, 'Sine.easeInOut');
+        cam.zoomTo(this.baseZoom, ms, 'Sine.easeInOut');
+        await this.wait(ms);
+        cam.startFollow(this.player, true, 1, 1, 0, -16);
+        return;
+      }
+      let x: number;
+      let y: number;
+      if (Array.isArray(c.camera)) [x, y] = [c.camera[0] * TILE + TILE / 2, c.camera[1] * TILE + TILE / 2];
+      else {
+        const a = this.actor(c.camera);
+        if (!a) return;
+        [x, y] = [a.sprite.x, a.sprite.y - 16];
+      }
+      cam.stopFollow();
+      cam.pan(x, y, ms, 'Sine.easeInOut');
+      if (c.zoom) cam.zoomTo(this.baseZoom * c.zoom, ms, 'Sine.easeInOut');
+      return this.wait(ms);
     }
   }
 

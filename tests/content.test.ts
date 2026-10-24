@@ -23,7 +23,7 @@ describe('story content references', () => {
   });
 
   it('every speaker, quest objective, item, species and warp target exists', () => {
-    const who = [...text.matchAll(/"who":"([^"]+)"/g)].map((m) => m[1]).filter((w) => !NPCS[w]);
+    const who = [...text.matchAll(/"who":"([^"]+)"/g)].map((m) => m[1]).filter((w) => !NPCS[w] && w !== 'player'); // scene feelings may be the player's own
     const objectives = [...text.matchAll(/"(?:obj|notObj|objective)":"([^"]+)"/g)]
       .map((m) => m[1])
       .filter((p) => {
