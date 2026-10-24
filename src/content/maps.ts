@@ -15,7 +15,7 @@ import { BORDER_GEN } from './border.gen';
 import { FLOW_GEN } from './flow.gen';
 import { DECORFIX_GEN } from './decorfix.gen';
 import { CITYDECOR_GEN, CITYSWAP_GEN } from './citydecor.gen';
-import { EDITS_BASE, applyEdits, loadLocalEdits, walkOverrides } from './edits';
+import { EDITS_BASE, applyEdits, loadLocalEdits, loadSharedEdits, mergeEdits, walkOverrides } from './edits';
 import type { Dir } from '../core/types';
 
 /**
@@ -69,6 +69,8 @@ export interface NpcPlacement {
 export interface Warp {
   x: number;
   y: number;
+  /** the tile this exit had before it was moved in the map editor ("x,y") */
+  orig?: string;
   to: { map: string; x: number; y: number; facing: Dir };
   when?: Cond;
   locked?: string; // message when the condition fails
@@ -801,11 +803,77 @@ for (const [id, r] of Object.entries(ROOMS2_GEN)) {
   e.tiles.forEach(([x, y], i) => outdoor.warps.push({ x, y, to: { map: id, x: r.spread ? r.doors[Math.min(i, r.doors.length - 1)] : inX, y: H - 2, facing: 'up' } }));
 }
 
+/** the doors of a building: exits into a room on its tiles or just below them */
+export function doorsOf(m: MapDef, o: { x: number; y: number; w?: number; h?: number }): Warp[] {
+  const w = o.w ?? 1;
+  const h = o.h ?? 1;
+  return m.warps.filter((wp) => wp.x >= o.x && wp.x < o.x + w && wp.y >= o.y && wp.y <= o.y + h && MAPS[wp.to.map]?.interior);
+}
+
+/** where the exits of other maps put you on this map, near a tile (the arrival of a way into this map) */
+function arrivalsNear(mapId: string, from: string | null, x: number, y: number, x2 = x, y2 = y): Warp[] {
+  const out: Warp[] = [];
+  for (const m of Object.values(MAPS)) {
+    if (from && m.id !== from) continue;
+    for (const w of m.warps) if (w.to.map === mapId && w.to.x >= x - 2 && w.to.x <= x2 + 2 && w.to.y >= y - 2 && w.to.y <= y2 + 2) out.push(w);
+  }
+  return out;
+}
+
+/** a building moved in the editor: its doors move along, and so does the spot where you come out of them */
+export function moveBuildingLinks(mapId: string, o: { x: number; y: number; w?: number; h?: number }, dx: number, dy: number) {
+  const m = MAPS[mapId];
+  if (!m || (!dx && !dy)) return;
+  moveExits(mapId, doorsOf(m, o).map((w) => ({ w, x: w.x + dx, y: w.y + dy })));
+}
+
+/** exits moved in the editor (one or several tiles of an exit): each arrival on the other side (the way back into this map) moves once, with the exit nearest to it */
+export function moveExits(mapId: string, moves: { w: Warp; x: number; y: number }[]) {
+  const shift = new Map<Warp, [number, number, number]>();
+  for (const { w, x, y } of moves) {
+    for (const back of arrivalsNear(mapId, w.to.map, w.x, w.y)) {
+      const d = Math.abs(back.to.x - w.x) + Math.abs(back.to.y - w.y);
+      const had = shift.get(back);
+      if (!had || d < had[2]) shift.set(back, [x - w.x, y - w.y, d]);
+    }
+  }
+  for (const [back, [dx, dy]] of shift) {
+    back.to.x += dx;
+    back.to.y += dy;
+  }
+  for (const { w, x, y } of moves) {
+    w.orig ??= `${w.x},${w.y}`;
+    w.x = x;
+    w.y = y;
+  }
+}
+
 // hand edits: committed ones first, then the ones made in this browser's editor
 {
-  const local = typeof localStorage !== 'undefined' ? loadLocalEdits() : {};
+  // the edits published for everyone count as part of this browser's layer (its own changes on top)
+  const local = typeof localStorage !== 'undefined' ? mergeEdits(loadSharedEdits().edits, loadLocalEdits()) : {};
+  // buildings and exits moved by hand take their doors and the ways back with them (measured from where they were)
   for (const m of Object.values(MAPS)) {
-    m.objects = applyEdits(applyEdits(m.objects, EDITS_BASE[m.id]), local[m.id]);
+    const moved = { ...EDITS_BASE[m.id]?.moved, ...local[m.id]?.moved };
+    for (const o of m.objects) {
+      const to = moved[o.id];
+      if (to) moveBuildingLinks(m.id, o, to[0] - o.x, to[1] - o.y);
+    }
+  }
+  for (const m of Object.values(MAPS)) {
+    const exits = { ...EDITS_BASE[m.id]?.exits, ...local[m.id]?.exits };
+    const moves = Object.entries(exits).flatMap(([k, [x, y]]) => {
+      const w = m.warps.find((q) => `${q.x},${q.y}` === k && !q.orig);
+      return w ? [{ w, x, y }] : [];
+    });
+    if (moves.length) moveExits(m.id, moves);
+  }
+  for (const m of Object.values(MAPS)) {
+    m.objects = applyEdits(applyEdits(m.objects, EDITS_BASE[m.id]), local[m.id]).map((o) => {
+      // a moved object drawn at a fixed pixel spot moves that spot along
+      const before = m.objects.find((q) => q.id === o.id);
+      return before && o.at && (before.x !== o.x || before.y !== o.y) ? { ...o, at: [o.at[0] + (o.x - before.x) * 32, o.at[1] + (o.y - before.y) * 32] as [number, number] } : o;
+    });
     const walk = walkOverrides(EDITS_BASE[m.id], local[m.id]);
     if (!Object.keys(walk).length) continue;
     m.walk = walk;

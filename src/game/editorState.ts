@@ -7,6 +7,12 @@ class EditorState {
   eraser = false;
   /** walkability paint: open = walkable, block = blocked, reset = back to the map's own collision */
   walkBrush: 'open' | 'block' | 'reset' | null = null;
+  /** move exits to other maps */
+  exits = false;
+  /** the whole map with a free camera: zoom and drag around without the player */
+  overview = false;
+  /** set by the world scene: zoom the view by a factor (the panel's + / − buttons) */
+  zoomBy: (f: number) => void = () => {};
   grid = true;
   /** short status line shown in the panel */
   info = '';
@@ -18,7 +24,7 @@ class EditorState {
   emit() {
     this.ls.forEach((l) => l());
   }
-  set(patch: Partial<Pick<EditorState, 'brush' | 'eraser' | 'grid' | 'info' | 'walkBrush'>>) {
+  set(patch: Partial<Pick<EditorState, 'brush' | 'eraser' | 'grid' | 'info' | 'walkBrush' | 'exits' | 'overview'>>) {
     Object.assign(this, patch);
     this.emit();
   }

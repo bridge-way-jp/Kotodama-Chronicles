@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { MAPS, BLOCKING, type MapDef, type MapObject, type Warp } from '../content/maps';
+import { MAPS, BLOCKING, doorsOf, moveBuildingLinks, moveExits, type MapDef, type MapObject, type Warp } from '../content/maps';
 import { editor } from './editorState';
 import { emptyEdits, loadLocalEdits, saveLocalEdits } from '../content/edits';
 import { OBJECT_PALETTE } from '../content/plain.gen';
@@ -316,29 +316,183 @@ export class WorldScene extends Phaser.Scene {
       const all = loadLocalEdits();
       return { all, me: (all[this.map.id] ??= emptyEdits()) };
     };
-    const pick = (wx: number, wy: number) => {
-      for (let i = this.objects.length - 1; i >= 0; i--) {
-        const o = this.objects[i];
-        if (o.def.decor && o.img && o.img.visible && o.img.getBounds().contains(wx, wy)) return o as { def: MapObject; img: Phaser.GameObjects.Image };
+
+    // overview: the whole map with a free camera (wheel, two fingers or + / − to zoom, drag empty ground to move)
+    const cam = this.cameras.main;
+    const mapW = this.map.tiles[0].length * TILE;
+    const mapH = this.map.tiles.length * TILE;
+    let wasOverview = false;
+    const applyView = () => {
+      if (editor.overview === wasOverview) return;
+      wasOverview = editor.overview;
+      if (editor.overview) {
+        cam.stopFollow();
+        cam.setZoom(Math.max(0.15, Math.min(this.scale.width / mapW, this.scale.height / mapH)));
+        cam.centerOn(mapW / 2, mapH / 2);
+      } else {
+        this.fitCamera();
+        cam.startFollow(this.player, true, 1, 1, 0, -16);
       }
-      return undefined;
     };
+    this.unsub.push(editor.subscribe(applyView));
+    const zoomAt = (f: number, sx = this.scale.width / 2, sy = this.scale.height / 2) => {
+      if (!editor.overview) editor.set({ overview: true });
+      const before = cam.getWorldPoint(sx, sy);
+      cam.setZoom(Phaser.Math.Clamp(cam.zoom * f, 0.15, 4));
+      const after = cam.getWorldPoint(sx, sy);
+      cam.scrollX += before.x - after.x;
+      cam.scrollY += before.y - after.y;
+    };
+    editor.zoomBy = (f) => zoomAt(f);
+    // open any map from the panel: you arrive where a way into it puts you
+    this.unsub.push(
+      bus.on('editor-goto', ({ map }: { map: string }) => {
+        const m = MAPS[map];
+        if (!m) return;
+        let at: [number, number] | null = null;
+        for (const o of Object.values(MAPS)) for (const w of o.warps) if (!at && w.to.map === map) at = [w.to.x, w.to.y];
+        at ??= [Math.floor(m.tiles[0].length / 2), Math.floor(m.tiles.length / 2)];
+        this.warpTo(map, at[0], at[1], 'down');
+      }),
+    );
+    this.time.delayedCall(0, applyView);
+    this.input.on('wheel', (p: Phaser.Input.Pointer, _o: unknown, _dx: number, dy: number) => zoomAt(dy > 0 ? 0.9 : 1.1, p.x, p.y));
+    this.input.addPointer(1);
+    let pan: { x: number; y: number; sx: number; sy: number } | null = null;
+    let pinch: number | null = null;
+    this.input.on('pointermove', (p: Phaser.Input.Pointer) => {
+      const [a, b] = [this.input.pointer1, this.input.pointer2];
+      if (a.isDown && b.isDown) {
+        const d = Phaser.Math.Distance.Between(a.x, a.y, b.x, b.y);
+        if (pinch) zoomAt(d / pinch, (a.x + b.x) / 2, (a.y + b.y) / 2);
+        pinch = d;
+        pan = null;
+        return;
+      }
+      pinch = null;
+      if (pan && p.isDown) {
+        cam.scrollX = pan.sx - (p.x - pan.x) / cam.zoom;
+        cam.scrollY = pan.sy - (p.y - pan.y) / cam.zoom;
+      }
+    });
+    this.input.on('pointerup', () => {
+      pan = null;
+      pinch = null;
+    });
+    const startPan = (p: Phaser.Input.Pointer) => {
+      if (!editor.overview) return;
+      pan = { x: p.x, y: p.y, sx: cam.scrollX, sy: cam.scrollY };
+    };
+
+    // exits to other maps: shown as blue tiles with the place they lead to; drag one to move the whole exit
+    const exitLayer = this.add.graphics().setDepth(100012);
+    let exitLabels: Phaser.GameObjects.Text[] = [];
+    let exitDrag: { run: Warp[]; from: [number, number]; d: [number, number] } | null = null;
+    const runOf = (w: Warp) => {
+      const run = [w];
+      for (let grew = true; grew; ) {
+        grew = false;
+        for (const q of this.map.warps)
+          if (!run.includes(q) && q.to.map === w.to.map && run.some((r) => Math.abs(r.x - q.x) + Math.abs(r.y - q.y) === 1)) {
+            run.push(q);
+            grew = true;
+          }
+      }
+      return run;
+    };
+    const drawExits = () => {
+      exitLayer.clear();
+      exitLabels.forEach((t) => t.destroy());
+      exitLabels = [];
+      if (!editor.exits) return;
+      const seen = new Set<Warp>();
+      for (const w of this.map.warps) {
+        const moving = exitDrag?.run.includes(w);
+        const [dx, dy] = moving ? exitDrag!.d : [0, 0];
+        exitLayer.fillStyle(moving ? 0xffe14d : 0x2f7bff, 0.55).fillRect((w.x + dx) * TILE, (w.y + dy) * TILE, TILE, TILE);
+        exitLayer.lineStyle(2, 0xffffff, 0.9).strokeRect((w.x + dx) * TILE + 1, (w.y + dy) * TILE + 1, TILE - 2, TILE - 2);
+        if (seen.has(w)) continue;
+        runOf(w).forEach((r) => seen.add(r));
+        const t = this.add
+          .text((w.x + dx) * TILE + TILE / 2, (w.y + dy) * TILE - 2, `→ ${MAPS[w.to.map]?.nameJa ?? w.to.map}`, { fontFamily: 'DotGothic16, "Noto Sans JP", sans-serif', fontSize: '10px', color: '#ffffff', backgroundColor: '#1d3f8a' })
+          .setOrigin(0.5, 1)
+          .setResolution(4)
+          .setDepth(100013);
+        exitLabels.push(t);
+      }
+    };
+    this.unsub.push(editor.subscribe(drawExits));
+    const exitDown = (tx: number, ty: number) => {
+      const w = this.map.warps.find((q) => q.x === tx && q.y === ty);
+      if (!w) return void editor.set({ info: 'Ausgang (blaues Feld) antippen und ziehen' });
+      exitDrag = { run: runOf(w), from: [tx, ty], d: [0, 0] };
+      editor.set({ info: `Ausgang nach ${MAPS[w.to.map]?.nameJa ?? w.to.map} (${exitDrag.run.length} Felder)` });
+      drawExits();
+    };
+    const exitMove = (tx: number, ty: number) => {
+      if (!exitDrag) return;
+      exitDrag.d = [tx - exitDrag.from[0], ty - exitDrag.from[1]];
+      drawExits();
+    };
+    const exitUp = () => {
+      if (!exitDrag) return;
+      const { run, d } = exitDrag;
+      exitDrag = null;
+      if (!d[0] && !d[1]) return void drawExits();
+      moveExits(this.map.id, run.map((w) => ({ w, x: w.x + d[0], y: w.y + d[1] })));
+      const e = edits();
+      e.me.exits ??= {};
+      for (const w of run) e.me.exits[w.orig ?? `${w.x},${w.y}`] = [w.x, w.y];
+      saveLocalEdits(e.all);
+      // can the player still get there from where they stand?
+      const H = this.map.tiles.length;
+      const W = this.map.tiles[0].length;
+      const goal = new Set(run.flatMap((w) => [[w.x + 1, w.y], [w.x - 1, w.y], [w.x, w.y + 1], [w.x, w.y - 1]].map(([x, y]) => `${x},${y}`)));
+      const seen = new Set([`${this.px},${this.py}`]);
+      const queue: [number, number][] = [[this.px, this.py]];
+      let ok = goal.has(`${this.px},${this.py}`);
+      while (queue.length && !ok) {
+        const [x, y] = queue.shift()!;
+        for (const [nx, ny] of [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]]) {
+          const k = `${nx},${ny}`;
+          if (nx < 0 || ny < 0 || nx >= W || ny >= H || seen.has(k) || this.blocked(nx, ny, true)) continue;
+          if (goal.has(k)) ok = true;
+          seen.add(k);
+          queue.push([nx, ny]);
+        }
+      }
+      editor.set({ info: ok ? `Ausgang verschoben (${run.length} Felder), die Ankunft auf der anderen Karte zieht mit` : '⚠ Verschoben, aber von hier aus nicht erreichbar: Weg mit dem Pinsel „begehbar“ freimachen' });
+      drawExits();
+      this.refreshExitSigns();
+    };
+    // the topmost drawn object under the pointer: decor first (small things in front of houses), then houses and the rest
+    const pick = (wx: number, wy: number) => {
+      const hits = this.objects.filter((o) => o.img && o.img.visible && o.img.getBounds().contains(wx, wy)) as { def: MapObject; img: Phaser.GameObjects.Image }[];
+      return hits.filter((o) => o.def.decor).sort((a, b) => b.img.depth - a.img.depth)[0] ?? hits.sort((a, b) => b.img.depth - a.img.depth)[0];
+    };
+    // houses with a door and things the story or people need can be moved, never deleted
+    const important = (def: MapObject) => doorsOf(this.map, def).length > 0 || !!SCRIPTS[def.script ?? def.id] || (!def.decor && !!(def.hint || def.auto));
+    const refuse = () => editor.set({ info: '🔒 Wichtig für das Spiel (Tür, Gespräch oder Story): nur verschieben, nicht löschen' });
+    let dragFrom: [number, number] | null = null;
     const place = (o: { def: MapObject; img?: Phaser.GameObjects.Image }, tx: number, ty: number) => {
+      const [dx, dy] = [tx - o.def.x, ty - o.def.y];
       o.def.x = tx;
       o.def.y = ty;
-      const w = o.def.w ?? 1;
-      const h = o.def.h ?? 1;
+      if (o.def.at) o.def.at = [o.def.at[0] + dx * TILE, o.def.at[1] + dy * TILE];
       if (o.img) {
-        o.img.setPosition((tx + w / 2) * TILE, (ty + h) * TILE + (o.def.dy ?? 0));
+        o.img.setPosition(o.img.x + dx * TILE, o.img.y + dy * TILE);
         o.img.setDepth(o.img.y - 1);
       }
+      const marker = this.objects.find((q) => q.def === o.def)?.marker;
+      marker?.setPosition(marker.x + dx * TILE, marker.y + dy * TILE);
     };
     const select = (o: typeof this.editSel) => {
       this.editSel = o;
       if (o) {
         const b = o.img.getBounds();
         this.editBox!.setPosition(b.centerX, b.centerY).setSize(b.width, b.height).setVisible(true);
-        editor.set({ info: `${o.def.sprite} · ${o.def.x},${o.def.y}` });
+        const doors = doorsOf(this.map, o.def).length;
+        editor.set({ info: `${o.def.sprite} · ${o.def.x},${o.def.y}${doors ? ' · Haus mit Tür: zieht Tür und Ausgang mit' : important(o.def) ? ' · 🔒 nur verschieben' : ''}` });
       } else this.editBox!.setVisible(false);
     };
     this.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
@@ -365,9 +519,11 @@ export class WorldScene extends Phaser.Scene {
         else this.load.once('complete', add).image(key, assetUrl(key)).start();
         return;
       }
+      if (editor.exits) return void exitDown(tx, ty);
       const hit = pick(p.worldX, p.worldY);
       if (editor.eraser) {
         if (!hit) return;
+        if (important(hit.def)) return void refuse();
         const e = edits();
         const idx = e.me.added.findIndex((a) => a.id === hit.def.id);
         if (idx >= 0) e.me.added.splice(idx, 1);
@@ -381,16 +537,27 @@ export class WorldScene extends Phaser.Scene {
       }
       select(hit);
       this.dragging = !!hit;
+      dragFrom = hit ? [hit.def.x, hit.def.y] : null;
+      if (!hit) startPan(p);
     });
     this.input.on('pointermove', (p: Phaser.Input.Pointer) => {
       if (editor.walkBrush && p.isDown) return void paintWalk(Math.floor(p.worldX / TILE), Math.floor(p.worldY / TILE));
+      if (editor.exits) return void (p.isDown && exitMove(Math.floor(p.worldX / TILE), Math.floor(p.worldY / TILE)));
       if (!this.dragging || !this.editSel || !p.isDown) return;
       place(this.editSel, Math.floor(p.worldX / TILE), Math.floor(p.worldY / TILE));
       select(this.editSel);
     });
     this.input.on('pointerup', () => {
+      if (editor.exits) return void exitUp();
       if (!this.dragging || !this.editSel) return;
       this.dragging = false;
+      // a house takes its doors and the spot where you come out of them along
+      if (dragFrom) {
+        const d = this.editSel.def;
+        moveBuildingLinks(this.map.id, { x: dragFrom[0], y: dragFrom[1], w: d.w, h: d.h }, d.x - dragFrom[0], d.y - dragFrom[1]);
+        dragFrom = null;
+        drawExits();
+      }
       const e = edits();
       const a = e.me.added.find((q) => q.id === this.editSel!.def.id);
       if (a) {
@@ -401,6 +568,7 @@ export class WorldScene extends Phaser.Scene {
     });
     this.input.keyboard?.on('keydown-DELETE', () => {
       if (!this.editSel) return;
+      if (important(this.editSel.def)) return void refuse();
       editor.set({ eraser: true });
       const o = this.editSel;
       const e = edits();
@@ -422,6 +590,13 @@ export class WorldScene extends Phaser.Scene {
    * A sign at every exit on the map border: an arrow pointing out and the name of the place it leads to, so a way
    * out is always visible, whatever the ground picture shows there.
    */
+  private signs: Phaser.GameObjects.Container[] = [];
+  refreshExitSigns() {
+    this.signs.forEach((s) => s.destroy());
+    this.signs = [];
+    this.exitSigns();
+  }
+
   exitSigns() {
     if (this.map.interior) return;
     const H = this.map.tiles.length;
@@ -451,6 +626,7 @@ export class WorldScene extends Phaser.Scene {
         .setResolution(4);
       const bg = this.add.rectangle(0, 0, text.width + 10, text.height + 4, 0x2a2018, 0.78).setStrokeStyle(1, 0xf2c14e);
       const sign = this.add.container(x, y, [bg, text]).setDepth(99990);
+      this.signs.push(sign);
       this.tweens.add({ targets: sign, x: x + dx * 3, y: y + dy * 3, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     }
   }

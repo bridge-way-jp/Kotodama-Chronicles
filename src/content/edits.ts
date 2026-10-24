@@ -12,6 +12,8 @@ export interface MapEdits {
   added: MapObject[];
   /** painted walkability, "x,y" -> 1 walkable / 0 blocked (beats the map's own collision and objects) */
   walk?: Record<string, 0 | 1>;
+  /** exits to other maps moved: original tile "x,y" -> new tile (the arrival on the other side moves along) */
+  exits?: Record<string, [number, number]>;
 }
 export type Edits = Record<string, MapEdits>;
 
@@ -19,7 +21,41 @@ import base from './edits.base.json';
 export const EDITS_BASE: Edits = base as unknown as Edits;
 
 const KEY = 'kc_map_edits_v1';
-export const emptyEdits = (): MapEdits => ({ removed: [], moved: {}, added: [], walk: {} });
+const SHARED_KEY = 'kc_map_edits_shared';
+
+/** the edits published for every player (cached here from the cloud, applied between the committed ones and this browser's own) */
+export function loadSharedEdits(): { savedAt: number; edits: Edits } {
+  try {
+    const s = JSON.parse(localStorage.getItem(SHARED_KEY) || 'null');
+    return s && typeof s === 'object' ? { savedAt: Number(s.savedAt) || 0, edits: s.edits ?? {} } : { savedAt: 0, edits: {} };
+  } catch {
+    return { savedAt: 0, edits: {} };
+  }
+}
+export function saveSharedEdits(savedAt: number, edits: Edits) {
+  try {
+    localStorage.setItem(SHARED_KEY, JSON.stringify({ savedAt, edits }));
+  } catch {
+    /* ignore */
+  }
+}
+
+/** one layer on top of another: what the upper layer changed wins */
+export function mergeEdits(lower: Edits, upper: Edits): Edits {
+  const out: Edits = JSON.parse(JSON.stringify(lower));
+  for (const [map, u] of Object.entries(upper)) {
+    const l = (out[map] ??= emptyEdits());
+    const removed = new Set([...l.removed, ...u.removed]);
+    l.added = [...l.added.filter((a) => !u.added.some((b) => b.id === a.id) && !u.removed.includes(a.id)), ...u.added];
+    // a removed object that was only added in the lower layer is simply gone
+    l.removed = [...removed].filter((id) => !(lower[map]?.added ?? []).some((a) => a.id === id));
+    l.moved = { ...l.moved, ...u.moved };
+    l.walk = { ...l.walk, ...u.walk };
+    l.exits = { ...l.exits, ...u.exits };
+  }
+  return out;
+}
+export const emptyEdits = (): MapEdits => ({ removed: [], moved: {}, added: [], walk: {}, exits: {} });
 
 export function loadLocalEdits(): Edits {
   try {

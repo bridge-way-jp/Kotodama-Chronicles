@@ -31,6 +31,7 @@ for (const m of Object.values(MAPS)) {
     warps: m.warps.map((w) => [w.x, w.y]),
     entries: entries[m.id] ?? [],
     npcs: m.npcs.filter((n) => !n.when).map((n) => [n.x, n.y]),
+    tall: m.tiles.flatMap((row, y) => [...row].flatMap((c, x) => (c === '"' ? [[x, y]] : []))),
     things: m.objects.filter((o) => !o.decor && (o.w ?? 1) > 0).map((o) => [o.x, o.y, o.w ?? 1, o.h ?? 1]),
     decor: decor.map((o) => ({ id: o.id, sprite: o.sprite, x: o.x, y: o.y, w: o.w ?? 1, h: o.h ?? 1, solid: o.solid !== false, edited: edited.has(o.id) })),
   };

@@ -261,3 +261,23 @@ export function flushPush() {
     void pushNow(e);
   }
 }
+
+// ------------------------------------------------------------------ map edits shared with every player
+
+/** the map edits published from the editor (shared/mapEdits): everyone may read them, only the game's owner write */
+export async function fetchSharedEdits(): Promise<{ savedAt: number; json: string } | null> {
+  if (!cloudEnabled) return null;
+  const { fs, db } = await fb();
+  const snap = await fs.getDoc(fs.doc(db, 'shared', 'mapEdits'));
+  if (!snap.exists()) return null;
+  const d = snap.data();
+  return { savedAt: Number(d.savedAt) || 0, json: String(d.json ?? '{}') };
+}
+
+export async function publishSharedEdits(json: string): Promise<number> {
+  const { fs, db } = await fb();
+  if (!cloud.user) throw new Error('Not signed in.');
+  const savedAt = Date.now();
+  await fs.setDoc(fs.doc(db, 'shared', 'mapEdits'), { savedAt, json, by: cloud.user.email ?? '' });
+  return savedAt;
+}

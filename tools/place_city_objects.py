@@ -110,7 +110,9 @@ def main():
             # planting beds in any season colour (autumn red, flowers): saturated, not water, not grey stone
             bed = frac((sat > .38) & (mx > .25)) > .55
             lawn = green.copy()
-            green = green | (bed & ~water)
+            # autumn beds only in the cities (in the villages the reddish ground is gravel, rails or soil)
+            if town in ('kyoto', 'osaka', 'tokyo'):
+                green = green | (bed & ~water)
             way = (path & ~snow) | road | sand_mask(img, H, W)
             walk = sol == 0
             taken = np.zeros((H, W), bool)
@@ -121,6 +123,9 @@ def main():
                 keep[max(0, y - 2):y + 3, max(0, x - 2):x + 3] = True
             for x, y, w, h in m['things']:
                 keep[max(0, y - 1):y + h + 1, max(0, x - 1):x + w + 1] = True
+            # tall grass is where wild Kotodama appear: it stays open
+            for x, y in m.get('tall', []):
+                keep[y, x] = True
             blocked = ~walk
             for d in m['decor']:
                 if d['solid']:
@@ -133,6 +138,9 @@ def main():
 
             def still_reachable(b):
                 r = reach(~b, m['entries'])
+                # no piece of ground that could be walked on before may be cut off (a clearing, a corner of a park)
+                if ((base & ~b) & ~r).any():
+                    return False
                 near = lambda g, x, y: any(0 <= y + dy < H and 0 <= x + dx < W and g[y + dy, x + dx] for dx, dy in ((0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)))
                 return all(any(near(r, x, y) for x, y in g) or not any(near(base, x, y) for x, y in g) for g in groups)
 
