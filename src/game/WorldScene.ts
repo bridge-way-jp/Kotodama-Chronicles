@@ -1423,7 +1423,25 @@ export class WorldScene extends Phaser.Scene {
       bus.emit('interact', { id: npc.id, kind: 'npc' });
       return;
     }
-    const obj = this.objectAt(fx, fy, true) ?? this.objectAt(fx, fy) ?? this.objectAt(tx, ty, true) ?? this.objectAt(tx, ty);
+    let obj = this.objectAt(fx, fy, true) ?? this.objectAt(fx, fy) ?? this.objectAt(tx, ty, true) ?? this.objectAt(tx, ty);
+    // things behind furniture (a picture behind a sofa, a shelf behind a table) can be looked at over it
+    if ((!obj || obj.decor || !SCRIPTS[obj.script ?? obj.id]) && this.blocked(fx, fy, true)) {
+      // the first thing with something to say in the line of sight (and just beside it), up to four tiles on: a shelf
+      // behind a counter and its aisle, a picture in the corner behind a sofa
+      const says = (x: number, y: number) => {
+        const o = this.objectAt(x, y, true);
+        return o && !o.decor && SCRIPTS[o.script ?? o.id] ? o : undefined;
+      };
+      look: for (let i = 0; i <= 4; i++) {
+        for (const side of i ? [0, -1, 1] : [-1, 1]) {
+          const o = says(fx + dx * i + dy * side, fy + dy * i + dx * side);
+          if (o) {
+            obj = o;
+            break look;
+          }
+        }
+      }
+    }
     if (obj && !obj.decor) {
       // a building with a door: the button goes in, unless this object has a quest scene right now
       const b = this.objects.find((o) => o.def === obj && o.doors);
