@@ -14,7 +14,7 @@ import { EDGES_GEN } from './edges.gen';
 import { BORDER_GEN } from './border.gen';
 import { FLOW_GEN } from './flow.gen';
 import { DECORFIX_GEN } from './decorfix.gen';
-import { CITYDECOR_GEN } from './citydecor.gen';
+import { CITYDECOR_GEN, CITYSWAP_GEN } from './citydecor.gen';
 import { EDITS_BASE, applyEdits, loadLocalEdits, walkOverrides } from './edits';
 import type { Dir } from '../core/types';
 
@@ -773,7 +773,12 @@ if (!(globalThis as { __KC_RAW_DECOR__?: boolean }).__KC_RAW_DECOR__)
   }
 
 // the objects of each town, placed beside the ways (tools/place_city_objects.py)
-if (!(globalThis as { __KC_RAW_DECOR__?: boolean }).__KC_RAW_DECOR__) for (const [id, objs] of Object.entries(CITYDECOR_GEN)) MAPS[id]?.objects.push(...objs);
+if (!(globalThis as { __KC_RAW_DECOR__?: boolean; __KC_NO_CITY__?: boolean }).__KC_RAW_DECOR__ && !(globalThis as { __KC_NO_CITY__?: boolean }).__KC_NO_CITY__)
+  for (const [id, objs] of Object.entries(CITYDECOR_GEN)) {
+    MAPS[id]?.objects.push(...objs);
+    const swap = CITYSWAP_GEN[id] ?? {};
+    for (const o of MAPS[id]?.objects ?? []) if (swap[o.id]) o.sprite = swap[o.id];
+  }
 
 // decor that squeezed a walkway to a single tile is walk-through (tools/find_squeezes.mts)
 for (const [id, ids] of Object.entries(FLOW_GEN)) for (const o of MAPS[id]?.objects ?? []) if (ids.includes(o.id)) o.solid = false;
