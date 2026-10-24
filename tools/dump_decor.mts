@@ -2,9 +2,11 @@
  * The outdoor maps without the decor fixes of tools/build_decor_fix.py, as its input: collision without decor,
  * exits, arrival points, people, the decor objects and the ones edited by hand (left alone).
  *   npx vite-node tools/dump_decor.mts <out.json>
+ * With KC_DUMP=city: the maps with the decor fixes but without the town objects (input of tools/place_city_objects.py).
  */
 import { writeFileSync } from 'node:fs';
-(globalThis as { __KC_RAW_DECOR__?: boolean }).__KC_RAW_DECOR__ = true;
+if (process.env.KC_DUMP === 'city') (globalThis as { __KC_NO_CITY__?: boolean }).__KC_NO_CITY__ = true;
+else (globalThis as { __KC_RAW_DECOR__?: boolean }).__KC_RAW_DECOR__ = true;
 const { MAPS, BLOCKING } = await import('../src/content/maps');
 const { EDITS_BASE } = await import('../src/content/edits');
 const { SCRIPTS } = await import('../src/content/scripts');
@@ -29,7 +31,7 @@ for (const m of Object.values(MAPS)) {
     warps: m.warps.map((w) => [w.x, w.y]),
     entries: entries[m.id] ?? [],
     npcs: m.npcs.filter((n) => !n.when).map((n) => [n.x, n.y]),
-    things: m.objects.filter((o) => !o.decor && (o.w ?? 1) > 0 && o.solid === false).map((o) => [o.x, o.y, o.w ?? 1, o.h ?? 1]),
+    things: m.objects.filter((o) => !o.decor && (o.w ?? 1) > 0).map((o) => [o.x, o.y, o.w ?? 1, o.h ?? 1]),
     decor: decor.map((o) => ({ id: o.id, sprite: o.sprite, x: o.x, y: o.y, w: o.w ?? 1, h: o.h ?? 1, solid: o.solid !== false, edited: edited.has(o.id) })),
   };
 }
