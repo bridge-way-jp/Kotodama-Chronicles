@@ -1,3 +1,4 @@
+import { tr } from '../core/i18n';
 import { useEffect, useRef, useState } from 'react';
 import type { Step } from '../core/script';
 import { check, type Mood } from '../core/script';
@@ -168,7 +169,7 @@ function QuizStep({ step, onDone }: { step: Extract<Step, { quiz: unknown }>; on
     return (
       <div className="dialogue-wrap">
         <div className="panel quiz-box">
-          <MasteryCheck keys={[again]} title="もう一度 — once more" sub="That one did not sit yet. Here it is again in another form." onDone={onDone} />
+          <MasteryCheck keys={[again]} title={'もう一度 — ' + tr('once more')} sub={tr('That one did not sit yet. Here it is again in another form.')} onDone={onDone} />
         </div>
       </div>
     );
@@ -203,7 +204,7 @@ function TeachStep({ k, onDone }: { k: string; onDone: () => void }) {
     <div className="dialogue-wrap">
       <div className="panel">
         {checking ? (
-          <MasteryCheck keys={[k]} title="確認 — quick check" sub="Use what you just read." onDone={onDone} />
+          <MasteryCheck keys={[k]} title={'確認 — ' + tr('quick check')} sub={tr('Use what you just read.')} onDone={onDone} />
         ) : (
           <TeachCard
             k={k}
@@ -228,7 +229,7 @@ function TicketCheck({ onDone }: { onDone: () => void }) {
   return (
     <div className="dialogue-wrap">
       <div className="panel quiz-box">
-        <MasteryCheck keys={keys} title="🎫 改札チェック — ticket check" sub="Three words you have learned. Answer them to pass the gate." onDone={onDone} />
+        <MasteryCheck keys={keys} title={'🎫 改札チェック — ' + tr('ticket check')} sub={tr('Three words you have learned. Answer them to pass the gate.')} onDone={onDone} />
       </div>
     </div>
   );
@@ -249,7 +250,7 @@ function HearStep({ h, onDone }: { h: Extract<Step, { hear: unknown }>['hear']; 
     <div className="dialogue-wrap">
       <div className="panel quiz-box hear">
         <div className="hear-head">
-          <b>{npc?.name ?? ''}</b> <span className="note">🎧 聞き取り — listen first</span>
+          <b>{npc?.name ?? ''}</b> <span className="note">🎧 聞き取り — {tr('listen first')}</span>
           <button className="btn small" onClick={play}>🔊 もう一度</button>
         </div>
         {picked === null ? (
@@ -298,7 +299,7 @@ function BuildStep({ b, onDone }: { b: Extract<Step, { build: unknown }>['build'
   return (
     <div className="dialogue-wrap">
       <div className="panel quiz-box build">
-        <div className="note">✎ 文を作ろう — build your answer: {b.en}</div>
+        <div className="note">✎ 文を作ろう — {tr('build your answer:')} {tr(b.en)}</div>
         <div className="build-line" lang="ja">
           {used.map((i) => (
             <span key={i} className="build-chip on">

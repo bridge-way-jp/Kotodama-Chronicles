@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { tr } from '../core/i18n';
 import { BOARD_ROWS, BOARD_TRACKS, FORM_CASES, FORM_FIELDS, KUSHI_READINGS, SHOPS, makeAnnouncement, makeDepartures, type Box, type Departure } from '../content/everyday';
 import { shuffle } from '../core/learning';
 import { grantXp } from '../core/game';
@@ -69,10 +70,10 @@ function ShopScene({ id, onClose }: { id: string; onClose: () => void }) {
   if (i < 0)
     return (
       <div className="panel study everyday">
-        <div className="panel-title"><Jp text={shop.title} /> <span className="note">{shop.titleEn}</span></div>
+        <div className="panel-title"><Jp text={shop.title} /> <span className="note">{tr(shop.titleEn)}</span></div>
         <img className="everyday-preview" src={`assets/${shop.image}.jpg`} alt="" />
         <p lang="ja"><Jp text={shop.intro} /></p>
-        <p className="note">{shop.introEn}</p>
+        <p className="note">{tr(shop.introEn)}</p>
         <div className="row">
           <button className="btn primary" autoFocus onClick={() => setI(0)}>始める Start</button>
           <button className="btn" onClick={onClose}>やめる</button>
@@ -99,9 +100,9 @@ function ShopScene({ id, onClose }: { id: string; onClose: () => void }) {
   return (
     <div className="panel study everyday">
       <div className="panel-title"><Jp text={shop.title} /> <span className="note">· {i + 1} / {orders.length}</span><Close onClose={onClose} /></div>
-      <p className="note" lang="ja"><Jp text={shop.task} /> <span>· {shop.taskEn}</span></p>
+      <p className="note" lang="ja"><Jp text={shop.task} /> <span>· {tr(shop.taskEn)}</span></p>
       <div className="everyday-say">
-        {shown ? <p lang="ja">「<Jp text={order.say} />」</p> : <p className="note">🔊 Listen to the order…</p>}
+        {shown ? <p lang="ja">「<Jp text={order.say} />」</p> : <p className="note">🔊 {tr('Listen to the order…')}</p>}
         {shop.mode === 'listen' && <button className="btn small" onClick={() => void say(order.say)}>🔊 もう一度</button>}
         {shop.mode === 'listen' && !shown && <button className="btn small" onClick={() => setShown(true)}>文字を見る</button>}
       </div>
@@ -135,11 +136,11 @@ function ShopScene({ id, onClose }: { id: string; onClose: () => void }) {
       ) : (
         <div className="everyday-result">
           <p className={result ? 'good' : 'bad'}>{result ? '◎ ばっちり！' : '× ちょっと違う…'}</p>
-          <p className="note">{order.en}</p>
+          <p className="note">{tr(order.en)}</p>
           <p lang="ja">
             {order.want.map((x) => (
               <span key={x} className="everyday-chip">
-                {items[x].ja.includes('{') ? <Jp text={items[x].ja} /> : <ruby>{items[x].ja}<rt>{KUSHI_READINGS[x] ?? ''}</rt></ruby>} <small>{items[x].en}</small>
+                {items[x].ja.includes('{') ? <Jp text={items[x].ja} /> : <ruby>{items[x].ja}<rt>{KUSHI_READINGS[x] ?? ''}</rt></ruby>} <small>{tr(items[x].en)}</small>
               </span>
             ))}
           </p>
@@ -174,7 +175,7 @@ function DepartureScene({ onClose }: { onClose: () => void }) {
         <div className="panel-title">{'駅のアナウンス'} <span className="note">Station announcements</span></div>
         <img className="everyday-preview" src="assets/ui_departure_board.jpg" alt="" />
         <p lang="ja"><Jp text="ホームに{放送|ほうそう}が{流|なが}れる。{遅|おく}れ、{番線|ばんせん}の{変更|へんこう}、{最終電車|さいしゅうでんしゃ}……。{聞|き}き{取|と}って、{発車標|はっしゃひょう}のどの{電車|でんしゃ}のことか、{選|えら}ぼう。" /></p>
-        <p className="note">Announcements on the platform: delays, platform changes, the last train… Listen and pick which train on the board they mean.</p>
+        <p className="note">{tr('Announcements on the platform: delays, platform changes, the last train… Listen and pick which train on the board they mean.')}</p>
         <div className="row">
           <button className="btn primary" autoFocus onClick={() => setRound(0)}>始める Start</button>
           <button className="btn" onClick={onClose}>やめる</button>
@@ -199,7 +200,7 @@ function DepartureScene({ onClose }: { onClose: () => void }) {
   return (
     <div className="panel study everyday">
       <div className="panel-title">駅のアナウンス <span className="note">· {round + 1} / {ROUNDS}</span><Close onClose={onClose} /></div>
-      <p lang="ja" className="everyday-ask">{ann.ask} <span className="note">{ann.askEn}</span></p>
+      <p lang="ja" className="everyday-ask">{ann.ask} <span className="note">{tr(ann.askEn)}</span></p>
       <div className="everyday-say">
         {shown ? <p lang="ja" className="everyday-ann">{ann.say}</p> : <p className="note">🔊 …</p>}
         <button className="btn small" onClick={() => void speak([{ text: ann.say, voice: 'f' }], 0.95)}>🔊 もう一度</button>
@@ -253,7 +254,7 @@ function FormScene({ onClose }: { onClose: () => void }) {
         <div className="panel-title"><Jp text="{交番|こうばん}　{遺失届|いしつとどけ}" /> <span className="note">Lost-property report</span></div>
         <img className="everyday-preview" src="assets/ui_form.jpg" alt="" />
         <p lang="ja"><Jp text="「どうしましたか。{落|お}とし{物|もの}ですね。では、こちらの{用紙|ようし}に{記入|きにゅう}してください。」" /></p>
-        <p className="note">Read what you told the officer, then put the right card into each box of the form. Careful: some cards are almost the same.</p>
+        <p className="note">{tr('Read what you told the officer, then put the right card into each box of the form. Careful: some cards are almost the same.')}</p>
         <div className="row">
           <button className="btn primary" autoFocus onClick={() => setStarted(true)}>始める Start</button>
           <button className="btn" onClick={onClose}>やめる</button>
@@ -298,12 +299,12 @@ function FormScene({ onClose }: { onClose: () => void }) {
       {done ? (
         <div className="everyday-result">
           <p className="good">◎ 「はい、{'受け付けました'}。{'見つかったら、ご連絡します'}ね。」</p>
-          <p className="note">{c.en}</p>
+          <p className="note">{tr(c.en)}</p>
           <button className="btn primary" autoFocus onClick={() => setFinished(true)}>次へ</button>
         </div>
       ) : (
         <div className="row">
-          <span className="note">{hold ? 'Tap a box for this card.' : 'Tap a card, then a box. (Leave a box empty if you were not told.)'}</span>
+          <span className="note">{tr(hold ? 'Tap a box for this card.' : 'Tap a card, then a box. (Leave a box empty if you were not told.)')}</span>
           <button
             className="btn primary"
             onClick={() => {

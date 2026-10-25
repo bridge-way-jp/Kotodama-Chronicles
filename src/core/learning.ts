@@ -6,6 +6,7 @@ import { rollDaily, todayKey } from './store';
 import { toast } from './events';
 import { ttsAvailable } from './audio';
 import { captureOrigin } from './memory';
+import { tr as trDe, isDe } from './i18n';
 import type { VocabEntry, Card, GameState, SkillArea } from './types';
 
 /**
@@ -150,7 +151,8 @@ function vocabExercise(id: string, mode: string, s: GameState, r: () => number, 
   const form = wordForm(v);
   const key = 'v:' + id;
   const base = { id: `${key}:${mode}:${Math.floor(r() * 1e6)}`, key, area: 'vocab' as SkillArea, mode };
-  const tr = (x: VocabEntry) => (lang === 'de' && x.exampleDe) || x.exampleEn;
+  const tr = (x: VocabEntry) => (lang === 'de' && x.exampleDe) || trDe(x.exampleEn, lang === 'de');
+  const I = (t: string) => trDe(t, lang === 'de');
   const expl = `**${form}**（${v.reading}）— ${lang === 'de' ? v.de : v.en}\n${v.example}\n${tr(v)}`;
   const meaning = lang === 'de' ? v.de : v.en;
   const blank = v.example.includes(v.word) ? v.example.replace(v.word, '＿＿＿') : null;
@@ -160,13 +162,13 @@ function vocabExercise(id: string, mode: string, s: GameState, r: () => number, 
       const why = vs ? `\n\n⚖ ${vs}\n${mixed!.example}\n${tr(mixed!)}` : '';
       if (!blank)
         return {
-          ...base, mode: 'contrast', context: false, instruction: 'Words you mixed up — which one means this?',
+          ...base, mode: 'contrast', context: false, instruction: I('Words you mixed up — which one means this?'),
           prompt: meaning,
           options: shuffle([{ text: form, correct: true }, ...distract.map((d) => ({ text: wordForm(d), correct: false, key: 'v:' + d.id }))], r),
           explanation: expl + why,
         };
       return {
-        ...base, mode: 'contrast', context: true, instruction: 'Words you mixed up — which one fits the blank?',
+        ...base, mode: 'contrast', context: true, instruction: I('Words you mixed up — which one fits the blank?'),
         prompt: blank, promptEn: tr(v),
         options: shuffle([{ text: v.word, correct: true }, ...distract.map((d) => ({ text: d.word, correct: false, key: 'v:' + d.id }))], r),
         explanation: expl + why,
@@ -176,28 +178,28 @@ function vocabExercise(id: string, mode: string, s: GameState, r: () => number, 
       // write the word yourself: the sentence with a gap and the meaning as the only hint
       if (!blank) return vocabExercise(id, 'type', s, r);
       return {
-        ...base, context: true, instruction: `Write the missing word: “${meaning}” (hiragana or romaji).`,
+        ...base, context: true, instruction: lang === 'de' ? `Schreib das fehlende Wort: „${meaning}“ (Hiragana oder Romaji).` : `Write the missing word: “${meaning}” (hiragana or romaji).`,
         prompt: blank, promptEn: tr(v), accept: [v.reading, v.word], explanation: expl,
       };
     case 'listencloze':
       // Japanese only: hear the whole sentence, then pick the word that was in the gap
       if (!blank) return vocabExercise(id, 'cloze', s, r);
       return {
-        ...base, context: true, instruction: 'Listen. Which word goes in the gap?',
+        ...base, context: true, instruction: I('Listen. Which word goes in the gap?'),
         prompt: blank, promptEn: tr(v), audio: v.example,
         options: shuffle([{ text: v.word, correct: true }, ...distract.map((d) => ({ text: d.word, correct: false, key: 'v:' + d.id }))], r),
         explanation: expl,
       };
     case 'reading':
       return {
-        ...base, context: false, instruction: 'How is this word read?',
+        ...base, context: false, instruction: I('How is this word read?'),
         prompt: form,
         options: shuffle([{ text: v.reading, correct: true }, ...readingDistractors(v.reading, r).map((t) => ({ text: t, correct: false }))], r),
         explanation: expl,
       };
     case 'reverse':
       return {
-        ...base, context: false, instruction: 'Which word matches this meaning?',
+        ...base, context: false, instruction: I('Which word matches this meaning?'),
         prompt: lang === 'de' ? v.de : v.en,
         options: shuffle([{ text: form, correct: true }, ...distract.map((d) => ({ text: wordForm(d), correct: false, key: 'v:' + d.id }))], r),
         explanation: expl,
@@ -206,7 +208,7 @@ function vocabExercise(id: string, mode: string, s: GameState, r: () => number, 
       const sentence = v.example.includes(v.word) ? v.example.replace(v.word, '＿＿＿') : null;
       if (!sentence) return vocabExercise(id, 'sentence', s, r);
       return {
-        ...base, context: true, instruction: 'Which word fits the blank?',
+        ...base, context: true, instruction: I('Which word fits the blank?'),
         prompt: sentence, promptEn: tr(v),
         options: shuffle([{ text: v.word, correct: true }, ...distract.map((d) => ({ text: d.word, correct: false, key: 'v:' + d.id }))], r),
         explanation: expl,
@@ -214,27 +216,27 @@ function vocabExercise(id: string, mode: string, s: GameState, r: () => number, 
     }
     case 'sentence':
       return {
-        ...base, context: true, instruction: 'What does this sentence mean?',
+        ...base, context: true, instruction: I('What does this sentence mean?'),
         prompt: v.example,
         options: shuffle([{ text: tr(v), correct: true }, ...distract.map((d) => ({ text: tr(d), correct: false }))], r),
         explanation: expl,
       };
     case 'listen':
       return {
-        ...base, area: 'vocab', context: true, instruction: 'Listen. What does the sentence mean?',
+        ...base, area: 'vocab', context: true, instruction: I('Listen. What does the sentence mean?'),
         prompt: v.example, audio: v.example, hideTextUntilAnswered: true,
         options: shuffle([{ text: tr(v), correct: true }, ...distract.map((d) => ({ text: tr(d), correct: false }))], r),
         explanation: expl,
       };
     case 'type':
       return {
-        ...base, context: false, instruction: 'Type the reading in hiragana (romaji is converted automatically).',
+        ...base, context: false, instruction: I('Type the reading in hiragana (romaji is converted automatically).'),
         prompt: form, accept: [v.reading], explanation: expl,
       };
     case 'meaning':
     default:
       return {
-        ...base, mode: 'meaning', context: false, instruction: v.affix ? 'What does this prefix / suffix mean?' : 'What does this word mean?',
+        ...base, mode: 'meaning', context: false, instruction: I(v.affix ? 'What does this prefix / suffix mean?' : 'What does this word mean?'),
         prompt: form,
         options: shuffle([{ text: lang === 'de' ? v.de : v.en, correct: true }, ...distract.map((d) => ({ text: lang === 'de' ? d.de : d.en, correct: false, key: 'v:' + d.id }))], r),
         explanation: expl,
@@ -274,24 +276,24 @@ export function readingDistractors(reading: string, r: () => number): string[] {
 function grammarExercise(id: string, mode: string, r: () => number): Exercise {
   const g = GRAMMAR_BY_ID[id];
   const key = 'g:' + id;
-  const expl = `**${g.pattern}** — ${g.meaning}\n${g.explanation}\n${g.examples[0]?.jp ?? ''}\n${g.examples[0]?.en ?? ''}`;
+  const expl = `**${g.pattern}** — ${trDe(g.meaning)}\n${trDe(g.explanation)}\n${g.examples[0]?.jp ?? ''}\n${trDe(g.examples[0]?.en) ?? ''}`;
   if (mode === 'meaning' || !g.exercises.length) {
     // meanings of imported items are German, built-in ones English: only compare like with like
     const others = pickN(GRAMMAR.filter((x) => x.id !== id && (x.source === 'anki') === (g.source === 'anki')), 3, r);
     return {
       id: `${key}:meaning:${Math.floor(r() * 1e6)}`, key, area: 'grammar', mode: 'meaning', context: false,
-      instruction: 'What does this pattern express?', prompt: g.pattern,
-      options: shuffle([{ text: g.meaning, correct: true }, ...others.map((o) => ({ text: o.meaning, correct: false, key: 'g:' + o.id }))], r),
+      instruction: trDe('What does this pattern express?'), prompt: g.pattern,
+      options: shuffle([{ text: trDe(g.meaning), correct: true }, ...others.map((o) => ({ text: trDe(o.meaning), correct: false, key: 'g:' + o.id }))], r),
       explanation: expl,
     };
   }
   const ex = g.exercises[Math.floor(r() * g.exercises.length)];
   return {
     id: `${key}:cloze:${Math.floor(r() * 1e6)}`, key, area: 'grammar', mode: mode === 'contrast' ? 'contrast' : 'cloze', context: true,
-    instruction: mode === 'contrast' ? 'Contrast drill — choose the pattern that fits. Watch the nuance!' : 'Choose the expression that fits the blank.',
-    prompt: ex.sentence, promptEn: ex.en,
+    instruction: trDe(mode === 'contrast' ? 'Contrast drill — choose the pattern that fits. Watch the nuance!' : 'Choose the expression that fits the blank.'),
+    prompt: ex.sentence, promptEn: trDe(ex.en),
     options: shuffle(ex.options.map((o, i) => ({ text: o.text, correct: i === ex.answer, key: o.grammar ? 'g:' + o.grammar : undefined })), r),
-    explanation: `${ex.why}\n\n${expl}`,
+    explanation: `${trDe(ex.why)}\n\n${expl}`,
   };
 }
 
@@ -302,13 +304,15 @@ function kanjiExercise(id: string, mode: string, r: () => number): Exercise {
   const whole = k.words.filter((w) => !VOCAB_BY_ID[w]?.affix);
   const ids = whole.length ? whole : k.words;
   const word = VOCAB_BY_ID[ids[Math.floor(r() * ids.length)]];
-  const expl = `**${k.char}** — ${k.meaning}\n音: ${k.on.join('、') || '—'}　訓: ${k.kun.join('、') || '—'}\n${word.word}（${word.reading}）${word.en}`;
+  const de = isDe();
+  const sentenceEn = (de && word.exampleDe) || trDe(word.exampleEn);
+  const expl = `**${k.char}** — ${trDe(k.meaning)}\n音: ${k.on.join('、') || '—'}　訓: ${k.kun.join('、') || '—'}\n${word.word}（${word.reading}）${de ? word.de : word.en}`;
   if (mode === 'meaning') {
     const others = pickN(KANJI.filter((x) => x.id !== id), 3, r);
     return {
       id: `${key}:meaning:${Math.floor(r() * 1e6)}`, key, area: 'kanji', mode, context: false,
-      instruction: `What does the kanji mean? (as in ${word.word})`, prompt: k.char,
-      options: shuffle([{ text: k.meaning, correct: true }, ...others.map((o) => ({ text: o.meaning, correct: false, key: 'k:' + o.id }))], r),
+      instruction: de ? `Was bedeutet das Kanji? (wie in ${word.word})` : `What does the kanji mean? (as in ${word.word})`, prompt: k.char,
+      options: shuffle([{ text: trDe(k.meaning), correct: true }, ...others.map((o) => ({ text: trDe(o.meaning), correct: false, key: 'k:' + o.id }))], r),
       explanation: expl,
     };
   }
@@ -317,12 +321,12 @@ function kanjiExercise(id: string, mode: string, r: () => number): Exercise {
   if (mode === 'type')
     return {
       id: `${key}:type:${Math.floor(r() * 1e6)}`, key, area: 'kanji', mode: 'type', context: true,
-      instruction: 'Write the reading of the word in 【 】 (hiragana or romaji).', prompt: sentence, promptEn: word.exampleEn,
+      instruction: trDe('Write the reading of the word in 【 】 (hiragana or romaji).'), prompt: sentence, promptEn: sentenceEn,
       accept: [word.reading], explanation: expl,
     };
   return {
     id: `${key}:reading:${Math.floor(r() * 1e6)}`, key, area: 'kanji', mode: 'reading', context: true,
-    instruction: 'How is the word in 【 】 read?', prompt: sentence, promptEn: word.exampleEn,
+    instruction: trDe('How is the word in 【 】 read?'), prompt: sentence, promptEn: sentenceEn,
     options: shuffle([{ text: word.reading, correct: true }, ...readingDistractors(word.reading, r).map((t) => ({ text: t, correct: false }))], r),
     explanation: expl,
   };
@@ -634,11 +638,11 @@ export function describeKey(key: string, lang: 'en' | 'de' = 'en'): { label: str
   }
   if (t === 'g' && GRAMMAR_BY_ID[id]) {
     const g = GRAMMAR_BY_ID[id];
-    return { label: g.pattern, meaning: g.meaning, example: g.examples[0]?.jp };
+    return { label: g.pattern, meaning: trDe(g.meaning, lang === 'de'), example: g.examples[0]?.jp };
   }
   if (t === 'k' && KANJI_BY_ID[id]) {
     const k = KANJI_BY_ID[id];
-    return { label: k.char, reading: [...k.on, ...k.kun].join('・'), meaning: k.meaning };
+    return { label: k.char, reading: [...k.on, ...k.kun].join('・'), meaning: trDe(k.meaning, lang === 'de') };
   }
   return { label: key, meaning: '' };
 }

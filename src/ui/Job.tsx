@@ -1,3 +1,4 @@
+import { tr } from '../core/i18n';
 import { useState } from 'react';
 import { JOBS, jobFlag } from '../content/jobs';
 import { NPCS } from '../content/npcs';
@@ -34,7 +35,7 @@ export function JobSession({ id, onClose }: { id: string; onClose: () => void })
 
   const head = (
     <div className="panel-title">
-      {job.title} <span className="note">{job.titleEn}</span>
+      {job.title} <span className="note">{tr(job.titleEn)}</span>
       {i >= 0 && i < items.length && <span className="note"> · {i + 1} / {items.length} · ¥{ok * job.payPer}</span>}
     </div>
   );
@@ -58,7 +59,7 @@ export function JobSession({ id, onClose }: { id: string; onClose: () => void })
           <div>
             <b>{npc.name}</b>
             <p lang="ja"><Jp text={job.intro} /></p>
-            <p className="note">{job.introEn}</p>
+            <p className="note">{tr(job.introEn)}</p>
             <p className="note">Pay: ¥{job.payPer} per correct answer · perfect round: {ITEMS[job.bonus]?.name}</p>
           </div>
         </div>
@@ -79,7 +80,7 @@ export function JobSession({ id, onClose }: { id: string; onClose: () => void })
           <div>
             <b>{npc.name}</b>
             <p lang="ja"><Jp text={job.thanks} /></p>
-            <p className="note">{job.thanksEn}</p>
+            <p className="note">{tr(job.thanksEn)}</p>
           </div>
         </div>
         <p className="big-score">{ok} / {items.length}</p>
@@ -100,7 +101,7 @@ export function JobSession({ id, onClose }: { id: string; onClose: () => void })
     <div className={`panel study job${crane ? ' crane' : ''}`}>
       {head}
       <div className="progress"><div style={{ width: `${(i / items.length) * 100}%` }} /></div>
-      <p className="note job-task" lang="ja">{job.task} <span>· {job.taskEn}</span></p>
+      <p className="note job-task" lang="ja">{job.task} <span>· {tr(job.taskEn)}</span></p>
       {crane && (
         <div className="crane-art" aria-hidden>
           <img className="crane-machine px" src="assets/crane_machine.png" alt="" />

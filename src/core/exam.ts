@@ -5,7 +5,11 @@ import { ORDERING, PARAPHRASE, PRACTICE_LISTENING, PRACTICE_READING } from '../c
 import { AFFIXES } from '../content/wordformation';
 import { CONFUSIONS } from '../content/confusions';
 import { readingDistractors, shuffle, similarWords } from './learning';
-import type { ListeningItem, SkillArea } from './types';
+import { tr, isDe } from './i18n';
+
+const meaning = (v: VocabEntry) => (isDe() ? v.de : v.en);
+const sentence = (v: VocabEntry) => (isDe() && v.exampleDe) || tr(v.exampleEn);
+import type { ListeningItem, SkillArea, VocabEntry } from './types';
 
 /**
  * Builds N2-style practice sets from the curriculum. Section names follow the
@@ -54,7 +58,7 @@ export function kanjiReadingItems(n: number, r = Math.random, levels = ['N2', 'N
     instruction: '＿＿の言葉の読み方として最もよいものを選びなさい。',
     prompt: v.example.replace(v.word, `【${v.word}】`),
     ...mc([v.reading, ...readingDistractors(v.reading, r)], 0, r),
-    why: `${v.word}（${v.reading}）— ${v.en}`,
+    why: `${v.word}（${v.reading}）— ${meaning(v)}`,
     keys: ['v:' + v.id],
   }));
 }
@@ -73,7 +77,7 @@ export function contextItems(n: number, r = Math.random, levels = ['N2', 'N1']):
       instruction: '（　　）に入れるのに最もよいものを選びなさい。',
       prompt: v.example.replace(v.word, '（　　）'),
       ...mc([v.word, ...others], 0, r),
-      why: `${v.word}（${v.reading}）— ${v.en}\n${v.exampleEn}`,
+      why: `${v.word}（${v.reading}）— ${meaning(v)}\n${sentence(v)}`,
       keys: ['v:' + v.id],
     } as TestItem;
   });
@@ -104,7 +108,7 @@ export function confusionItems(n: number, r = Math.random): TestItem[] {
     instruction: '次の文の（　　）に入れるのに最もよいものを選びなさい。',
     prompt: ex.s.split('＿＿').join('（　　）'),
     ...mc(ex.opts, 0, r),
-    why: `${ex.why}\n${ex.en}\n— ${g.forms.join(' · ')}: ${g.note}`,
+    why: `${tr(ex.why)}\n${tr(ex.en)}\n— ${g.forms.join(' · ')}: ${tr(g.note)}`,
     keys: [],
   }));
 }
@@ -113,7 +117,7 @@ export function paraphraseItems(n: number, r = Math.random): TestItem[] {
   return shuffle(PARAPHRASE, r).slice(0, n).map((p, i) => ({
     id: `pp:${i}:${p.keys[0]}`, section: '言い換え類義', area: 'vocab',
     instruction: '【　】の言葉に意味が最も近いものを選びなさい。',
-    prompt: p.q, ...mc(p.options, p.answer, r), why: p.why, keys: p.keys,
+    prompt: p.q, ...mc(p.options, p.answer, r), why: tr(p.why), keys: p.keys,
   }));
 }
 
@@ -124,7 +128,7 @@ export function grammarItems(n: number, r = Math.random): TestItem[] {
     instruction: '次の文の（　　）に入れるのに最もよいものを選びなさい。',
     prompt: ex.sentence.replace('＿＿', '（　　）'),
     ...mc(ex.options.map((o) => o.text), ex.answer, r),
-    why: `${ex.why}\n${ex.en}`,
+    why: `${tr(ex.why)}\n${tr(ex.en)}`,
     keys: ['g:' + g.id],
   }));
 }
@@ -138,7 +142,7 @@ export function orderingItems(n: number, r = Math.random): TestItem[] {
       instruction: '次の文の ★ に入る最もよいものを選びなさい。',
       prompt: `${o.before} ${slots} ${o.after}`,
       ...sorted,
-      why: `正しい順番：${o.before}${o.pieces.join('')}${o.after}\n${o.en}`,
+      why: `正しい順番：${o.before}${o.pieces.join('')}${o.after}\n${tr(o.en)}`,
       keys: o.keys,
     };
   });
@@ -152,7 +156,7 @@ export function readingItems(n: number, r = Math.random): TestItem[] {
         id: `rd:${t.id}:${i}`, section: '読解', area: 'reading',
         instruction: '次の文章を読んで、質問に答えなさい。',
         passage: { title: t.title, body: t.body },
-        prompt: q.q, ...mc(q.options, q.answer, r), why: q.why,
+        prompt: q.q, ...mc(q.options, q.answer, r), why: tr(q.why),
         keys: t.grammar.map((g) => 'g:' + g),
       });
     });
@@ -167,7 +171,7 @@ export function listeningItems(n: number, r = Math.random): TestItem[] {
       items.push({
         id: `ls:${l.id}:${i}`, section: '聴解', area: 'listening',
         instruction: 'まず話を聞いてください。それから質問を読んで、最もよいものを選びなさい。',
-        audio: l, prompt: q.q, ...mc(q.options, q.answer, r), why: `${q.why}\n${l.en}`,
+        audio: l, prompt: q.q, ...mc(q.options, q.answer, r), why: `${tr(q.why)}\n${tr(l.en)}`,
         keys: l.vocab.map((v) => 'v:' + v),
       });
     });

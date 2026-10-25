@@ -1,5 +1,6 @@
 import { VOCAB, VOCAB_BY_ID, wordForm } from '../content/vocab';
 import { KANJI, KANJI_BY_ID } from '../content/kanji';
+import { DE } from '../content/de';
 import type { KanjiEntry, VocabEntry } from './types';
 
 /**
@@ -14,8 +15,8 @@ export const CURRICULUM_SOURCE = 'jlpt';
 
 export interface CurriculumData {
   version: number;
-  vocab: { id: string; word: string; reading: string; en: string; pos: VocabEntry['pos']; level: 'N2' | 'N3'; chapter: number; topic?: string; affix?: VocabEntry['affix']; example?: string; exampleEn?: string }[];
-  kanji: { id: string; char: string; on: string[]; kun: string[]; meaning: string; words: string[]; strokes: number; chapter: number }[];
+  vocab: { id: string; word: string; reading: string; en: string; de?: string; pos: VocabEntry['pos']; level: 'N2' | 'N3'; chapter: number; topic?: string; affix?: VocabEntry['affix']; example?: string; exampleEn?: string }[];
+  kanji: { id: string; char: string; on: string[]; kun: string[]; meaning: string; de?: string; words: string[]; strokes: number; chapter: number }[];
 }
 
 export const curriculumInfo = { loaded: false, n2Words: 0, n3Words: 0, kanji: 0 };
@@ -27,7 +28,7 @@ export function registerCurriculum(d: CurriculumData) {
   for (const w of d.vocab) {
     if (VOCAB_BY_ID[w.id] || have.has(wordForm(w))) continue;
     const e: VocabEntry = {
-      id: w.id, word: w.word, reading: w.reading, en: w.en, de: w.en, pos: w.pos, level: w.level,
+      id: w.id, word: w.word, reading: w.reading, en: w.en, de: w.de ?? w.en, pos: w.pos, level: w.level,
       example: w.example ?? '', exampleEn: w.exampleEn ?? '',
       tags: w.topic ? [w.topic] : [], chapter: w.chapter, source: CURRICULUM_SOURCE,
       ...(w.affix ? { affix: w.affix } : {}),
@@ -43,7 +44,10 @@ export function registerCurriculum(d: CurriculumData) {
     if (KANJI_BY_ID[k.id] || chars.has(k.char)) continue;
     const words = k.words.filter((id) => VOCAB_BY_ID[id]);
     if (!words.length) continue;
-    const e: KanjiEntry = { ...k, words, source: CURRICULUM_SOURCE };
+    const { de, ...rest } = k;
+    const e: KanjiEntry = { ...rest, words, source: CURRICULUM_SOURCE };
+    // the German meaning goes where the learning screens look it up
+    if (de && !DE[k.meaning]) DE[k.meaning] = de;
     KANJI.push(e);
     KANJI_BY_ID[e.id] = e;
     curriculumInfo.kanji++;

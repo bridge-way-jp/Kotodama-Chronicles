@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { tr } from '../core/i18n';
 import { HoldWords, Jp, Rich, plainText, withName } from './Jp';
 import { speak, stopSpeech, ttsAvailable, sfx } from '../core/audio';
 import { normalizeKana } from '../core/romaji';
@@ -118,7 +119,7 @@ export function QuestionBlock({
           <button className="en-btn" onClick={() => setShowEn(!showEn)}>EN</button>
         )}
       </div>
-      {showEn && q.qEn && <div className="q-en">{withName(q.qEn)}</div>}
+      {showEn && q.qEn && <div className="q-en">{withName(tr(q.qEn))}</div>}
       <div className="options">
         {order.map((i, n) => {
           const cls = ['opt'];
@@ -137,10 +138,10 @@ export function QuestionBlock({
       </div>
       {picked !== null && (
         <div className={`feedback ${picked === q.answer ? 'ok' : 'ng'}`}>
-          <div className="fb-title">{picked === q.answer ? '正解！ Correct' : retry && !done ? 'ちがうみたい… Not quite — try again.' : '残念… Not quite.'}</div>
+          <div className="fb-title">{picked === q.answer ? '正解！ ' + tr('Correct') : retry && !done ? 'ちがうみたい… ' + tr('Not quite — try again.') : '残念… ' + tr('Not quite.')}</div>
           {(done || picked !== q.answer) && (
             <div className="fb-why">
-              <Jp text={withName(q.why)} />
+              <Jp text={withName(tr(q.why))} />
             </div>
           )}
           {done && (
@@ -219,7 +220,7 @@ export function ExerciseView({
     <div className={`exercise ${compact ? 'compact' : ''}`}>
       <div className="ex-instr">
         {ex.isNew && <span className="badge new">NEW</span>}
-        {ex.instruction}
+        {tr(ex.instruction)}
       </div>
       {ex.audio && (
         <AudioButton
@@ -239,7 +240,7 @@ export function ExerciseView({
       )}
       {readingHint && <div className="hint">よみ: {readingHint}</div>}
       {memory && !answered && !compact && (cue ? <MemoryNote k={ex.key!} cue compact /> : <button className="btn small memory-btn" onClick={() => setCue(true)}>💭 思い出のヒント</button>)}
-      {(tools?.showEn || (answered && ex.promptEn)) && ex.promptEn && <div className="q-en">{withName(ex.promptEn)}</div>}
+      {(tools?.showEn || (answered && ex.promptEn)) && ex.promptEn && <div className="q-en">{withName(tr(ex.promptEn))}</div>}
       {ex.options ? (
         <div className="options">
           {ex.options.map((o, i) =>
@@ -253,7 +254,7 @@ export function ExerciseView({
               >
                 <span className="opt-n">{i + 1}</span>
                 <HoldWords.Provider value>
-                  <Jp text={o.text} furigana="off" />
+                  <Jp text={tr(o.text)} furigana="off" />
                 </HoldWords.Provider>
               </button>
             ),
@@ -287,18 +288,18 @@ export function ExerciseView({
       {answered && (
         <div className={`feedback ${ok ? 'ok' : 'ng'}`}>
           <div className="fb-title">
-            {ok ? '正解！ Correct' : 'Not quite.'}
+            {ok ? '正解！ ' + tr('Correct') : tr('Not quite.')}
             {!ok && ex.accept && <> 答え：{ex.accept[0]}</>}
           </div>
           {ex.hideTextUntilAnswered && <div className="fb-why"><Jp text={ex.prompt} /></div>}
           {!ok && ex.key && chosen?.key && chosen.key !== ex.key && (
             <div className="fb-mix">
-              <div className="note">⚖ 取り違え — you picked another item. The difference:</div>
+              <div className="note">⚖ 取り違え — {tr('you picked another item. The difference:')}</div>
               <MixPair a={ex.key} b={chosen.key} />
             </div>
           )}
           <div className="fb-why">
-            <Rich text={ex.explanation} />
+            <Rich text={tr(ex.explanation)} />
           </div>
           {memory && !compact && <MemoryNote k={ex.key!} compact />}
           <button className="btn primary" autoFocus onClick={() => onDone(ok, ms.current, chosen ?? undefined)}>

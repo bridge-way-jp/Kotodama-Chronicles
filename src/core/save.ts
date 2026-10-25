@@ -111,6 +111,11 @@ export function validateEnvelope(raw: unknown): SaveEnvelope {
     if (s[k] === undefined) s[k] = (defaults as any)[k];
   }
   s.settings = { ...DEFAULT_SETTINGS, ...(isObj(s.settings) ? s.settings : {}) };
+  // the learning texts became German in one go: older saves switch to German meanings once (the setting stays changeable)
+  if (!s.flags.lang_de) {
+    s.settings.meaningLang = 'de';
+    s.flags.lang_de = 1;
+  }
   for (const area of Object.keys(defaults.skills)) {
     if (!isObj(s.skills[area])) s.skills[area] = { ok: 0, total: 0, ms: 0 };
   }
