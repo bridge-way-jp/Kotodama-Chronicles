@@ -16,6 +16,8 @@ import { Battle, type BattleResult } from './Battle';
 import { MasteryCheck, checkKeys } from './Mastery';
 import { clearLines, noteLine } from '../core/memory';
 import { RecallStep } from './Recall';
+import { UnderstandStep, wordToUnderstand } from './Understand';
+import { advancesQuest } from '../core/guide';
 import { giftPhrase, profileOf, smallTalk } from '../core/social';
 
 /** Session-only dialogue backlog (not saved). */
@@ -30,6 +32,20 @@ export function ScriptRunner({ steps, onEnd, hooks }: { steps: Step[]; onEnd: ()
   const [stack, setStack] = useState<Frame[]>([{ steps, i: 0 }]);
   const top = stack[stack.length - 1];
   const step: Step | undefined = top?.steps[top.i];
+  // a story scene asks once to understand a word from earlier in one of its lines (ui/Understand.tsx)
+  const story = useRef(advancesQuest(steps));
+  const asked = useRef(false);
+  const since = useRef(Date.now());
+  const afterLine = (line: string, en?: string, who?: string) => {
+    if (story.current && !asked.current && store.s.settings.echoes !== false) {
+      const w = wordToUnderstand(store.s, line, since.current);
+      if (w) {
+        asked.current = true;
+        return advance([{ understand: { ...w, line, en, who } }]);
+      }
+    }
+    advance();
+  };
 
   const advance = (push?: Step[]) => {
     setStack((st) => {
@@ -85,9 +101,11 @@ export function ScriptRunner({ steps, onEnd, hooks }: { steps: Step[]; onEnd: ()
 
   if (!step) return null;
 
-  if ('cg' in step) return <CgScene key={stackKey(stack)} step={step} onNext={() => advance()} />;
+  if ('cg' in step) return <CgScene key={stackKey(stack)} step={step} onNext={() => (step.say ? afterLine(step.say, step.en) : advance())} />;
 
-  if ('say' in step) return <SayBox key={stackKey(stack)} step={step} onNext={() => advance()} />;
+  if ('say' in step) return <SayBox key={stackKey(stack)} step={step} onNext={() => afterLine(step.say, step.en, step.who)} />;
+
+  if ('understand' in step) return <UnderstandStep key={stackKey(stack)} u={step.understand} onDone={() => advance()} />;
 
   if ('choice' in step)
     return (

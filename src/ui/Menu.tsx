@@ -714,7 +714,7 @@ function SettingsTab({ actions }: { actions: MenuActions }) {
         Read dialogue aloud <input type="checkbox" checked={!!st.readAloud} onChange={(e) => set('readAloud', e.target.checked)} />
       </label>
       <label>
-        People ask about words learned with them <input type="checkbox" checked={st.echoes !== false} onChange={(e) => set('echoes', e.target.checked)} />
+        Recall: people and story scenes ask about words from earlier <input type="checkbox" checked={st.echoes !== false} onChange={(e) => set('echoes', e.target.checked)} />
       </label>
       <label>
         Weather and season effects <input type="checkbox" checked={st.effects !== false} onChange={(e) => set('effects', e.target.checked)} />

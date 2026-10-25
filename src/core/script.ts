@@ -95,7 +95,9 @@ export type Step =
   /** a little scene in the world while the dialogue waits: people walk, turn, show feelings; the camera moves */
   | { stage: StageCmd[] }
   /** a person or a thing asks about an item learned with them (core/recall.ts) */
-  | { recall: { key: string; who: string } };
+  | { recall: { key: string; who: string } }
+  /** a word of the line just shown, met earlier, has to be understood before the story goes on (ui/Understand.tsx) */
+  | { understand: { key: string; surface: string; line: string; en?: string; who?: string } };
 
 export type Emote = 'alert' | 'question' | 'heart' | 'music' | 'idea' | 'sweat' | 'dots' | 'angry' | 'sparkle' | 'sleep';
 /** who: 'player' or a person's id on the current map */
