@@ -1,4 +1,5 @@
 import { placeName, placeSession } from '../core/recall';
+import { isDe } from '../core/i18n';
 import { toast } from '../core/events';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { store } from '../core/store';
@@ -80,7 +81,7 @@ export function ReviewSession({ onClose, weak, mixups, place }: { onClose: () =>
   return (
     <div className="panel study">
       <div className="panel-title">
-        {place ? `💭 ${placeName(place)}` : '復習 Review'} <span className="note">{i + 1} / {items.length} · due {info.due.length} · new left today {info.newAllowed}</span>
+        {place ? `💭 ${placeName(place)}` : '復習 Review'} <span className="note">{i + 1} / {items.length} · {isDe() ? 'fällig' : 'due'} {info.due.length} · {isDe() ? 'heute noch neu' : 'new left today'} {info.newAllowed}</span>
         <button className="btn small ghost close" onClick={onClose}>✕</button>
       </div>
       <div className="progress"><div style={{ width: `${(i / items.length) * 100}%` }} /></div>

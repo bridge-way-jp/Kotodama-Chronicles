@@ -1,3 +1,4 @@
+import { tr } from '../core/i18n';
 import { NPCS } from '../content/npcs';
 import { cueLine } from '../core/memory';
 import { highlight, originOf, placeName, placeNameEn, speakerName } from '../core/recall';
@@ -23,7 +24,7 @@ export function MemoryNote({ k, cue, compact }: { k: string; cue?: boolean; comp
         </div>
         <p lang="ja" className="memory-line">「<Jp text={blank ?? highlight(o.line, k)} />」</p>
         {cue && !blank && <p className="note">You met the word around this moment — what was it?</p>}
-        {!cue && o.en && <p className="note">{withName(o.en)}</p>}
+        {!cue && o.en && <p className="note">{withName(tr(o.en))}</p>}
       </div>
     </div>
   );

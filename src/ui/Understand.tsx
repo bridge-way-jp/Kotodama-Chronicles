@@ -1,3 +1,4 @@
+import { tr } from '../core/i18n';
 import { useState } from 'react';
 import { VOCAB, VOCAB_BY_ID, wordForm } from '../content/vocab';
 import { NPCS } from '../content/npcs';
@@ -125,7 +126,7 @@ export function UnderstandStep({ u, onDone }: { u: Understand; onDone: () => voi
         {ok && (
           <div className="feedback ok">
             <div className="fb-title">{misses ? '今度は正解！ Got it now.' : '正解！ You remembered it.'}</div>
-            {u.en && <p className="note">{withName(u.en)}</p>}
+            {u.en && <p className="note">{withName(tr(u.en))}</p>}
             <button className="btn primary" autoFocus onClick={onDone}>次へ ▶</button>
           </div>
         )}

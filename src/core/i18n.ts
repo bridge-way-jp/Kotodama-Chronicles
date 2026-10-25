@@ -1,4 +1,5 @@
 import { DE } from '../content/de';
+import { DE_STORY } from '../content/de_story';
 import { store } from './store';
 
 /** German for the fixed English lines of the learning screens (instructions, feedback). */
@@ -61,7 +62,10 @@ const UI: Record<string, string> = {
 
 export const isDe = () => (store.state?.settings.meaningLang ?? 'de') === 'de';
 
-const one = (s: string) => DE[s] ?? UI[s];
+const one = (s: string) => DE[s] ?? DE_STORY[s] ?? UI[s];
+
+/** the German of one exact English text, if there is one */
+export const lookupDe = (s: string): string | undefined => one(s);
 
 /**
  * The German of an English learning text when the meaning language is German, else the text itself.

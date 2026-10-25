@@ -1,3 +1,4 @@
+import { isDe } from '../core/i18n';
 import { tr } from '../core/i18n';
 import { useState, type ReactNode } from 'react';
 import { store, DEFAULT_SETTINGS } from '../core/store';
@@ -141,7 +142,11 @@ function StatusTab() {
       </div>
       <h3>今日の目標 Daily goal</h3>
       <p className="note">
-        {Math.min(answersToday(s), DAILY_GOAL)} / {DAILY_GOAL} answers today · streak <b>🔥 {streakDays(s)}</b> days (best {Number(s.flags.streak_best ?? 0)}). Reaching the goal pays ¥50 per streak day (up to ¥350).
+        {isDe() ? (
+          <>{Math.min(answersToday(s), DAILY_GOAL)} / {DAILY_GOAL} Antworten heute · Serie <b>🔥 {streakDays(s)}</b> Tage (Rekord {Number(s.flags.streak_best ?? 0)}). Das erreichte Ziel bringt 50 ¥ pro Serientag (bis 350 ¥).</>
+        ) : (
+          <>{Math.min(answersToday(s), DAILY_GOAL)} / {DAILY_GOAL} answers today · streak <b>🔥 {streakDays(s)}</b> days (best {Number(s.flags.streak_best ?? 0)}). Reaching the goal pays ¥50 per streak day (up to ¥350).</>
+        )}
       </p>
       <Bar value={Math.min(1, answersToday(s) / DAILY_GOAL)} color="#e8903c" label={`${Math.min(answersToday(s), DAILY_GOAL)}/${DAILY_GOAL}`} />
       <h3>アルバム Album</h3>
@@ -321,7 +326,7 @@ function KotodamaTab() {
               <Bar value={c.hp / maxHp(c)} color="#4cc463" label={`HP ${c.hp}/${maxHp(c)}`} />
               <Bar value={c.xp / creatureXpToNext(c.level)} label={`XP ${c.xp}/${creatureXpToNext(c.level)}`} />
               <div className="note">
-                Moves: {sp.moves.map((m) => MOVES[m].name).join('・')} · Ability: ✦{sp.ability.name} — {sp.ability.desc}
+                {isDe() ? 'Attacken' : 'Moves'}: {sp.moves.map((m) => MOVES[m].name).join('・')} · {isDe() ? 'Fähigkeit' : 'Ability'}: ✦{sp.ability.name} — {sp.ability.desc}
               </div>
               {sp.evolvesTo && <div className="note">Evolves at Lv.{sp.evolvesTo.level} → {SPECIES[sp.evolvesTo.species].name}</div>}
               {i > 0 && (
@@ -342,8 +347,8 @@ function KotodamaTab() {
           </div>
         );
       })}
-      {s.box.length > 0 && <p className="note">+{s.box.length} resting at home (team max 4)</p>}
-      <h3>図鑑 Collection ({Object.values(s.dex).filter((d) => d === 'caught').length}/{allSpecies.length})</h3>
+      {s.box.length > 0 && <p className="note">+{s.box.length} {isDe() ? 'ruhen zu Hause (Team max. 4)' : 'resting at home (team max 4)'}</p>}
+      <h3>図鑑 {isDe() ? 'Sammlung' : 'Collection'} ({Object.values(s.dex).filter((d) => d === 'caught').length}/{allSpecies.length})</h3>
       <div className="dex-grid">
         {allSpecies.map((sp) => {
           const st = s.dex[sp.id];
@@ -525,8 +530,9 @@ function JlptTab({ actions }: { actions: MenuActions }) {
         <div>
           <b>Curriculum mastery</b>
           <p className="note">
-            Measures demonstrated, retained knowledge of the game's current content ({VOCAB.length} words, {GRAMMAR.length} grammar points, {KANJI.length} kanji)
-            plus reading/listening accuracy. It is not an estimate of your official JLPT score; the N2 scope is much larger and the curriculum will grow.
+            {isDe()
+              ? `Misst nachgewiesenes, behaltenes Wissen über die aktuellen Inhalte des Spiels (${VOCAB.length} Wörter, ${GRAMMAR.length} Grammatikpunkte, ${KANJI.length} Kanji) plus die Genauigkeit beim Lesen und Hören. Es ist keine Schätzung deines offiziellen JLPT-Ergebnisses; der Umfang der N2 ist viel größer, und der Lehrplan wächst weiter.`
+              : `Measures demonstrated, retained knowledge of the game's current content (${VOCAB.length} words, ${GRAMMAR.length} grammar points, ${KANJI.length} kanji) plus reading/listening accuracy. It is not an estimate of your official JLPT score; the N2 scope is much larger and the curriculum will grow.`}
           </p>
           {r.weakest && <p>Weakest area right now: <b lang="ja">{r.weakest.label}</b></p>}
         </div>
@@ -537,10 +543,12 @@ function JlptTab({ actions }: { actions: MenuActions }) {
             <b lang="ja">{a.label}</b>
             <span className="note">
               {a.total > 0
-                ? `met ${a.encountered}/${a.total} · mastered ${a.counts.mature} · consolidating ${a.counts.young} · learning ${a.counts.learning} · needs work ${a.counts.struggling}`
-                : `${a.attempts} answers`}
-              {a.accuracy !== null && ` · accuracy ${Math.round(a.accuracy * 100)}%`}
-              {a.avgMs !== null && ` · avg ${(a.avgMs / 1000).toFixed(1)}s`}
+                ? isDe()
+                  ? `gesehen ${a.encountered}/${a.total} · gemeistert ${a.counts.mature} · festigend ${a.counts.young} · lernend ${a.counts.learning} · braucht Übung ${a.counts.struggling}`
+                  : `met ${a.encountered}/${a.total} · mastered ${a.counts.mature} · consolidating ${a.counts.young} · learning ${a.counts.learning} · needs work ${a.counts.struggling}`
+                : `${a.attempts} ${isDe() ? 'Antworten' : 'answers'}`}
+              {a.accuracy !== null && ` · ${isDe() ? 'Genauigkeit' : 'accuracy'} ${Math.round(a.accuracy * 100)}%`}
+              {a.avgMs !== null && ` · ${isDe() ? 'Ø' : 'avg'} ${(a.avgMs / 1000).toFixed(1)}s`}
             </span>
           </div>
           {a.total > 0 ? (
@@ -726,8 +734,9 @@ function SettingsTab({ actions }: { actions: MenuActions }) {
 
       <h3>セーブ Save data</h3>
       <p className="note">
-        Progress is saved automatically in this browser (IndexedDB){saveStatus.last ? ` — last saved ${new Date(saveStatus.last).toLocaleTimeString()}` : ''}.
-        Clearing browser data will erase it, so export a backup now and then.
+        {isDe()
+          ? `Der Fortschritt wird automatisch in diesem Browser gespeichert (IndexedDB)${saveStatus.last ? ` – zuletzt gespeichert ${new Date(saveStatus.last).toLocaleTimeString()}` : ''}. Das Löschen der Browserdaten löscht ihn, exportiere also ab und zu eine Sicherung.`
+          : `Progress is saved automatically in this browser (IndexedDB)${saveStatus.last ? ` — last saved ${new Date(saveStatus.last).toLocaleTimeString()}` : ''}. Clearing browser data will erase it, so export a backup now and then.`}
       </p>
       {saveStatus.state === 'error' && <p className="warn">Last save failed: {saveStatus.error}</p>}
       <div className="row wrap">
