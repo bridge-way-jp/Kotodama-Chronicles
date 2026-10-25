@@ -12,6 +12,7 @@ import { TOKYO_GEN } from '../content/tokyo.gen';
 import { NPCS } from '../content/npcs';
 import { ENCOUNTERS } from '../content/creatures';
 import { check, pickRule, type StageCmd } from '../core/script';
+import { echoFor } from '../core/recall';
 import { SCRIPTS } from '../content/scripts';
 import { advancesQuest, guideFor, nextExit, outdoorOf, roomHasQuestScene } from '../core/guide';
 import { QUESTS } from '../content/quests';
@@ -142,6 +143,8 @@ interface NpcSprite {
   when?: any;
   auto?: boolean;
   marker?: Phaser.GameObjects.Image;
+  /** a thought bubble: this person wants to ask about a word learned with them (core/recall.ts) */
+  think?: Phaser.GameObjects.Image;
 }
 
 interface Wanderer {
@@ -167,7 +170,10 @@ export class WorldScene extends Phaser.Scene {
   moving = false;
   npcs: NpcSprite[] = [];
   wanderers: Wanderer[] = [];
-  objects: { def: MapObject; img?: Phaser.GameObjects.Image; marker?: Phaser.GameObjects.Image; doors?: Warp[] }[] = [];
+  objects: { def: MapObject; img?: Phaser.GameObjects.Image; marker?: Phaser.GameObjects.Image; doors?: Warp[]; glint?: Phaser.GameObjects.Image }[] = [];
+  /** who of this map has a word to ask about, recomputed when the learning state changes */
+  private echoKey = '';
+  private echoes = new Set<string>();
   tileIndex: Record<string, number> = {};
   tilesetCols = 0;
   animatedCols: number[] = [];
@@ -251,7 +257,13 @@ export class WorldScene extends Phaser.Scene {
     cam.fadeIn(250, 0, 0, 0);
 
     this.time.addEvent({ delay: 550, loop: true, callback: () => this.animateTiles() });
-    this.unsub.push(store.subscribe(() => this.refreshVisibility()));
+    this.unsub.push(
+      store.subscribe((reason) => {
+        // anything but walking may change who has a word to ask about
+        if (!['move', 'step', 'facing', 'tick'].includes(reason)) this.echoKey = '';
+        this.refreshVisibility();
+      }),
+    );
     this.unsub.push(bus.on('warp', (p) => this.warpTo(p.map, p.x, p.y, p.facing ?? 'down')));
     this.unsub.push(bus.on('stage', ({ cmds, done }) => void this.runStage(cmds).then(done, done)));
     this.unsub.push(bus.on('stage-reset', () => this.resetStage()));
@@ -748,6 +760,9 @@ export class WorldScene extends Phaser.Scene {
         entry.marker = this.add.image(img.x, img.y - img.height - 2, 'em_alert').setOrigin(0.5, 1).setDepth(100001).setVisible(false);
         this.tweens.add({ targets: entry.marker, y: entry.marker.y - 4, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
       }
+      this.makeThinkTexture();
+      entry.think = this.add.image(img.x + 10, img.y - img.height + 2, 'em_think').setOrigin(0.5, 1).setDepth(100001).setVisible(false);
+      this.tweens.add({ targets: entry.think, y: entry.think.y - 3, scale: { from: 0.94, to: 1.06 }, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
       this.npcs.push(entry);
     }
 
@@ -922,6 +937,31 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /** soft steam puffs rising from hot springs (map.steam) */
+  /** a little thought cloud with a golden star: someone remembers a word with you */
+  makeThinkTexture() {
+    if (this.textures.exists('em_think')) return;
+    const g = this.make.graphics({ x: 0, y: 0 }, false);
+    const cloud = (c: number, grow: number) => {
+      g.fillStyle(c, 1);
+      for (const [x, y, r] of [[9, 10, 6], [15, 7, 7], [21, 10, 6], [15, 13, 6]] as const) g.fillCircle(x, y, r + grow);
+      g.fillCircle(7, 21, 2.2 + grow);
+      g.fillCircle(4, 25, 1.4 + grow);
+    };
+    cloud(0x7a5aa6, 1.2);
+    cloud(0xffffff, 0);
+    // star
+    const star: Phaser.Geom.Point[] = [];
+    for (let i = 0; i < 10; i++) {
+      const a = -Math.PI / 2 + (i * Math.PI) / 5;
+      const r = i % 2 ? 2.2 : 5;
+      star.push(new Phaser.Geom.Point(15 + Math.cos(a) * r, 10.5 + Math.sin(a) * r));
+    }
+    g.fillStyle(0xf2b630, 1);
+    g.fillPoints(star, true);
+    g.generateTexture('em_think', 30, 28);
+    g.destroy();
+  }
+
   spawnSteam() {
     if (!this.map.steam?.length) return;
     if (!this.textures.exists('fx_steam')) {
@@ -1116,6 +1156,7 @@ export class WorldScene extends Phaser.Scene {
           a.npc.x += dx;
           a.npc.y += dy;
           a.npc.marker?.setPosition(a.sprite.x, a.sprite.y - a.sprite.height - 2);
+          a.npc.think?.setPosition(a.sprite.x + 10, a.sprite.y - a.sprite.height + 2);
         } else {
           this.px += dx;
           this.py += dy;
@@ -1199,6 +1240,13 @@ export class WorldScene extends Phaser.Scene {
         n.marker.setVisible(!!steps && advancesQuest(steps));
       }
     }
+    // people and things that want to ask about a word learned with them: a thought bubble, a glint
+    const echoKey = `${s.map}|${Math.floor(Date.now() / 60_000)}`;
+    if (echoKey !== this.echoKey) {
+      this.echoKey = echoKey;
+      this.echoes = new Set([...this.npcs.map((n) => n.id), ...this.objects.map((o) => o.def.script ?? o.def.id)].filter((id) => SCRIPTS[id] && echoFor(s, id)));
+    }
+    for (const n of this.npcs) n.think?.setVisible(n.sprite.visible && !n.marker?.visible && this.echoes.has(n.id));
     for (const o of this.objects) {
       o.img?.setVisible(check(s, o.def.when));
       if (o.marker) {
@@ -1207,6 +1255,15 @@ export class WorldScene extends Phaser.Scene {
         const inside = !!o.doors?.some((d) => roomHasQuestScene(s, d.to.map)); // the quest person or thing is inside this building
         o.marker.setVisible(o.def.hint === 'always' || inside || (!!steps && advancesQuest(steps)));
       }
+      const glint = this.echoes.has(o.def.script ?? o.def.id) && !o.marker?.visible && (o.img?.visible ?? true);
+      if (glint && !o.glint && this.textures.exists('em_sparkle')) {
+        const w = o.def.w ?? 1;
+        const x = o.img ? o.img.x + o.img.displayWidth * 0.25 : (o.def.x + w / 2) * TILE;
+        const y = o.img ? o.img.y - o.img.displayHeight * 0.7 : o.def.y * TILE + 8;
+        o.glint = this.add.image(x, y, 'em_sparkle').setDepth(100001).setScale(0.6).setAlpha(0);
+        this.tweens.add({ targets: o.glint, alpha: { from: 0.25, to: 1 }, scale: { from: 0.7, to: 1.05 }, angle: 25, duration: 650, yoyo: true, repeat: -1, repeatDelay: 450, ease: 'Sine.easeInOut' });
+      }
+      o.glint?.setVisible(glint);
     }
     if (this.tint) this.tint.setVisible(s.timeOfDay === 'evening');
     else if (s.timeOfDay === 'evening' && !this.map.interior) {
