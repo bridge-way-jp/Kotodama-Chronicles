@@ -381,9 +381,22 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       steps: [
         say('kaede', 'いらっしゃいませ。……あら、あなたが@nameさんね？ 喫茶ことのはの{楓|かえで}です。', 'Welcome… Oh, you must be @name? I’m Kaede, of Café Kotonoha.'),
         say('kaede', '今朝、お店の前にこの手紙が置いてあったの。{宛先|あてさき|v:atesaki}にはあなたの名前。でも、{差出人|さしだしにん|v:sashidashinin}の名前がどこにもないのよ。', 'This letter was left in front of the shop this morning. Your name is on it as the addressee — but there’s no sender name anywhere.'),
-        { do: [{ objective: 'mq3.kaede' }, { give: 'mystery_letter' }, { learn: ['v:atesaki', 'v:sashidashinin'] }] },
+        { do: [{ learn: ['v:atesaki', 'v:sashidashinin'] }] },
         { cg: 'cg_letter', say: '白い封筒には、赤いろうで「K」と押してある。', en: 'The white envelope is sealed with red wax stamped “K”.' },
         say('kaede', 'どうぞ、ここで読んでみて。コーヒーでも飲みながらね。', 'Go ahead and read it here, over a cup of coffee.'),
+        { reading: 'r_mystery_letter' },
+        say('kaede', '「K」……？', '“K”…?'),
+        say('kaede', '……まさか、ね。ううん、なんでもないわ。', '…It couldn’t be. No, never mind.'),
+        say('kaede', '駅の古い掲示板、ね。気をつけて行ってらっしゃい。', 'The old bulletin board at the station, then. Take care.'),
+        // the letter scene counts only once it is over: left half-way (the app closed), it starts again
+        { do: [{ objective: 'mq3.kaede' }, { give: 'mystery_letter' }, { objective: 'mq3.read' }, { rel: 'kaede', points: 2, memory: 'letter' }, { learn: ['v:tegakari', 'v:nazo', 'g:karakoso'] }] },
+      ],
+    },
+    {
+      // saves from before: the letter was handed over, but the scene was left before it was read
+      when: { all: [{ questActive: 'mq3' }, { obj: 'mq3.kaede' }, { notObj: 'mq3.read' }] },
+      steps: [
+        say('kaede', 'あ、@nameさん。さっきの手紙、まだ読んでいなかったわね。どうぞ、ここで読んでみて。', 'Ah, @name. You haven’t read that letter yet, have you? Go ahead and read it here.'),
         { reading: 'r_mystery_letter' },
         say('kaede', '「K」……？', '“K”…?'),
         say('kaede', '……まさか、ね。ううん、なんでもないわ。', '…It couldn’t be. No, never mind.'),
@@ -418,7 +431,8 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   ],
   aoi: [
     {
-      when: { questNotStarted: 'sq_aoi' },
+      // also when the scene was left half-way (the quest started, its task not done): it plays again
+      when: { any: [{ questNotStarted: 'sq_aoi' }, { all: [{ questActive: 'sq_aoi' }, { notObj: 'sq_aoi.help' }] }] },
       steps: [
         say('aoi', 'あ、すみません……。わたし、アオイです。日野森大学の学生です。', 'Ah, excuse me… I’m Aoi, a student at Hinomori University.'),
         say('aoi', '来週、ゼミで{発表|はっぴょう|v:happyou}があるんですけど、{緊張|きんちょう|v:kinchou}しちゃって……。敬語、ちょっと見てもらえませんか？', 'I have a seminar presentation next week, and I’m so nervous… Could you check my polite Japanese?'),
@@ -498,7 +512,8 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       steps: [say('sato', 'おや、新しい顔だね。ゆっくり本を見ていきなさい。', 'Oh, a new face. Take your time looking at the books.')],
     },
     {
-      when: { questNotStarted: 'sq_sato' },
+      // also when the scene was left half-way (the quest started, its task not done): it plays again
+      when: { any: [{ questNotStarted: 'sq_sato' }, { all: [{ questActive: 'sq_sato' }, { notObj: 'sq_sato.quiz' }] }] },
       steps: [
         say('sato', 'こんにちは。私は佐藤。昔、この町の中学校で国語を教えていたんだよ。', 'Hello. I’m Satō. I used to teach Japanese at the middle school here.'),
         say('sato', '君は日本語を勉強しているのかね？ では、ひとつ{宿題|しゅくだい}を出そう。「わけ」の使い分けは、なかなか難しいものだ。', 'You’re studying Japanese? Then let me give you some homework. Using the different “wake” patterns is quite tricky.'),
@@ -553,7 +568,8 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
       ],
     },
     {
-      when: { questNotStarted: 'sq_shrine' },
+      // also when the scene was left half-way (the quest started, its task not done): it plays again
+      when: { any: [{ questNotStarted: 'sq_shrine' }, { all: [{ questActive: 'sq_shrine' }, { notObj: 'sq_shrine.omikuji' }] }] },
       steps: [
         n('日野森神社。静かな境内に、おみくじの箱がある。', 'Hinomori Shrine. There is a box of fortune slips in the quiet grounds.'),
         {

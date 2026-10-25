@@ -13,6 +13,7 @@ import { NPCS } from '../content/npcs';
 import { ENCOUNTERS } from '../content/creatures';
 import { check, pickRule, type StageCmd } from '../core/script';
 import { echoFor } from '../core/recall';
+import { worldMonth, worldSeason } from '../core/season';
 import { SCRIPTS } from '../content/scripts';
 import { advancesQuest, guideFor, nextExit, outdoorOf, roomHasQuestScene } from '../core/guide';
 import { QUESTS } from '../content/quests';
@@ -88,9 +89,8 @@ const SEASONAL: Record<string, string[]> = {
   map_valley: ['summer', 'autumn', 'winter'], map_harbor: ['summer', 'autumn', 'winter'],
   map_gion: ['spring'], map_kamogawa: ['spring'], map_fushimi: ['spring'],
 };
-function currentSeason(): 'spring' | 'summer' | 'autumn' | 'winter' {
-  const m = new Date().getMonth() + 1;
-  return m >= 3 && m <= 5 ? 'spring' : m >= 6 && m <= 8 ? 'summer' : m >= 9 && m <= 11 ? 'autumn' : 'winter';
+function currentSeason() {
+  return worldSeason(store.state);
 }
 /** the image to draw for a map today: the seasonal variant if there is one */
 function seasonalImage(image: string | undefined): string | undefined {
@@ -245,6 +245,7 @@ export class WorldScene extends Phaser.Scene {
     this.py = s.pos.y;
     this.facing = s.facing;
     this.buildMap();
+    this.unstick();
     this.exitSigns();
     this.buildPlayer();
     this.refreshVisibility();
@@ -723,7 +724,8 @@ export class WorldScene extends Phaser.Scene {
         const img = this.add.image(cx, by, this.textures.exists(look) ? look : def.sprite).setOrigin(0.5, 1);
         img.setDepth(by - 1);
         entry.img = img;
-        if ((def.hint || entry.doors) && this.textures.exists('em_alert')) {
+        // every thing with a scene can show the "!" (it only appears while its scene moves the story on)
+        if ((def.hint || entry.doors || (!def.decor && SCRIPTS[def.script ?? def.id])) && this.textures.exists('em_alert')) {
           entry.marker = this.add.image(cx, by - Math.min(img.height, 3 * TILE) - 2, 'em_alert').setOrigin(0.5, 1).setDepth(100001).setVisible(false);
           this.tweens.add({ targets: entry.marker, y: entry.marker.y - 4, duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
         }
@@ -856,7 +858,7 @@ export class WorldScene extends Phaser.Scene {
   spawnWeather() {
     if (store.s.settings.effects === false) return;
     if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
-    const month = new Date().getMonth() + 1;
+    const month = worldMonth(store.s);
     const cam = this.cameras.main;
     const rain = store.s.day % 4 === 0 && month !== 12 && month > 2;
     /** painted particle if the sprite sheet is loaded, otherwise a plain shape */
@@ -937,6 +939,28 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /** soft steam puffs rising from hot springs (map.steam) */
+  /**
+   * Arriving on a tile that is blocked (a building moved in the editor onto the spot where its neighbour's door lets
+   * you out, an old save): step to the nearest free tile instead of being stuck.
+   */
+  unstick() {
+    if (!this.blocked(this.px, this.py, true)) return;
+    const H = this.map.tiles.length;
+    const W = this.map.tiles[0]?.length ?? 0;
+    const isExit = (x: number, y: number) => this.map.warps.some((w) => w.x === x && w.y === y);
+    for (let r = 1; r <= 10; r++) {
+      const ring: [number, number][] = [];
+      for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (Math.max(Math.abs(dx), Math.abs(dy)) === r) ring.push([this.px + dx, this.py + dy]);
+      ring.sort((a, b) => Math.abs(a[0] - this.px) + Math.abs(a[1] - this.py) - (Math.abs(b[0] - this.px) + Math.abs(b[1] - this.py)));
+      const spot = ring.find(([x, y]) => x > 0 && y > 0 && x < W - 1 && y < H - 1 && !this.blocked(x, y, true) && !isExit(x, y));
+      if (spot) {
+        [this.px, this.py] = spot;
+        store.update((s) => void (s.pos = { x: spot[0], y: spot[1] }), 'move');
+        return;
+      }
+    }
+  }
+
   /** a little thought cloud with a golden star: someone remembers a word with you */
   makeThinkTexture() {
     if (this.textures.exists('em_think')) return;
@@ -1247,13 +1271,18 @@ export class WorldScene extends Phaser.Scene {
       this.echoes = new Set([...this.npcs.map((n) => n.id), ...this.objects.map((o) => o.def.script ?? o.def.id)].filter((id) => SCRIPTS[id] && echoFor(s, id)));
     }
     for (const n of this.npcs) n.think?.setVisible(n.sprite.visible && !n.marker?.visible && this.echoes.has(n.id));
+    const marked = new Set<string>();
     for (const o of this.objects) {
       o.img?.setVisible(check(s, o.def.when));
       if (o.marker) {
         const rules = SCRIPTS[o.def.script ?? o.def.id];
         const steps = rules ? pickRule(s, rules) : null;
         const inside = !!o.doors?.some((d) => roomHasQuestScene(s, d.to.map)); // the quest person or thing is inside this building
-        o.marker.setVisible(o.def.hint === 'always' || inside || (!!steps && advancesQuest(steps)));
+        // one marker per script: a desk and its chair (the same thing) show a single "!"
+        const sid = o.def.script ?? o.def.id;
+        const show = o.def.hint === 'always' || inside || (!!steps && advancesQuest(steps));
+        o.marker.setVisible(show && !marked.has(sid));
+        if (show) marked.add(sid);
       }
       const glint = this.echoes.has(o.def.script ?? o.def.id) && !o.marker?.visible && (o.img?.visible ?? true);
       if (glint && !o.glint && this.textures.exists('em_sparkle')) {
@@ -1697,6 +1726,11 @@ export class WorldScene extends Phaser.Scene {
           }
         }
       }
+    }
+    // standing on a walkable thing (in the footbath, on the bridge spot): the button works there too
+    if (!obj || obj.decor || !SCRIPTS[obj.script ?? obj.id]) {
+      const here = this.objectAt(this.px, this.py);
+      if (here && !here.decor && SCRIPTS[here.script ?? here.id]) obj = here;
     }
     if (obj && !obj.decor) {
       // a building with a door: the button goes in, unless this object has a quest scene right now

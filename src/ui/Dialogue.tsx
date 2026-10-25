@@ -8,7 +8,7 @@ import { bus, toast } from '../core/events';
 import { sfx, speak, stopSpeech, ttsAvailable } from '../core/audio';
 import { NPCS } from '../content/npcs';
 import { ITEMS } from '../content/creatures';
-import { Jp, plainText, withName } from './Jp';
+import { HoldWords, Jp, plainText, withName } from './Jp';
 import { QuestionBlock } from './Question';
 import { ReadingChallenge, ListeningChallenge } from './Challenges';
 import { TeachCard } from './Cards';
@@ -411,16 +411,34 @@ function CgScene({ step, onNext }: { step: Extract<Step, { cg: string }>; onNext
     <div className="cg-scene" ref={ref} onClick={() => (sfx('blip'), onNext())}>
       <CgImage name={step.cg} />
       {step.say && (
-        <div className="cg-caption" onClick={(e) => e.stopPropagation()}>
-          <div className="dlg-text" onClick={() => onNext()}>
-            <Jp text={step.say} auto />
+        // a tap anywhere on the caption goes on, like the dialogue box (the EN button and the words do their own thing)
+        <div
+          className="cg-caption"
+          onClick={(e) => {
+            e.stopPropagation();
+            sfx('blip');
+            onNext();
+          }}
+        >
+          <div className="dlg-text">
+            <HoldWords.Provider value>
+              <Jp text={step.say} auto />
+            </HoldWords.Provider>
           </div>
           {showEn && step.en && <div className="dlg-en">{withName(step.en)}</div>}
           <div className="dlg-tools">
             {step.en && store.state?.settings.translation !== 'never' && (
-              <button className="en-btn" onClick={() => setShowEn(!showEn)}>EN</button>
+              <button
+                className="en-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowEn(!showEn);
+                }}
+              >
+                EN
+              </button>
             )}
-            <span className="next-arrow petal" onClick={() => onNext()} />
+            <span className="next-arrow petal" />
           </div>
         </div>
       )}
@@ -443,8 +461,15 @@ function CgImage({ name }: { name: string }) {
     mq.addEventListener('change', on);
     return () => mq.removeEventListener('change', on);
   }, []);
+  const [aspect, setAspect] = useState(0);
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => setAspect(img.naturalWidth / img.naturalHeight);
+    img.src = `assets/${name}.webp`;
+  }, [name]);
   if (portrait && PORTRAIT_CG.has(name)) return <img className="cg-img cg-portrait" src={`assets/${name}_p.webp`} alt="" />;
-  if (portrait) return <div className="cg-pan" style={{ backgroundImage: `url(assets/${name}.webp)` }} role="img" />;
+  // the band is low enough that most of a very wide picture shows at once (the pan then only has a short way to go)
+  if (portrait) return <div className="cg-pan" style={{ backgroundImage: `url(assets/${name}.webp)`, height: aspect ? `min(52vh, ${(160 / aspect).toFixed(1)}vw)` : undefined }} role="img" />;
   return <img className="cg-img" src={`assets/${name}.webp`} alt="" />;
 }
 
@@ -515,16 +540,31 @@ function SayBox({ step, onNext }: { step: Extract<Step, { say: string }>; onNext
             </div>
           )}
           <div className="dlg-text">
-            <Jp text={step.say} auto />
+            <HoldWords.Provider value>
+              <Jp text={step.say} auto />
+            </HoldWords.Provider>
           </div>
           {showEn && step.en && <div className="dlg-en">{withName(step.en)}</div>}
-          <div className="dlg-tools" onClick={(e) => e.stopPropagation()}>
+          {/* only the buttons keep their tap: the rest of the bottom row goes on like the whole box (where the thumb lands) */}
+          <div className="dlg-tools">
             {step.en && store.state?.settings.translation !== 'never' && (
-              <button className="en-btn" onClick={() => setShowEn(!showEn)}>
+              <button
+                className="en-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowEn(!showEn);
+                }}
+              >
                 EN
               </button>
             )}
-            <button className="en-btn" onClick={() => setShowLog(true)}>
+            <button
+              className="en-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowLog(true);
+              }}
+            >
               LOG
             </button>
             <span className="next-arrow petal" />

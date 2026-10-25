@@ -1,4 +1,5 @@
 import type { Dir, GameState, Question } from './types';
+import { worldMonth } from './season';
 
 /** Data-driven dialogue / event scripting used by NPCs, objects and quests. */
 
@@ -27,6 +28,8 @@ export type Cond =
       notYearFlag?: string;
       /** the real month (1–12) is one of these */
       months?: number[];
+      /** the game is played on a touch screen */
+      touch?: boolean;
       /** random chance 0–1; only use inside an `if` step, never in a rule's `when` */
       chance?: number;
     }
@@ -153,8 +156,9 @@ export function check(s: GameState, c: Cond | undefined): boolean {
     const [a, b] = c.hours;
     if (a <= b ? h < a || h >= b : h < a && h >= b) return false;
   }
-  if (c.months && !c.months.includes(new Date().getMonth() + 1)) return false;
+  if (c.months && !c.months.includes(worldMonth(s))) return false;
   if (c.name && !c.name.includes(s.playerName.trim())) return false;
+  if (c.touch !== undefined && c.touch !== (typeof window !== 'undefined' && !!window.matchMedia?.('(pointer: coarse)').matches)) return false;
   if (c.chance !== undefined && Math.random() >= c.chance) return false;
   return true;
 }

@@ -703,7 +703,8 @@ input, select { font: inherit; padding: 6px 8px; border: 2px solid #cfae7d; bord
 @keyframes cg-pan { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
 @media (orientation: portrait) {
   .cg-img.cg-portrait { width: 100%; height: auto; max-height: 62vh; object-fit: contain; }
-  .cg-scene { justify-content: flex-start; padding-top: env(safe-area-inset-top, 0px); }
+  /* the picture sits in the middle of the space above the caption */
+  .cg-scene { justify-content: center; padding-top: env(safe-area-inset-top, 0px); padding-bottom: 30vh; }
 }
 .ref-list { max-height: 60vh; overflow-y: auto; }
 .ref-list h4 { margin: 10px 0 4px; }

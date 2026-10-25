@@ -1,5 +1,7 @@
 import type { Step } from './script';
 import type { GameState } from './types';
+import { worldSeason } from './season';
+import { store } from './store';
 import { NPCS } from '../content/npcs';
 import { ITEMS } from '../content/creatures';
 import { GREETINGS, HEART_EVENTS, PROFILES, REACT, REPLIES, TALK, type Profile, type Register, type TalkLine } from '../content/social';
@@ -30,9 +32,8 @@ export const dayNum = (t = Date.now()) => {
   return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
 };
 
-function season(): 'spring' | 'summer' | 'autumn' | 'winter' {
-  const m = new Date().getMonth() + 1;
-  return m >= 3 && m <= 5 ? 'spring' : m <= 8 && m >= 6 ? 'summer' : m >= 9 && m <= 11 ? 'autumn' : 'winter';
+function season() {
+  return worldSeason(store.state);
 }
 
 function fits(s: GameState, l: TalkLine): boolean {
