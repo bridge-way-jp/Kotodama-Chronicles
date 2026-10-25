@@ -45,6 +45,8 @@ export interface Card {
   ctxOk: number;
   ctxFail: number;
   history: { t: number; ok: boolean; mode: string; ms: number }[];
+  /** where and from whom the item was first met (core/memory.ts) */
+  origin?: import('./memory').Origin;
 }
 
 export interface QuestProgress {
@@ -73,6 +75,8 @@ export interface Settings {
   highContrast?: boolean;
   /** read dialogue lines aloud with the browser voice */
   readAloud?: boolean;
+  /** people and places ask about the words learned with them (core/recall.ts); on unless switched off */
+  echoes?: boolean;
 }
 
 export interface SkillStat {

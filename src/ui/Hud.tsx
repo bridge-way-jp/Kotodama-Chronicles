@@ -10,8 +10,9 @@ import { saveStatus } from '../core/persistence';
 import { input } from '../game/input';
 import type { Dir } from '../core/types';
 import { openRequests } from './Progress';
+import { dueHere } from '../core/recall';
 
-export function Hud({ onMenu }: { onMenu: (tab?: any) => void }) {
+export function Hud({ onMenu, onPlace }: { onMenu: (tab?: any) => void; onPlace?: (map: string) => void }) {
   const s = store.s;
   const [, setV] = useState(0);
   useEffect(() => bus.on('save-status', () => setV((v) => v + 1)), []);
@@ -20,6 +21,8 @@ export function Hud({ onMenu }: { onMenu: (tab?: any) => void }) {
   const guide = main ? guideFor(s, main.id, s.map) : null;
   const lead = s.team[0];
   const due = queueInfo(s).due.length;
+  // words learned at this very place that are due: recall them where they were heard
+  const here = onPlace ? dueHere(s, s.map).length : 0;
   return (
     <>
       <div className="hud-top">
@@ -63,6 +66,11 @@ export function Hud({ onMenu }: { onMenu: (tab?: any) => void }) {
           {openRequests() > 0 && (
             <button className="hud-box req-box" onClick={() => onMenu('diary')} title="Today's requests from people">
               ✉ {openRequests()}
+            </button>
+          )}
+          {here > 0 && (
+            <button className="hud-box memory-box" onClick={() => onPlace?.(s.map)} title="Words you learned at this place are due — recall them here">
+              💭 {here}
             </button>
           )}
           {due > 0 && (

@@ -93,7 +93,9 @@ export type Step =
   /** pick a gift from the bag for this person */
   | { gift: string }
   /** a little scene in the world while the dialogue waits: people walk, turn, show feelings; the camera moves */
-  | { stage: StageCmd[] };
+  | { stage: StageCmd[] }
+  /** a person or a thing asks about an item learned with them (core/recall.ts) */
+  | { recall: { key: string; who: string } };
 
 export type Emote = 'alert' | 'question' | 'heart' | 'music' | 'idea' | 'sweat' | 'dots' | 'angry' | 'sparkle' | 'sleep';
 /** who: 'player' or a person's id on the current map */

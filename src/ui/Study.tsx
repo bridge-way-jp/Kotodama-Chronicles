@@ -1,3 +1,4 @@
+import { placeName, placeSession } from '../core/recall';
 import { toast } from '../core/events';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { store } from '../core/store';
@@ -13,8 +14,8 @@ import type { PracticeResult } from '../core/types';
 
 // ================================================================== review
 
-export function ReviewSession({ onClose, weak, mixups }: { onClose: () => void; weak?: boolean; mixups?: boolean }) {
-  const build = () => (mixups ? buildConfusionSession(store.s) : weak ? buildWeakSession(store.s) : buildReviewSession(store.s));
+export function ReviewSession({ onClose, weak, mixups, place }: { onClose: () => void; weak?: boolean; mixups?: boolean; place?: string }) {
+  const build = () => (place ? placeSession(store.s, place) : mixups ? buildConfusionSession(store.s) : weak ? buildWeakSession(store.s) : buildReviewSession(store.s));
   const [items, setItems] = useState<Exercise[]>(build);
   const [i, setI] = useState(0);
   const [results, setResults] = useState<{ key?: string; ok: boolean }[]>([]);
@@ -23,10 +24,11 @@ export function ReviewSession({ onClose, weak, mixups }: { onClose: () => void; 
   if (!items.length)
     return (
       <div className="panel study">
-        <div className="panel-title">{mixups ? '間違えやすい Mix-ups' : weak ? '苦手 Weak spots' : '復習 Review'}</div>
+        <div className="panel-title">{place ? `💭 ${placeName(place)}` : mixups ? '間違えやすい Mix-ups' : weak ? '苦手 Weak spots' : '復習 Review'}</div>
+        {place && <p>Nothing studied here yet. Words you meet at this place show up here once you have studied them.</p>}
         {mixups && <p>No mix-ups yet. When you pick a word or pattern instead of another one, the pair shows up here to train the difference.</p>}
         {weak && <p>No weak spots yet: you have no item that you answered wrongly more than once. Keep going — they appear here once they do.</p>}
-        {!weak && !mixups && (
+        {!weak && !mixups && !place && (
           <>
             <p>Nothing is due right now and today's new-item limit ({store.s.settings.newPerDay}/day) is reached or nothing new is unlocked.</p>
             <p className="note">Explore, talk to people, and come back later — items return when they are due. (You can raise the daily limit in Settings.)</p>
@@ -78,7 +80,7 @@ export function ReviewSession({ onClose, weak, mixups }: { onClose: () => void; 
   return (
     <div className="panel study">
       <div className="panel-title">
-        復習 Review <span className="note">{i + 1} / {items.length} · due {info.due.length} · new left today {info.newAllowed}</span>
+        {place ? `💭 ${placeName(place)}` : '復習 Review'} <span className="note">{i + 1} / {items.length} · due {info.due.length} · new left today {info.newAllowed}</span>
         <button className="btn small ghost close" onClick={onClose}>✕</button>
       </div>
       <div className="progress"><div style={{ width: `${(i / items.length) * 100}%` }} /></div>

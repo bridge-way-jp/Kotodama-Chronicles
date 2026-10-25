@@ -14,6 +14,8 @@ import { ReadingChallenge, ListeningChallenge } from './Challenges';
 import { TeachCard } from './Cards';
 import { Battle, type BattleResult } from './Battle';
 import { MasteryCheck, checkKeys } from './Mastery';
+import { clearLines, noteLine } from '../core/memory';
+import { RecallStep } from './Recall';
 import { giftPhrase, profileOf, smallTalk } from '../core/social';
 
 /** Session-only dialogue backlog (not saved). */
@@ -49,6 +51,8 @@ export function ScriptRunner({ steps, onEnd, hooks }: { steps: Step[]; onEnd: ()
   useEffect(() => {
     if (!top) {
       bus.emit('stage-reset');
+      // the lines of this scene are not the moment of whatever is learned next
+      clearLines();
       onEnd();
       return;
     }
@@ -116,6 +120,8 @@ export function ScriptRunner({ steps, onEnd, hooks }: { steps: Step[]; onEnd: ()
   if ('quiz' in step) return <QuizStep key={stackKey(stack)} step={step} onDone={() => advance()} />;
 
   if ('teach' in step) return <TeachStep key={stackKey(stack)} k={step.teach} onDone={() => advance()} />;
+
+  if ('recall' in step) return <RecallStep key={stackKey(stack)} k={step.recall.key} who={step.recall.who} onDone={() => advance()} />;
 
   if ('check' in step) return <TicketCheck key={stackKey(stack)} onDone={() => advance()} />;
 
@@ -366,7 +372,10 @@ function CgScene({ step, onNext }: { step: Extract<Step, { cg: string }>; onNext
   const [showEn, setShowEn] = useState(store.state?.settings.translation === 'always');
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (step.say) backlog.push({ who: '', text: step.say, en: step.en });
+    if (step.say) {
+      backlog.push({ who: '', text: step.say, en: step.en });
+      noteLine(undefined, step.say, step.en, step.cg);
+    }
     // the memories album in the diary keeps every story picture once seen
     if (!store.state?.flags['seen_' + step.cg]) store.update((s) => void (s.flags['seen_' + step.cg] = true), 'seen');
     const onKey = (e: KeyboardEvent) => {
@@ -436,6 +445,7 @@ function SayBox({ step, onNext }: { step: Extract<Step, { say: string }>; onNext
 
   useEffect(() => {
     backlog.push({ who: npc?.name ?? '', text: step.say, en: step.en });
+    noteLine(step.who, step.say, step.en);
     if (backlog.length > 80) backlog.shift();
     const onKey = (e: KeyboardEvent) => {
       if (e.code === 'Enter' || e.code === 'Space' || e.code === 'KeyZ') {
