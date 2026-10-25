@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Jp, Rich, plainText, withName } from './Jp';
+import { HoldWords, Jp, Rich, plainText, withName } from './Jp';
 import { speak, stopSpeech, ttsAvailable, sfx } from '../core/audio';
 import { normalizeKana } from '../core/romaji';
 import { MemoryNote } from './MemoryNote';
@@ -127,7 +127,10 @@ export function QuestionBlock({
           return (
             <button key={i} className={cls.join(' ')} onClick={() => choose(i)} disabled={done || wrong.has(i)} {...dbgOk(i === q.answer)}>
               <span className="opt-n">{n + 1}</span>
-              <Jp text={q.options[i]} />
+              {/* a tap picks the answer, also on a word in it (a long press still explains the word) */}
+              <HoldWords.Provider value>
+                <Jp text={q.options[i]} />
+              </HoldWords.Provider>
             </button>
           );
         })}
@@ -249,7 +252,9 @@ export function ExerciseView({
                 {...dbgOk(o.correct)}
               >
                 <span className="opt-n">{i + 1}</span>
-                <Jp text={o.text} furigana="off" />
+                <HoldWords.Provider value>
+                  <Jp text={o.text} furigana="off" />
+                </HoldWords.Provider>
               </button>
             ),
           )}

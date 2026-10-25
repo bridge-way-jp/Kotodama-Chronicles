@@ -51,7 +51,10 @@ describe('story scripts are reachable in the world', () => {
   it('every script that advances a quest belongs to an NPC or object that stands on a map', async () => {
     const { MAPS } = await import('../src/content/maps');
     const placed = new Set<string>();
+    // only maps the player can get into (a room whose door was replaced by a hall does not count)
+    const entered = new Set(Object.values(MAPS).flatMap((m) => m.warps.map((w) => w.to.map)));
     for (const m of Object.values(MAPS)) {
+      if (m.interior && !entered.has(m.id)) continue;
       for (const n of m.npcs) placed.add(n.id);
       for (const o of m.objects ?? []) placed.add(o.script ?? o.id);
     }

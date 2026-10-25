@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { VOCAB_BY_ID, wordForm } from '../content/vocab';
 import { GRAMMAR_BY_ID } from '../content/grammar';
 import { KANJI_BY_ID } from '../content/kanji';
@@ -96,9 +96,11 @@ export function ItemDetail({ k }: { k: string }) {
 /** Popup shown when tapping a linked word in any Japanese text. */
 export function GlossPopup() {
   const [key, setKey] = useState<string | null>(null);
+  const opened = useRef(0);
   useEffect(
     () =>
       bus.on('gloss', ({ key }) => {
+        opened.current = Date.now();
         setKey(key);
         store.update((s) => encounter(s, [key]), 'gloss');
       }),
@@ -106,7 +108,8 @@ export function GlossPopup() {
   );
   if (!key) return null;
   return (
-    <div className="gloss-backdrop" onClick={() => setKey(null)}>
+    // opened by a long press: the tap that ends the press must not close it again
+    <div className="gloss-backdrop" onClick={() => Date.now() - opened.current > 450 && setKey(null)}>
       <div className="panel gloss" onClick={(e) => e.stopPropagation()}>
         <ItemDetail k={key} />
         <button className="btn primary" autoFocus onClick={() => setKey(null)}>

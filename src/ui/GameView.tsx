@@ -60,14 +60,14 @@ const INTRO: Step[] = [
     if: { touch: true },
     then: [
       {
-        say: '（操作：画面を指でなぞると歩く。「話す」ボタンで話す・調べる、☰ でメニュー。点線の言葉をタップすると意味が見られる。EN ボタンで英語訳。）',
-        en: 'Controls: drag your finger on the screen to walk · the 話す button to talk or examine · ☰ for the menu. Tap dotted words for their meaning; the EN button shows a translation.',
+        say: '（操作：画面を指でなぞると歩く。「話す」ボタンで話す・調べる、☰ でメニュー。点線の言葉を長押しすると意味が見られる。EN ボタンで英語訳。）',
+        en: 'Controls: drag your finger on the screen to walk · the 話す button to talk or examine · ☰ for the menu. Press and hold a dotted word for its meaning; the EN button shows a translation.',
       },
     ],
     else: [
       {
-        say: '（操作：矢印キー / WASD で移動、Space / Enter で話す・調べる、Esc / M でメニュー。点線の言葉をタップすると意味が見られる。EN ボタンで英語訳。）',
-        en: 'Controls: arrow keys / WASD to move · Space / Enter to talk or examine · Esc / M for the menu. Tap dotted words for their meaning; the EN button shows a translation.',
+        say: '（操作：矢印キー / WASD で移動、Space / Enter で話す・調べる、Esc / M でメニュー。点線の言葉を長押しすると意味が見られる。EN ボタンで英語訳。）',
+        en: 'Controls: arrow keys / WASD to move · Space / Enter to talk or examine · Esc / M for the menu. Press and hold a dotted word for its meaning; the EN button shows a translation.',
       },
     ],
   },

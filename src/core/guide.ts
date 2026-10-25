@@ -37,7 +37,10 @@ function build() {
     if (!placements!.has(k)) placements!.set(k, []);
     placements!.get(k)!.push(p);
   };
+  // only rooms a door still leads into (a station hall replaced the old information room's door)
+  const entered = new Set(Object.values(MAPS).flatMap((m) => m.warps.map((w) => w.to.map)));
   for (const m of Object.values(MAPS)) {
+    if (m.interior && !entered.has(m.id)) continue;
     for (const n of m.npcs) add(n.id, { map: m.id, npc: true, when: n.when });
     for (const o of m.objects) add(o.script ?? o.id, { map: m.id, npc: false, when: o.when });
   }
@@ -130,7 +133,8 @@ export function guideFor(s: GameState, questId: string, current: string): Guide 
     return !!steps && advancesQuest(steps);
   });
   const pool = ready.length ? ready : options;
-  const best = pool.find((p) => outdoorOf(p.map) === outdoorOf(current)) ?? pool[0];
+  // this very map first (the ticket gate inside the station takes the same trains as the station building outside)
+  const best = pool.find((p) => p.map === current) ?? pool.find((p) => outdoorOf(p.map) === outdoorOf(current)) ?? pool[0];
   const out = MAPS[outdoorOf(best.map)];
   const room = best.map !== out.id ? MAPS[best.map] : null;
   const far = regionOf(best.map) !== regionOf(current);

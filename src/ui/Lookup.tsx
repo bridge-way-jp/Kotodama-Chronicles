@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { bus } from '../core/events';
 import { store } from '../core/store';
 import { speak, ttsAvailable } from '../core/audio';
@@ -81,10 +81,12 @@ function textReading(text: string): { word: string; reading: string } | null {
 
 export function LookupPopup() {
   const [req, setReq] = useState<LookupReq | null>(null);
+  const opened = useRef(0);
   const [, setReady] = useState(0);
   useEffect(
     () =>
       bus.on('lookup', (r: LookupReq) => {
+        opened.current = Date.now();
         setReq(r);
         if (!data) void loadData().then(() => setReady((n) => n + 1));
       }),
@@ -101,7 +103,8 @@ export function LookupPopup() {
   if (!kanji) build();
   const say = reading ?? (covers ? v!.reading : undefined);
   return (
-    <div className="gloss-backdrop" onClick={() => setReq(null)}>
+    // opened by a long press: the tap that ends the press must not close it again
+    <div className="gloss-backdrop" onClick={() => Date.now() - opened.current > 450 && setReq(null)}>
       <div className="panel gloss lookup" onClick={(e) => e.stopPropagation()}>
         <div className="lk-word" lang="ja">
           {reading ? (

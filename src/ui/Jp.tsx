@@ -1,4 +1,4 @@
-import { Fragment, useState, type ReactNode } from 'react';
+import { createContext, Fragment, useContext, useRef, useState, type ReactNode } from 'react';
 import { store } from '../core/store';
 import { mastery } from '../core/srs';
 import { bus } from '../core/events';
@@ -68,18 +68,64 @@ function showRuby(key: string | undefined, mode: string): boolean {
   return !(m === 'young' || m === 'mature');
 }
 
+/**
+ * In the dialogue box a tap goes on to the next line, so there the words open on a long press instead (a quick tap on
+ * a word goes on like anywhere else on the box). The same inside any button (an answer, a choice): a tap picks it.
+ * Everywhere else (texts, the notebook) a tap opens them.
+ */
+export const HoldWords = createContext(false);
+
+/** the press handlers of a word: a tap, or (in the dialogue box and in buttons) a long press */
+function usePress(action: () => void) {
+  const hold = useContext(HoldWords);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fired = useRef(false);
+  const holding = (el: Element) => hold || !!el.closest('button, .choice-box');
+  const cancel = () => {
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = null;
+  };
+  return {
+    onPointerDown: (e: React.PointerEvent) => {
+      fired.current = false;
+      cancel();
+      if (!holding(e.currentTarget)) return;
+      timer.current = setTimeout(() => {
+        fired.current = true;
+        action();
+      }, 380);
+    },
+    onPointerUp: cancel,
+    onPointerLeave: cancel,
+    onPointerCancel: cancel,
+    onClick: (e: React.MouseEvent) => {
+      if (!holding(e.currentTarget)) {
+        e.stopPropagation();
+        action();
+        return;
+      }
+      // after a long press the tap that ends it must not also go on (or pick the answer)
+      if (fired.current) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+      fired.current = false;
+    },
+    onContextMenu: (e: React.MouseEvent) => e.preventDefault(),
+  };
+}
+
 function Word({ tok, mode, tail }: { tok: Extract<Token, { t: 'word' }>; mode: string; tail?: string }) {
   const [revealed, setRevealed] = useState(false);
   // a reading over a word that is already written in kana adds nothing
   const hasRuby = !!tok.ruby && tok.ruby !== tok.base;
   const ruby = hasRuby && (showRuby(tok.key, mode) || revealed);
-  const onClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const press = usePress(() => {
     if (hasRuby) setRevealed(true);
     if (tok.key) bus.emit('gloss', { key: tok.key });
     // a word with a reading: first tap shows the reading, a tap on a shown reading opens reading + meaning
     else if (hasRuby && (ruby || revealed)) bus.emit('lookup', { text: tok.base, reading: tok.ruby, tail });
-  };
+  });
   const cls = tok.key ? 'jp-word linked' : hasRuby ? 'jp-word' : undefined;
   const inner = ruby ? (
     <ruby>
@@ -90,7 +136,7 @@ function Word({ tok, mode, tail }: { tok: Extract<Token, { t: 'word' }>; mode: s
     tok.base
   );
   return (
-    <span className={cls} onClick={tok.key || hasRuby ? onClick : undefined} title={tok.key ? 'Tap for meaning' : hasRuby ? 'Tap for reading and meaning' : undefined}>
+    <span className={cls} {...(tok.key || hasRuby ? press : {})} title={tok.key ? 'Tap for meaning' : hasRuby ? 'Tap for reading and meaning' : undefined}>
       {inner}
     </span>
   );
@@ -155,9 +201,9 @@ function AutoTokens({ toks, mode }: { toks: Token[]; mode: string }) {
       flush(i);
       const key = 'v:' + sp.id;
       out.push(
-        <span key={'a' + i} className="jp-auto" onClick={(e) => { e.stopPropagation(); bus.emit('gloss', { key }); }} title="Tap for meaning">
+        <AutoWord key={'a' + i} id={key}>
           {atoms.slice(i, j).map((a, n) => (a.tok ? <Word key={n} tok={a.tok} mode={mode} /> : <Fragment key={n}>{a.ch}</Fragment>))}
-        </span>,
+        </AutoWord>,
       );
       i = j;
     } else {
@@ -171,6 +217,15 @@ function AutoTokens({ toks, mode }: { toks: Token[]; mode: string }) {
   }
   flush(atoms.length);
   return <>{out}</>;
+}
+
+function AutoWord({ id, children }: { id: string; children: ReactNode }) {
+  const press = usePress(() => bus.emit('gloss', { key: id }));
+  return (
+    <span className="jp-auto" {...press} title="Tap for meaning">
+      {children}
+    </span>
+  );
 }
 
 /** Explanation text that may contain **bold** and newlines (no furigana markup). */

@@ -8,7 +8,7 @@ import { bus, toast } from '../core/events';
 import { sfx, speak, stopSpeech, ttsAvailable } from '../core/audio';
 import { NPCS } from '../content/npcs';
 import { ITEMS } from '../content/creatures';
-import { Jp, plainText, withName } from './Jp';
+import { HoldWords, Jp, plainText, withName } from './Jp';
 import { QuestionBlock } from './Question';
 import { ReadingChallenge, ListeningChallenge } from './Challenges';
 import { TeachCard } from './Cards';
@@ -421,7 +421,9 @@ function CgScene({ step, onNext }: { step: Extract<Step, { cg: string }>; onNext
           }}
         >
           <div className="dlg-text">
-            <Jp text={step.say} auto />
+            <HoldWords.Provider value>
+              <Jp text={step.say} auto />
+            </HoldWords.Provider>
           </div>
           {showEn && step.en && <div className="dlg-en">{withName(step.en)}</div>}
           <div className="dlg-tools">
@@ -538,16 +540,31 @@ function SayBox({ step, onNext }: { step: Extract<Step, { say: string }>; onNext
             </div>
           )}
           <div className="dlg-text">
-            <Jp text={step.say} auto />
+            <HoldWords.Provider value>
+              <Jp text={step.say} auto />
+            </HoldWords.Provider>
           </div>
           {showEn && step.en && <div className="dlg-en">{withName(step.en)}</div>}
-          <div className="dlg-tools" onClick={(e) => e.stopPropagation()}>
+          {/* only the buttons keep their tap: the rest of the bottom row goes on like the whole box (where the thumb lands) */}
+          <div className="dlg-tools">
             {step.en && store.state?.settings.translation !== 'never' && (
-              <button className="en-btn" onClick={() => setShowEn(!showEn)}>
+              <button
+                className="en-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowEn(!showEn);
+                }}
+              >
                 EN
               </button>
             )}
-            <button className="en-btn" onClick={() => setShowLog(true)}>
+            <button
+              className="en-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowLog(true);
+              }}
+            >
               LOG
             </button>
             <span className="next-arrow petal" />
