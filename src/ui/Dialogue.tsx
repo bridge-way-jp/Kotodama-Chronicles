@@ -20,6 +20,7 @@ import { RecallStep } from './Recall';
 import { UnderstandStep, wordToUnderstand } from './Understand';
 import { advancesQuest } from '../core/guide';
 import { giftPhrase, profileOf, smallTalk } from '../core/social';
+import { lessonSteps, reviewKey } from '../core/lesson';
 
 /** Session-only dialogue backlog (not saved). */
 export const backlog: { who: string; text: string; en?: string }[] = [];
@@ -84,6 +85,8 @@ export function ScriptRunner({ steps, onEnd, hooks }: { steps: Step[]; onEnd: ()
       advance();
     } else if ('talk' in step) {
       advance(smallTalk(store.s, step.talk));
+    } else if ('lesson' in step) {
+      advance(lessonSteps(store.s));
     } else if ('stage' in step) {
       // the world plays the little scene; without a world (or if it gets stuck) the dialogue goes on anyway
       let done = false;
@@ -142,7 +145,7 @@ export function ScriptRunner({ steps, onEnd, hooks }: { steps: Step[]; onEnd: ()
 
   if ('recall' in step) return <RecallStep key={stackKey(stack)} k={step.recall.key} who={step.recall.who} onDone={() => advance()} />;
 
-  if ('check' in step) return <TicketCheck key={stackKey(stack)} onDone={() => advance()} />;
+  if ('check' in step) return step.check === 'lesson' ? <LessonCheck key={stackKey(stack)} onDone={() => advance()} /> : <TicketCheck key={stackKey(stack)} onDone={() => advance()} />;
 
   if ('hear' in step) return <HearStep key={stackKey(stack)} h={step.hear} onDone={() => advance()} />;
 
@@ -230,6 +233,25 @@ function TicketCheck({ onDone }: { onDone: () => void }) {
     <div className="dialogue-wrap">
       <div className="panel quiz-box">
         <MasteryCheck keys={keys} title={'🎫 改札チェック — ' + tr('ticket check')} sub={tr('Three words you have learned. Answer them to pass the gate.')} onDone={onDone} />
+      </div>
+    </div>
+  );
+}
+
+/** the lesson of a story step, first part: one item learned before, asked again */
+function LessonCheck({ onDone }: { onDone: () => void }) {
+  const [keys] = useState(() => {
+    const k = reviewKey(store.s, null);
+    return k ? [k] : [];
+  });
+  useEffect(() => {
+    if (!keys.length) onDone();
+  }, []);
+  if (!keys.length) return null;
+  return (
+    <div className="dialogue-wrap">
+      <div className="panel quiz-box">
+        <MasteryCheck keys={keys} title={'復習 — ' + tr('remember?')} sub={tr('Before the story goes on: one thing you learned earlier.')} onDone={onDone} />
       </div>
     </div>
   );

@@ -39,6 +39,8 @@ const UI: Record<string, string> = {
   'Use what you just read.': 'Wende an, was du gerade gelesen hast.',
   'ticket check': 'Fahrkartenkontrolle',
   'Three words you have learned. Answer them to pass the gate.': 'Drei Wörter, die du gelernt hast. Beantworte sie, um durch die Sperre zu kommen.',
+  'remember?': 'weißt du es noch?',
+  'Before the story goes on: one thing you learned earlier.': 'Bevor die Geschichte weitergeht: etwas, das du schon gelernt hast.',
   'listen first': 'erst zuhören',
   'build your answer:': 'bau deine Antwort:',
   // the questions any Kotodama can ask in battle

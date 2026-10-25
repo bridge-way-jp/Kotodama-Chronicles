@@ -86,7 +86,9 @@ export type Step =
   | { toast: string }
   | { shop: string[] }
   /** a short check of studied items that must be passed (the ticket check at the station gates) */
-  | { check: 'ticket' }
+  | { check: 'ticket' | 'lesson' }
+  /** the lesson of a story step: a new item of the region taught and an earlier one asked again (core/lesson.ts) */
+  | { lesson: true }
   /** a line that is first only heard (spoken), then the player picks what it meant, then it is shown */
   | { hear: { text: string; en: string; who?: string; voice?: 'f' | 'm'; options: string[]; answer: number } }
   /** the player puts a sentence together from blocks (given in the right order, shown shuffled) */

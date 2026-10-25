@@ -30,6 +30,7 @@ import { socialMenu } from '../core/social';
 import { checkMilestones, rollWeek } from '../core/progress';
 import { WeekReview } from './Progress';
 import { advancesQuest } from '../core/guide';
+import { reachesGoal } from '../core/lesson';
 import { echoFor } from '../core/recall';
 import { nowText } from './Diary';
 import { Hud, MapBanner, Toasts, TouchControls } from './Hud';
@@ -184,7 +185,9 @@ export function GameView({ onExit }: { onExit: () => void }) {
           // a word learned with this person or at this thing that is due again: they ask about it
           const echo = story ? null : echoFor(store.s, id);
           const recall: Step[] = echo ? [{ recall: { key: echo, who: id } }] : [];
-          push({ kind: 'script', steps: [...steps, ...recall, ...social] });
+          // a scene that reaches a quest goal ends with the lesson of that step of the story
+          const lesson: Step[] = story && reachesGoal(steps) ? [{ lesson: true }] : [];
+          push({ kind: 'script', steps: [...steps, ...lesson, ...recall, ...social] });
         }
       }),
       bus.on('message', ({ text, en }) => push({ kind: 'script', steps: [{ say: text, en }] })),
