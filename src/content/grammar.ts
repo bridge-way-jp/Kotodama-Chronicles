@@ -6,6 +6,9 @@ import { GRAMMAR_R5 } from './grammar_n2_r5';
 import { GRAMMAR_R6 } from './grammar_n2_r6';
 import { GRAMMAR_R7 } from './grammar_n2_r7';
 import { GRAMMAR_R8 } from './grammar_n2_r8';
+import { GRAMMAR_FULL } from './grammar_n2_full';
+import { GRAMMAR_FULL2 } from './grammar_n2_full2';
+import { GRAMMAR_FULL3 } from './grammar_n2_full3';
 import { EXTRA_EXERCISES } from './grammar_extra_exercises';
 import { EXTRA_EXERCISES_2 } from './grammar_extra_exercises_2';
 
@@ -393,7 +396,7 @@ export const GRAMMAR: GrammarEntry[] = [
 ];
 
 // N2 course grammar, region by region (docs/CURRICULUM.md)
-GRAMMAR.push(...GRAMMAR_R2, ...GRAMMAR_R3, ...GRAMMAR_R4, ...GRAMMAR_R5, ...GRAMMAR_R6, ...GRAMMAR_R7, ...GRAMMAR_R8);
+GRAMMAR.push(...GRAMMAR_R2, ...GRAMMAR_R3, ...GRAMMAR_R4, ...GRAMMAR_R5, ...GRAMMAR_R6, ...GRAMMAR_R7, ...GRAMMAR_R8, ...GRAMMAR_FULL, ...GRAMMAR_FULL2, ...GRAMMAR_FULL3);
 for (const [id, ex] of [...EXTRA_EXERCISES, ...EXTRA_EXERCISES_2]) GRAMMAR.find((g) => g.id === id)?.exercises.push(ex);
 
 export const GRAMMAR_BY_ID: Record<string, GrammarEntry> = Object.fromEntries(GRAMMAR.map((g) => [g.id, g]));
