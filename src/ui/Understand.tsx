@@ -37,6 +37,8 @@ export function wordToUnderstand(s: GameState, line: string, since: number): Omi
     const c = s.cards[k];
     if (!c || !VOCAB_BY_ID[k.slice(2)] || c.firstSeen > since - 5 * 60_000) return false;
     if (mastery(c) === 'mature') return false;
+    // not one that was just asked (in the scene before, or a review a moment ago)
+    if (c.last && c.last > Date.now() - 30 * 60_000) return false;
     return c.origin?.line !== line;
   });
   if (!cands.length) return null;

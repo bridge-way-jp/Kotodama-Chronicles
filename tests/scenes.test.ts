@@ -5,6 +5,7 @@ import { DREAMS, HEART_PICTURES, SEASONS, sleepScenes } from '../src/content/sce
 import { HEART_EVENTS } from '../src/content/social';
 import { createInitialState } from '../src/core/store';
 import { check, type Step } from '../src/core/script';
+import { worldMonth, worldSeason } from '../src/core/season';
 
 /** the steps a script plays for this state: `if` steps resolved */
 const play = (s: ReturnType<typeof createInitialState>, steps: Step[]): Step[] =>
@@ -22,7 +23,10 @@ describe('story pictures and scenes', () => {
   it('sleeping at home brings the next dream after a chapter, else the season once a year', () => {
     const s = createInitialState('T');
     const cgOf = () => play(s, sleepScenes()).find((x: any) => x.cg) as any;
-    const season = SEASONS.find((x) => x.months.includes(new Date().getMonth() + 1))!;
+    // chapter 1 is spring; from chapter 2 the real calendar
+    expect(worldSeason(s)).toBe('spring');
+    s.chapter = 2;
+    const season = SEASONS.find((x) => x.months.includes(worldMonth(s)))!;
     expect(cgOf()?.cg).toBe((season.step as any).cg);
     s.flags[`${season.id}_${new Date().getFullYear()}`] = true;
     expect(cgOf()).toBeUndefined();

@@ -55,9 +55,21 @@ const INTRO: Step[] = [
   { cg: 'cg_chapter1', say: '第一章　日野森の春', en: 'Chapter 1 — Spring in Hinomori' },
   { cg: 'cg_arrival', say: '春。@nameは、新しい生活を始めるために、日本の小さな町・{日野森|ひのもり}へやってきた。', en: 'Spring. @name has come to Hinomori, a small Japanese town, to start a new life.' },
   { say: 'JLPT N3には合格した。次の目標は、N2。そして、日本語で本当に生きていけるようになること。', en: 'You passed the JLPT N3. The next goal: N2 — and being able to truly live your life in Japanese.' },
+  // the controls of the device in hand: a touch screen or a keyboard
   {
-    say: '（操作：矢印キー / WASD で移動、Space / Enter で話す・調べる、Esc / M でメニュー。点線の言葉をタップすると意味が見られる。EN ボタンで英語訳。）',
-    en: 'Controls: arrow keys / WASD to move · Space / Enter to talk or examine · Esc / M for the menu. Tap dotted words for their meaning; the EN button shows a translation.',
+    if: { touch: true },
+    then: [
+      {
+        say: '（操作：画面を指でなぞると歩く。「話す」ボタンで話す・調べる、☰ でメニュー。点線の言葉をタップすると意味が見られる。EN ボタンで英語訳。）',
+        en: 'Controls: drag your finger on the screen to walk · the 話す button to talk or examine · ☰ for the menu. Tap dotted words for their meaning; the EN button shows a translation.',
+      },
+    ],
+    else: [
+      {
+        say: '（操作：矢印キー / WASD で移動、Space / Enter で話す・調べる、Esc / M でメニュー。点線の言葉をタップすると意味が見られる。EN ボタンで英語訳。）',
+        en: 'Controls: arrow keys / WASD to move · Space / Enter to talk or examine · Esc / M for the menu. Tap dotted words for their meaning; the EN button shows a translation.',
+      },
+    ],
   },
   {
     say: '始める前に、実力診断テスト（約10分）を受けますか？ 結果に合わせて、復習の内容が調整されます。',

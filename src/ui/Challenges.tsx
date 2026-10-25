@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { READINGS, LISTENING } from '../content/texts';
 import { store } from '../core/store';
 import { encounter, recordComprehension } from '../core/learning';
@@ -6,6 +6,15 @@ import { ttsAvailable } from '../core/audio';
 import { AudioButton, QuestionBlock, TextPassage } from './Question';
 import { Jp, withName } from './Jp';
 import type { ListeningItem, ReadingText } from '../core/types';
+
+/** after each step the question (or the result) scrolls into view: on a phone it sits below the long text */
+function useShowStep(step: number) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (step >= 0) ref.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, [step]);
+  return ref;
+}
 
 function finishText(keys: string[]) {
   store.update((s) => encounter(s, keys), 'learn');
@@ -17,6 +26,7 @@ export function ReadingChallenge({ id, text, onDone }: { id?: string; text?: Rea
   const [score, setScore] = useState(0);
   const [showEn, setShowEn] = useState(false);
   const keys = [...t.vocab.map((v) => 'v:' + v), ...t.grammar.map((g) => 'g:' + g)];
+  const stepRef = useShowStep(qi);
 
   return (
     <div className="challenge reading">
@@ -30,7 +40,7 @@ export function ReadingChallenge({ id, text, onDone }: { id?: string; text?: Rea
           <span className="note">Tap dotted words for meanings.</span>
         </div>
       ) : qi < t.questions.length ? (
-        <div>
+        <div ref={stepRef}>
           <div className="q-count">
             質問 {qi + 1} / {t.questions.length}
           </div>
@@ -46,7 +56,7 @@ export function ReadingChallenge({ id, text, onDone }: { id?: string; text?: Rea
           />
         </div>
       ) : (
-        <div className="feedback ok">
+        <div className="feedback ok" ref={stepRef}>
           <div className="fb-title">
             読解完了！ {score} / {t.questions.length} correct on the first try
           </div>
@@ -78,6 +88,7 @@ export function ListeningChallenge({ id, item, onDone }: { id?: string; item?: L
   const [showEn, setShowEn] = useState(false);
   const keys = l.vocab.map((v) => 'v:' + v);
   const lines = l.lines.map((x) => ({ text: x.jp, voice: x.voice }));
+  const stepRef = useShowStep(qi);
 
   return (
     <div className="challenge listening">
@@ -103,7 +114,7 @@ export function ListeningChallenge({ id, item, onDone }: { id?: string; item?: L
           質問へ ▶
         </button>
       ) : qi < l.questions.length ? (
-        <div>
+        <div ref={stepRef}>
           <div className="q-count">
             質問 {qi + 1} / {l.questions.length}
           </div>
@@ -120,7 +131,7 @@ export function ListeningChallenge({ id, item, onDone }: { id?: string; item?: L
           {subs && <div className="note">Subtitles are on — answers count as assisted (not as listening mastery).</div>}
         </div>
       ) : (
-        <div className="feedback ok">
+        <div className="feedback ok" ref={stepRef}>
           <div className="fb-title">
             聴解完了！ {score} / {l.questions.length}
           </div>

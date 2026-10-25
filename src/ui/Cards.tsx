@@ -9,7 +9,7 @@ import { mastery } from '../core/srs';
 import { AudioButton } from './Question';
 
 export const MASTERY_LABEL: Record<string, string> = {
-  unseen: '未出会い not met',
+  unseen: 'はじめて new',
   seen: '出会った seen',
   learning: '学習中 learning',
   young: '定着中 consolidating',

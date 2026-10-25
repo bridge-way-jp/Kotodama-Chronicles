@@ -175,7 +175,9 @@ export function ExerciseView({
   const [typedResult, setTypedResult] = useState<boolean | null>(null);
   // the moment the item was met, as a cue (using it makes the answer count as a hard one)
   const [cue, setCue] = useState(false);
-  const memory = !!ex.key && !!originOf(store.s, ex.key);
+  // not for an item met a moment ago (its memory is this very scene)
+  const origin = ex.key ? originOf(store.s, ex.key) : undefined;
+  const memory = !!origin && !(origin.t && Date.now() - origin.t < 10 * 60_000);
   const t0 = useRef(performance.now());
   const ms = useRef(0);
   const answered = chosen !== null || typedResult !== null;

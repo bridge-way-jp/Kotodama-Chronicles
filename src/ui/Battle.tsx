@@ -194,12 +194,16 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
   useEffect(() => {
     // a Kotodama you don't have yet could become a friend: say so before the fight, not after
     const canBefriend = setup.recruitable && !setup.boss && store.s.dex[enemy.speciesId] !== 'caught';
+    // a story boss is met fresh: the team comes to it at full strength, whatever the wild battles before took
+    const heal = !!setup.boss && store.s.team.some((c) => c.hp < maxHp(c));
     store.update((st) => {
       if (!st.dex[enemy.speciesId]) st.dex[enemy.speciesId] = 'seen';
+      if (heal) healTeam(st);
     }, 'dex');
     say(
       [
         setup.boss ? `${esp.name}が立ちはだかった！` : `野生の${esp.name}が現れた！`,
+        ...(heal ? ['仲間たちの力が、静かにもどってきた。'] : []),
         ...(canBefriend ? [`（まだ仲間にいない言霊だ。「はなす」で仲間にできるかもしれない）`] : []),
         me ? `行け、${SPECIES[me.speciesId].name}！` : '……',
       ],
@@ -208,14 +212,21 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const nextMsg = () => {
-    sfx('blip');
+  const nextMsg = (auto = false) => {
+    if (!auto) sfx('blip');
     if (queue.length > 1) setQueue(queue.slice(1));
     else {
       setQueue([]);
       after.current();
     }
   };
+  // battle messages flow on by themselves (a tap still skips ahead): no tapping three times before every move
+  useEffect(() => {
+    if (phase.k !== 'msg' || !queue.length || scene) return;
+    const t = setTimeout(() => nextMsg(true), 1100 + Math.min(1600, queue[0].length * 45));
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase.k, queue, scene]);
 
   // ------------------------------------------------ turn resolution
   const enemyTurn = () => {
@@ -372,7 +383,7 @@ export function Battle({ setup, onEnd }: { setup: BattleSetup; onEnd: (r: Battle
       </div>
       <div className="battle-ui">
         {phase.k === 'msg' && (
-          <div className="msgbox" onClick={nextMsg}>
+          <div className="msgbox" onClick={() => nextMsg()}>
             <span lang="ja">{queue[0]}</span>
             <button className="next-arrow petal" aria-label="Next" autoFocus onClick={(e) => (e.stopPropagation(), nextMsg())} />
           </div>

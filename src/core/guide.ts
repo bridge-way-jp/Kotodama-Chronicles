@@ -142,6 +142,8 @@ export function guideFor(s: GameState, questId: string, current: string): Guide 
     if (MAPS[current].interior) route = hopText ? `まず外へ出て、${hopText}` : 'まず外へ出る';
     else if (hopText) route = hopText;
   }
+  // already in the very room: say so instead of naming the town first
+  if (current === best.map && room) return { ja: `ここ（${room.nameJa}）`, en: `right here (${room.name})`, map: best.map, far: false };
   return {
     ja: room ? `${out.nameJa} › ${room.nameJa}` : out.nameJa,
     en: room ? `${out.name} › ${room.name}` : out.name,
