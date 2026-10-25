@@ -5,6 +5,7 @@ import { gradeFromAnswer, isDue, mastery, needsContext, newCard, review } from '
 import { rollDaily, todayKey } from './store';
 import { toast } from './events';
 import { ttsAvailable } from './audio';
+import { captureOrigin } from './memory';
 import type { VocabEntry, Card, GameState, SkillArea } from './types';
 
 /**
@@ -116,6 +117,8 @@ export function encounter(s: GameState, keys: string[], now = Date.now()): strin
     let c = s.cards[key];
     if (!c) {
       c = s.cards[key] = newCard(key, now);
+      const origin = captureOrigin(s, key, now);
+      if (origin) c.origin = origin;
       fresh.push(key);
     }
     c.encounters++;

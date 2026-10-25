@@ -30,6 +30,7 @@ import { socialMenu } from '../core/social';
 import { checkMilestones, rollWeek } from '../core/progress';
 import { WeekReview } from './Progress';
 import { advancesQuest } from '../core/guide';
+import { echoFor } from '../core/recall';
 import { nowText } from './Diary';
 import { Hud, MapBanner, Toasts, TouchControls } from './Hud';
 import type { Section } from '../core/exam';
@@ -38,7 +39,7 @@ type Overlay =
   | { id: number; kind: 'script'; steps: Step[] }
   | { id: number; kind: 'battle'; setup: BattleSetup }
   | { id: number; kind: 'menu'; tab?: MenuTab }
-  | { id: number; kind: 'review'; weak?: boolean; mixups?: boolean }
+  | { id: number; kind: 'review'; weak?: boolean; mixups?: boolean; place?: string }
   | { id: number; kind: 'job'; job: string }
   | { id: number; kind: 'alltag'; scene: string }
   | { id: number; kind: 'garden' }
@@ -165,8 +166,12 @@ export function GameView({ onExit }: { onExit: () => void }) {
         if (steps) {
           sfx('open');
           // a person outside a story scene: after their usual words you can talk more, give a gift, or hear their story
-          const social = kind === 'npc' && !advancesQuest(steps) ? socialMenu(store.s, id) : [];
-          push({ kind: 'script', steps: [...steps, ...social] });
+          const story = advancesQuest(steps);
+          const social = kind === 'npc' && !story ? socialMenu(store.s, id) : [];
+          // a word learned with this person or at this thing that is due again: they ask about it
+          const echo = story ? null : echoFor(store.s, id);
+          const recall: Step[] = echo ? [{ recall: { key: echo, who: id } }] : [];
+          push({ kind: 'script', steps: [...steps, ...recall, ...social] });
         }
       }),
       bus.on('message', ({ text, en }) => push({ kind: 'script', steps: [{ say: text, en }] })),
@@ -298,6 +303,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
               openReview: () => push({ kind: 'review' }),
               openWeak: () => push({ kind: 'review', weak: true }),
               openMixups: () => push({ kind: 'review', mixups: true }),
+              openPlace: (map: string) => push({ kind: 'review', place: map }),
               openTournament: () => push({ kind: 'tournament' }),
               openExam: (mode, section) => push({ kind: 'exam', mode, section }),
               toTitle: onExit,
@@ -350,7 +356,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
       case 'review':
         return (
           <div className="overlay-panel">
-            <ReviewSession weak={o.weak} mixups={o.mixups} onClose={() => remove(o.id)} />
+            <ReviewSession weak={o.weak} mixups={o.mixups} place={o.place} onClose={() => remove(o.id)} />
           </div>
         );
       case 'exam':
@@ -367,7 +373,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
   return (
     <div className="game-root">
       <div className="world" ref={hostRef} />
-      <Hud onMenu={(tab) => push({ kind: 'menu', tab })} />
+      <Hud onMenu={(tab) => push({ kind: 'menu', tab })} onPlace={(map) => push({ kind: 'review', place: map })} />
       {editor.enabled && <EditorPanel />}
       <MapBanner />
       {!top && <TouchControls />}

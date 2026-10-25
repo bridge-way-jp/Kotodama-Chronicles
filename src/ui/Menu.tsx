@@ -25,6 +25,7 @@ import { ItemDetail, MASTERY_LABEL } from './Cards';
 import type { Settings } from '../core/types';
 import { DiaryTab } from './Diary';
 import { MixupsSection } from './Mixups';
+import { PalaceSection } from './Palace';
 
 export type MenuTab = 'status' | 'diary' | 'quests' | 'kotodama' | 'bag' | 'notebook' | 'japan' | 'jlpt' | 'map' | 'settings';
 
@@ -45,6 +46,7 @@ export interface MenuActions {
   openReview: () => void;
   openWeak: () => void;
   openMixups: () => void;
+  openPlace: (map: string) => void;
   openExam: (mode: 'practice' | 'mock' | 'diagnostic', section?: Section) => void;
   openTournament: () => void;
   toTitle: () => void;
@@ -558,6 +560,7 @@ function JlptTab({ actions }: { actions: MenuActions }) {
       </div>
 
       <MixupsSection onPractice={actions.openMixups} />
+      <PalaceSection onPlace={actions.openPlace} />
       <h3>練習 Practice</h3>
       <div className="row wrap">
         <button className="btn" onClick={actions.openWeak}>苦手を練習 Practise weak spots</button>
@@ -709,6 +712,9 @@ function SettingsTab({ actions }: { actions: MenuActions }) {
       </label>
       <label>
         Read dialogue aloud <input type="checkbox" checked={!!st.readAloud} onChange={(e) => set('readAloud', e.target.checked)} />
+      </label>
+      <label>
+        People ask about words learned with them <input type="checkbox" checked={st.echoes !== false} onChange={(e) => set('echoes', e.target.checked)} />
       </label>
       <label>
         Weather and season effects <input type="checkbox" checked={st.effects !== false} onChange={(e) => set('effects', e.target.checked)} />

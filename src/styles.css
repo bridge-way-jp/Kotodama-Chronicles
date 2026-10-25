@@ -1208,3 +1208,28 @@ html.hc .btn { border: 2px solid #000; }
   .everyday-led { font-size: max(10px, 3.3cqw); }
   .everyday-field { font-size: max(9px, 2.6cqw); }
 }
+
+/* memories: where a word was met (ui/MemoryNote.tsx, ui/Recall.tsx, ui/Palace.tsx) */
+.memory-note { display: flex; gap: 10px; align-items: flex-start; background: #fff8e7; border-left: 4px solid #e2a54a; border-radius: 8px; padding: 8px 10px; margin: 8px 0; }
+.memory-note.compact { padding: 6px 8px; font-size: 0.92em; }
+.memory-note p { margin: 2px 0; }
+.memory-where { font-weight: bold; color: #7a4a1a; font-size: 0.9em; }
+.memory-line { font-size: 1.02em; }
+.memory-face { width: 44px; height: 44px; object-fit: contain; border: 2px solid #c9a46a; border-radius: 6px; background: #fff; flex: none; }
+.memory-face.big { width: 64px; height: 64px; }
+.memory-btn { margin: 4px 0; }
+.recall-head { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 4px; }
+.recall-head p { margin: 2px 0; }
+.memory-box { background: #fff1d6; }
+.palace { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.palace-place { border: 2px solid #e2cfa6; border-radius: 8px; background: #fffaf0; }
+.palace-head { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 6px; width: 100%; background: none; border: 0; padding: 8px 10px 4px; text-align: left; cursor: pointer; font: inherit; }
+.palace-count { font-size: 0.85em; color: #6b5636; }
+.palace-due { color: #b5531c; font-weight: bold; }
+.palace-bar { grid-column: 1 / -1; height: 5px; background: #ead9b8; border-radius: 3px; overflow: hidden; }
+.palace-bar i { display: block; height: 100%; background: #2f9b57; }
+.palace-body { padding: 4px 10px 10px; }
+.palace-words { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0 6px; }
+.palace-word { border: 0; border-radius: 6px; padding: 2px 8px; color: #fff; font: inherit; cursor: pointer; }
+.palace-word.on { outline: 3px solid #e2a54a; }
+.memory-cg { width: 96px; height: 64px; object-fit: cover; border-radius: 6px; flex: none; border: 2px solid #c9a46a; }

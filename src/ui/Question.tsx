@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Jp, Rich, plainText, withName } from './Jp';
 import { speak, stopSpeech, ttsAvailable, sfx } from '../core/audio';
 import { normalizeKana } from '../core/romaji';
+import { MemoryNote } from './MemoryNote';
+import { originOf } from '../core/recall';
 import { MixPair } from './Mixups';
 import { shuffle, type Exercise, type Option } from '../core/learning';
 import { store } from '../core/store';
@@ -171,6 +173,9 @@ export function ExerciseView({
   const [chosen, setChosen] = useState<Option | null>(null);
   const [typed, setTyped] = useState('');
   const [typedResult, setTypedResult] = useState<boolean | null>(null);
+  // the moment the item was met, as a cue (using it makes the answer count as a hard one)
+  const [cue, setCue] = useState(false);
+  const memory = !!ex.key && !!originOf(store.s, ex.key);
   const t0 = useRef(performance.now());
   const ms = useRef(0);
   const answered = chosen !== null || typedResult !== null;
@@ -184,6 +189,7 @@ export function ExerciseView({
 
   const finish = (good: boolean) => {
     ms.current = performance.now() - t0.current;
+    if (cue) ms.current = Math.max(ms.current, 20_001);
     sfx(good ? 'ok' : 'bad');
   };
 
@@ -227,6 +233,7 @@ export function ExerciseView({
         <div className="ex-prompt hidden-text">🎧 ……</div>
       )}
       {readingHint && <div className="hint">よみ: {readingHint}</div>}
+      {memory && !answered && !compact && (cue ? <MemoryNote k={ex.key!} cue compact /> : <button className="btn small memory-btn" onClick={() => setCue(true)}>💭 思い出のヒント</button>)}
       {(tools?.showEn || (answered && ex.promptEn)) && ex.promptEn && <div className="q-en">{withName(ex.promptEn)}</div>}
       {ex.options ? (
         <div className="options">
@@ -286,6 +293,7 @@ export function ExerciseView({
           <div className="fb-why">
             <Rich text={ex.explanation} />
           </div>
+          {memory && !compact && <MemoryNote k={ex.key!} compact />}
           <button className="btn primary" autoFocus onClick={() => onDone(ok, ms.current, chosen ?? undefined)}>
             次へ ▶
           </button>
