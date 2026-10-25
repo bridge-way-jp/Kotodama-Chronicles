@@ -1,3 +1,4 @@
+import { isDe } from '../core/i18n';
 import { useState, useSyncExternalStore } from 'react';
 import { store } from '../core/store';
 import { toast } from '../core/events';
@@ -107,7 +108,7 @@ export function MilestonesSection() {
                   <div style={{ width: `${(have / need) * 100}%` }} />
                 </div>
                 <small>
-                  {ok ? `✓ ${ITEMS[m.deco].nameEn} is in your room` : `${have} / ${need} → ${ITEMS[m.deco].nameEn}`}
+                  {ok ? (isDe() ? `✓ ${ITEMS[m.deco].nameEn} steht in deinem Zimmer` : `✓ ${ITEMS[m.deco].nameEn} is in your room`) : `${have} / ${need} → ${ITEMS[m.deco].nameEn}`}
                 </small>
               </div>
             </div>

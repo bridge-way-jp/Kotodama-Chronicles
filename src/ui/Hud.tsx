@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { isDe } from '../core/i18n';
 import { bus, type ToastMsg } from '../core/events';
 import { store } from '../core/store';
 import { QUESTS } from '../content/quests';
@@ -104,7 +105,7 @@ export function Hud({ onMenu, onPlace }: { onMenu: (tab?: any) => void; onPlace?
           <button className="hud-box menu-btn" onClick={() => onMenu()}>
             <img className="px hud-icon" src="assets/mi_bag.png" alt="" /> メニュー
           </button>
-          <div className={`save-dot ${saveStatus.state}`} title={saveStatus.state === 'error' ? `Save failed: ${saveStatus.error}` : saveStatus.last ? `Saved ${new Date(saveStatus.last).toLocaleTimeString()}` : 'Not saved yet'}>
+          <div className={`save-dot ${saveStatus.state}`} title={saveStatus.state === 'error' ? `Save failed: ${saveStatus.error}` : saveStatus.last ? `${isDe() ? 'Gespeichert' : 'Saved'} ${new Date(saveStatus.last).toLocaleTimeString()}` : 'Not saved yet'}>
             {saveStatus.state === 'saving' ? '…' : saveStatus.state === 'error' ? '!' : '✓'}
           </div>
         </div>

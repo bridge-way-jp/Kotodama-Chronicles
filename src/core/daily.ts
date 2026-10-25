@@ -1,3 +1,4 @@
+import { isDe } from './i18n';
 import type { Step } from './script';
 import type { GameState } from './types';
 import { NPCS } from '../content/npcs';
@@ -73,14 +74,14 @@ export function dailyRequests(s: GameState, day = dayNum()): DailyRequest[] {
     const who = take(() => true);
     if (who) {
       const c = PROFILES[who].reg === 'casual';
-      out.push({ id: `req_${day}_word`, who, kind: 'word', key: studied[Math.floor(r() * studied.length)], ja: line(c, 'ちょっと教えてもらえますか。この言葉、何でしたっけ？', 'ねえ、この言葉って何だっけ？'), en: 'Could you help me? What was this word again?' });
+      out.push({ id: `req_${day}_word`, who, kind: 'word', key: studied[Math.floor(r() * studied.length)], ja: line(c, 'ちょっと教えてもらえますか。この言葉、何でしたっけ？', 'ねえ、この言葉って何だっけ？'), en: isDe() ? 'Kannst du mir helfen? Was war das noch mal für ein Wort?' : 'Could you help me? What was this word again?' });
     }
   }
   if (studied.length >= 3) {
     const who = take(() => true);
     if (who) {
       const c = PROFILES[who].reg === 'casual';
-      out.push({ id: `req_${day}_review`, who, kind: 'review', ja: line(c, '一緒に少し復習しませんか。三つだけでいいですから。', 'ちょっと一緒に復習しない？ 三つだけ！'), en: 'Shall we review a little together? Just three.' });
+      out.push({ id: `req_${day}_review`, who, kind: 'review', ja: line(c, '一緒に少し復習しませんか。三つだけでいいですから。', 'ちょっと一緒に復習しない？ 三つだけ！'), en: isDe() ? 'Wollen wir ein bisschen zusammen wiederholen? Nur drei.' : 'Shall we review a little together? Just three.' });
     }
   }
   const who = take((id) => {
@@ -93,7 +94,7 @@ export function dailyRequests(s: GameState, day = dayNum()): DailyRequest[] {
     const item = wants[Math.floor(r() * wants.length)];
     const name = ITEMS[item].name;
     const c = p.reg === 'casual';
-    out.push({ id: `req_${day}_bring`, who, kind: 'bring', item, map: whereIs(s, who)!, ja: line(c, `${name}が欲しいんですが、もしあったら持ってきてもらえますか。`, `${name}、もしあったら持ってきてくれない？`), en: `Could you bring me something if you find it: ${ITEMS[item].nameEn.toLowerCase()}?` });
+    out.push({ id: `req_${day}_bring`, who, kind: 'bring', item, map: whereIs(s, who)!, ja: line(c, `${name}が欲しいんですが、もしあったら持ってきてもらえますか。`, `${name}、もしあったら持ってきてくれない？`), en: isDe() ? `Könntest du mir etwas mitbringen, falls du es findest: ${ITEMS[item].nameEn}?` : `Could you bring me something if you find it: ${ITEMS[item].nameEn.toLowerCase()}?` });
   }
   return out;
 }
@@ -130,9 +131,9 @@ export function bringChoice(s: GameState, id: string): { text: string; en: strin
   const name = ITEMS[q.item!].name;
   return {
     text: `頼まれた${name}を渡す`,
-    en: `Give the ${ITEMS[q.item!].nameEn} they asked for`,
+    en: isDe() ? `Das gewünschte ${ITEMS[q.item!].nameEn} übergeben` : `Give the ${ITEMS[q.item!].nameEn} they asked for`,
     then: [
-      { say: c ? `わあ、${name}！ 覚えててくれたんだ。ありがとう！` : `まあ、${name}！ 覚えていてくださったんですね。ありがとうございます。`, who: id, en: `Oh, ${ITEMS[q.item!].nameEn}! You remembered. Thank you!`, mood: 'happy' },
+      { say: c ? `わあ、${name}！ 覚えててくれたんだ。ありがとう！` : `まあ、${name}！ 覚えていてくださったんですね。ありがとうございます。`, who: id, en: isDe() ? `Oh, ${ITEMS[q.item!].nameEn}! Du hast daran gedacht. Danke!` : `Oh, ${ITEMS[q.item!].nameEn}! You remembered. Thank you!`, mood: 'happy' },
       { do: [{ take: q.item! }, { flag: q.id }, { add: 'req_done' }, { money: BRING_REWARD.money }, { rel: id, points: BRING_REWARD.points }] },
       { toast: `お願い達成！ +¥${BRING_REWARD.money} · ♥` },
     ],

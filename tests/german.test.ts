@@ -60,3 +60,23 @@ describe('older saves', () => {
     expect(validateEnvelope(JSON.parse(JSON.stringify(env))).state.settings.meaningLang).toBe('en');
   });
 });
+
+describe('story and menu texts', () => {
+  it('switch to German and back in place', async () => {
+    const { localizeContent } = await import('../src/core/localize');
+    const { QUESTS } = await import('../src/content/quests');
+    const q = Object.values(QUESTS)[0];
+    const en = q.titleEn;
+    localizeContent('de');
+    expect(q.titleEn).not.toBe(en);
+    localizeContent('en');
+    expect(q.titleEn).toBe(en);
+  });
+
+  it('a screen text keeps its Japanese and translates its English', async () => {
+    const { translateText } = await import('../src/ui/domTranslate');
+    expect(translateText('今日の目標 Daily goal')).toBe('今日の目標 Tagesziel');
+    expect(translateText(' Save now ')).toBe(' Jetzt speichern ');
+    expect(translateText('こんにちは')).toBeNull();
+  });
+});
