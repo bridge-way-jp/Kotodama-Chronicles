@@ -6,10 +6,10 @@ import { AFFIXES } from '../content/wordformation';
 import { CONFUSIONS } from '../content/confusions';
 import { readingDistractors, shuffle, similarWords } from './learning';
 import { tr, isDe } from './i18n';
+import type { GameState, ListeningItem, SkillArea, VocabEntry } from './types';
 
 const meaning = (v: VocabEntry) => (isDe() ? v.de : v.en);
 const sentence = (v: VocabEntry) => (isDe() && v.exampleDe) || tr(v.exampleEn);
-import type { ListeningItem, SkillArea, VocabEntry } from './types';
 
 /**
  * Builds N2-style practice sets from the curriculum. Section names follow the
@@ -225,3 +225,84 @@ export function buildDiagnostic(r = Math.random): TestItem[] {
     ...listeningItems(2, r),
   ];
 }
+
+// ------------------------------------------------------------------ chapter exams
+
+/** the share of right answers a chapter exam needs */
+export const CHAPTER_PASS = 0.7;
+
+/**
+ * The exam at the end of a chapter: the words, kanji and grammar of that region (the ones the player has met
+ * first), in N2 form. It has to be passed before the next chapter begins; missed items go into the reviews.
+ */
+export function buildChapterExam(s: GameState, ch: number, r = Math.random): TestItem[] {
+  const met = (k: string) => !!s.cards[k];
+  const metFirst = <T>(xs: T[], key: (x: T) => string) => [...shuffle(xs.filter((x) => met(key(x))), r), ...shuffle(xs.filter((x) => !met(key(x))), r)];
+  const words = VOCAB.filter((v) => v.chapter === ch && v.level !== 'story' && !v.affix);
+  const used = new Set<string>();
+  const take = (xs: VocabEntry[], n: number) => {
+    const out: VocabEntry[] = [];
+    for (const v of metFirst(xs, (x) => 'v:' + x.id)) {
+      if (out.length >= n) break;
+      if (used.has(v.id)) continue;
+      used.add(v.id);
+      out.push(v);
+    }
+    return out;
+  };
+  const items: TestItem[] = [];
+  for (const v of take(words.filter((x) => KANJI_RE.test(x.word)), 5))
+    items.push({
+      id: `ce:${ch}:kr:${v.id}`, section: '漢字読み', area: 'kanji',
+      instruction: '＿＿の言葉の読み方として最もよいものを選びなさい。',
+      prompt: v.example.includes(v.word) ? v.example.replace(v.word, `【${v.word}】`) : `【${v.word}】`,
+      ...mc([v.reading, ...readingDistractors(v.reading, r)], 0, r),
+      why: `${v.word}（${v.reading}）— ${meaning(v)}`,
+      keys: ['v:' + v.id],
+    });
+  for (const v of take(words.filter((x) => x.example.includes(x.word)), 3)) {
+    const others = similarWords(v, VOCAB.filter((x) => x.word !== v.word && !confusable(v, x) && !x.affix), 3, r).map((x) => x.word);
+    items.push({
+      id: `ce:${ch}:cx:${v.id}`, section: '文脈規定', area: 'vocab',
+      instruction: '（　　）に入れるのに最もよいものを選びなさい。',
+      prompt: v.example.replace(v.word, '（　　）'),
+      ...mc([v.word, ...others], 0, r),
+      why: `${v.word}（${v.reading}）— ${meaning(v)}\n${sentence(v)}`,
+      keys: ['v:' + v.id],
+    });
+  }
+  for (const v of take(words, 5)) {
+    const pool = VOCAB.filter((x) => x.id !== v.id && !x.affix && meaning(x) !== meaning(v) && !confusable(v, x));
+    const others = [...new Set(similarWords(v, pool, 6, r).map(meaning))].filter((m) => m !== meaning(v)).slice(0, 3);
+    if (others.length < 3) continue;
+    items.push({
+      id: `ce:${ch}:mn:${v.id}`, section: '言い換え類義', area: 'vocab',
+      instruction: '【　】の言葉の意味として最もよいものを選びなさい。',
+      prompt: `【${v.word}】`,
+      ...mc([meaning(v), ...others], 0, r),
+      why: `${v.word}（${v.reading}）— ${meaning(v)}`,
+      keys: ['v:' + v.id],
+    });
+  }
+  // the chapter's grammar, topped up with grammar met in earlier chapters when it has few points of its own
+  const own = metFirst(GRAMMAR.filter((g) => g.chapter === ch && g.exercises.length), (g) => 'g:' + g.id);
+  const before = GRAMMAR.filter((g) => g.chapter < ch && g.exercises.length);
+  const earlier = [...shuffle(before.filter((g) => met('g:' + g.id)), r), ...shuffle(before.filter((g) => !met('g:' + g.id)), r)];
+  const grammar = [...own, ...earlier].slice(0, 5);
+  for (const g of grammar) {
+    const ex = g.exercises[Math.floor(r() * g.exercises.length)];
+    items.push({
+      id: `ce:${ch}:gr:${g.id}`, section: '文法形式の判断', area: 'grammar',
+      instruction: '次の文の（　　）に入れるのに最もよいものを選びなさい。',
+      prompt: ex.sentence.replace('＿＿', '（　　）'),
+      ...mc(ex.options.map((o) => o.text), ex.answer, r),
+      why: `${tr(ex.why)}\n${tr(ex.en)}`,
+      keys: ['g:' + g.id],
+    });
+  }
+  return [...items, ...readingItems(1, r), ...listeningItems(1, r)];
+}
+
+/** the chapters whose exam can be taken (their story is done) */
+export const chapterExamsOpen = (s: GameState) => [1, 2, 3, 4, 5, 6, 7].filter((c) => s.flags[`chapter${c}_done`]);
+export const chapterExamPassed = (s: GameState, ch: number) => !!s.flags[`exam_ch${ch}`];

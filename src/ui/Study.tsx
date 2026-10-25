@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { store } from '../core/store';
 import { buildConfusionSession, buildReviewSession, buildWeakSession, encounter, queueInfo, recordAnswer, recordComprehension, labelOfKey, type Exercise } from '../core/learning';
 import { tipFor } from '../content/examtypes';
-import { buildDiagnostic, buildMockExam, buildSectionPractice, MOCK_TIME_LIMIT_MS, SECTIONS, type Section, type TestItem } from '../core/exam';
+import { buildChapterExam, buildDiagnostic, buildMockExam, buildSectionPractice, CHAPTER_PASS, MOCK_TIME_LIMIT_MS, SECTIONS, type Section, type TestItem } from '../core/exam';
 import { review } from '../core/srs';
 import { grantXp } from '../core/game';
 import { ExerciseView, AudioButton, TextPassage, dbgOk } from './Question';
@@ -103,7 +103,7 @@ export function ReviewSession({ onClose, weak, mixups, place }: { onClose: () =>
 
 // ================================================================== exams
 
-type ExamMode = 'practice' | 'mock' | 'diagnostic';
+type ExamMode = 'practice' | 'mock' | 'diagnostic' | 'chapter';
 
 function recordItem(item: TestItem, ok: boolean, ms: number, diagnostic: boolean) {
   store.update((s) => {
@@ -129,10 +129,11 @@ function recordItem(item: TestItem, ok: boolean, ms: number, diagnostic: boolean
   }, 'learn');
 }
 
-export function ExamRunner({ mode, section, onClose }: { mode: ExamMode; section?: Section; onClose: () => void }) {
+export function ExamRunner({ mode, section, chapter, onClose }: { mode: ExamMode; section?: Section; chapter?: number; onClose: () => void }) {
   const items = useMemo(
-    () => (mode === 'mock' ? buildMockExam() : mode === 'diagnostic' ? buildDiagnostic() : buildSectionPractice(section ?? '文法形式の判断', 6)),
-    [mode, section],
+    () =>
+      mode === 'mock' ? buildMockExam() : mode === 'diagnostic' ? buildDiagnostic() : mode === 'chapter' ? buildChapterExam(store.s, chapter ?? 1) : buildSectionPractice(section ?? '文法形式の判断', 6),
+    [mode, section, chapter],
   );
   const [i, setI] = useState(-1);
   const [answers, setAnswers] = useState<{ item: TestItem; picked: number; ms: number }[]>([]);
@@ -163,6 +164,7 @@ export function ExamRunner({ mode, section, onClose }: { mode: ExamMode; section
     const result: PracticeResult = {
       t: Date.now(),
       mode,
+      ...(mode === 'chapter' ? { chapter } : {}),
       sections,
       mistakes: all.filter((a) => a.picked !== a.item.answer).map((a) => a.item.id),
       durationMs: Date.now() - start.current,
@@ -177,6 +179,14 @@ export function ExamRunner({ mode, section, onClose }: { mode: ExamMode; section
       if (s.practice.length > 50) s.practice.shift();
       grantXp(s, all.filter((a) => a.picked === a.item.answer).length * 3);
       if (mode === 'diagnostic') s.flags.diagnostic_done = true;
+      if (mode === 'chapter' && chapter) {
+        const pass = ok / Math.max(1, all.length) >= CHAPTER_PASS;
+        if (pass && !s.flags[`exam_ch${chapter}`]) {
+          s.flags[`exam_ch${chapter}`] = true;
+          s.money += 500;
+          toast(isDe() ? `第${chapter}章の試験に合格！ +¥500 · Sprich mit Frau Mori, um weiterzureisen.` : `第${chapter}章の試験に合格！ +¥500 · Talk to Ms. Mori to travel on.`, 'level');
+        }
+      }
     }, 'practice');
   };
 
@@ -188,7 +198,8 @@ export function ExamRunner({ mode, section, onClose }: { mode: ExamMode; section
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeUp]);
 
-  const title = mode === 'mock' ? '模擬試験 Mock exam (short form)' : mode === 'diagnostic' ? '実力診断 Diagnostic assessment' : `練習 Practice — ${section}`;
+  const title =
+    mode === 'mock' ? '模擬試験 Mock exam (short form)' : mode === 'diagnostic' ? '実力診断 Diagnostic assessment' : mode === 'chapter' ? `第${chapter}章の試験 ${isDe() ? 'Kapitelprüfung' : 'Chapter exam'} ${chapter}` : `練習 Practice — ${section}`;
 
   if (i === -1)
     return (
@@ -207,6 +218,13 @@ export function ExamRunner({ mode, section, onClose }: { mode: ExamMode; section
           </p>
         )}
         {mode === 'mock' && <p>Answers are revealed at the end, like a real exam. Sections mirror the N2 structure (言語知識・読解 / 聴解) in shortened form.</p>}
+        {mode === 'chapter' && (
+          <p>
+            {isDe()
+              ? `Wörter, Kanji und Grammatik aus Kapitel ${chapter}, im Stil der N2. Bestehen ab ${Math.round(CHAPTER_PASS * 100)} %; erst dann geht die Geschichte weiter. Was du falsch beantwortest, kommt in deine Wiederholungen – du kannst die Prüfung jederzeit neu versuchen.`
+              : `Words, kanji and grammar from chapter ${chapter}, in N2 style. You pass with ${Math.round(CHAPTER_PASS * 100)}%; only then does the story go on. What you miss goes into your reviews — you can retake it any time.`}
+          </p>
+        )}
         <p className="note">Original practice questions in the style of the JLPT N2 — not official exam material. A good score here does not guarantee passing the real JLPT.</p>
         <button
           className="btn primary"
@@ -298,6 +316,7 @@ export function ExamRunner({ mode, section, onClose }: { mode: ExamMode; section
 }
 
 function ExamReport({ mode, answers, onClose, title }: { mode: ExamMode; answers: { item: TestItem; picked: number; ms: number }[]; onClose: () => void; title: string }) {
+  const passed = answers.filter((a) => a.picked === a.item.answer).length / Math.max(1, answers.length) >= CHAPTER_PASS;
   const bySection = SECTIONS.map((sec) => {
     const a = answers.filter((x) => x.item.section === sec.id);
     return { sec, total: a.length, ok: a.filter((x) => x.picked === x.item.answer).length, ms: a.reduce((t, x) => t + x.ms, 0) };
@@ -314,6 +333,13 @@ function ExamReport({ mode, answers, onClose, title }: { mode: ExamMode; answers
       <p className="big-score">
         {ok} / {total} <small>({Math.round((ok / Math.max(1, total)) * 100)}%)</small>
       </p>
+      {mode === 'chapter' && (
+        <p className={passed ? 'good' : 'bad'}>
+          {passed
+            ? isDe() ? '◎ 合格！ Bestanden – die Geschichte kann weitergehen.' : '◎ 合格！ Passed — the story can go on.'
+            : isDe() ? `× もう少し… Noch nicht bestanden (nötig: ${Math.round(CHAPTER_PASS * 100)} %). Die falschen Punkte stehen jetzt in deinen Wiederholungen – üb sie und versuch es noch einmal.` : `× Not passed yet (needed: ${Math.round(CHAPTER_PASS * 100)}%). The missed items are in your reviews now — practise them and try again.`}
+        </p>
+      )}
       {prevPct !== null && <p className="note">Previous attempt: {Math.round(prevPct * 100)}%</p>}
       <table className="report">
         <thead>

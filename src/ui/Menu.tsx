@@ -15,7 +15,7 @@ import { creatureXpToNext, maxHp, xpToNext } from '../core/game';
 import { readiness } from '../core/readiness';
 import { DAILY_GOAL, answersToday, queueInfo, streakDays } from '../core/learning';
 import { mastery } from '../core/srs';
-import { SECTIONS, type Section } from '../core/exam';
+import { SECTIONS, chapterExamPassed, chapterExamsOpen, type Section } from '../core/exam';
 import { exportToJson, makeEnvelope } from '../core/save';
 import { ExportBox, ImportBox } from './Backup';
 import { CloudSettings, PackSettings } from './CloudPanel';
@@ -49,7 +49,7 @@ export interface MenuActions {
   openWeak: () => void;
   openMixups: () => void;
   openPlace: (map: string) => void;
-  openExam: (mode: 'practice' | 'mock' | 'diagnostic', section?: Section) => void;
+  openExam: (mode: 'practice' | 'mock' | 'diagnostic' | 'chapter', section?: Section, chapter?: number) => void;
   openTournament: () => void;
   toTitle: () => void;
 }
@@ -580,6 +580,18 @@ function JlptTab({ actions }: { actions: MenuActions }) {
         <button className="btn" onClick={() => actions.openExam('diagnostic')}>実力診断 Diagnostic{s.flags.diagnostic_done ? ' (retake)' : ''}</button>
         <button className="btn" onClick={() => actions.openExam('mock')}>模擬試験 Mock exam (timed)</button>
       </div>
+      {chapterExamsOpen(s).length > 0 && (
+        <>
+          <h3>章の試験 {isDe() ? 'Kapitelprüfungen' : 'Chapter exams'}</h3>
+          <div className="row wrap">
+            {chapterExamsOpen(s).map((c) => (
+              <button key={c} className={`btn small ${chapterExamPassed(s, c) ? '' : 'primary'}`} onClick={() => actions.openExam('chapter', undefined, c)}>
+                第{c}章 {chapterExamPassed(s, c) ? '✓' : isDe() ? '· offen' : '· open'}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
       <div className="row wrap">
         {SECTIONS.map((sec) => (
           <button key={sec.id} className="btn small" onClick={() => actions.openExam('practice', sec.id)}>

@@ -47,7 +47,7 @@ type Overlay =
   | { id: number; kind: 'karaoke' }
   | { id: number; kind: 'week' }
   | { id: number; kind: 'board'; station: string }
-  | { id: number; kind: 'exam'; mode: 'practice' | 'mock' | 'diagnostic'; section?: Section };
+  | { id: number; kind: 'exam'; mode: 'practice' | 'mock' | 'diagnostic' | 'chapter'; section?: Section; chapter?: number };
 
 type NewOverlay = Overlay extends infer O ? (O extends Overlay ? Omit<O, 'id'> : never) : never;
 
@@ -145,6 +145,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
       if (what === 'review') push({ kind: 'review' });
       else if (what === 'dashboard') push({ kind: 'menu', tab: 'jlpt' });
       else if (what === 'diagnostic') push({ kind: 'exam', mode: 'diagnostic' });
+      else if (what.startsWith('chapterexam:')) push({ kind: 'exam', mode: 'chapter', chapter: Number(what.slice(12)) });
       else if (what === 'menu') push({ kind: 'menu' });
       else if (what === 'garden') push({ kind: 'garden' });
       else if (what === 'karaoke') push({ kind: 'karaoke' });
@@ -317,7 +318,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
               openMixups: () => push({ kind: 'review', mixups: true }),
               openPlace: (map: string) => push({ kind: 'review', place: map }),
               openTournament: () => push({ kind: 'tournament' }),
-              openExam: (mode, section) => push({ kind: 'exam', mode, section }),
+              openExam: (mode, section, chapter) => push({ kind: 'exam', mode, section, chapter }),
               toTitle: onExit,
             }}
           />
@@ -374,7 +375,7 @@ export function GameView({ onExit }: { onExit: () => void }) {
       case 'exam':
         return (
           <div className="overlay-panel">
-            <ExamRunner mode={o.mode} section={o.section} onClose={() => remove(o.id)} />
+            <ExamRunner mode={o.mode} section={o.section} chapter={o.chapter} onClose={() => remove(o.id)} />
           </div>
         );
     }
