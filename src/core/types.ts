@@ -87,7 +87,9 @@ export interface SkillStat {
 
 export interface PracticeResult {
   t: number;
-  mode: 'practice' | 'mock' | 'diagnostic';
+  mode: 'practice' | 'mock' | 'diagnostic' | 'chapter';
+  /** the chapter of a chapter exam */
+  chapter?: number;
   sections: Record<string, { ok: number; total: number; ms: number }>;
   mistakes: string[];
   durationMs: number;

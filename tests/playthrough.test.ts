@@ -14,7 +14,12 @@ import { QUESTS } from '../src/content/quests';
  */
 function play(s: GameState, steps: Step[], pass: number) {
   for (const st of steps) {
-    if ('do' in st) for (const a of st.do) runAction(s, a);
+    if ('do' in st)
+      for (const a of st.do) {
+        runAction(s, a);
+        // the autopilot passes every chapter exam
+        if ('open' in a && a.open.startsWith('chapterexam:')) s.flags[`exam_ch${a.open.slice(12)}`] = true;
+      }
     else if ('if' in st) play(s, check(s, st.if) ? st.then : st.else ?? [], pass);
     else if ('choice' in st) {
       const real = st.choice.filter((c) => c.then);

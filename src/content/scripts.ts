@@ -2831,3 +2831,27 @@ applyBeats(SCRIPTS);
 for (const [id, spot] of Object.entries(EVERYDAY_SPOTS))
   for (const r of SCRIPTS[id] ?? [])
     if (!r.when) r.steps = [...r.steps, { choice: [{ text: spot.text, en: spot.en, then: [{ do: [{ open: `alltag:${spot.scene}` }] }] }, { text: 'やめる', en: 'Leave it' }] }];
+
+// a chapter exam before the next chapter: Ms. Mori sends you on only once the words, kanji and grammar of the last one sit
+for (const [quest, ch] of [['mq6', 1], ['mq10', 2], ['mq14', 3], ['mq18', 4], ['mq22', 5], ['mq26', 6]] as const) {
+  const rules = SCRIPTS.mori;
+  const i = rules.findIndex((r) => r.steps.some((st) => 'do' in st && st.do.some((a) => 'startQuest' in a && a.startQuest === quest)));
+  if (i < 0) continue;
+  const start = rules[i];
+  const passed = { flag: `exam_ch${ch}` };
+  const gate: DialogueRule = {
+    when: { all: [...(start.when ? [start.when] : []), { notFlag: `exam_ch${ch}` }] },
+    steps: [
+      say('mori', 'おかえりなさい、@nameちゃん。次の{旅|たび}の前に、ここまでに{覚|おぼ}えた言葉を、ちょっと{確|たし}かめてみない？', 'Welcome back, @name. Before your next journey, shall we check the words you have learned so far?', 'happy'),
+      say('mori', `第${ch}章の言葉と漢字と文法の{試験|しけん}よ。七割できたら、{安心|あんしん}して送り出せるわ。`, `It’s an exam on the words, kanji and grammar of chapter ${ch}. If you get seven out of ten right, I can send you off with peace of mind.`),
+      {
+        choice: [
+          { text: '試験を受ける', en: 'Take the exam', then: [{ do: [{ open: `chapterexam:${ch}` }] }] },
+          { text: 'まだ復習したい', en: 'I want to review first', then: [say('mori', 'いいわよ。机で{復習|ふくしゅう}してから、また声をかけてね。', 'All right. Review at your desk and talk to me again.')] },
+        ],
+      },
+    ],
+  };
+  start.when = { all: [...(start.when ? [start.when] : []), passed] };
+  rules.splice(i, 0, gate);
+}
