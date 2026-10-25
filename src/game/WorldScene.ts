@@ -245,6 +245,7 @@ export class WorldScene extends Phaser.Scene {
     this.py = s.pos.y;
     this.facing = s.facing;
     this.buildMap();
+    this.unstick();
     this.exitSigns();
     this.buildPlayer();
     this.refreshVisibility();
@@ -938,6 +939,28 @@ export class WorldScene extends Phaser.Scene {
   }
 
   /** soft steam puffs rising from hot springs (map.steam) */
+  /**
+   * Arriving on a tile that is blocked (a building moved in the editor onto the spot where its neighbour's door lets
+   * you out, an old save): step to the nearest free tile instead of being stuck.
+   */
+  unstick() {
+    if (!this.blocked(this.px, this.py, true)) return;
+    const H = this.map.tiles.length;
+    const W = this.map.tiles[0]?.length ?? 0;
+    const isExit = (x: number, y: number) => this.map.warps.some((w) => w.x === x && w.y === y);
+    for (let r = 1; r <= 10; r++) {
+      const ring: [number, number][] = [];
+      for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (Math.max(Math.abs(dx), Math.abs(dy)) === r) ring.push([this.px + dx, this.py + dy]);
+      ring.sort((a, b) => Math.abs(a[0] - this.px) + Math.abs(a[1] - this.py) - (Math.abs(b[0] - this.px) + Math.abs(b[1] - this.py)));
+      const spot = ring.find(([x, y]) => x > 0 && y > 0 && x < W - 1 && y < H - 1 && !this.blocked(x, y, true) && !isExit(x, y));
+      if (spot) {
+        [this.px, this.py] = spot;
+        store.update((s) => void (s.pos = { x: spot[0], y: spot[1] }), 'move');
+        return;
+      }
+    }
+  }
+
   /** a little thought cloud with a golden star: someone remembers a word with you */
   makeThinkTexture() {
     if (this.textures.exists('em_think')) return;
@@ -1703,6 +1726,11 @@ export class WorldScene extends Phaser.Scene {
           }
         }
       }
+    }
+    // standing on a walkable thing (in the footbath, on the bridge spot): the button works there too
+    if (!obj || obj.decor || !SCRIPTS[obj.script ?? obj.id]) {
+      const here = this.objectAt(this.px, this.py);
+      if (here && !here.decor && SCRIPTS[here.script ?? here.id]) obj = here;
     }
     if (obj && !obj.decor) {
       // a building with a door: the button goes in, unless this object has a quest scene right now

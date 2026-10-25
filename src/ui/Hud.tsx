@@ -11,6 +11,21 @@ import { input } from '../game/input';
 import type { Dir } from '../core/types';
 import { openRequests } from './Progress';
 import { dueHere } from '../core/recall';
+import { SCRIPTS } from '../content/scripts';
+import { NPCS } from '../content/npcs';
+import { pickRule, type Step } from '../core/script';
+
+/** between two chapters: who starts the next main quest now (looked up once per quest state) */
+let nextCache: { key: string; who: string | null } = { key: '', who: null };
+function nextStarter(s: typeof store.s): string | null {
+  const key = Object.values(s.quests).map((q) => q.id + q.status).join() + s.chapter;
+  if (nextCache.key === key) return nextCache.who;
+  const starts = (steps: Step[]): boolean =>
+    steps.some((st) => ('do' in st && st.do.some((a) => 'startQuest' in a && QUESTS[a.startQuest]?.kind === 'main')) || ('choice' in st && st.choice.some((c) => c.then && starts(c.then))) || ('if' in st && (starts(st.then) || starts(st.else ?? []))));
+  const who = Object.keys(SCRIPTS).find((id) => NPCS[id] && starts(pickRule(s, SCRIPTS[id]) ?? [])) ?? null;
+  nextCache = { key, who };
+  return who;
+}
 
 export function Hud({ onMenu, onPlace }: { onMenu: (tab?: any) => void; onPlace?: (map: string) => void }) {
   const s = store.s;
@@ -19,6 +34,7 @@ export function Hud({ onMenu, onPlace }: { onMenu: (tab?: any) => void; onPlace?
   const main = Object.values(s.quests).find((q) => q.status === 'active' && QUESTS[q.id].kind === 'main');
   const objective = main ? QUESTS[main.id].objectives.find((o) => !main.objectives[o.id]) : null;
   const guide = main ? guideFor(s, main.id, s.map) : null;
+  const next = main ? null : nextStarter(s);
   const lead = s.team[0];
   const due = queueInfo(s).due.length;
   // words learned at this very place that are due: recall them where they were heard
@@ -57,6 +73,13 @@ export function Hud({ onMenu, onPlace }: { onMenu: (tab?: any) => void; onPlace?
                 {guide.route && <div className="guide-route" lang="ja">➜ {guide.route}</div>}
               </div>
             )}
+          </button>
+        )}
+        {!main && next && (
+          <button className="hud-box quest-box" onClick={() => onMenu('quests')}>
+            <span className="qkind main">次へ</span>
+            <span lang="ja">{NPCS[next].name}に会いに行こう</span>
+            <div className="small">▸ The story goes on with {NPCS[next].nameEn ?? NPCS[next].name} (look for the “!”)</div>
           </button>
         )}
         <div className="hud-right">

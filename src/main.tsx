@@ -6,10 +6,12 @@ import { bus } from './core/events';
 import { input } from './game/input';
 import { MAPS } from './content/maps';
 import { SCRIPTS } from './content/scripts';
+import { QUESTS } from './content/quests';
+import { guideFor } from './core/guide';
 import './styles.css';
 
 // `?debug` exposes internals for automated play-testing
-if (new URLSearchParams(location.search).has('debug')) (window as any).__kc = { store, bus, input, maps: MAPS, scripts: SCRIPTS };
+if (new URLSearchParams(location.search).has('debug')) (window as any).__kc = { store, bus, input, maps: MAPS, scripts: SCRIPTS, quests: QUESTS, guideFor };
 
 // installable app + offline play (only on a real https site, not inside embedded previews)
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost') && window.self === window.top) {

@@ -887,4 +887,45 @@ export function moveExits(mapId: string, moves: { w: Warp; x: number; y: number 
     }
     m.tiles = rows.map((r) => r.join(''));
   }
+  // a building moved by hand onto a person: the person steps out to the nearest free tile (in front first), so they
+  // can still be talked to (walking at them would otherwise go into the building)
+  for (const m of Object.values(MAPS)) {
+    const moved = { ...EDITS_BASE[m.id]?.moved, ...local[m.id]?.moved };
+    const solid = m.objects.filter((o) => o.sprite && !o.decor && o.solid !== false);
+    const covers = (o: MapObject, x: number, y: number) => x >= o.x && x < o.x + (o.w ?? 1) && y >= o.y && y < o.y + (o.h ?? 1);
+    const free = (x: number, y: number) =>
+      !!m.tiles[y] && m.tiles[y][x] !== undefined && !BLOCKING.has(m.tiles[y][x]) && m.walk?.[`${x},${y}`] !== 0 && !solid.some((o) => covers(o, x, y)) && !m.warps.some((w) => w.x === x && w.y === y) && !m.npcs.some((n) => n.x === x && n.y === y);
+    for (const n of m.npcs) {
+      const over = solid.find((o) => moved[o.id] && covers(o, n.x, n.y));
+      if (!over) continue;
+      let best: [number, number] | null = null;
+      for (let r = 1; r <= 8 && !best; r++) {
+        const ring: [number, number][] = [];
+        for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (Math.max(Math.abs(dx), Math.abs(dy)) === r) ring.push([n.x + dx, n.y + dy]);
+        // below the building (in front of it) first, then the nearest
+        ring.sort((a, b) => (b[1] >= over.y + (over.h ?? 1) ? 1 : 0) - (a[1] >= over.y + (over.h ?? 1) ? 1 : 0) || Math.abs(a[0] - n.x) + Math.abs(a[1] - n.y) - (Math.abs(b[0] - n.x) + Math.abs(b[1] - n.y)));
+        best = ring.find(([x, y]) => free(x, y)) ?? null;
+      }
+      if (best) [n.x, n.y] = best;
+    }
+  }
+  // the same for the spots where exits let you out: one covered by a building moved by hand (or painted shut) moves to
+  // the nearest free tile, so nobody comes out of a door into a wall
+  for (const m of Object.values(MAPS)) {
+    if (!EDITS_BASE[m.id] && !local[m.id]) continue;
+    const solid = m.objects.filter((o) => o.sprite && !o.decor && o.solid !== false);
+    const covered = (x: number, y: number) => solid.some((o) => x >= o.x && x < o.x + (o.w ?? 1) && y >= o.y && y < o.y + (o.h ?? 1));
+    const free = (x: number, y: number) => !!m.tiles[y] && m.tiles[y][x] !== undefined && !BLOCKING.has(m.tiles[y][x]) && m.walk?.[`${x},${y}`] !== 0 && !covered(x, y) && !m.warps.some((w) => w.x === x && w.y === y);
+    for (const src of Object.values(MAPS))
+      for (const w of src.warps) {
+        if (w.to.map !== m.id || free(w.to.x, w.to.y)) continue;
+        for (let r = 1, done = false; r <= 6 && !done; r++)
+          for (let dy = -r; dy <= r && !done; dy++)
+            for (let dx = -r; dx <= r && !done; dx++)
+              if (Math.max(Math.abs(dx), Math.abs(dy)) === r && free(w.to.x + dx, w.to.y + dy)) {
+                w.to = { ...w.to, x: w.to.x + dx, y: w.to.y + dy };
+                done = true;
+              }
+      }
+  }
 }

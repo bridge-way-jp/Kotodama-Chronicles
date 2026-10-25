@@ -23,9 +23,9 @@ describe('story pictures and scenes', () => {
   it('sleeping at home brings the next dream after a chapter, else the season once a year', () => {
     const s = createInitialState('T');
     const cgOf = () => play(s, sleepScenes()).find((x: any) => x.cg) as any;
-    // chapter 1 is spring; from chapter 2 the real calendar
+    // chapter 1 is spring (2 summer, 3 winter); from chapter 4 the real calendar
     expect(worldSeason(s)).toBe('spring');
-    s.chapter = 2;
+    s.chapter = 4;
     const season = SEASONS.find((x) => x.months.includes(worldMonth(s)))!;
     expect(cgOf()?.cg).toBe((season.step as any).cg);
     s.flags[`${season.id}_${new Date().getFullYear()}`] = true;

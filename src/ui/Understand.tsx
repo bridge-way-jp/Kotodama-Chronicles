@@ -36,6 +36,8 @@ export function wordToUnderstand(s: GameState, line: string, since: number): Omi
   const cands = [...found.entries()].filter(([k]) => {
     const c = s.cards[k];
     if (!c || !VOCAB_BY_ID[k.slice(2)] || c.firstSeen > since - 5 * 60_000) return false;
+    // the game's own words (言霊 comes up in every scene) are no JLPT practice
+    if (VOCAB_BY_ID[k.slice(2)].level === 'story') return false;
     if (mastery(c) === 'mature') return false;
     // not one that was just asked (in the scene before, or a review a moment ago)
     if (c.last && c.last > Date.now() - 30 * 60_000) return false;
