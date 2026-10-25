@@ -1,3 +1,4 @@
+import { tr } from '../core/i18n';
 import { useState, type ReactNode } from 'react';
 import { store, DEFAULT_SETTINGS } from '../core/store';
 import { QUESTS } from '../content/quests';
@@ -424,8 +425,8 @@ function NotebookTab() {
     kind === 'v'
       ? VOCAB.map((v) => ({ k: 'v:' + v.id, label: wordForm(v), sub: v.reading }))
       : kind === 'g'
-        ? GRAMMAR.map((g) => ({ k: 'g:' + g.id, label: g.pattern, sub: g.meaning }))
-        : KANJI.map((x) => ({ k: 'k:' + x.id, label: x.char, sub: x.meaning }));
+        ? GRAMMAR.map((g) => ({ k: 'g:' + g.id, label: g.pattern, sub: tr(g.meaning) }))
+        : KANJI.map((x) => ({ k: 'k:' + x.id, label: x.char, sub: tr(x.meaning) }));
   const visible = items.filter((i) => showAll || s.cards[i.k]);
   return (
     <div className="tab-content notebook">
@@ -496,10 +497,10 @@ function ConfusionList() {
       {CONFUSIONS.map((g) => (
         <div key={g.id} className="ref-group">
           <h4 lang="ja">{g.forms.join(' · ')}</h4>
-          <p>{g.note}</p>
+          <p>{tr(g.note)}</p>
           <ul>
             {g.ex.map((e, i) => (
-              <li key={i} lang="ja">{e.s.split('＿＿').join(`【${e.opts[0]}】`)} <small className="note">{e.en}</small></li>
+              <li key={i} lang="ja">{e.s.split('＿＿').join(`【${e.opts[0]}】`)} <small className="note">{tr(e.en)}</small></li>
             ))}
           </ul>
         </div>

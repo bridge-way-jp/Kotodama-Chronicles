@@ -1,3 +1,4 @@
+import { tr, isDe } from '../core/i18n';
 import { useEffect, useRef, useState } from 'react';
 import { READINGS, LISTENING } from '../content/texts';
 import { store } from '../core/store';
@@ -58,12 +59,12 @@ export function ReadingChallenge({ id, text, onDone }: { id?: string; text?: Rea
       ) : (
         <div className="feedback ok" ref={stepRef}>
           <div className="fb-title">
-            読解完了！ {score} / {t.questions.length} correct on the first try
+            読解完了！ {score} / {t.questions.length} {isDe() ? 'beim ersten Versuch richtig' : 'correct on the first try'}
           </div>
           <button className="btn small" onClick={() => setShowEn(!showEn)}>
-            {showEn ? 'Hide' : 'Show'} translation
+            {isDe() ? (showEn ? 'Übersetzung ausblenden' : 'Übersetzung zeigen') : `${showEn ? 'Hide' : 'Show'} translation`}
           </button>
-          {showEn && <div className="q-en pre">{withName(t.en)}</div>}
+          {showEn && <div className="q-en pre">{withName(tr(t.en))}</div>}
           <button
             className="btn primary"
             autoFocus
@@ -136,9 +137,9 @@ export function ListeningChallenge({ id, item, onDone }: { id?: string; item?: L
             聴解完了！ {score} / {l.questions.length}
           </div>
           <button className="btn small" onClick={() => setShowEn(!showEn)}>
-            {showEn ? 'Hide' : 'Show'} translation
+            {isDe() ? (showEn ? 'Übersetzung ausblenden' : 'Übersetzung zeigen') : `${showEn ? 'Hide' : 'Show'} translation`}
           </button>
-          {showEn && <div className="q-en pre">{withName(l.en)}</div>}
+          {showEn && <div className="q-en pre">{withName(tr(l.en))}</div>}
           <button
             className="btn primary"
             autoFocus

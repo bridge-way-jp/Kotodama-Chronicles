@@ -1,3 +1,4 @@
+import { tr } from '../core/i18n';
 import { useEffect, useRef, useState } from 'react';
 import { bus } from '../core/events';
 import { store } from '../core/store';
@@ -127,7 +128,7 @@ export function LookupPopup() {
             {v.example && (
               <div className="lk-example" lang="ja">
                 {v.example}
-                <small>{lang === 'de' ? v.exampleDe ?? v.exampleEn : v.exampleEn}</small>
+                <small>{lang === 'de' ? v.exampleDe ?? tr(v.exampleEn, true) : v.exampleEn}</small>
               </div>
             )}
             <button className="btn small" onClick={() => (setReq(null), bus.emit('gloss', { key: 'v:' + v.id }))}>
@@ -143,7 +144,7 @@ export function LookupPopup() {
               const k = kanji!.get(c);
               const d = data?.kanji[c];
               const reads = k ? [...k.on, ...k.kun] : d ? [...d[0], ...d[1]] : null;
-              const meaning = k?.meaning ?? d?.[2];
+              const meaning = k ? tr(k.meaning, lang === 'de') : d?.[2];
               return (
                 <div key={c + i} className="lk-k">
                   <b lang="ja">{c}</b>

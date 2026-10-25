@@ -7,6 +7,7 @@ import { store } from '../core/store';
 import { encounter } from '../core/learning';
 import { mastery } from '../core/srs';
 import { AudioButton } from './Question';
+import { tr } from '../core/i18n';
 
 export const MASTERY_LABEL: Record<string, string> = {
   unseen: 'はじめて new',
@@ -26,6 +27,7 @@ export function MasteryBadge({ k }: { k: string }) {
 export function ItemDetail({ k }: { k: string }) {
   const [t, id] = k.split(':');
   const lang = store.state?.settings.meaningLang ?? 'en';
+  const de = lang === 'de';
   if (t === 'v') {
     const v = VOCAB_BY_ID[id];
     if (!v) return null;
@@ -39,13 +41,13 @@ export function ItemDetail({ k }: { k: string }) {
         </div>
         <div className="meaning">{lang === 'de' ? v.de : v.en}</div>
         <div className="meta">
-          {v.pos} · {v.level === 'story' ? 'story word' : `≈${v.level}`} <MasteryBadge k={k} />
+          {v.pos} · {v.level === 'story' ? (de ? 'Story-Wort' : 'story word') : `≈${v.level}`} <MasteryBadge k={k} />
         </div>
         <div className="example" lang="ja">{v.example}</div>
-        <div className="q-en">{(lang === 'de' && v.exampleDe) || v.exampleEn}</div>
+        <div className="q-en">{(de && v.exampleDe) || tr(v.exampleEn, de)}</div>
         <AudioButton lines={[{ text: v.word }, { text: v.example }]} label="▶ 発音" />
-        {v.collocations && <div className="meta">Collocations: {v.collocations.join('・')}</div>}
-        {v.related && <div className="meta">Related: {v.related.map((r) => VOCAB_BY_ID[r]?.word).join('・')}</div>}
+        {v.collocations && <div className="meta">{de ? 'Kollokationen' : 'Collocations'}: {v.collocations.join('・')}</div>}
+        {v.related && <div className="meta">{de ? 'Verwandt' : 'Related'}: {v.related.map((r) => VOCAB_BY_ID[r]?.word).join('・')}</div>}
       </div>
     );
   }
@@ -55,20 +57,20 @@ export function ItemDetail({ k }: { k: string }) {
     return (
       <div className="item-detail">
         <div className="big-word" lang="ja">{g.pattern}</div>
-        <div className="meaning">{g.meaning}</div>
+        <div className="meaning">{tr(g.meaning, de)}</div>
         <div className="meta">
-          {g.formation && <>Form: {g.formation} </>}<MasteryBadge k={k} />
+          {g.formation && <>{de ? 'Bildung' : 'Form'}: {tr(g.formation, de)} </>}<MasteryBadge k={k} />
         </div>
-        <p>{g.explanation}</p>
-        {g.nuance && <p className="meta">Nuance: {g.nuance}</p>}
-        {g.mistakes && <p className="meta warn">⚠ {g.mistakes}</p>}
+        <p>{tr(g.explanation, de)}</p>
+        {g.nuance && <p className="meta">Nuance: {tr(g.nuance, de)}</p>}
+        {g.mistakes && <p className="meta warn">⚠ {tr(g.mistakes, de)}</p>}
         {g.examples.map((e, i) => (
           <div key={i}>
             <div className="example" lang="ja">{e.jp}</div>
-            <div className="q-en">{e.en}</div>
+            <div className="q-en">{tr(e.en, de)}</div>
           </div>
         ))}
-        {g.similar.length > 0 && <div className="meta">Compare: {g.similar.map((s) => GRAMMAR_BY_ID[s]?.pattern).join('・')}</div>}
+        {g.similar.length > 0 && <div className="meta">{de ? 'Vergleiche' : 'Compare'}: {g.similar.map((s) => GRAMMAR_BY_ID[s]?.pattern).join('・')}</div>}
       </div>
     );
   }
@@ -78,13 +80,13 @@ export function ItemDetail({ k }: { k: string }) {
     return (
       <div className="item-detail">
         <div className="big-word kanji" lang="ja">{kj.char}</div>
-        <div className="meaning">{kj.meaning}</div>
+        <div className="meaning">{tr(kj.meaning, de)}</div>
         <div className="meta">
-          音 {kj.on.join('、') || '—'} ・ 訓 {kj.kun.join('、') || '—'} ・ {kj.strokes} strokes <MasteryBadge k={k} />
+          音 {kj.on.join('、') || '—'} ・ 訓 {kj.kun.join('、') || '—'} ・ {kj.strokes} {de ? 'Striche' : 'strokes'} <MasteryBadge k={k} />
         </div>
         {kj.words.map((w) => (
           <div key={w} className="example" lang="ja">
-            {VOCAB_BY_ID[w]?.word}（{VOCAB_BY_ID[w]?.reading}）— {VOCAB_BY_ID[w]?.en}
+            {VOCAB_BY_ID[w]?.word}（{VOCAB_BY_ID[w]?.reading}）— {de ? VOCAB_BY_ID[w]?.de : VOCAB_BY_ID[w]?.en}
           </div>
         ))}
       </div>

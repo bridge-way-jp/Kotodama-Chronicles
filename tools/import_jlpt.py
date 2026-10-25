@@ -6,6 +6,7 @@ Builds the N2 study curriculum from the community JLPT lists in data/jlpt/ (see 
 - N3 words are included as review material (chapter 0: never introduced on their own).
 - N2 kanji follow the earliest chapter of the words they appear in.
 - Words the game already teaches by hand (src/content/vocab*.ts) are skipped.
+- German meanings come from data/jlpt/de.json (English meaning → German).
 
 Output: public/data/jlpt.json (loaded at start by src/core/curriculum.ts)
 
@@ -21,6 +22,8 @@ from collections import Counter, defaultdict
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, 'data', 'jlpt')
 OUT = os.path.join(ROOT, 'public', 'data', 'jlpt.json')
+# German for the English meanings (English meaning → German), kept by hand
+DE = json.load(open(os.path.join(SRC, 'de.json'), encoding='utf-8')) if os.path.exists(os.path.join(SRC, 'de.json')) else {}
 
 # chapter: topic keywords (matched as word starts in the English meaning)
 TOPICS = {
@@ -170,6 +173,8 @@ def main():
             seen.add(form)
             e = {'id': romaji_id(level, i), 'word': word, 'reading': reading, 'en': en,
                  'pos': 'na-adj' if re.search(r'[（(]な[)）]', r['expression']) else guess_pos(word, reading, en), 'level': level}
+            if en in DE:
+                e['de'] = DE[en]
             if affix:
                 e['affix'] = affix
             if level == 'N2':
@@ -211,6 +216,8 @@ def main():
             'words': [w['id'] for w in words[:6]], 'strokes': info['strokes'],
             'chapter': min((w['chapter'] for w in n2), default=1),
         })
+        if kanji[-1]['meaning'] in DE:
+            kanji[-1]['de'] = DE[kanji[-1]['meaning']]
 
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     data = {'version': 1, 'source': 'JLPT community lists (tanos.co.uk, CC BY) and KANJIDIC2 (EDRDG, CC BY-SA 4.0); see data/jlpt/SOURCES.md',

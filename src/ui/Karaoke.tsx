@@ -1,3 +1,4 @@
+import { tr } from '../core/i18n';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { KARAOKE, type KaraokeLine, type KaraokeSong } from '../content/karaoke';
 import { grantXp } from '../core/game';
@@ -34,7 +35,7 @@ export function Karaoke({ onClose }: { onClose: () => void }) {
           {KARAOKE.map((s) => (
             <button key={s.id} className="btn big" onClick={() => setSong(s)}>
               <span lang="ja">{s.title}</span>
-              <small>{s.titleEn} · {s.mood} · best {String(store.s.flags[`karaoke_best_${s.id}`] ?? '–')}{store.s.flags[`karaoke_${s.id}`] === day ? ' · paid today' : ''}</small>
+              <small>{tr(s.titleEn)} · {s.mood} · best {String(store.s.flags[`karaoke_best_${s.id}`] ?? '–')}{store.s.flags[`karaoke_${s.id}`] === day ? ' · paid today' : ''}</small>
             </button>
           ))}
         </div>
@@ -112,7 +113,7 @@ function Stage({ song, onBack, onClose }: { song: KaraokeSong; onBack: () => voi
   if (i < 0)
     return (
       <div className="panel study karaoke">
-        <div className="panel-title">{song.title} <span className="note">{song.titleEn}</span></div>
+        <div className="panel-title">{song.title} <span className="note">{tr(song.titleEn)}</span></div>
         <div className="kar-stage"><div className="kar-neon">♪ {song.mood} ♪</div></div>
         <p className="note">{rounds.length} lines · {LINE_MS / 1000} seconds each · quick answers and combos score more.</p>
         <div className="row">
@@ -169,8 +170,8 @@ function Stage({ song, onBack, onClose }: { song: KaraokeSong; onBack: () => voi
       {picked !== null && (
         <div className={`feedback ${picked === r.answer ? 'ok' : 'ng'}`}>
           <div className="fb-title">{picked === r.answer ? '正解！' : picked < 0 ? '時間切れ…' : '残念…'}</div>
-          <div className="fb-why">{r.line.en}</div>
-          <div className="note">{r.line.why}</div>
+          <div className="fb-why">{tr(r.line.en)}</div>
+          <div className="note">{tr(r.line.why)}</div>
           <button className="btn primary" autoFocus onClick={next}>次へ ▶</button>
         </div>
       )}

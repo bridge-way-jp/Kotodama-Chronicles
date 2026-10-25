@@ -9,7 +9,7 @@ import type { GameState, Settings } from './types';
 export const DEFAULT_SETTINGS: Settings = {
   furigana: 'auto',
   translation: 'tap',
-  meaningLang: 'en',
+  meaningLang: 'de',
   newPerDay: 8,
   ttsRate: 1,
   sfx: true,
@@ -40,7 +40,7 @@ export function createInitialState(playerName: string, now = Date.now()): GameSt
     box: [],
     dex: {},
     quests: {},
-    flags: {},
+    flags: { lang_de: 1 },
     relationships: {},
     cards: {},
     confusions: {},
