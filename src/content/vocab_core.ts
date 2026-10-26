@@ -21,7 +21,7 @@ const conj: Row[] = [
   ['nazenara', 'なぜなら', 'なぜなら', 'denn, der Grund ist', 'because, the reason is', '今日は早く帰ります。なぜなら、母の誕生日だからです。', "I'm going home early today, because it is my mother's birthday."],
   ['tsumari', 'つまり', 'つまり', 'das heißt, mit anderen Worten', 'in other words', '彼は母の兄、つまり私のおじだ。', "He is my mother's older brother — in other words, my uncle.", 'zusammen'],
   ['sunawachi', 'すなわち', 'すなわち', 'nämlich, das heißt (schriftlich)', 'namely, that is (written)', '日本の首都、すなわち東京は人口が多い。', "Japan's capital, namely Tokyo, has a large population.", 'zusammen'],
-  ['moshikuwa', 'もしくは', 'もしくは', 'oder', 'or (formal)', '申込書は郵送、もしくはメールで送ってください。', 'Please send the application by post or by e-mail.', 'oder'],
+  ['moshikuwa', 'もしくは', 'もしくは', 'oder (förmlich)', 'or (formal)', '申込書は郵送、もしくはメールで送ってください。', 'Please send the application by post or by e-mail.', 'oder'],
   ['matawa', 'または', 'または', 'oder', 'or', '黒または青のペンで記入してください。', 'Please fill it in with a black or blue pen.', 'oder'],
   ['soretomo', 'それとも', 'それとも', 'oder (in Fragen)', 'or (in questions)', 'コーヒーにしますか。それとも、紅茶にしますか。', 'Will you have coffee? Or would you like tea?', 'oder'],
   ['mushiro', 'むしろ', 'むしろ', 'eher, vielmehr', 'rather, if anything', '彼は怒っているというより、むしろ悲しんでいるようだ。', 'Rather than angry, he seems sad if anything.'],
