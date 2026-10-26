@@ -1234,3 +1234,11 @@ html.hc .btn { border: 2px solid #000; }
 .palace-word { border: 0; border-radius: 6px; padding: 2px 8px; color: #fff; font: inherit; cursor: pointer; }
 .palace-word.on { outline: 3px solid #e2a54a; }
 .memory-cg { width: 96px; height: 64px; object-fit: cover; border-radius: 6px; flex: none; border: 2px solid #c9a46a; }
+
+/* N2 readiness and the JLPT-style score of the full mock exam */
+.ready-panel { border: 2px solid #e2cba3; border-radius: 8px; padding: 10px 12px; margin: 8px 0 14px; background: #fffaf0; }
+.ready-panel.ready-ready { border-color: #2fa58b; }
+.ready-panel.ready-not { border-color: #d9a25b; }
+.ready-panel table, .jlpt-score table { width: 100%; }
+.ready-panel .good, .jlpt-score .good, .study .good { color: #1d8a2a; font-weight: bold; }
+.ready-panel .bad, .jlpt-score .bad, .study .bad { color: #c22; font-weight: bold; }

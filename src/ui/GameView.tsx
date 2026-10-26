@@ -48,7 +48,7 @@ type Overlay =
   | { id: number; kind: 'karaoke' }
   | { id: number; kind: 'week' }
   | { id: number; kind: 'board'; station: string }
-  | { id: number; kind: 'exam'; mode: 'practice' | 'mock' | 'diagnostic' | 'chapter'; section?: Section; chapter?: number };
+  | { id: number; kind: 'exam'; mode: 'practice' | 'mock' | 'full' | 'diagnostic' | 'chapter'; section?: Section; chapter?: number };
 
 type NewOverlay = Overlay extends infer O ? (O extends Overlay ? Omit<O, 'id'> : never) : never;
 

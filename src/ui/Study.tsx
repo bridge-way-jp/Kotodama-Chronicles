@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { store } from '../core/store';
 import { buildConfusionSession, buildReviewSession, buildWeakSession, encounter, queueInfo, recordAnswer, recordComprehension, labelOfKey, type Exercise } from '../core/learning';
 import { tipFor } from '../content/examtypes';
-import { buildChapterExam, buildDiagnostic, buildMockExam, buildSectionPractice, CHAPTER_PASS, MOCK_TIME_LIMIT_MS, SECTIONS, type Section, type TestItem } from '../core/exam';
+import { buildChapterExam, buildDiagnostic, buildFullExam, buildMockExam, buildSectionPractice, CHAPTER_PASS, FULL_TIME_MS, jlptScore, JLPT_PASS, MOCK_TIME_LIMIT_MS, SECTIONS, type Section, type TestItem } from '../core/exam';
 import { review } from '../core/srs';
 import { grantXp } from '../core/game';
 import { ExerciseView, AudioButton, TextPassage, dbgOk } from './Question';
@@ -103,7 +103,7 @@ export function ReviewSession({ onClose, weak, mixups, place }: { onClose: () =>
 
 // ================================================================== exams
 
-type ExamMode = 'practice' | 'mock' | 'diagnostic' | 'chapter';
+export type ExamMode = 'practice' | 'mock' | 'full' | 'diagnostic' | 'chapter';
 
 function recordItem(item: TestItem, ok: boolean, ms: number, diagnostic: boolean) {
   store.update((s) => {
@@ -132,7 +132,7 @@ function recordItem(item: TestItem, ok: boolean, ms: number, diagnostic: boolean
 export function ExamRunner({ mode, section, chapter, onClose }: { mode: ExamMode; section?: Section; chapter?: number; onClose: () => void }) {
   const items = useMemo(
     () =>
-      mode === 'mock' ? buildMockExam() : mode === 'diagnostic' ? buildDiagnostic() : mode === 'chapter' ? buildChapterExam(store.s, chapter ?? 1) : buildSectionPractice(section ?? '文法形式の判断', 6),
+      mode === 'full' ? buildFullExam() : mode === 'mock' ? buildMockExam() : mode === 'diagnostic' ? buildDiagnostic() : mode === 'chapter' ? buildChapterExam(store.s, chapter ?? 1) : buildSectionPractice(section ?? '文法形式の判断', 6),
     [mode, section, chapter],
   );
   const [i, setI] = useState(-1);
@@ -141,17 +141,23 @@ export function ExamRunner({ mode, section, chapter, onClose }: { mode: ExamMode
   const start = useRef(0);
   const qStart = useRef(0);
   const [now, setNow] = useState(Date.now());
-  const timed = mode === 'mock';
+  const timed = mode === 'mock' || mode === 'full';
   const showFeedback = mode === 'practice';
+  // the full exam has two parts with their own time, and a break before the listening part
+  const listenFrom = mode === 'full' ? items.findIndex((x) => x.section === '聴解') : -1;
+  const [part2, setPart2] = useState(false);
+  const partStart = useRef(0);
+  const onBreak = listenFrom > 0 && i === listenFrom && !part2;
+  const limit = mode === 'full' ? (part2 ? FULL_TIME_MS.聴解 : FULL_TIME_MS.言語知識) : MOCK_TIME_LIMIT_MS;
 
   useEffect(() => {
-    if (!timed || i < 0) return;
+    if (!timed || i < 0 || onBreak) return;
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
-  }, [timed, i]);
+  }, [timed, i, onBreak]);
 
-  const remaining = timed && i >= 0 ? MOCK_TIME_LIMIT_MS - (now - start.current) : 0;
-  const timeUp = timed && i >= 0 && i < items.length && remaining <= 0;
+  const remaining = timed && i >= 0 ? limit - (now - partStart.current) : 0;
+  const timeUp = timed && i >= 0 && i < items.length && !onBreak && remaining <= 0;
 
   const finishExam = (all: typeof answers) => {
     const sections: PracticeResult['sections'] = {};
@@ -172,7 +178,9 @@ export function ExamRunner({ mode, section, chapter, onClose }: { mode: ExamMode
     store.update((s) => {
       s.practice.push(result);
       const ok = all.filter((a) => a.picked === a.item.answer).length;
-      if (mode === 'mock' && ok / Math.max(1, all.length) >= 0.7 && !s.inventory.deco_certificate) {
+      const full = mode === 'full' && jlptScore(sections).pass;
+      if (full) s.flags.full_mock_passed = (Number(s.flags.full_mock_passed) || 0) + 1;
+      if ((full || (mode === 'mock' && ok / Math.max(1, all.length) >= 0.7)) && !s.inventory.deco_certificate) {
         s.inventory.deco_certificate = 1;
         toast('模試合格！ 合格証を手に入れた。部屋の壁に飾られました。', 'level');
       }
@@ -192,20 +200,45 @@ export function ExamRunner({ mode, section, chapter, onClose }: { mode: ExamMode
 
   useEffect(() => {
     if (timeUp) {
-      finishExam(answers);
-      setI(items.length);
+      // what is left unanswered when the time is up counts as wrong, like on the real exam
+      const end = mode === 'full' && !part2 && listenFrom > 0 ? listenFrom : items.length;
+      const all = [...answers, ...items.slice(i, end).map((item) => ({ item, picked: -1, ms: 0 }))];
+      setAnswers(all);
+      setPicked(null);
+      if (end < items.length) {
+        setI(end);
+        toast(isDe() ? '時間です！ Die Zeit für Teil 1 ist um.' : '時間です！ Time is up for part 1.', 'info');
+      } else {
+        finishExam(all);
+        setI(items.length);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeUp]);
 
   const title =
-    mode === 'mock' ? '模擬試験 Mock exam (short form)' : mode === 'diagnostic' ? '実力診断 Diagnostic assessment' : mode === 'chapter' ? `第${chapter}章の試験 ${isDe() ? 'Kapitelprüfung' : 'Chapter exam'} ${chapter}` : `練習 Practice — ${section}`;
+    mode === 'full' ? `本番形式の模試 ${isDe() ? 'Probeprüfung (volle Länge)' : 'Full mock exam'}` : mode === 'mock' ? '模擬試験 Mock exam (short form)' : mode === 'diagnostic' ? '実力診断 Diagnostic assessment' : mode === 'chapter' ? `第${chapter}章の試験 ${isDe() ? 'Kapitelprüfung' : 'Chapter exam'} ${chapter}` : `練習 Practice — ${section}`;
 
   if (i === -1)
     return (
       <div className="panel study">
         <div className="panel-title">{title}<button className="btn small ghost close" onClick={onClose}>✕</button></div>
-        <p>{items.length} questions{timed ? ` · time limit ${MOCK_TIME_LIMIT_MS / 60000} minutes` : ''}.</p>
+        {mode === 'full' ? (
+          <>
+            <p>
+              {isDe()
+                ? `${items.length} Fragen in zwei Teilen, wie in der echten N2: Teil 1 言語知識（文字・語彙・文法）・読解 – ${listenFrom} Fragen in ${FULL_TIME_MS.言語知識 / 60000} Minuten; Teil 2 聴解 – ${items.length - listenFrom} Fragen in ${FULL_TIME_MS.聴解 / 60000} Minuten. Dazwischen gibt es eine Pause.`
+                : `${items.length} questions in two parts, as in the real N2: part 1 言語知識・読解 — ${listenFrom} questions in ${FULL_TIME_MS.言語知識 / 60000} minutes; part 2 聴解 — ${items.length - listenFrom} questions in ${FULL_TIME_MS.聴解 / 60000} minutes, with a break in between.`}
+            </p>
+            <p>
+              {isDe()
+                ? `Am Ende bekommst du Punkte wie bei der JLPT: 言語知識, 読解 und 聴解 je 0–60, zusammen 0–180. Bestanden ist die N2 mit mindestens ${JLPT_PASS.total} Punkten insgesamt und mindestens ${JLPT_PASS.part} in jedem Teil. Was bei Zeitende offen ist, zählt als falsch. Nimm dir die Zeit am Stück – am besten mit Kopfhörern.`
+                : `At the end you get JLPT-style scores: 言語知識, 読解 and 聴解 each 0–60, total 0–180. The N2 is passed with at least ${JLPT_PASS.total} in total and ${JLPT_PASS.part} in every part. Unanswered questions at the end of the time count as wrong. Take the time in one go — ideally with headphones.`}
+            </p>
+          </>
+        ) : (
+          <p>{items.length} questions{timed ? ` · time limit ${MOCK_TIME_LIMIT_MS / 60000} minutes` : ''}.</p>
+        )}
         {mode === 'diagnostic' && (
           <p>
             This estimates where you stand after N3: kanji readings, vocabulary in context, grammar, reading and listening. Results personalise
@@ -231,6 +264,8 @@ export function ExamRunner({ mode, section, chapter, onClose }: { mode: ExamMode
           autoFocus
           onClick={() => {
             start.current = Date.now();
+            partStart.current = Date.now();
+            setNow(Date.now());
             qStart.current = performance.now();
             setI(0);
           }}
@@ -241,6 +276,31 @@ export function ExamRunner({ mode, section, chapter, onClose }: { mode: ExamMode
     );
 
   if (i >= items.length) return <ExamReport mode={mode} answers={answers} onClose={onClose} title={title} />;
+
+  if (onBreak)
+    return (
+      <div className="panel study">
+        <div className="panel-title">{title}<button className="btn small ghost close" onClick={onClose}>✕</button></div>
+        <p className="big-score">休憩 {isDe() ? 'Pause' : 'Break'}</p>
+        <p>
+          {isDe()
+            ? `Teil 1 ist geschafft (${answers.filter((a) => a.picked >= 0).length} von ${listenFrom} beantwortet). Als Nächstes kommt Teil 2, 聴解: ${items.length - listenFrom} Fragen in ${FULL_TIME_MS.聴解 / 60000} Minuten. Wie in der echten Prüfung: Hör jedes Gespräch möglichst nur einmal an. Die Zeit läuft erst, wenn du startest.`
+            : `Part 1 is done (${answers.filter((a) => a.picked >= 0).length} of ${listenFrom} answered). Next is part 2, 聴解: ${items.length - listenFrom} questions in ${FULL_TIME_MS.聴解 / 60000} minutes. The time only starts when you begin.`}
+        </p>
+        <button
+          className="btn primary"
+          autoFocus
+          onClick={() => {
+            partStart.current = Date.now();
+            setNow(Date.now());
+            qStart.current = performance.now();
+            setPart2(true);
+          }}
+        >
+          {isDe() ? '聴解を始める Teil 2 starten' : '聴解を始める Start part 2'}
+        </button>
+      </div>
+    );
 
   const item = items[i];
   const answered = picked !== null;
@@ -340,6 +400,7 @@ function ExamReport({ mode, answers, onClose, title }: { mode: ExamMode; answers
             : isDe() ? `× もう少し… Noch nicht bestanden (nötig: ${Math.round(CHAPTER_PASS * 100)} %). Die falschen Punkte stehen jetzt in deinen Wiederholungen – üb sie und versuch es noch einmal.` : `× Not passed yet (needed: ${Math.round(CHAPTER_PASS * 100)}%). The missed items are in your reviews now — practise them and try again.`}
         </p>
       )}
+      {mode === 'full' && <JlptScore answers={answers} />}
       {prevPct !== null && <p className="note">Previous attempt: {Math.round(prevPct * 100)}%</p>}
       <table className="report">
         <thead>
@@ -367,7 +428,7 @@ function ExamReport({ mode, answers, onClose, title }: { mode: ExamMode; answers
           {mistakes.map((m, k) => (
             <div key={k} className="mistake">
               <div lang="ja"><Jp text={m.item.prompt} furigana="off" /></div>
-              <div>✓ <span lang="ja">{m.item.options[m.item.answer]}</span> · ✗ <span lang="ja">{m.item.options[m.picked]}</span></div>
+              <div>✓ <span lang="ja">{m.item.options[m.item.answer]}</span> · ✗ <span lang="ja">{m.picked >= 0 ? m.item.options[m.picked] : isDe() ? '(keine Antwort)' : '(no answer)'}</span></div>
               <div className="note"><Rich text={m.item.why} /></div>
             </div>
           ))}
@@ -375,6 +436,49 @@ function ExamReport({ mode, answers, onClose, title }: { mode: ExamMode; answers
       )}
       <p className="note">Original N2-style questions. This is practice feedback, not a prediction of your official JLPT result.</p>
       <button className="btn primary" autoFocus onClick={onClose}>閉じる</button>
+    </div>
+  );
+}
+
+/** the JLPT-style score of a full mock exam: three parts of 0–60 and the pass line of the N2 */
+function JlptScore({ answers }: { answers: { item: TestItem; picked: number }[] }) {
+  const sections: PracticeResult['sections'] = {};
+  for (const a of answers) {
+    const sec = (sections[a.item.section] ??= { ok: 0, total: 0, ms: 0 });
+    sec.total++;
+    if (a.picked === a.item.answer) sec.ok++;
+  }
+  const sc = jlptScore(sections);
+  const de = isDe();
+  const parts: [string, number][] = [['言語知識（文字・語彙・文法）', sc.knowledge], ['読解', sc.reading], ['聴解', sc.listening]];
+  return (
+    <div className="jlpt-score">
+      <table className="report">
+        <tbody>
+          {parts.map(([name, v]) => (
+            <tr key={name} className={v < JLPT_PASS.part ? 'weak' : ''}>
+              <td lang="ja">{name}</td>
+              <td>{v} / 60</td>
+              <td>{v < JLPT_PASS.part ? (de ? `unter ${JLPT_PASS.part} ✗` : `below ${JLPT_PASS.part} ✗`) : '✓'}</td>
+            </tr>
+          ))}
+          <tr>
+            <td><b>{de ? 'Gesamt' : 'Total'}</b></td>
+            <td><b>{sc.total} / 180</b></td>
+            <td>{de ? `nötig ${JLPT_PASS.total}` : `needed ${JLPT_PASS.total}`}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p className={sc.pass ? 'good' : 'bad'}>
+        {sc.pass
+          ? de ? '◎ 合格ライン達成！ Nach den Regeln der JLPT wäre das bestanden.' : '◎ 合格ライン達成！ By the JLPT rules this would be a pass.'
+          : de ? '× 合格ラインまでもう少し. Nach den Regeln der JLPT wäre das noch nicht bestanden.' : '× Not yet at the pass line by the JLPT rules.'}
+      </p>
+      <p className="note">
+        {de
+          ? 'Die echte JLPT rechnet die Punkte statistisch um; diese Punkte sind eine einfache Schätzung. Wer hier mehrmals mit Abstand besteht (etwa 110 Punkte oder mehr), hat gute Chancen.'
+          : 'The real JLPT scales scores statistically; these are a simple estimate. Passing here several times with a margin (about 110 or more) is a good sign.'}
+      </p>
     </div>
   );
 }

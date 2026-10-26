@@ -6,7 +6,7 @@ import { AFFIXES } from '../content/wordformation';
 import { CONFUSIONS } from '../content/confusions';
 import { readingDistractors, shuffle, similarWords } from './learning';
 import { tr, isDe } from './i18n';
-import type { GameState, ListeningItem, SkillArea, VocabEntry } from './types';
+import type { GameState, ListeningItem, PracticeResult, ReadingText, SkillArea, VocabEntry } from './types';
 
 const meaning = (v: VocabEntry) => (isDe() ? v.de : v.en);
 const sentence = (v: VocabEntry) => (isDe() && v.exampleDe) || tr(v.exampleEn);
@@ -211,6 +211,119 @@ export function buildMockExam(r = Math.random): TestItem[] {
 }
 
 export const MOCK_TIME_LIMIT_MS = 35 * 60 * 1000;
+
+// ------------------------------------------------------------------ the full mock exam
+
+/** the questions of whole texts, in order (an exam never splits a text) */
+function textItems(texts: ReadingText[], r: () => number): TestItem[] {
+  return texts.flatMap((t) =>
+    t.questions.map((q, i) => ({
+      id: `rd:${t.id}:${i}`, section: '読解' as const, area: 'reading' as const,
+      instruction: t.kind === 'compare' ? '次のＡとＢの文章を読んで、質問に答えなさい。' : t.kind === 'info' ? '右のページは案内である。これを読んで、質問に答えなさい。' : '次の文章を読んで、質問に答えなさい。',
+      passage: { title: t.title, body: t.body },
+      prompt: q.q, ...mc(q.options, q.answer, r), why: tr(q.why),
+      keys: t.grammar.map((g) => 'g:' + g),
+    })),
+  );
+}
+
+const LISTEN_INSTR: [RegExp, string][] = [
+  [/^n2_task/, 'まず質問を聞いてください。それから話を聞いて、このあと何をするか、最もよいものを選びなさい。'],
+  [/^n2_point/, 'まず質問を聞いてください。そのあと話を聞いて、最もよいものを選びなさい。'],
+  [/^n2_gist/, 'この問題では、話全体としてどんな内容かを聞きます。話を聞いて、最もよいものを選びなさい。'],
+  [/^n2_quick/, 'まず文を聞いてください。それから、その返事として最もよいものを選びなさい。'],
+  [/^n2_integrated/, '長めの話を聞きます。話を聞いて、最もよいものを選びなさい。'],
+];
+
+function listenItems(items: ListeningItem[], r: () => number): TestItem[] {
+  return items.flatMap((l) =>
+    l.questions.map((q, i) => ({
+      id: `ls:${l.id}:${i}`, section: '聴解' as const, area: 'listening' as const,
+      instruction: LISTEN_INSTR.find(([re]) => re.test(l.id))?.[1] ?? 'まず話を聞いてください。それから質問を読んで、最もよいものを選びなさい。',
+      audio: l, prompt: q.q, ...mc(q.options, q.answer, r), why: `${tr(q.why)}\n${tr(l.en)}`,
+      keys: l.vocab.map((v) => 'v:' + v),
+    })),
+  );
+}
+
+/** whole texts of a kind until at least n questions */
+function pickTexts<X extends { questions: unknown[] }>(pool: X[], n: number, r: () => number, not = new Set<X>()): X[] {
+  const out: X[] = [];
+  let q = 0;
+  for (const t of shuffle(pool.filter((x) => !not.has(x)), r)) {
+    if (q >= n) break;
+    out.push(t);
+    not.add(t);
+    q += t.questions.length;
+  }
+  return out;
+}
+
+/**
+ * The full mock exam, in the length and order of the real N2: part 1 言語知識（文字・語彙・文法）・読解 (105 minutes),
+ * part 2 聴解 (50 minutes). The item counts follow the public test structure; the questions are original.
+ */
+export function buildFullExam(r = Math.random): TestItem[] {
+  const usedR = new Set<ReadingText>();
+  const kind = (k: string) => PRACTICE_READING.filter((t) => t.kind === k);
+  const short = PRACTICE_READING.filter((t) => t.questions.length === 1);
+  const reading = [
+    ...pickTexts(short, 5, r, usedR),
+    ...pickTexts(PRACTICE_READING.filter((t) => t.questions.length >= 3 && t.kind !== 'info' && !t.id.startsWith('n2_long')), 9, r, usedR),
+    ...pickTexts(kind('compare'), 2, r, usedR),
+    ...pickTexts(PRACTICE_READING.filter((t) => t.id.startsWith('n2_long')), 3, r, usedR),
+    ...pickTexts(kind('info'), 2, r, usedR),
+  ];
+  const usedL = new Set<ListeningItem>();
+  const of = (re: RegExp) => PRACTICE_LISTENING.filter((l) => re.test(l.id));
+  const listening = [
+    ...pickTexts(of(/^n2_task/), 3, r, usedL),
+    ...pickTexts(of(/^n2_point/), 3, r, usedL),
+    ...pickTexts(of(/^n2_gist/), 2, r, usedL),
+    ...pickTexts(of(/^n2_quick/), 8, r, usedL),
+    ...pickTexts(of(/^n2_integrated/), 3, r, usedL),
+  ];
+  // the rest of the listening part from the other practice dialogues
+  listening.push(...pickTexts(PRACTICE_LISTENING, 30 - listening.reduce((n, l) => n + l.questions.length, 0), r, usedL));
+  return [
+    ...kanjiReadingItems(10, r),
+    ...affixItems(5, r),
+    ...contextItems(7, r),
+    ...paraphraseItems(5, r),
+    ...grammarItems(8, r),
+    ...confusionItems(4, r),
+    ...orderingItems(5, r),
+    ...textItems(reading, r),
+    ...listenItems(listening, r),
+  ];
+}
+
+/** the time of each part of the full mock exam, as in the real N2 */
+export const FULL_TIME_MS = { 言語知識: 105 * 60 * 1000, 聴解: 50 * 60 * 1000 };
+
+/**
+ * A JLPT-style score of an exam result: the three scored parts of the N2 (言語知識（文字・語彙・文法）, 読解, 聴解),
+ * each 0–60, total 0–180. The N2 passes with 90 in total and at least 19 in each part. The real JLPT scales its scores;
+ * this simple proportion is only an estimate.
+ */
+export function jlptScore(sections: PracticeResult['sections']) {
+  const part = (ids: string[]) => {
+    let ok = 0;
+    let total = 0;
+    for (const id of ids) {
+      ok += sections[id]?.ok ?? 0;
+      total += sections[id]?.total ?? 0;
+    }
+    return total ? Math.round((60 * ok) / total) : 0;
+  };
+  const knowledge = part(['漢字読み', '語形成', '文脈規定', '言い換え類義', '文法形式の判断', '文の組み立て']);
+  const reading = part(['読解']);
+  const listening = part(['聴解']);
+  const total = knowledge + reading + listening;
+  return { knowledge, reading, listening, total, pass: total >= JLPT_PASS.total && Math.min(knowledge, reading, listening) >= JLPT_PASS.part };
+}
+
+export const JLPT_PASS = { total: 90, part: 19 };
 
 /** Diagnostic: N3 review + N2 items across all skills. */
 export function buildDiagnostic(r = Math.random): TestItem[] {
