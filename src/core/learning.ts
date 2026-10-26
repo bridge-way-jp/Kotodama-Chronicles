@@ -79,7 +79,11 @@ export function similarWords(v: VocabEntry, pool: VocabEntry[], n: number, r = M
   if (sameScript.length >= n * 3) cands = sameScript;
   const score = (x: VocabEntry) =>
     (x.pos === v.pos ? 0 : 2) + (script(x.word) === sc ? 0 : 3) + Math.min(3, Math.abs(x.word.length - v.word.length)) + (x.affix && x.affix !== v.affix ? 2 : 0);
-  const ranked = shuffle(cands, r).sort((a, b) => score(a) - score(b));
+  // no two options may read the same in either meaning language (または and もしくは are both "oder")
+  const seen = new Set<string>();
+  const ranked = shuffle(cands, r)
+    .sort((a, b) => score(a) - score(b))
+    .filter((x) => !seen.has('en:' + x.en) && !seen.has('de:' + x.de) && !!seen.add('en:' + x.en).add('de:' + x.de));
   // pick from the best few dozen so the same distractors don't always appear together
   return pickN(ranked.slice(0, Math.max(n * 8, 24)), n, r);
 }
