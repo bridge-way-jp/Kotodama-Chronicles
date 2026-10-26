@@ -12,10 +12,10 @@ import { AFFIXES } from '../content/wordformation';
 import { CONFUSIONS } from '../content/confusions';
 import { EXAM_TYPES } from '../content/examtypes';
 import { creatureXpToNext, maxHp, xpToNext } from '../core/game';
-import { readiness } from '../core/readiness';
+import { n2Readiness, readiness, SAFE_SCORE } from '../core/readiness';
 import { DAILY_GOAL, answersToday, queueInfo, streakDays } from '../core/learning';
 import { mastery } from '../core/srs';
-import { SECTIONS, chapterExamPassed, chapterExamsOpen, type Section } from '../core/exam';
+import { FULL_TIME_MS, JLPT_PASS, SECTIONS, chapterExamPassed, chapterExamsOpen, type Section } from '../core/exam';
 import { exportToJson, makeEnvelope } from '../core/save';
 import { ExportBox, ImportBox } from './Backup';
 import { CloudSettings, PackSettings } from './CloudPanel';
@@ -49,7 +49,7 @@ export interface MenuActions {
   openWeak: () => void;
   openMixups: () => void;
   openPlace: (map: string) => void;
-  openExam: (mode: 'practice' | 'mock' | 'diagnostic' | 'chapter', section?: Section, chapter?: number) => void;
+  openExam: (mode: 'practice' | 'mock' | 'full' | 'diagnostic' | 'chapter', section?: Section, chapter?: number) => void;
   openTournament: () => void;
   toTitle: () => void;
 }
@@ -516,6 +516,54 @@ function ConfusionList() {
 }
 
 // ------------------------------------------------------------------ JLPT
+
+/** am I ready for the N2? the checks the game can see, and the last full mock exam scored like the JLPT */
+function ReadyPanel({ onFull }: { onFull: () => void }) {
+  const de = isDe();
+  const n = n2Readiness(store.s);
+  const verdict = {
+    ready: de ? '◎ Sehr gute Chancen auf die N2' : '◎ Very good chances for the N2',
+    close: de ? '○ Auf einem guten Weg – es fehlt noch etwas' : '○ On a good way — something is still missing',
+    not: de ? '△ Noch nicht bereit für die N2' : '△ Not ready for the N2 yet',
+  }[n.level];
+  const name: Record<string, string> = de
+    ? { vocab: 'Wortschatz sicher', kanji: 'Kanji sicher', grammar: 'Grammatik sicher', reading: 'Leseverstehen (letzte Antworten)', listening: 'Hörverstehen (letzte Antworten)' }
+    : { vocab: 'words held', kanji: 'kanji held', grammar: 'grammar held', reading: 'reading (recent answers)', listening: 'listening (recent answers)' };
+  return (
+    <div className={`ready-panel ready-${n.level}`}>
+      <b>{de ? 'Bin ich bereit für die N2?' : 'Am I ready for the N2?'}</b>
+      <p className={n.level === 'ready' ? 'good' : n.level === 'not' ? 'bad' : ''}>{verdict}</p>
+      <table className="report">
+        <tbody>
+          {n.checks.map((c) => (
+            <tr key={c.id} className={c.ok ? '' : 'weak'}>
+              <td><span lang="ja">{c.label}</span> {name[c.id]}</td>
+              <td>{Math.round(c.value * 100)}%</td>
+              <td>{c.ok ? '✓' : `${de ? 'Ziel' : 'goal'} ${Math.round(c.need * 100)}%`}</td>
+            </tr>
+          ))}
+          <tr className={n.score?.pass ? '' : 'weak'}>
+            <td>{de ? 'Probeprüfung (volle Länge)' : 'Full mock exam'}</td>
+            <td>{n.score ? `${n.score.total}/180` : '—'}</td>
+            <td>{n.score ? (n.score.pass ? (n.score.total >= SAFE_SCORE ? '✓✓' : '✓') : '✗') : de ? 'noch nicht gemacht' : 'not taken'}</td>
+          </tr>
+        </tbody>
+      </table>
+      {n.score && (
+        <p className="note" lang="ja">
+          言語知識 {n.score.knowledge}/60 · 読解 {n.score.reading}/60 · 聴解 {n.score.listening}/60
+        </p>
+      )}
+      <p className="note">
+        {de
+          ? `„Sicher“ heißt: in deinen Wiederholungen festigend oder gemeistert. Die Probeprüfung dauert wie die echte ${(FULL_TIME_MS.言語知識 + FULL_TIME_MS.聴解) / 60000} Minuten und wird wie die JLPT gezählt (bestanden ab ${JLPT_PASS.total}/180 und ${JLPT_PASS.part} in jedem Teil). Mit ${SAFE_SCORE} oder mehr hast du einen Puffer. Eine Garantie für die echte Prüfung ist das nicht.`
+          : `"Held" means consolidating or mastered in your reviews. The full mock takes ${(FULL_TIME_MS.言語知識 + FULL_TIME_MS.聴解) / 60000} minutes like the real exam and is scored like the JLPT (pass from ${JLPT_PASS.total}/180 and ${JLPT_PASS.part} in each part). ${SAFE_SCORE} or more gives you a margin. It is no guarantee for the real exam.`}
+      </p>
+      <button className="btn primary" onClick={onFull}>本番形式の模試 {de ? 'Probeprüfung starten' : 'Start full mock exam'}</button>
+    </div>
+  );
+}
+
 function JlptTab({ actions }: { actions: MenuActions }) {
   const s = store.s;
   const r = readiness(s);
@@ -523,6 +571,7 @@ function JlptTab({ actions }: { actions: MenuActions }) {
   return (
     <div className="tab-content">
       <h3>JLPT N2 準備 Preparation</h3>
+      <ReadyPanel onFull={() => actions.openExam('full')} />
       <div className="readiness-overall">
         <div className="ring" style={{ ['--p' as any]: Math.round(r.overall * 100) }}>
           <span>{Math.round(r.overall * 100)}%</span>
@@ -579,6 +628,7 @@ function JlptTab({ actions }: { actions: MenuActions }) {
         {s.flags.chapter7_done && <button className="btn" onClick={() => actions.openTournament()}>言葉の大会 Word Tournament{s.flags.tournament_best ? ` (best ${s.flags.tournament_best})` : ''}</button>}
         <button className="btn" onClick={() => actions.openExam('diagnostic')}>実力診断 Diagnostic{s.flags.diagnostic_done ? ' (retake)' : ''}</button>
         <button className="btn" onClick={() => actions.openExam('mock')}>模擬試験 Mock exam (timed)</button>
+        <button className="btn" onClick={() => actions.openExam('full')}>本番形式の模試 {isDe() ? 'Probeprüfung (volle Länge)' : 'Full mock exam'}</button>
       </div>
       {chapterExamsOpen(s).length > 0 && (
         <>
