@@ -7,6 +7,7 @@ import { store } from '../core/store';
 import { encounter } from '../core/learning';
 import { mastery } from '../core/srs';
 import { AudioButton } from './Question';
+import { MemoryNote } from './MemoryNote';
 import { tr } from '../core/i18n';
 
 export const MASTERY_LABEL: Record<string, string> = {
@@ -128,6 +129,8 @@ export function TeachCard({ k, onDone }: { k: string; onDone: () => void }) {
     <div className="teach">
       <div className="ch-kind">✎ 新しい表現 New expression</div>
       <ItemDetail k={k} />
+      {/* the moment of the story it was said in: that moment is what you will remember it by */}
+      <MemoryNote k={k} />
       <button className="btn primary" autoFocus onClick={onDone}>
         わかった ▶
       </button>

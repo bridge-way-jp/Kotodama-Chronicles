@@ -5,6 +5,7 @@ import { NOTES, foundNotes } from '../content/society';
 import { encounter, labelOfKey } from './learning';
 import { toast } from './events';
 import type { Action } from './script';
+import { isDe } from './i18n';
 import type { CreatureInstance, GameState } from './types';
 
 // ---------------- player progression ----------------
@@ -178,7 +179,7 @@ export function runAction(s: GameState, a: Action, hooks: ActionHooks = {}) {
   } else if ('xp' in a) grantXp(s, a.xp);
   else if ('learn' in a) {
     const fresh = encounter(s, a.learn);
-    if (fresh.length) toast(`New in your notebook: ${fresh.map(labelOfKey).join('、')}`, 'learn');
+    if (fresh.length) toast(`${isDe() ? 'Neu im Notizbuch' : 'New in your notebook'}: ${fresh.map(labelOfKey).join('、')}`, 'learn');
   } else if ('rel' in a) {
     const r = (s.relationships[a.rel] ??= { points: 0, memories: [] });
     r.points += a.points;
