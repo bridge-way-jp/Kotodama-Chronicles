@@ -1242,3 +1242,5 @@ html.hc .btn { border: 2px solid #000; }
 .ready-panel table, .jlpt-score table { width: 100%; }
 .ready-panel .good, .jlpt-score .good, .study .good { color: #1d8a2a; font-weight: bold; }
 .ready-panel .bad, .jlpt-score .bad, .study .bad { color: #c22; font-weight: bold; }
+.ready-panel td:first-child { white-space: nowrap; }
+.ready-panel tr.current td { background: #fbe9cc; }

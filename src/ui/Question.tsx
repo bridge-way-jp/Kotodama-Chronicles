@@ -168,11 +168,14 @@ export function ExerciseView({
   onDone,
   tools,
   compact,
+  auto,
 }: {
   ex: Exercise;
   onDone: (ok: boolean, ms: number, chosen?: Option) => void;
   tools?: ExerciseTools;
   compact?: boolean;
+  /** speed rounds: go on by itself a moment after the answer (longer after a wrong one, to see the right answer) */
+  auto?: boolean;
 }) {
   const [chosen, setChosen] = useState<Option | null>(null);
   const [typed, setTyped] = useState('');
@@ -182,6 +185,13 @@ export function ExerciseView({
   // not for an item met a moment ago (its memory is this very scene)
   const origin = ex.key ? originOf(store.s, ex.key) : undefined;
   const memory = !!origin && !(origin.t && Date.now() - origin.t < 10 * 60_000);
+  // the answer is reported once, whether by the button or by itself in a speed round
+  const sent = useRef(false);
+  const done = (good: boolean, t: number, o?: Option) => {
+    if (sent.current) return;
+    sent.current = true;
+    onDone(good, t, o);
+  };
   const t0 = useRef(performance.now());
   const ms = useRef(0);
   const answered = chosen !== null || typedResult !== null;
@@ -203,6 +213,7 @@ export function ExerciseView({
     if (answered) return;
     setChosen(o);
     finish(o.correct);
+    if (auto) setTimeout(() => done(o.correct, ms.current, o), o.correct ? 350 : 1400);
   };
   useNumberKeys(ex.options?.map((o) => (hidden.has(o.text) ? null : () => pick(o))) ?? [], !answered && !!ex.options);
 
@@ -211,6 +222,7 @@ export function ExerciseView({
     const good = (ex.accept ?? []).some((a) => normalizeKana(a) === normalizeKana(typed));
     setTypedResult(good);
     finish(good);
+    if (auto) setTimeout(() => done(good, ms.current), good ? 350 : 1400);
   };
 
   const showText = !ex.hideTextUntilAnswered || answered;
@@ -302,7 +314,7 @@ export function ExerciseView({
             <Rich text={tr(ex.explanation)} />
           </div>
           {memory && !compact && <MemoryNote k={ex.key!} compact />}
-          <button className="btn primary" autoFocus onClick={() => onDone(ok, ms.current, chosen ?? undefined)}>
+          <button className="btn primary" autoFocus onClick={() => done(ok, ms.current, chosen ?? undefined)}>
             次へ ▶
           </button>
         </div>

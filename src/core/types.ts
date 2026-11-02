@@ -62,6 +62,8 @@ export interface Settings {
   translation: 'tap' | 'always' | 'never';
   meaningLang: 'en' | 'de';
   newPerDay: number;
+  /** the learning path holds the story until the chapter's items are studied (default on) */
+  pathGate?: boolean;
   ttsRate: number;
   sfx: boolean;
   musicVolume: number;

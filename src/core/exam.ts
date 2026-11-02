@@ -5,6 +5,7 @@ import { ORDERING, PARAPHRASE, PRACTICE_LISTENING, PRACTICE_READING } from '../c
 import { AFFIXES } from '../content/wordformation';
 import { CONFUSIONS } from '../content/confusions';
 import { readingDistractors, shuffle, similarWords } from './learning';
+import { pathChapterOf } from './path';
 import { tr, isDe } from './i18n';
 import type { GameState, ListeningItem, PracticeResult, ReadingText, SkillArea, VocabEntry } from './types';
 
@@ -342,7 +343,7 @@ export function buildDiagnostic(r = Math.random): TestItem[] {
 // ------------------------------------------------------------------ chapter exams
 
 /** the share of right answers a chapter exam needs */
-export const CHAPTER_PASS = 0.7;
+export const CHAPTER_PASS = 0.8;
 
 /**
  * The exam at the end of a chapter: the words, kanji and grammar of that region (the ones the player has met
@@ -351,7 +352,8 @@ export const CHAPTER_PASS = 0.7;
 export function buildChapterExam(s: GameState, ch: number, r = Math.random): TestItem[] {
   const met = (k: string) => !!s.cards[k];
   const metFirst = <T>(xs: T[], key: (x: T) => string) => [...shuffle(xs.filter((x) => met(key(x))), r), ...shuffle(xs.filter((x) => !met(key(x))), r)];
-  const words = VOCAB.filter((v) => v.chapter === ch && v.level !== 'story' && !v.affix);
+  // the whole chapter of the learning path: its N2 words and its share of the N3 base
+  const words = VOCAB.filter((v) => pathChapterOf('v:' + v.id) === ch && v.level !== 'story' && !v.affix);
   const used = new Set<string>();
   const take = (xs: VocabEntry[], n: number) => {
     const out: VocabEntry[] = [];
@@ -364,7 +366,7 @@ export function buildChapterExam(s: GameState, ch: number, r = Math.random): Tes
     return out;
   };
   const items: TestItem[] = [];
-  for (const v of take(words.filter((x) => KANJI_RE.test(x.word)), 5))
+  for (const v of take(words.filter((x) => KANJI_RE.test(x.word)), 10))
     items.push({
       id: `ce:${ch}:kr:${v.id}`, section: '漢字読み', area: 'kanji',
       instruction: '＿＿の言葉の読み方として最もよいものを選びなさい。',
@@ -373,7 +375,7 @@ export function buildChapterExam(s: GameState, ch: number, r = Math.random): Tes
       why: `${v.word}（${v.reading}）— ${meaning(v)}`,
       keys: ['v:' + v.id],
     });
-  for (const v of take(words.filter((x) => x.example.includes(x.word)), 3)) {
+  for (const v of take(words.filter((x) => x.example.includes(x.word)), 6)) {
     const others = similarWords(v, VOCAB.filter((x) => x.word !== v.word && !confusable(v, x) && !x.affix), 3, r).map((x) => x.word);
     items.push({
       id: `ce:${ch}:cx:${v.id}`, section: '文脈規定', area: 'vocab',
@@ -384,7 +386,7 @@ export function buildChapterExam(s: GameState, ch: number, r = Math.random): Tes
       keys: ['v:' + v.id],
     });
   }
-  for (const v of take(words, 5)) {
+  for (const v of take(words, 10)) {
     const pool = VOCAB.filter((x) => x.id !== v.id && !x.affix && meaning(x) !== meaning(v) && !confusable(v, x));
     const others = [...new Set(similarWords(v, pool, 6, r).map(meaning))].filter((m) => m !== meaning(v)).slice(0, 3);
     if (others.length < 3) continue;
@@ -401,7 +403,7 @@ export function buildChapterExam(s: GameState, ch: number, r = Math.random): Tes
   const own = metFirst(GRAMMAR.filter((g) => g.chapter === ch && g.exercises.length), (g) => 'g:' + g.id);
   const before = GRAMMAR.filter((g) => g.chapter < ch && g.exercises.length);
   const earlier = [...shuffle(before.filter((g) => met('g:' + g.id)), r), ...shuffle(before.filter((g) => !met('g:' + g.id)), r)];
-  const grammar = [...own, ...earlier].slice(0, 5);
+  const grammar = [...own, ...earlier].slice(0, 8);
   for (const g of grammar) {
     const ex = g.exercises[Math.floor(r() * g.exercises.length)];
     items.push({
@@ -413,8 +415,11 @@ export function buildChapterExam(s: GameState, ch: number, r = Math.random): Tes
       keys: ['g:' + g.id],
     });
   }
-  return [...items, ...readingItems(1, r), ...listeningItems(1, r)];
+  return [...items, ...readingItems(2, r), ...listeningItems(2, r)];
 }
+
+/** the time for a chapter exam: about the pace of the real N2 */
+export const chapterExamTime = (n: number) => n * 40_000;
 
 /** the chapters whose exam can be taken (their story is done) */
 export const chapterExamsOpen = (s: GameState) => [1, 2, 3, 4, 5, 6, 7].filter((c) => s.flags[`chapter${c}_done`]);

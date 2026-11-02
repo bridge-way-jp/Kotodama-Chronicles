@@ -3,9 +3,9 @@ import { isDe } from '../core/i18n';
 import { toast } from '../core/events';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { store } from '../core/store';
-import { buildConfusionSession, buildReviewSession, buildWeakSession, encounter, queueInfo, recordAnswer, recordComprehension, labelOfKey, type Exercise } from '../core/learning';
+import { buildBlitzSession, buildConfusionSession, buildPlacementSession, buildReviewSession, buildWeakSession, encounter, PLACEMENT_MS, queueInfo, recordAnswer, recordComprehension, recordPlacement, labelOfKey, type Exercise } from '../core/learning';
 import { tipFor } from '../content/examtypes';
-import { buildChapterExam, buildDiagnostic, buildFullExam, buildMockExam, buildSectionPractice, CHAPTER_PASS, FULL_TIME_MS, jlptScore, JLPT_PASS, MOCK_TIME_LIMIT_MS, SECTIONS, type Section, type TestItem } from '../core/exam';
+import { buildChapterExam, chapterExamTime, buildDiagnostic, buildFullExam, buildMockExam, buildSectionPractice, CHAPTER_PASS, FULL_TIME_MS, jlptScore, JLPT_PASS, MOCK_TIME_LIMIT_MS, SECTIONS, type Section, type TestItem } from '../core/exam';
 import { review } from '../core/srs';
 import { grantXp } from '../core/game';
 import { ExerciseView, AudioButton, TextPassage, dbgOk } from './Question';
@@ -101,6 +101,146 @@ export function ReviewSession({ onClose, weak, mixups, place }: { onClose: () =>
   );
 }
 
+// ================================================================== placement and speed
+
+/** the placement test: what you already know quickly is marked as known, so the learning path only teaches the rest */
+export function PlacementSession({ onClose }: { onClose: () => void }) {
+  const de = isDe();
+  const [items, setItems] = useState<Exercise[]>(() => buildPlacementSession(store.s));
+  const [i, setI] = useState(-1);
+  const [known, setKnown] = useState(0);
+  const title = `実力テスト ${de ? 'Einstufungstest' : 'Placement test'}`;
+  if (i === -1 || !items.length)
+    return (
+      <div className="panel study">
+        <div className="panel-title">{title}<button className="btn small ghost close" onClick={onClose}>✕</button></div>
+        {items.length ? (
+          <>
+            <p>
+              {de
+                ? `${items.length} Wörter aus dem Lernpfad, zuerst der N3-Grundwortschatz. Was du richtig und schnell (unter ${PLACEMENT_MS / 1000} Sekunden) beantwortest, gilt als bekannt und kommt in drei Tagen nur noch einmal zur Kontrolle. Den Rest lernst du im Lernpfad. Rate nicht – „weiß ich nicht“ ist hier die beste Antwort.`
+                : `${items.length} words of the learning path, the N3 base first. What you answer right and quickly (under ${PLACEMENT_MS / 1000} seconds) counts as known and only comes back once for a check in three days. The rest you learn on the path. Don't guess.`}
+            </p>
+            <p className="note">{de ? `Bisher geprüft: ${store.s.flags.placement_n ?? 0} · als bekannt erkannt: ${store.s.flags.placement_known ?? 0}` : `Tested so far: ${store.s.flags.placement_n ?? 0} · known: ${store.s.flags.placement_known ?? 0}`}</p>
+            <button className="btn primary" autoFocus onClick={() => setI(0)}>はじめる Start</button>
+          </>
+        ) : (
+          <p>{de ? 'Alle Wörter des Lernpfads sind schon eingestuft oder gelernt.' : 'Every word of the path is placed or studied already.'}</p>
+        )}
+      </div>
+    );
+  if (i >= items.length)
+    return (
+      <div className="panel study">
+        <div className="panel-title">{title}</div>
+        <p className="big-score">{known} / {items.length}</p>
+        <p>{de ? `${known} Wörter kanntest du schon – die überspringt der Lernpfad. Die anderen ${items.length - known} kommen in deinen Lernpfad.` : `You knew ${known} words already — the path skips them. The other ${items.length - known} are on your path.`}</p>
+        <div className="row">
+          <button className="btn" onClick={() => (setItems(buildPlacementSession(store.s)), setI(0), setKnown(0))}>{de ? 'Weitere 30 Wörter' : '30 more words'}</button>
+          <button className="btn primary" autoFocus onClick={onClose}>閉じる</button>
+        </div>
+      </div>
+    );
+  const ex = items[i];
+  return (
+    <div className="panel study">
+      <div className="panel-title">
+        {title} <span className="note">{i + 1} / {items.length}</span>
+        <button className="btn small ghost close" onClick={onClose}>✕</button>
+      </div>
+      <div className="progress"><div style={{ width: `${(i / items.length) * 100}%` }} /></div>
+      <ExerciseView
+        key={ex.id}
+        ex={{ ...ex, options: [...(ex.options ?? []), { text: de ? 'weiß ich nicht' : "I don't know", correct: false }] }}
+        auto
+        onDone={(ok, ms) => {
+          store.update((s) => recordPlacement(s, ex, ok, ms), 'learn');
+          if (ok && ms <= PLACEMENT_MS) setKnown(known + 1);
+          setI(i + 1);
+        }}
+      />
+    </div>
+  );
+}
+
+const BLITZ_MS = 90_000;
+
+/** a speed round: as many studied words and kanji as you can in 90 seconds; slow answers come back sooner */
+export function BlitzSession({ onClose }: { onClose: () => void }) {
+  const de = isDe();
+  const [items, setItems] = useState<Exercise[]>(() => buildBlitzSession(store.s));
+  const [i, setI] = useState(-1);
+  const [ok, setOk] = useState(0);
+  const [slow, setSlow] = useState(0);
+  const start = useRef(0);
+  const [now, setNow] = useState(Date.now());
+  const running = i >= 0 && i < items.length && now - start.current < BLITZ_MS;
+  useEffect(() => {
+    if (i < 0) return;
+    const t = setInterval(() => setNow(Date.now()), 250);
+    return () => clearInterval(t);
+  }, [i]);
+  const [best0] = useState(() => Number(store.s.flags.blitz_best) || 0);
+  useEffect(() => {
+    if (i > 0 && !running && ok > (Number(store.s.flags.blitz_best) || 0)) store.update((s) => (s.flags.blitz_best = ok), 'learn');
+  }, [running, i, ok]);
+  const title = `早押し ${de ? 'Tempo-Runde' : 'Speed round'}`;
+  if (i === -1)
+    return (
+      <div className="panel study">
+        <div className="panel-title">{title}<button className="btn small ghost close" onClick={onClose}>✕</button></div>
+        {items.length < 10 ? (
+          <p>{de ? 'Lerne erst ein paar Wörter im Lernpfad – die Tempo-Runde fragt nur Gelerntes.' : 'Study some words on the path first — the speed round only asks what you have learned.'}</p>
+        ) : (
+          <>
+            <p>
+              {de
+                ? `${BLITZ_MS / 1000} Sekunden: so viele gelernte Wörter und Kanji wie möglich. In der JLPT hast du pro Wortschatzfrage nur wenige Sekunden – hier trainierst du, sofort zu erkennen. Antworten über 10 Sekunden zählen als langsam und kommen früher wieder.`
+                : `${BLITZ_MS / 1000} seconds: as many studied words and kanji as you can. In the JLPT a vocabulary question gets only a few seconds — here you train instant recognition. Answers over 10 seconds count as slow and come back sooner.`}
+            </p>
+            {store.s.flags.blitz_best ? <p className="note">{de ? 'Rekord' : 'Best'}: {String(store.s.flags.blitz_best)}</p> : null}
+            <button className="btn primary" autoFocus onClick={() => ((start.current = Date.now()), setNow(Date.now()), setI(0))}>はじめる Start</button>
+          </>
+        )}
+      </div>
+    );
+  if (!running) {
+    return (
+      <div className="panel study">
+        <div className="panel-title">{title}</div>
+        <p className="big-score">{ok} {de ? 'richtig' : 'right'}</p>
+        <p>{de ? `${i} beantwortet · ${slow} davon langsam (über 10 s)` : `${i} answered · ${slow} slow (over 10 s)`}{ok > best0 ? (de ? ' · neuer Rekord!' : ' · new best!') : ''}</p>
+        <div className="row">
+          <button className="btn" onClick={() => (setItems(buildBlitzSession(store.s)), setOk(0), setSlow(0), (start.current = Date.now()), setNow(Date.now()), setI(0))}>{de ? 'Noch einmal' : 'Again'}</button>
+          <button className="btn primary" autoFocus onClick={onClose}>閉じる</button>
+        </div>
+      </div>
+    );
+  }
+  const left = Math.max(0, Math.ceil((BLITZ_MS - (now - start.current)) / 1000));
+  const ex = items[i];
+  return (
+    <div className="panel study">
+      <div className="panel-title">
+        {title} <span className="note">⏱ {left}s · ✓ {ok}</span>
+        <button className="btn small ghost close" onClick={onClose}>✕</button>
+      </div>
+      <div className="progress"><div style={{ width: `${((now - start.current) / BLITZ_MS) * 100}%` }} /></div>
+      <ExerciseView
+        key={ex.id + i}
+        ex={ex}
+        auto
+        onDone={(good, ms, chosen) => {
+          store.update((s) => recordAnswer(s, ex, good, ms, chosen), 'learn');
+          if (good) setOk((n) => n + 1);
+          if (ms > 10_000) setSlow((n) => n + 1);
+          setI((n) => n + 1);
+        }}
+      />
+    </div>
+  );
+}
+
 // ================================================================== exams
 
 export type ExamMode = 'practice' | 'mock' | 'full' | 'diagnostic' | 'chapter';
@@ -141,14 +281,14 @@ export function ExamRunner({ mode, section, chapter, onClose }: { mode: ExamMode
   const start = useRef(0);
   const qStart = useRef(0);
   const [now, setNow] = useState(Date.now());
-  const timed = mode === 'mock' || mode === 'full';
+  const timed = mode === 'mock' || mode === 'full' || mode === 'chapter';
   const showFeedback = mode === 'practice';
   // the full exam has two parts with their own time, and a break before the listening part
   const listenFrom = mode === 'full' ? items.findIndex((x) => x.section === '聴解') : -1;
   const [part2, setPart2] = useState(false);
   const partStart = useRef(0);
   const onBreak = listenFrom > 0 && i === listenFrom && !part2;
-  const limit = mode === 'full' ? (part2 ? FULL_TIME_MS.聴解 : FULL_TIME_MS.言語知識) : MOCK_TIME_LIMIT_MS;
+  const limit = mode === 'full' ? (part2 ? FULL_TIME_MS.聴解 : FULL_TIME_MS.言語知識) : mode === 'chapter' ? chapterExamTime(items.length) : MOCK_TIME_LIMIT_MS;
 
   useEffect(() => {
     if (!timed || i < 0 || onBreak) return;
@@ -254,7 +394,7 @@ export function ExamRunner({ mode, section, chapter, onClose }: { mode: ExamMode
         {mode === 'chapter' && (
           <p>
             {isDe()
-              ? `Wörter, Kanji und Grammatik aus Kapitel ${chapter}, im Stil der N2. Bestehen ab ${Math.round(CHAPTER_PASS * 100)} %; erst dann geht die Geschichte weiter. Was du falsch beantwortest, kommt in deine Wiederholungen – du kannst die Prüfung jederzeit neu versuchen.`
+              ? `Wörter, Kanji und Grammatik aus dem ganzen Kapitel ${chapter} des Lernpfads, im Stil der N2 und im Tempo der echten Prüfung: ${Math.round(chapterExamTime(items.length) / 60000)} Minuten. Bestehen ab ${Math.round(CHAPTER_PASS * 100)} %; erst dann geht die Geschichte weiter. Was du falsch beantwortest, kommt in deine Wiederholungen – du kannst die Prüfung jederzeit neu versuchen.`
               : `Words, kanji and grammar from chapter ${chapter}, in N2 style. You pass with ${Math.round(CHAPTER_PASS * 100)}%; only then does the story go on. What you miss goes into your reviews — you can retake it any time.`}
           </p>
         )}

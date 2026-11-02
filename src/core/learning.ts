@@ -7,6 +7,7 @@ import { toast } from './events';
 import { ttsAvailable } from './audio';
 import { captureOrigin } from './memory';
 import { tr as trDe, isDe } from './i18n';
+import { pathChapterOf } from './path';
 import type { VocabEntry, Card, GameState, SkillArea } from './types';
 
 /**
@@ -394,22 +395,35 @@ export function queueInfo(s: GameState, now = Date.now()): QueueInfo {
   const cards = Object.values(s.cards).filter((c) => keyExists(c.key));
   const due = cards.filter((c) => isDue(c, now)).sort((a, b) => a.due - b.due).map((c) => c.key);
   // new = encountered in the world but never studied; chapter items come after
-  const encounteredNew = cards.filter((c) => !c.introduced).sort((a, b) => b.encounters - a.encounters).map((c) => c.key);
+  // the learning path first: items met in the world that belong to a reached chapter, then the path in chapter order,
+  // then whatever else was met
+  const reached = (k: string) => {
+    const c = pathChapterOf(k);
+    return c > 0 && c <= Math.max(1, s.chapter);
+  };
+  const encountered = cards.filter((c) => !c.introduced).sort((a, b) => b.encounters - a.encounters).map((c) => c.key);
   const chapterNew = allKeys()
     .filter((k) => !s.cards[k] && isNewCandidate(s, k))
     .map((k, i) => [k, chapterOf(k) * 1e5 + i] as const)
     .sort((a, b) => a[1] - b[1])
     .map(([k]) => k);
+  // the current chapter before earlier ones left over (a save from before the learning path)
+  const cur = Math.max(1, s.chapter);
+  const first = (ks: string[]) => [...ks.filter((k) => pathChapterOf(k) === cur), ...ks.filter((k) => pathChapterOf(k) !== cur)];
+  const encounteredNew = [...first(encountered.filter(reached)), ...first(chapterNew.filter(reached))];
+  const later = [...encountered.filter((k) => !reached(k)), ...chapterNew.filter((k) => !reached(k))];
   const struggling = cards.filter((c) => mastery(c) === 'struggling').map((c) => c.key);
   return {
     due,
-    newAvailable: [...encounteredNew, ...chapterNew],
+    newAvailable: [...encounteredNew, ...later],
     newAllowed: Math.max(0, s.settings.newPerDay - s.daily.newIntroduced),
     struggling,
   };
 }
 
 function chapterOf(key: string): number {
+  const onPath = pathChapterOf(key);
+  if (onPath) return onPath;
   const [t, id] = key.split(':');
   if (t === 'v') return VOCAB_BY_ID[id]?.chapter ?? 99;
   if (t === 'g') return GRAMMAR_BY_ID[id]?.chapter ?? 99;
@@ -424,7 +438,8 @@ function chapterOf(key: string): number {
  */
 function isNewCandidate(s: GameState, key: string): boolean {
   const [t, id] = key.split(':');
-  if (t === 'v' && VOCAB_BY_ID[id]?.source === 'jlpt') return VOCAB_BY_ID[id].chapter > 0;
+  // the N3 base words are on the learning path too, a seventh of them in each chapter
+  if (t === 'v' && VOCAB_BY_ID[id]?.source === 'jlpt') return VOCAB_BY_ID[id].chapter > 0 || pathChapterOf(key) <= Math.max(1, s.chapter);
   if (t === 'g' && GRAMMAR_BY_ID[id]?.source === 'n2course') return true;
   if (t === 'k' && KANJI_BY_ID[id]?.source === 'jlpt') return KANJI_BY_ID[id].words.some((w) => s.cards['v:' + w]?.introduced);
   return chapterOf(key) <= s.chapter;
@@ -564,7 +579,7 @@ export function recordAnswer(s: GameState, ex: Exercise, ok: boolean, ms: number
   else ok ? card.isoOk++ : card.isoFail++;
   // only reschedule when the item was actually due (or new); early extra practice
   // in battles is logged but does not inflate intervals
-  if (!card.introduced || card.due <= now || !ok) review(card, gradeFromAnswer(ok, ms), now);
+  if (!card.introduced || card.due <= now || !ok) review(card, gradeFromAnswer(ok, ms, ex.context), now);
   card.history.push({ t: now, ok, mode: ex.mode, ms });
   if (card.history.length > 20) card.history.splice(0, card.history.length - 20);
   if (!ok && chosen?.key && chosen.key !== ex.key && chosen.key[0] === ex.key[0]) {
@@ -649,4 +664,49 @@ export function describeKey(key: string, lang: 'en' | 'de' = 'en'): { label: str
     return { label: k.char, reading: [...k.on, ...k.kun].join('・'), meaning: trDe(k.meaning, lang === 'de') };
   }
   return { label: key, meaning: '' };
+}
+
+// ------------------------------------------------------------------ placement and speed
+
+/**
+ * The placement test (Einstufungstest): words of the learning path the player has not studied yet, the N3 base first,
+ * asked for their meaning. A quick right answer marks the word as known (it comes back for a check in three days),
+ * so the path only teaches what is really new.
+ */
+export function buildPlacementSession(s: GameState, size = 30, r = Math.random): Exercise[] {
+  const fresh = VOCAB.filter((v) => !s.cards['v:' + v.id] && pathChapterOf('v:' + v.id) > 0 && !v.affix);
+  const n3 = fresh.filter((v) => v.level === 'N3');
+  const pool = n3.length ? n3 : fresh;
+  return shuffle(pool, r)
+    .slice(0, size)
+    .map((v) => ({ ...vocabExercise(v.id, 'meaning', s, r), mode: 'placement' }));
+}
+
+export const PLACEMENT_MS = 8_000;
+
+export function recordPlacement(s: GameState, ex: Exercise, ok: boolean, ms: number, now = Date.now()) {
+  if (!ex.key) return;
+  s.skills[ex.area].total++;
+  s.skills[ex.area].ms += ms;
+  if (ok) s.skills[ex.area].ok++;
+  s.flags.placement_n = (Number(s.flags.placement_n) || 0) + 1;
+  if (ok && ms <= PLACEMENT_MS) {
+    const card = (s.cards[ex.key] ??= newCard(ex.key, now));
+    review(card, 4, now);
+    review(card, 4, now);
+    card.isoOk++;
+    card.history.push({ t: now, ok: true, mode: 'placement', ms });
+    s.flags.placement_known = (Number(s.flags.placement_known) || 0) + 1;
+  } else {
+    // not known: met, so the path brings it early
+    encounter(s, [ex.key], now);
+  }
+}
+
+/** a speed round: words and kanji already studied, asked alone (reading, meaning, the word for a meaning) */
+export function buildBlitzSession(s: GameState, size = 60, r = Math.random): Exercise[] {
+  const known = Object.values(s.cards).filter((c) => c.introduced && keyExists(c.key) && (c.key.startsWith('v:') || c.key.startsWith('k:')));
+  return shuffle(known, r)
+    .slice(0, size)
+    .map((c) => exerciseFor(s, c.key, { prefer: 'isolated', r }));
 }

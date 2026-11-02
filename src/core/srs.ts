@@ -36,10 +36,14 @@ export function newCard(key: string, now = Date.now()): Card {
   };
 }
 
-export function gradeFromAnswer(ok: boolean, ms: number): Grade {
+/**
+ * The JLPT asks for quick answers: a word or kanji alone should come within about ten seconds, a question in a sentence
+ * within twenty. A slower right answer counts as hard (it comes back sooner), a quick one as easy.
+ */
+export function gradeFromAnswer(ok: boolean, ms: number, context = true): Grade {
   if (!ok) return 0;
-  if (ms > 20_000) return 3;
-  if (ms < 4_000) return 5;
+  if (ms > (context ? 20_000 : 10_000)) return 3;
+  if (ms < (context ? 6_000 : 3_500)) return 5;
   return 4;
 }
 
