@@ -1,4 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { registerCurriculum } from '../src/core/curriculum';
 import { SCRIPTS } from '../src/content/scripts';
 import { VOCAB_BY_ID } from '../src/content/vocab';
 import { GRAMMAR_BY_ID } from '../src/content/grammar';
@@ -11,6 +13,9 @@ import { NOTES } from '../src/content/society';
 import { PRACTICE_READING, PRACTICE_LISTENING } from '../src/content/practice';
 
 const text = JSON.stringify(SCRIPTS);
+
+// the N2 course words (n2_*) come with the curriculum file, as in the game
+beforeAll(() => registerCurriculum(JSON.parse(readFileSync('public/data/jlpt.json', 'utf8'))));
 
 describe('story content references', () => {
   it('every card key used in scripts exists', () => {

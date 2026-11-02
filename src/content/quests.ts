@@ -1,3 +1,4 @@
+import { EPISODE_QUESTS } from './episodes';
 export interface QuestDef {
   id: string;
   kind: 'main' | 'side' | 'character';
@@ -421,3 +422,6 @@ export const QUESTS: Record<string, QuestDef> = {
     learning: ['k:hai', 'k:oku', 'k:koku'],
   },
 };
+
+// 心の物語: the people's own stories of each chapter (content/episodes.ts)
+Object.assign(QUESTS, EPISODE_QUESTS);

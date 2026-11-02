@@ -97,6 +97,17 @@ function gateSteps(g: ReturnType<typeof storyGate>): Step[] {
 function examWaitSteps(ch: number, r: ReturnType<typeof examReady>): Step[] {
   const de = isDe();
   const st = r.status;
+  if (r.episodes.length)
+    return [
+      {
+        say: `試験の前に、この町の人たちの話を、もう少し聞いてあげて。（${r.episodes.map((q) => '「' + q.title + '」').join('')}）`,
+        who: 'mori',
+        showEn: true,
+        en: de
+          ? `Vor der Prüfung hör den Menschen hier noch zu – ihre Herzensgeschichten warten auf dich: ${r.episodes.map((q) => '„' + q.title + '“').join(', ')}. Personen mit einem ! über dem Kopf haben dir etwas zu erzählen.`
+          : `Before the exam, listen to the people here a little more — their stories are waiting: ${r.episodes.map((q) => '“' + q.titleEn + '”').join(', ')}. People with a ! above their head have something to tell you.`,
+      },
+    ];
   return [
     {
       say: `第${ch}章の試験は、この章の言葉をすべて学んで、その大部分を覚えてから受けられます。（学習 ${st.introduced}/${st.total}・定着 ${st.held}/${r.needHeld}）`,
@@ -254,7 +265,8 @@ export function GameView({ onExit }: { onExit: () => void }) {
         if (steps) {
           sfx('open');
           // the learning path: a story step waits until its share of the chapter is studied and the reviews are done
-          if (advancesQuest(steps)) {
+          // (a 心の物語 scene is itself learning, it never waits)
+          if (advancesQuest(steps) && !steps.some((st) => 'teach' in st)) {
             const gate = storyGate(store.s, queueInfo(store.s).due.length);
             if (!gate.ok) {
               push({ kind: 'script', steps: gateSteps(gate) });
@@ -268,7 +280,8 @@ export function GameView({ onExit }: { onExit: () => void }) {
           const echo = story ? null : echoFor(store.s, id);
           const recall: Step[] = echo ? [{ recall: { key: echo, who: id } }] : [];
           // a scene that reaches a quest goal ends with the lesson of that step of the story
-          const lesson: Step[] = story && reachesGoal(steps) ? [{ lesson: true }] : [];
+          // (a 心の物語 scene teaches its own words)
+          const lesson: Step[] = story && reachesGoal(steps) && !steps.some((st) => 'teach' in st) ? [{ lesson: true }] : [];
           push({ kind: 'script', steps: [...steps, ...lesson, ...recall, ...social] });
         }
       }),

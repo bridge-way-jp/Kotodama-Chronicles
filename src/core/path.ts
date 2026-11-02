@@ -123,9 +123,14 @@ export function storyGate(s: GameState, due: number): PathGate {
   return { ...base, ok: true, reason: null };
 }
 
-/** the chapter exam can be taken once the whole chapter is studied and most of it is held */
+/** the people's stories (心の物語) of a chapter not yet lived through */
+export const episodesOpen = (s: GameState, ch: number) =>
+  Object.values(QUESTS).filter((q) => q.id.startsWith('ep_') && q.chapter === ch && s.quests[q.id]?.status !== 'done');
+
+/** the chapter exam can be taken once the chapter's stories are lived, the whole chapter is studied and most of it is held */
 export function examReady(s: GameState, ch: number) {
   const st = pathStatus(s, ch);
   const needHeld = Math.ceil(st.total * HELD_FOR_EXAM);
-  return { ok: s.settings.pathGate === false || (st.introduced >= st.total && st.held >= needHeld), status: st, needHeld };
+  const episodes = episodesOpen(s, ch);
+  return { ok: !episodes.length && (s.settings.pathGate === false || (st.introduced >= st.total && st.held >= needHeld)), status: st, needHeld, episodes };
 }

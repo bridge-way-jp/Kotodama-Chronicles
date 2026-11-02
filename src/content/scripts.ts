@@ -5,6 +5,7 @@ import { TOKYO_SCRIPTS } from './scripts_tokyo';
 import { ROOMS2_SCRIPTS } from './scripts_rooms2.gen';
 import { applyBeats, sleepScenes } from './scenes';
 import { EVERYDAY_SPOTS } from './everyday';
+import { EPISODE_RULES } from './episodes';
 
 /**
  * All interaction scripts, keyed by NPC id or map-object id.
@@ -2843,7 +2844,7 @@ for (const [quest, ch] of [['mq6', 1], ['mq10', 2], ['mq14', 3], ['mq18', 4], ['
     when: { all: [...(start.when ? [start.when] : []), { notFlag: `exam_ch${ch}` }] },
     steps: [
       say('mori', 'おかえりなさい、@nameちゃん。次の{旅|たび}の前に、ここまでに{覚|おぼ}えた言葉を、ちょっと{確|たし}かめてみない？', 'Welcome back, @name. Before your next journey, shall we check the words you have learned so far?', 'happy'),
-      say('mori', `第${ch}章の言葉と漢字と文法の{試験|しけん}よ。七割できたら、{安心|あんしん}して送り出せるわ。`, `It’s an exam on the words, kanji and grammar of chapter ${ch}. If you get seven out of ten right, I can send you off with peace of mind.`),
+      say('mori', `第${ch}章の言葉と漢字と文法の{試験|しけん}よ。八割できたら、{安心|あんしん}して送り出せるわ。`, `It’s an exam on the words, kanji and grammar of chapter ${ch}. If you get eight out of ten right, I can send you off with peace of mind.`),
       {
         choice: [
           { text: '試験を受ける', en: 'Take the exam', then: [{ do: [{ open: `chapterexam:${ch}` }] }] },
@@ -2855,3 +2856,6 @@ for (const [quest, ch] of [['mq6', 1], ['mq10', 2], ['mq14', 3], ['mq18', 4], ['
   start.when = { all: [...(start.when ? [start.when] : []), passed] };
   rules.splice(i, 0, gate);
 }
+
+// 心の物語: an episode's scene comes before the person's usual words (content/episodes.ts)
+for (const [at, rules] of Object.entries(EPISODE_RULES)) SCRIPTS[at] = [...rules, ...(SCRIPTS[at] ?? [])];

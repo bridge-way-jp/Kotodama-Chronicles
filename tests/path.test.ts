@@ -39,8 +39,10 @@ describe('learning path', () => {
     s.settings.pathGate = false;
     expect(storyGate(s, DUE_LIMIT + 1).ok).toBe(true);
     s.settings.pathGate = true;
-    // the chapter exam needs the whole chapter studied and most of it held
+    // the chapter exam needs the chapter's stories lived, the whole chapter studied and most of it held
     expect(examReady(s, 1).ok).toBe(false);
+    expect(examReady(s, 1).episodes.length).toBeGreaterThan(0);
+    for (const q of examReady(s, 1).episodes) s.quests[q.id] = { id: q.id, status: 'done', objectives: {}, startedAt: 0 } as any;
     for (const k of pathItems(1)) {
       const c = (s.cards[k] ??= newCard(k));
       review(c, 4);
