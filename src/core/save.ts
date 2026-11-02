@@ -116,6 +116,11 @@ export function validateEnvelope(raw: unknown): SaveEnvelope {
     s.settings.meaningLang = 'de';
     s.flags.lang_de = 1;
   }
+  // the learning path came with about 30 minutes a day: older saves move up from the old default of 8 new items once
+  if (!s.flags.path_v1) {
+    if ((s.settings.newPerDay ?? 0) < 20) s.settings.newPerDay = 20;
+    s.flags.path_v1 = 1;
+  }
   for (const area of Object.keys(defaults.skills)) {
     if (!isObj(s.skills[area])) s.skills[area] = { ok: 0, total: 0, ms: 0 };
   }

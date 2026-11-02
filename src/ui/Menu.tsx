@@ -1,7 +1,7 @@
 import { isDe } from '../core/i18n';
 import { tr } from '../core/i18n';
 import { useState, type ReactNode } from 'react';
-import { store, DEFAULT_SETTINGS } from '../core/store';
+import { store } from '../core/store';
 import { QUESTS } from '../content/quests';
 import { AFFINITY_INFO, ITEMS, MOVES, SPECIES } from '../content/creatures';
 import { NPCS } from '../content/npcs';
@@ -13,6 +13,7 @@ import { CONFUSIONS } from '../content/confusions';
 import { EXAM_TYPES } from '../content/examtypes';
 import { creatureXpToNext, maxHp, xpToNext } from '../core/game';
 import { n2Readiness, readiness, SAFE_SCORE } from '../core/readiness';
+import { DUE_LIMIT, examReady, PATH_CHAPTERS, pathStatus, storyGate } from '../core/path';
 import { DAILY_GOAL, answersToday, queueInfo, streakDays } from '../core/learning';
 import { mastery } from '../core/srs';
 import { FULL_TIME_MS, JLPT_PASS, SECTIONS, chapterExamPassed, chapterExamsOpen, type Section } from '../core/exam';
@@ -49,6 +50,8 @@ export interface MenuActions {
   openWeak: () => void;
   openMixups: () => void;
   openPlace: (map: string) => void;
+  openPlacement: () => void;
+  openBlitz: () => void;
   openExam: (mode: 'practice' | 'mock' | 'full' | 'diagnostic' | 'chapter', section?: Section, chapter?: number) => void;
   openTournament: () => void;
   toTitle: () => void;
@@ -517,6 +520,63 @@ function ConfusionList() {
 
 // ------------------------------------------------------------------ JLPT
 
+/** the learning path: every chapter's share of the N2, how much is studied and held, and what the story waits for */
+function PathPanel({ actions }: { actions: MenuActions }) {
+  const de = isDe();
+  const s = store.s;
+  const q = queueInfo(s);
+  const gate = storyGate(s, q.due.length);
+  const daysLeft = (ch: number) => {
+    const st = pathStatus(s, ch);
+    return Math.ceil((st.total - st.introduced) / Math.max(1, s.settings.newPerDay));
+  };
+  const ahead = Array.from({ length: PATH_CHAPTERS }, (_, i) => i + 1).filter((c) => c >= gate.chapter);
+  const totalDays = ahead.reduce((n, c) => n + daysLeft(c), 0);
+  return (
+    <div className="ready-panel">
+      <b>学習の道 {de ? 'Lernpfad' : 'Learning path'}</b>
+      <p className="note">
+        {de
+          ? `Der ganze Stoff der N2 – ${PATH_CHAPTERS} Kapitel mit N2-Wörtern, Kanji, Grammatik und dem N3-Grundwortschatz. Die Geschichte geht nur so weit, wie du gelernt hast. Bei ${s.settings.newPerDay} neuen Einträgen pro Tag bleiben noch etwa ${totalDays} Lerntage.`
+          : `The whole N2 — ${PATH_CHAPTERS} chapters of N2 words, kanji, grammar and the N3 base vocabulary. The story only goes as far as you have studied. At ${s.settings.newPerDay} new items a day about ${totalDays} study days are left.`}
+      </p>
+      <p className={gate.ok ? 'good' : 'bad'}>
+        {gate.ok
+          ? de ? '◎ Die Geschichte kann weitergehen.' : '◎ The story can go on.'
+          : gate.reason === 'due'
+            ? de ? `× Die Geschichte wartet: ${q.due.length} Wiederholungen fällig (höchstens ${DUE_LIMIT}).` : `× The story waits: ${q.due.length} reviews due (at most ${DUE_LIMIT}).`
+            : de ? `× Die Geschichte wartet: noch ${gate.need - gate.have} Einträge aus Kapitel ${gate.chapter} lernen.` : `× The story waits: study ${gate.need - gate.have} more items of chapter ${gate.chapter}.`}
+      </p>
+      <table className="report">
+        <tbody>
+          {Array.from({ length: PATH_CHAPTERS }, (_, i) => i + 1).map((c) => {
+            const st = pathStatus(s, c);
+            const ex = examReady(s, c);
+            return (
+              <tr key={c} className={c === gate.chapter ? 'current' : ''}>
+                <td>第{c}章</td>
+                <td>
+                  {de ? 'gelernt' : 'studied'} {st.introduced}/{st.total}
+                  <br />
+                  <small>{de ? 'sicher' : 'held'} {st.held} · {de ? 'Wörter' : 'words'} {st.byType.v.introduced}/{st.byType.v.total} · 漢字 {st.byType.k.introduced}/{st.byType.k.total} · 文法 {st.byType.g.introduced}/{st.byType.g.total}</small>
+                </td>
+                <td>{s.flags[`exam_ch${c}`] ? '✓' : ex.ok ? (de ? 'Prüfung bereit' : 'exam ready') : ''}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <div className="row wrap">
+        <button className="btn primary" onClick={actions.openReview}>
+          {de ? 'Lernen' : 'Study'} ({q.due.length} {de ? 'fällig' : 'due'} · {Math.min(q.newAllowed, q.newAvailable.length)} {de ? 'neu' : 'new'})
+        </button>
+        <button className="btn" onClick={actions.openPlacement}>実力テスト {de ? 'Einstufungstest' : 'Placement test'}</button>
+        <button className="btn" onClick={actions.openBlitz}>早押し {de ? 'Tempo-Runde' : 'Speed round'}</button>
+      </div>
+    </div>
+  );
+}
+
 /** am I ready for the N2? the checks the game can see, and the last full mock exam scored like the JLPT */
 function ReadyPanel({ onFull }: { onFull: () => void }) {
   const de = isDe();
@@ -571,6 +631,7 @@ function JlptTab({ actions }: { actions: MenuActions }) {
   return (
     <div className="tab-content">
       <h3>JLPT N2 準備 Preparation</h3>
+      <PathPanel actions={actions} />
       <ReadyPanel onFull={() => actions.openExam('full')} />
       <div className="readiness-overall">
         <div className="ring" style={{ ['--p' as any]: Math.round(r.overall * 100) }}>
@@ -734,9 +795,19 @@ function SettingsTab({ actions }: { actions: MenuActions }) {
       <label>
         New items per day
         <select value={st.newPerDay} onChange={(e) => set('newPerDay', Number(e.target.value))}>
-          {[4, 8, 12, 16, 24].map((n) => (
-            <option key={n} value={n}>{n}{n === DEFAULT_SETTINGS.newPerDay ? ' (recommended)' : ''}</option>
+          {[10, 15, 20, 25, 35, 50].map((n) => (
+            <option key={n} value={n}>
+              {n}
+              {n === 10 ? (isDe() ? ' (ca. 15 Min./Tag)' : ' (about 15 min/day)') : n === 20 ? (isDe() ? ' (ca. 30 Min./Tag, empfohlen)' : ' (about 30 min/day, recommended)') : n === 35 ? (isDe() ? ' (ca. 60 Min./Tag)' : ' (about 60 min/day)') : ''}
+            </option>
           ))}
+        </select>
+      </label>
+      <label>
+        {isDe() ? 'Lernpfad: Story wartet auf den Lernstoff' : 'Learning path: the story waits for your studies'}
+        <select value={st.pathGate === false ? 'off' : 'on'} onChange={(e) => set('pathGate', e.target.value === 'on')}>
+          <option value="on">{isDe() ? 'an (empfohlen)' : 'on (recommended)'}</option>
+          <option value="off">{isDe() ? 'aus – Story ohne Lernpflicht' : 'off — story without study'}</option>
         </select>
       </label>
       <label>

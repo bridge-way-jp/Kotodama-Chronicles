@@ -499,7 +499,7 @@ function CgImage({ name }: { name: string }) {
 function SayBox({ step, onNext }: { step: Extract<Step, { say: string }>; onNext: () => void }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const npc = step.who ? NPCS[step.who] : undefined;
-  const [showEn, setShowEn] = useState(store.state?.settings.translation === 'always');
+  const [showEn, setShowEn] = useState(store.state?.settings.translation === 'always' || !!step.showEn);
   const [showLog, setShowLog] = useState(false);
 
   // read the line aloud when the player switched this on in Settings

@@ -29,13 +29,16 @@ describe('N2 curriculum', () => {
     }
   });
 
-  it('new items come after the story items, region by region, never N3 review words', () => {
+  it('new items follow the learning path chapter by chapter; N3 base words only from the reached chapters', async () => {
+    const { pathChapterOf } = await import('../src/core/path');
     const s = createInitialState('T');
     const q = queueInfo(s);
-    const jl = q.newAvailable.filter((k) => VOCAB_BY_ID[k.slice(2)]?.source === 'jlpt').map((k) => VOCAB_BY_ID[k.slice(2)]);
+    const jl = q.newAvailable.filter((k) => VOCAB_BY_ID[k.slice(2)]?.source === 'jlpt');
     expect(jl.length).toBeGreaterThan(1500);
-    expect(jl.every((v) => v.level === 'N2')).toBe(true);
-    for (let i = 1; i < jl.length; i++) expect(jl[i].chapter).toBeGreaterThanOrEqual(jl[i - 1].chapter);
+    // the N3 base of chapter 1 is on the path from the start, later chapters' share waits
+    expect(jl.some((k) => VOCAB_BY_ID[k.slice(2)].level === 'N3')).toBe(true);
+    expect(jl.every((k) => VOCAB_BY_ID[k.slice(2)].level === 'N2' || pathChapterOf(k) === 1)).toBe(true);
+    for (let i = 1; i < jl.length; i++) expect(pathChapterOf(jl[i])).toBeGreaterThanOrEqual(pathChapterOf(jl[i - 1]));
     // curriculum kanji wait until one of their words is introduced
     expect(q.newAvailable.some((k) => k.startsWith('k:k2_'))).toBe(false);
   });

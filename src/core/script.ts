@@ -61,7 +61,7 @@ export type Action =
   | { seen: string }
   | { warp: { map: string; x: number; y: number } }
   | { time: 'morning' | 'evening' }
-  | { open: 'review' | 'dashboard' | 'diagnostic' | 'shop' | 'menu' | 'garden' | 'karaoke' | `job:${string}` | `board:${string}` | `alltag:${string}` | `chapterexam:${number}` }
+  | { open: 'review' | 'placement' | 'blitz' | 'dashboard' | 'diagnostic' | 'shop' | 'menu' | 'garden' | 'karaoke' | `job:${string}` | `board:${string}` | `alltag:${string}` | `chapterexam:${number}` }
   | { chapter: number }
   /** switch the music for a scene: a track key, or 'map' for the current map's track (memory ends with the scene) */
   | { music: string }
@@ -73,7 +73,8 @@ export type Action =
 export type Mood = 'neutral' | 'happy' | 'surprised' | 'worried';
 
 export type Step =
-  | { say: string; who?: string; en?: string; mood?: Mood }
+  /** showEn: the translation is shown right away (for the game's own notices, such as the learning path) */
+  | { say: string; who?: string; en?: string; mood?: Mood; showEn?: boolean }
   | { cg: string; say?: string; en?: string }
   | { choice: { text: string; en?: string; then?: Step[] }[] }
   | { reading: string; then?: Step[] }

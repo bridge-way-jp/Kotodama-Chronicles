@@ -10,7 +10,7 @@ export const DEFAULT_SETTINGS: Settings = {
   furigana: 'auto',
   translation: 'tap',
   meaningLang: 'de',
-  newPerDay: 8,
+  newPerDay: 20,
   ttsRate: 1,
   sfx: true,
   musicVolume: 0.5,

@@ -380,4 +380,8 @@ export const DE_UI: Record<string, string> = {
   "played": "gespielt",
   "played · saved": "gespielt · gespeichert",
   "EN": "DE",
+  "This journey is also a learning path: the words, kanji and grammar the N2 needs are split over seven chapters. The story goes on as far as you have studied — about 30 minutes a day. (Menu → JLPT shows the path.)": "Diese Reise ist auch ein Lernpfad: Die Wörter, Kanji und Grammatik, die die N2 verlangt, sind auf sieben Kapitel verteilt. Die Geschichte geht so weit, wie du gelernt hast – etwa 30 Minuten am Tag. (Menü → JLPT zeigt den Lernpfad.)",
+  "Before you start, take the placement test? Words you already know are taken off your path, so you only learn what is new. (Any time later in Menu → JLPT.)": "Vor dem Start den Einstufungstest machen? Wörter, die du schon kennst, fallen aus deinem Lernpfad – so lernst du nur, was neu ist. (Später jederzeit unter Menü → JLPT.)",
+  "Take the placement test now": "Einstufungstest jetzt machen",
+  "Later — any time in the menu": "Später – jederzeit im Menü",
 };
