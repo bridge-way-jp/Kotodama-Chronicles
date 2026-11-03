@@ -32,7 +32,7 @@ export function Hud({ onMenu, onPlace }: { onMenu: (tab?: any) => void; onPlace?
   const s = store.s;
   const [, setV] = useState(0);
   useEffect(() => bus.on('save-status', () => setV((v) => v + 1)), []);
-  const main = Object.values(s.quests).find((q) => q.status === 'active' && QUESTS[q.id].kind === 'main');
+  const main = Object.values(s.quests).find((q) => q.status === 'active' && QUESTS[q.id]?.kind === 'main');
   const objective = main ? QUESTS[main.id].objectives.find((o) => !main.objectives[o.id]) : null;
   const guide = main ? guideFor(s, main.id, s.map) : null;
   const next = main ? null : nextStarter(s);
