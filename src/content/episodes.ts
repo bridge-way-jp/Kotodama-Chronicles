@@ -11,7 +11,9 @@ import { EPISODES_CH2B } from './episodes_ch2b';
 import { EPISODES_CH3B } from './episodes_ch3b';
 import { EPISODES_CH4B } from './episodes_ch4b';
 import { EPISODES_CH5B } from './episodes_ch5b';
+import { EPISODES_CH6B } from './episodes_ch6b';
+import { EPISODES_CH7B } from './episodes_ch7b';
 
 /** 心の物語 of every chapter (content/episodes_dsl.ts), as quests and dialogue rules */
-export const EPISODES = [...EPISODES_CH1, ...EPISODES_CH2, ...EPISODES_CH3, ...EPISODES_CH4, ...EPISODES_CH5, ...EPISODES_CH6, ...EPISODES_CH7, ...EPISODES_CH1B, ...EPISODES_CH2B, ...EPISODES_CH3B, ...EPISODES_CH4B, ...EPISODES_CH5B];
+export const EPISODES = [...EPISODES_CH1, ...EPISODES_CH2, ...EPISODES_CH3, ...EPISODES_CH4, ...EPISODES_CH5, ...EPISODES_CH6, ...EPISODES_CH7, ...EPISODES_CH1B, ...EPISODES_CH2B, ...EPISODES_CH3B, ...EPISODES_CH4B, ...EPISODES_CH5B, ...EPISODES_CH6B, ...EPISODES_CH7B];
 export const { quests: EPISODE_QUESTS, rules: EPISODE_RULES } = buildEpisodes(EPISODES);
