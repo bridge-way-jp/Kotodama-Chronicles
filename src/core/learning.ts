@@ -5,7 +5,7 @@ import { gradeFromAnswer, isDue, mastery, needsContext, newCard, review } from '
 import { rollDaily, todayKey } from './store';
 import { toast } from './events';
 import { ttsAvailable } from './audio';
-import { captureOrigin } from './memory';
+import { captureOrigin, markupOf } from './memory';
 import { tr as trDe, isDe } from './i18n';
 import { pathChapterOf } from './path';
 import type { VocabEntry, Card, GameState, SkillArea } from './types';
@@ -126,6 +126,10 @@ export function encounter(s: GameState, keys: string[], now = Date.now()): strin
       const origin = captureOrigin(s, key, now);
       if (origin) c.origin = origin;
       fresh.push(key);
+    } else if (!c.origin) {
+      // met before without a moment (a quiz, a list): the first line that really says it becomes its memory
+      const origin = captureOrigin(s, key, now);
+      if (origin && markupOf(key).test(origin.line)) c.origin = origin;
     }
     c.encounters++;
     // kanji are tied to their words: meeting a word also surfaces its kanji
