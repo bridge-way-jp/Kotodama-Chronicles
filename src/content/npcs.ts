@@ -1,5 +1,7 @@
 import { ROOMS2_NPCS } from './rooms2.gen';
 import { PEOPLE_LOOKS } from './people.gen';
+import { EXPANSION_GEN } from './expansion.gen';
+import { DE_STORY } from './de_story';
 
 export interface NpcDef {
   id: string;
@@ -69,5 +71,17 @@ export const NPCS: Record<string, NpcDef> = {
 
 // shopkeepers of the later interiors (tools/build_new_rooms.py)
 Object.assign(NPCS, ROOMS2_NPCS);
+
+// the people of the expansion districts (content/expansion.ts): name in English from the id, role from the plan
+const EX_COLORS = ['#b5733a', '#3f6fd1', '#9b6bb3', '#3f7a4a', '#d0473a', '#2f4a7a', '#d0a040', '#6b3f7a', '#5a8fb8', '#8a6a22'];
+const LONG: Record<string, string> = { oo: 'ō', ou: 'ō', uu: 'ū' };
+for (const d of Object.values(EXPANSION_GEN))
+  d.people.forEach(([id, ja, role, roleDe], i) => {
+    const base = id.replace(/^ex_/, '').replace(/\d+$/, '').replace(/oo|ou|uu/g, (m) => LONG[m]);
+    const name = base[0].toUpperCase() + base.slice(1);
+    const nameEn = /先生$/.test(ja) ? `${name}-sensei` : /教授$/.test(ja) ? `Prof. ${name}` : /船長$/.test(ja) ? `Captain ${name}` : /さん$/.test(ja) ? `${name}-san` : name;
+    DE_STORY[role] ??= roleDe;
+    NPCS[id] = { id, name: ja, nameEn, role, sprite: `npc_${id}`, portrait: `portrait_${id}`, color: EX_COLORS[i % EX_COLORS.length] };
+  });
 // people who borrowed someone else's look have one of their own now (tools/build_people.py)
 for (const [id, look] of Object.entries(PEOPLE_LOOKS)) if (NPCS[id]) NPCS[id] = { ...NPCS[id], ...look };
