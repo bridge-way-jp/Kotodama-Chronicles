@@ -23,6 +23,7 @@ import { CloudSettings, PackSettings } from './CloudPanel';
 import { saveNow, saveStatus } from '../core/persistence';
 import { SECRETS, foundSecrets } from '../content/secrets';
 import { NOTES, foundNotes } from '../content/society';
+import { DISCOVERY_IDS, foundDiscoveries } from '../content/discoveries';
 import { setSfx, setMusicVolume, hasJapaneseVoice, ttsAvailable } from '../core/audio';
 import { ItemDetail, MASTERY_LABEL } from './Cards';
 import type { Settings } from '../core/types';
@@ -110,6 +111,7 @@ function AlbumGrid() {
     { ja: '仲間', label: 'Kotodama befriended', have: Object.values(s.dex).filter((d) => d === 'caught').length, of: Object.keys(SPECIES).length },
     { ja: '日本ノート', label: 'Japan notes', have: foundNotes(s), of: Object.keys(NOTES).length },
     { ja: 'ひみつ', label: 'Secrets', have: foundSecrets(s), of: Object.keys(SECRETS).length },
+    { ja: '発見', label: 'Discoveries', have: foundDiscoveries(s), of: DISCOVERY_IDS.length },
     { ja: '語彙', label: 'Words studied', have: known('v:'), of: VOCAB.length },
     { ja: '文法', label: 'Grammar patterns', have: known('g:'), of: GRAMMAR.length },
     { ja: '漢字', label: 'Kanji', have: known('k:'), of: KANJI.length },
