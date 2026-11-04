@@ -709,8 +709,8 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   ],
   "npc": {
    "id": "koban_omawari",
-   "x": 6,
-   "y": 2,
+   "x": 7,
+   "y": 4,
    "facing": "down"
   },
   "doors": [
@@ -960,8 +960,8 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   ],
   "npc": {
    "id": "books_shuijin",
-   "x": 2,
-   "y": 2,
+   "x": 3,
+   "y": 4,
    "facing": "down"
   },
   "doors": [
