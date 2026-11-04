@@ -1,4 +1,5 @@
 import type { Cond } from '../core/script';
+import { EX_JOBS } from './jobs_ex';
 
 /**
  * Part-time jobs (the Stardew part): a short themed practice round once per game day.
@@ -102,6 +103,8 @@ export const JOBS: Record<string, JobDef> = {
     thanks: 'ありがとうございます。助かりました。お礼に、これをどうぞ。', thanksEn: 'Thank you very much. That was a help. Please take this as thanks.',
   },
 };
+
+Object.assign(JOBS, EX_JOBS);
 
 /** the game day on which the job was last done (flags store numbers) */
 export const jobFlag = (id: string) => `job_${id}_day`;

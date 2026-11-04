@@ -1,6 +1,7 @@
 import { DE_STORY } from './de_story';
 import type { DialogueRule, Step } from '../core/script';
 import { EXPANSION_GEN } from './expansion.gen';
+import { EX_JOB_NPC, EX_JOBS } from './jobs_ex';
 
 /**
  * The world expansion: one new district in each region (tools/build_expansion.py builds the maps, buildings and people
@@ -142,4 +143,10 @@ for (const [name, s] of Object.entries(EXPANSION_SIGNS)) {
   ];
 }
 for (const [id, [ja, t]] of Object.entries(BUILDINGS)) EXPANSION_SCRIPTS[id] = [{ steps: [n(ja, t)] }];
-for (const [id, [ja, t]] of Object.entries(GREETINGS)) EXPANSION_SCRIPTS[id] = [{ steps: [say(id, ja, t)] }];
+const WORK: T = ['Work (pays per correct answer)', 'Arbeiten (Lohn pro richtiger Antwort)'];
+for (const [id, [ja, t]] of Object.entries(GREETINGS)) {
+  const steps: Step[] = [say(id, ja, t)];
+  const job = EX_JOB_NPC[id];
+  if (job) steps.push({ choice: [{ text: 'バイトする', en: `${de(WORK)}: ${EX_JOBS[job].titleEn}`, then: [{ do: [{ open: `job:${job}` }] }] }, { text: 'やめる', en: de(STAY) }] });
+  EXPANSION_SCRIPTS[id] = [{ steps }];
+}

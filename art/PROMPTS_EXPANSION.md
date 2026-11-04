@@ -708,3 +708,306 @@ Rows:
 4. ソフィー (French schoolgirl in Tokyo)
 5. 麻衣さん (Night-nursery teacher)
 ```
+
+# 8_Okinawa: 南の島のむら (The southern island village)
+
+## 1_Boden
+**Attach:** hm_style.webp, ground_harbor_draft.webp  ·  Karte (Boden) für „南の島のむら“. Ergebnis speichern als: ground_ex_okinawa_draft.webp
+
+```
+16-bit top-down RPG pixel art in the same warm style and 3/4 top-down view as the attached images. The second attached image is the map of the previous area: paint the new map in exactly the same scale, detail and style.
+Paint ONLY THE GROUND of a small subtropical southern island village in Okinawa style: a white-sand beach, a coral-stone-walled village, a sugar-cane field and a small harbour, seen from above, filling the whole picture edge to edge, as one map. Late summer, intense blue sky, warm golden light, hibiscus and banyan trees.
+Layout:
+- The bottom: a bright white-sand beach with turquoise shallows, a few boats pulled up, a small wooden pier.
+- The centre: a village of low red-tiled houses with coral-stone walls and shisa lion statues on the roofs, narrow sandy lanes, banyan trees with hanging roots.
+- The top: sugar-cane fields, a small sacred grove (utaki) with a stone gate, and a hill with a lookout.
+- Paths are clearly visible (paving, gravel or dirt); everything else is garden, trees, water or rock.
+- Leave EMPTY, flat plots where buildings will stand: one plot (community hall with a stage), one plot (awamori distillery), one plot (small dive shop), one plot (sanshin teacher's house), one plot (shaved-ice and soba shop), one plot (elementary school), one plot (small clinic), one plot (fish stall), two plots for traditional houses.
+Paint NO buildings, NO people, NO vehicles, NO text.
+Landscape 1536 × 1024.
+```
+
+## 2_Gebaeude
+**Attach:** hm_style.webp, hm_exterior_harbor.webp  ·  Gebäude. Ergebnis speichern als: hm_exterior_ex_okinawa.webp
+
+```
+Exterior buildings for The southern island village (南の島のむら), in exactly the same style, light and scale as the attached building sheet. Each building separately, at least 40 px magenta gap between them, no readable text on signs.
+IMPORTANT: NO smoke, NO people, NO vehicles unless named (these are added in the game).
+1. A community hall (kōminkan) with a red-tile roof, a small stage and strings of paper decorations
+2. A small awamori distillery with white walls, a red-tile roof and clay pots stacked outside
+3. A dive shop with surfboards, snorkel gear on racks and a blue awning
+4. A traditional Okinawan house with a red-tile roof, a shisa lion statue, a coral-stone wall and a hibiscus hedge
+5. A tiny shaved-ice and soba shop with a bamboo awning, wooden stools and a blank painted sign
+6. A one-storey elementary school with an open corridor, a flag pole and a banyan tree
+7. A small white clinic with a red-tile roof and a hibiscus by the door
+8. A simple open fish stall with ice boxes, baskets and a hand scale
+Plain pure magenta (#FF00FF) background. Landscape 1536 × 1024.
+```
+
+## 3a_Leute
+**Attach:** hm_style.webp, hm_chars_harbor.webp, hm_chars_main.webp  ·  Laufbilder der Figuren 清裕じいさん, 海さん, 三郎先生, 香奈ちゃん, 比嘉おばあ. Ergebnis speichern als: hm_chars_ex_okinawa_a.webp
+
+```
+Create a walking sprite sheet for a top-down 16-bit RPG, in exactly the same pixel-art style, size and proportions as the attached character sheets.
+RULES: chibi proportions, all adults exactly the same height (children smaller), feet on the same baseline. Each character is one BLOCK of 4 columns × 4 rows:
+Row 1 facing DOWN, Row 2 facing LEFT (true profile), Row 3 facing RIGHT (true profile — draw it, do not mirror; bags stay on the same body side), Row 4 facing UP (back view).
+4 frames per row: standing, left foot forward, standing, right foot forward. Same outfit and items in every direction.
+No large preview figure, no ground shadow, no text. Clear gaps between frames, bigger gaps between characters. The characters side by side in one row (3 + 2 if needed).
+Background: plain pure magenta (#FF00FF). Landscape 1536 × 1024.
+The 5 characters (late summer clothes, modern Japan):
+1. 清裕じいさん (Awamori master): a dignified man of about 78, a short-sleeved kariyushi shirt, a straw hat, a small clay jar
+2. 海さん (Dive instructor): a tanned woman of about 34, a rash-guard and shorts, a mask pushed up on her forehead, a dive bag
+3. 三郎先生 (Sanshin teacher): a calm man of about 66, a deep-blue Ryukyu shirt, a sanshin (three-stringed instrument) in his hands
+4. 香奈ちゃん (Girl in the elementary school): a lively girl of about 9 with two ponytails, a school uniform with a straw hat, a small shisa figure
+5. 比嘉おばあ (Soba-shop grandmother): a round old woman of about 80, a flowery apron, a bandana, a bowl of soba in her hands
+```
+
+## 4a_Portraets
+**Attach:** hm_style.webp, portraits_harbor.webp  ·  Porträts. Ergebnis speichern als: portraits_ex_okinawa_a.webp (Ordner 3a vorher machen und dessen Ergebnis zusätzlich anhängen).
+
+```
+Dialogue portrait sheet for the characters in the walking sheet I also attach (from the previous message), in exactly the same style as the attached portrait sheet. Same faces, hair and clothes.
+One ROW per character, 4 portraits per row: neutral, happy, surprised, worried. Head and shoulders, all the same size and crop.
+Clear gaps, no text, no frames. Plain pure magenta (#FF00FF) background.
+Rows:
+1. 清裕じいさん (Awamori master)
+2. 海さん (Dive instructor)
+3. 三郎先生 (Sanshin teacher)
+4. 香奈ちゃん (Girl in the elementary school)
+5. 比嘉おばあ (Soba-shop grandmother)
+```
+
+## 3b_Leute
+**Attach:** hm_style.webp, hm_chars_harbor.webp, hm_chars_main.webp  ·  Laufbilder der Figuren 太陽, 真砂子先生, 健太, アレックス, 渚さん. Ergebnis speichern als: hm_chars_ex_okinawa_b.webp
+
+```
+Create a walking sprite sheet for a top-down 16-bit RPG, in exactly the same pixel-art style, size and proportions as the attached character sheets.
+RULES: chibi proportions, all adults exactly the same height (children smaller), feet on the same baseline. Each character is one BLOCK of 4 columns × 4 rows:
+Row 1 facing DOWN, Row 2 facing LEFT (true profile), Row 3 facing RIGHT (true profile — draw it, do not mirror; bags stay on the same body side), Row 4 facing UP (back view).
+4 frames per row: standing, left foot forward, standing, right foot forward. Same outfit and items in every direction.
+No large preview figure, no ground shadow, no text. Clear gaps between frames, bigger gaps between characters. The characters side by side in one row (3 + 2 if needed).
+Background: plain pure magenta (#FF00FF). Landscape 1536 × 1024.
+The 5 characters (late summer clothes, modern Japan):
+1. 太陽 (Teenage surfer who wants to leave): a teenager of about 16, bleached hair, board shorts, a surfboard under his arm
+2. 真砂子先生 (Island doctor): a brisk woman of about 52, a white coat over a floral shirt, a stethoscope, a straw hat
+3. 健太 (Sugar-cane farmer): a strong man of about 41, a towel on his head, work gloves, a cane knife at his belt
+4. アレックス (Foreign volunteer teacher): a lanky young man of about 24 with light-brown hair, a polo shirt, a lanyard and a notebook
+5. 渚さん (Festival organiser (eisa dance)): a spirited woman of about 38, a red eisa costume with a headband, a small hand drum
+```
+
+## 4b_Portraets
+**Attach:** hm_style.webp, portraits_harbor.webp  ·  Porträts. Ergebnis speichern als: portraits_ex_okinawa_b.webp (Ordner 3b vorher machen und dessen Ergebnis zusätzlich anhängen).
+
+```
+Dialogue portrait sheet for the characters in the walking sheet I also attach (from the previous message), in exactly the same style as the attached portrait sheet. Same faces, hair and clothes.
+One ROW per character, 4 portraits per row: neutral, happy, surprised, worried. Head and shoulders, all the same size and crop.
+Clear gaps, no text, no frames. Plain pure magenta (#FF00FF) background.
+Rows:
+1. 太陽 (Teenage surfer who wants to leave)
+2. 真砂子先生 (Island doctor)
+3. 健太 (Sugar-cane farmer)
+4. アレックス (Foreign volunteer teacher)
+5. 渚さん (Festival organiser (eisa dance))
+```
+
+# 9_Hokkaido: 北の牧場と雪の町 (The northern ranch and snow town)
+
+## 1_Boden
+**Attach:** hm_style.webp, ground_mountain_draft.webp  ·  Karte (Boden) für „北の牧場と雪の町“. Ergebnis speichern als: ground_ex_hokkaido_draft.webp
+
+```
+16-bit top-down RPG pixel art in the same warm style and 3/4 top-down view as the attached images. The second attached image is the map of the previous area: paint the new map in exactly the same scale, detail and style.
+Paint ONLY THE GROUND of a northern Hokkaido dairy town in deep winter: a snowy dairy ranch, a small town street with a ramen shop and a frozen lake, seen from above, filling the whole picture edge to edge, as one map. Deep winter, bright pale light, fresh snow, pink sunset sky.
+Layout:
+- The left half: snowy pastures with wooden fences, a big red-roofed barn plot and a silo plot, a long straight snow-cleared road.
+- The centre: a small town street with low shops, a station plot with a single snow-covered platform, steam rising from vents.
+- The right: a frozen lake with a few ice-fishing huts and a path of footprints, tall birch trees.
+- Paths are clearly visible (paving, gravel or dirt); everything else is garden, trees, water or rock.
+- Leave EMPTY, flat plots where buildings will stand: one plot (dairy barn), one plot (cheese workshop), one plot (small railway station), one plot (ramen shop), one plot (school gym), one plot (ice-fishing hut shop), one plot (library), one plot (bakery-café), two plots for farmhouses.
+Paint NO buildings, NO people, NO vehicles, NO text.
+Landscape 1536 × 1024.
+```
+
+## 2_Gebaeude
+**Attach:** hm_style.webp, hm_exterior_mountain.webp  ·  Gebäude. Ergebnis speichern als: hm_exterior_ex_hokkaido.webp
+
+```
+Exterior buildings for The northern ranch and snow town (北の牧場と雪の町), in exactly the same style, light and scale as the attached building sheet. Each building separately, at least 40 px magenta gap between them, no readable text on signs.
+IMPORTANT: NO smoke, NO people, NO vehicles unless named (these are added in the game).
+1. A big red-roofed dairy barn with a tall silo, snow on the roof and warm light in the windows
+2. A small cheese workshop in a log building with copper vats visible through the window
+3. A tiny rural railway station with a snow-covered platform, a stove chimney and a bench
+4. A cosy ramen shop with a red noren curtain, steamed windows and a stack of firewood
+5. A snow-covered school gym with a curved roof and a small entrance
+6. An ice-fishing supply shop with sledges, rods and a stove chimney
+7. A small town library in a log building with a warm lit reading window
+8. A bakery-café in a wooden house with a steaming window and a chalk board (no readable text)
+Plain pure magenta (#FF00FF) background. Landscape 1536 × 1024.
+```
+
+## 3a_Leute
+**Attach:** hm_style.webp, hm_chars_mountain.webp, hm_chars_main.webp  ·  Laufbilder der Figuren 五郎さん, 千秋さん, 智也くん, 蛍さん, 亮先生. Ergebnis speichern als: hm_chars_ex_hokkaido_a.webp
+
+```
+Create a walking sprite sheet for a top-down 16-bit RPG, in exactly the same pixel-art style, size and proportions as the attached character sheets.
+RULES: chibi proportions, all adults exactly the same height (children smaller), feet on the same baseline. Each character is one BLOCK of 4 columns × 4 rows:
+Row 1 facing DOWN, Row 2 facing LEFT (true profile), Row 3 facing RIGHT (true profile — draw it, do not mirror; bags stay on the same body side), Row 4 facing UP (back view).
+4 frames per row: standing, left foot forward, standing, right foot forward. Same outfit and items in every direction.
+No large preview figure, no ground shadow, no text. Clear gaps between frames, bigger gaps between characters. The characters side by side in one row (3 + 2 if needed).
+Background: plain pure magenta (#FF00FF). Landscape 1536 × 1024.
+The 5 characters (deep winter clothes, modern Japan):
+1. 五郎さん (Dairy farmer): a heavy-set man of about 58, a quilted work jacket, rubber boots, a wool cap with ear flaps
+2. 千秋さん (Cheese maker): a focused woman of about 36, a white cap and coat, a wooden paddle, a round cheese
+3. 智也くん (Station master of a one-man station): a young man of about 28, a railway uniform and cap, a flag and a pocket watch
+4. 蛍さん (Ramen-shop owner): a lively woman of about 45, a red headband, a black apron, a big ladle
+5. 亮先生 (Gym teacher and ice-hockey coach): a tall man of about 40, a tracksuit, a whistle, a hockey stick over his shoulder
+```
+
+## 4a_Portraets
+**Attach:** hm_style.webp, portraits_mountain.webp  ·  Porträts. Ergebnis speichern als: portraits_ex_hokkaido_a.webp (Ordner 3a vorher machen und dessen Ergebnis zusätzlich anhängen).
+
+```
+Dialogue portrait sheet for the characters in the walking sheet I also attach (from the previous message), in exactly the same style as the attached portrait sheet. Same faces, hair and clothes.
+One ROW per character, 4 portraits per row: neutral, happy, surprised, worried. Head and shoulders, all the same size and crop.
+Clear gaps, no text, no frames. Plain pure magenta (#FF00FF) background.
+Rows:
+1. 五郎さん (Dairy farmer)
+2. 千秋さん (Cheese maker)
+3. 智也くん (Station master of a one-man station)
+4. 蛍さん (Ramen-shop owner)
+5. 亮先生 (Gym teacher and ice-hockey coach)
+```
+
+## 3b_Leute
+**Attach:** hm_style.webp, hm_chars_mountain.webp, hm_chars_main.webp  ·  Laufbilder der Figuren 歌子おばあ, 健二さん, 瑞穂さん, ピエール, ゆっこ. Ergebnis speichern als: hm_chars_ex_hokkaido_b.webp
+
+```
+Create a walking sprite sheet for a top-down 16-bit RPG, in exactly the same pixel-art style, size and proportions as the attached character sheets.
+RULES: chibi proportions, all adults exactly the same height (children smaller), feet on the same baseline. Each character is one BLOCK of 4 columns × 4 rows:
+Row 1 facing DOWN, Row 2 facing LEFT (true profile), Row 3 facing RIGHT (true profile — draw it, do not mirror; bags stay on the same body side), Row 4 facing UP (back view).
+4 frames per row: standing, left foot forward, standing, right foot forward. Same outfit and items in every direction.
+No large preview figure, no ground shadow, no text. Clear gaps between frames, bigger gaps between characters. The characters side by side in one row (3 + 2 if needed).
+Background: plain pure magenta (#FF00FF). Landscape 1536 × 1024.
+The 5 characters (deep winter clothes, modern Japan):
+1. 歌子おばあ (Ainu embroidery craftswoman): a dignified old woman of about 83, a dark robe with traditional Ainu patterns, a headband, a needle and cloth
+2. 健二さん (Ice-fishing guide): a weathered man of about 62, a thick parka with fur hood, an ice drill, a bucket
+3. 瑞穂さん (Librarian): a gentle woman of about 48, a long knitted cardigan, round glasses, a stack of picture books
+4. ピエール (French baker): a cheerful man of about 33, a tall white baker's hat, an apron with flour, a baguette
+5. ゆっこ (Girl who hunts the aurora): a determined girl of about 12, a bright-red parka, a camera on a tripod, mittens
+```
+
+## 4b_Portraets
+**Attach:** hm_style.webp, portraits_mountain.webp  ·  Porträts. Ergebnis speichern als: portraits_ex_hokkaido_b.webp (Ordner 3b vorher machen und dessen Ergebnis zusätzlich anhängen).
+
+```
+Dialogue portrait sheet for the characters in the walking sheet I also attach (from the previous message), in exactly the same style as the attached portrait sheet. Same faces, hair and clothes.
+One ROW per character, 4 portraits per row: neutral, happy, surprised, worried. Head and shoulders, all the same size and crop.
+Clear gaps, no text, no frames. Plain pure magenta (#FF00FF) background.
+Rows:
+1. 歌子おばあ (Ainu embroidery craftswoman)
+2. 健二さん (Ice-fishing guide)
+3. 瑞穂さん (Librarian)
+4. ピエール (French baker)
+5. ゆっこ (Girl who hunts the aurora)
+```
+
+# 10_Nara: 奈良の鹿と古い寺 (The deer park and the old temple)
+
+## 1_Boden
+**Attach:** hm_style.webp, ground_gion_draft.webp  ·  Karte (Boden) für „奈良の鹿と古い寺“. Ergebnis speichern als: ground_ex_nara_draft.webp
+
+```
+16-bit top-down RPG pixel art in the same warm style and 3/4 top-down view as the attached images. The second attached image is the map of the previous area: paint the new map in exactly the same scale, detail and style.
+Paint ONLY THE GROUND of the deer park and old temple quarter of Nara: a wide park of grass and pines with deer, an old temple with a pagoda and narrow old lanes of craft shops, seen from above, filling the whole picture edge to edge, as one map. Early autumn, soft golden afternoon light, long shadows.
+Layout:
+- The top: a large temple compound plot with a big hall, a five-storey pagoda plot and a stone lantern path lined with moss.
+- The centre: an open lawn park with pine and maple trees where deer rest, a pond with a small stone bridge.
+- The bottom: a narrow old lane with wooden shop fronts (calligraphy brushes, deer-cracker stall, tea) and a traditional inn.
+- Paths are clearly visible (paving, gravel or dirt); everything else is garden, trees, water or rock.
+- Leave EMPTY, flat plots where buildings will stand: one plot (temple main hall), one plot (five-storey pagoda), one plot (brush-making workshop), one plot (deer-cracker stand), one plot (museum of old Buddhist statues), one plot (traditional inn), one plot (tea house), one plot (wooden-toy shop), two small plots for old houses.
+Paint NO buildings, NO people, NO vehicles, NO text.
+Landscape 1536 × 1024.
+```
+
+## 2_Gebaeude
+**Attach:** hm_style.webp, hm_exterior_kyoto.webp  ·  Gebäude. Ergebnis speichern als: hm_exterior_ex_nara.webp
+
+```
+Exterior buildings for The deer park and the old temple (奈良の鹿と古い寺), in exactly the same style, light and scale as the attached building sheet. Each building separately, at least 40 px magenta gap between them, no readable text on signs.
+IMPORTANT: NO smoke, NO people, NO vehicles unless named (these are added in the game).
+1. A grand wooden temple main hall with a big sweeping roof, red pillars and a wide stone stair (no text)
+2. A five-storey wooden pagoda with tiered curved roofs, seen from the front
+3. A small brush-making workshop with a wooden lattice front and brushes hanging in the window
+4. A little open stand selling deer crackers with a bamboo roof and a stack of paper-wrapped bundles
+5. A museum of old Buddhist statues in a white-plaster building with a tiled roof and a quiet garden gate
+6. A traditional two-storey inn (ryokan) with a lattice front, a hanging lantern and a stone path
+7. A small tea house with a thatched roof, a red umbrella and a bench outside
+8. A wooden-toy shop with colourful toys on shelves and a small wooden deer figure by the door
+Plain pure magenta (#FF00FF) background. Landscape 1536 × 1024.
+```
+
+## 3a_Leute
+**Attach:** hm_style.webp, hm_chars_kyoto.webp, hm_chars_main.webp  ·  Laufbilder der Figuren 光さん, 真海和尚, 洋子さん, 煎餅屋のおじさん, 恵美さん. Ergebnis speichern als: hm_chars_ex_nara_a.webp
+
+```
+Create a walking sprite sheet for a top-down 16-bit RPG, in exactly the same pixel-art style, size and proportions as the attached character sheets.
+RULES: chibi proportions, all adults exactly the same height (children smaller), feet on the same baseline. Each character is one BLOCK of 4 columns × 4 rows:
+Row 1 facing DOWN, Row 2 facing LEFT (true profile), Row 3 facing RIGHT (true profile — draw it, do not mirror; bags stay on the same body side), Row 4 facing UP (back view).
+4 frames per row: standing, left foot forward, standing, right foot forward. Same outfit and items in every direction.
+No large preview figure, no ground shadow, no text. Clear gaps between frames, bigger gaps between characters. The characters side by side in one row (3 + 2 if needed).
+Background: plain pure magenta (#FF00FF). Landscape 1536 × 1024.
+The 5 characters (early autumn clothes, modern Japan):
+1. 光さん (Deer keeper): a gentle man of about 54, a green park-keeper vest, a straw hat, a bag of crackers
+2. 真海和尚 (Temple monk and statue restorer): a serious man of about 47, a dark monk robe, white gloves, a small brush
+3. 洋子さん (Brush maker): a calm woman of about 60, a grey work kimono, hair in a bun, a fine brush in her hand
+4. 煎餅屋のおじさん (Deer-cracker seller): a jolly man of about 65, a happi coat, a towel headband, a stack of cracker bundles
+5. 恵美さん (Museum guide): a bright young woman of about 27, a neat blazer, a museum badge, a pointer
+```
+
+## 4a_Portraets
+**Attach:** hm_style.webp, portraits_kyoto.webp  ·  Porträts. Ergebnis speichern als: portraits_ex_nara_a.webp (Ordner 3a vorher machen und dessen Ergebnis zusätzlich anhängen).
+
+```
+Dialogue portrait sheet for the characters in the walking sheet I also attach (from the previous message), in exactly the same style as the attached portrait sheet. Same faces, hair and clothes.
+One ROW per character, 4 portraits per row: neutral, happy, surprised, worried. Head and shoulders, all the same size and crop.
+Clear gaps, no text, no frames. Plain pure magenta (#FF00FF) background.
+Rows:
+1. 光さん (Deer keeper)
+2. 真海和尚 (Temple monk and statue restorer)
+3. 洋子さん (Brush maker)
+4. 煎餅屋のおじさん (Deer-cracker seller)
+5. 恵美さん (Museum guide)
+```
+
+## 3b_Leute
+**Attach:** hm_style.webp, hm_chars_kyoto.webp, hm_chars_main.webp  ·  Laufbilder der Figuren 静香さん, 大悟さん, 翼, レナ, 源蔵じいさん. Ergebnis speichern als: hm_chars_ex_nara_b.webp
+
+```
+Create a walking sprite sheet for a top-down 16-bit RPG, in exactly the same pixel-art style, size and proportions as the attached character sheets.
+RULES: chibi proportions, all adults exactly the same height (children smaller), feet on the same baseline. Each character is one BLOCK of 4 columns × 4 rows:
+Row 1 facing DOWN, Row 2 facing LEFT (true profile), Row 3 facing RIGHT (true profile — draw it, do not mirror; bags stay on the same body side), Row 4 facing UP (back view).
+4 frames per row: standing, left foot forward, standing, right foot forward. Same outfit and items in every direction.
+No large preview figure, no ground shadow, no text. Clear gaps between frames, bigger gaps between characters. The characters side by side in one row (3 + 2 if needed).
+Background: plain pure magenta (#FF00FF). Landscape 1536 × 1024.
+The 5 characters (early autumn clothes, modern Japan):
+1. 静香さん (Inn proprietress): an elegant woman of about 58, a navy kimono with a pale obi, a polite bow pose
+2. 大悟さん (Tour-bus driver turned guide): a stocky man of about 45, a bus-company jacket and cap, a flag on a stick
+3. 翼 (Elementary-school boy who draws deer): a quiet boy of about 8, a bucket hat, a sketchbook and pencils, a tiny deer figure
+4. レナ (Exchange student studying Buddhist art): a young woman of about 22 with long brown hair, a canvas bag, a sketching board, round glasses
+5. 源蔵じいさん (Old temple bell ringer): a very old man of about 85, a plain grey robe, a wooden bell mallet, a bent back
+```
+
+## 4b_Portraets
+**Attach:** hm_style.webp, portraits_kyoto.webp  ·  Porträts. Ergebnis speichern als: portraits_ex_nara_b.webp (Ordner 3b vorher machen und dessen Ergebnis zusätzlich anhängen).
+
+```
+Dialogue portrait sheet for the characters in the walking sheet I also attach (from the previous message), in exactly the same style as the attached portrait sheet. Same faces, hair and clothes.
+One ROW per character, 4 portraits per row: neutral, happy, surprised, worried. Head and shoulders, all the same size and crop.
+Clear gaps, no text, no frames. Plain pure magenta (#FF00FF) background.
+Rows:
+1. 静香さん (Inn proprietress)
+2. 大悟さん (Tour-bus driver turned guide)
+3. 翼 (Elementary-school boy who draws deer)
+4. レナ (Exchange student studying Buddhist art)
+5. 源蔵じいさん (Old temple bell ringer)
+```
