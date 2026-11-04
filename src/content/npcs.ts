@@ -77,7 +77,7 @@ const EX_COLORS = ['#b5733a', '#3f6fd1', '#9b6bb3', '#3f7a4a', '#d0473a', '#2f4a
 const LONG: Record<string, string> = { oo: 'ō', ou: 'ō', uu: 'ū' };
 for (const d of Object.values(EXPANSION_GEN))
   d.people.forEach(([id, ja, role, roleDe], i) => {
-    const base = id.replace(/^ex_/, '').replace(/\d+$/, '').replace(/oo|ou|uu/g, (m) => LONG[m]);
+    const base = id.replace(/^(ex|ok|hk|nr)_/, '').replace(/\d+$/, '').replace(/oo|ou|uu/g, (m) => LONG[m]);
     const name = base[0].toUpperCase() + base.slice(1);
     const nameEn = /先生$/.test(ja) ? `${name}-sensei` : /教授$/.test(ja) ? `Prof. ${name}` : /船長$/.test(ja) ? `Captain ${name}` : /さん$/.test(ja) ? `${name}-san` : name;
     DE_STORY[role] ??= roleDe;

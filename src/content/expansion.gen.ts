@@ -1838,5 +1838,2139 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
    ]
   ],
   "children": []
+ },
+ "osaka": {
+  "title": [
+   "町工場の町",
+   "The town of small factories",
+   "Die Stadt der kleinen Fabriken"
+  ],
+  "tiles": [
+   "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+   "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+   "TT...TTTTTTT...TTTTTTT......TTTTTTTTTT..TT",
+   "TT...TTTTTTT...TTTTTTT......TTTTTTTTTT..TT",
+   "TT...TTTTTTT...TTTTTTT......TTTTTTTTTT..TT",
+   "TT...TTTTTTT...TTTTTTT......TTTTTTTTTT..TT",
+   "TT..........................TTTTTTTTTT..TT",
+   "TT......................................TT",
+   "TT..TTTT..TTTT..TTTT..TTTT..............TT",
+   "TT..TTTT..TTTT..TTTT..TTTT..............TT",
+   "TT..TTTT..TTTT..TTTT..TTTT..............TT",
+   "TT......................................TT",
+   "TT......................................TT",
+   "TT..TTTT..TTTT..TTTT..TTTT..TTTTTTTTT...TT",
+   "TT..TTTT..TTTT..TTTT..TTTT..TTTTTTTTT...TT",
+   "TT..TTTT..TTTT..TTTT..TTTT..TTTTTTTTT...TT",
+   "TT....................................TTTT",
+   "TT....................................TTTT",
+   "TTTTTTTT.TTTTTTTTTTTTTTTT..TTTTTTTTTTTTTTT",
+   "TTTTTTTT.TTTTTTTTTTTTTTTT..TTTTTTTTTTTTTTT",
+   "TTTTTTTT.TTTTTTTTTTTTTTTT..TTTTTTTTTTTTTTT",
+   "TTTTT.................................TTTT",
+   "TTTTT.................................TTTT",
+   "TTTTT....TTTTTTTT......TTTTTTT....TTTTTTTT",
+   "TTTT.....TTTTTTTT......TTTTTTT....TTTTTTTT",
+   "TTTT.....TTTTTTTT......TTTTTTT....TTTTTTTT",
+   "TTTT..............................TTTTTTTT",
+   "TTTTTTTTTTTTTTTTTTT..TTTTTTTTTTTTTTTTTTTTT"
+  ],
+  "objects": [
+   {
+    "id": "ex_osaka_school",
+    "sprite": "bx_ex_osaka_school",
+    "x": 5,
+    "y": 2,
+    "w": 7,
+    "h": 4,
+    "at": [
+     272,
+     192
+    ],
+    "script": "exo_school",
+    "interactAt": [
+     {
+      "x": 8,
+      "y": 6
+     },
+     {
+      "x": 9,
+      "y": 6
+     }
+    ]
+   },
+   {
+    "id": "ex_osaka_theatre",
+    "sprite": "bx_ex_osaka_theatre",
+    "x": 15,
+    "y": 2,
+    "w": 7,
+    "h": 4,
+    "at": [
+     592,
+     192
+    ],
+    "script": "exo_theatre",
+    "interactAt": [
+     {
+      "x": 18,
+      "y": 6
+     },
+     {
+      "x": 19,
+      "y": 6
+     }
+    ]
+   },
+   {
+    "id": "ex_osaka_court",
+    "sprite": "bx_ex_osaka_court",
+    "x": 28,
+    "y": 2,
+    "w": 10,
+    "h": 5,
+    "at": [
+     1056,
+     224
+    ],
+    "script": "exo_court",
+    "interactAt": [
+     {
+      "x": 32,
+      "y": 7
+     },
+     {
+      "x": 33,
+      "y": 7
+     }
+    ]
+   },
+   {
+    "id": "ex_osaka_w1",
+    "sprite": "bx_ex_osaka_w1",
+    "x": 4,
+    "y": 8,
+    "w": 4,
+    "h": 3,
+    "at": [
+     192,
+     352
+    ],
+    "script": "exo_workshop",
+    "interactAt": [
+     {
+      "x": 5,
+      "y": 11
+     },
+     {
+      "x": 6,
+      "y": 11
+     }
+    ]
+   },
+   {
+    "id": "ex_osaka_w2",
+    "sprite": "bx_ex_osaka_w2",
+    "x": 10,
+    "y": 8,
+    "w": 4,
+    "h": 3,
+    "at": [
+     384,
+     352
+    ],
+    "script": "exo_factory",
+    "interactAt": [
+     {
+      "x": 11,
+      "y": 11
+     },
+     {
+      "x": 12,
+      "y": 11
+     }
+    ]
+   },
+   {
+    "id": "ex_osaka_w3",
+    "sprite": "bx_ex_osaka_w3",
+    "x": 16,
+    "y": 8,
+    "w": 4,
+    "h": 3,
+    "at": [
+     576,
+     352
+    ],
+    "script": "exo_workshop",
+    "interactAt": [
+     {
+      "x": 17,
+      "y": 11
+     },
+     {
+      "x": 18,
+      "y": 11
+     }
+    ]
+   },
+   {
+    "id": "ex_osaka_w4",
+    "sprite": "bx_ex_osaka_w4",
+    "x": 22,
+    "y": 8,
+    "w": 4,
+    "h": 3,
+    "at": [
+     768,
+     352
+    ],
+    "script": "exo_factory",
+    "interactAt": [
+     {
+      "x": 23,
+      "y": 11
+     },
+     {
+      "x": 24,
+      "y": 11
+     }
+    ]
+   },
+   {
+    "id": "ex_osaka_w5",
+    "sprite": "bx_ex_osaka_w5",
+    "x": 4,
+    "y": 13,
+    "w": 4,
+    "h": 3,
+    "at": [
+     192,
+     512
+    ],
+    "script": "exo_factory",
+    "interactAt": [
+     {
+      "x": 5,
+      "y": 16
+     },
+     {
+      "x": 6,
+      "y": 16
+     }
+    ]
+   },
+   {
+    "id": "ex_osaka_w6",
+    "sprite": "bx_ex_osaka_w6",
+    "x": 10,
+    "y": 13,
+    "w": 4,
+    "h": 3,
+    "at": [
+     384,
+     512
+    ],
+    "script": "exo_workshop",
+    "interactAt": [
+     {
+      "x": 11,
+      "y": 16
+     },
+     {
+      "x": 12,
+      "y": 16
+     }
+    ]
+   },
+   {
+    "id": "ex_osaka_w7",
+    "sprite": "bx_ex_osaka_w7",
+    "x": 16,
+    "y": 13,
+    "w": 4,
+    "h": 3,
+    "at": [
+     576,
+     512
+    ],
+    "script": "exo_factory",
+    "interactAt": [
+     {
+      "x": 17,
+      "y": 16
+     },
+     {
+      "x": 18,
+      "y": 16
+     }
+    ]
+   },
+   {
+    "id": "ex_osaka_w8",
+    "sprite": "bx_ex_osaka_w8",
+    "x": 22,
+    "y": 13,
+    "w": 4,
+    "h": 3,
+    "at": [
+     768,
+     512
+    ],
+    "script": "exo_workshop",
+    "interactAt": [
+     {
+      "x": 23,
+      "y": 16
+     },
+     {
+      "x": 24,
+      "y": 16
+     }
+    ]
+   },
+   {
+    "id": "ex_osaka_care",
+    "sprite": "bx_ex_osaka_care",
+    "x": 28,
+    "y": 13,
+    "w": 9,
+    "h": 3,
+    "at": [
+     1040,
+     512
+    ],
+    "script": "exo_care",
+    "interactAt": [
+     {
+      "x": 32,
+      "y": 16
+     },
+     {
+      "x": 33,
+      "y": 16
+     }
+    ]
+   },
+   {
+    "id": "ex_osaka_news",
+    "sprite": "bx_ex_osaka_news",
+    "x": 9,
+    "y": 23,
+    "w": 8,
+    "h": 3,
+    "at": [
+     416,
+     832
+    ],
+    "script": "exo_news",
+    "interactAt": [
+     {
+      "x": 12,
+      "y": 26
+     },
+     {
+      "x": 13,
+      "y": 26
+     }
+    ]
+   },
+   {
+    "id": "ex_osaka_clinic",
+    "sprite": "bx_ex_osaka_clinic",
+    "x": 23,
+    "y": 23,
+    "w": 7,
+    "h": 3,
+    "at": [
+     848,
+     832
+    ],
+    "script": "exo_clinic",
+    "interactAt": [
+     {
+      "x": 26,
+      "y": 26
+     },
+     {
+      "x": 27,
+      "y": 26
+     }
+    ]
+   }
+  ],
+  "warps": [
+   {
+    "x": 19,
+    "y": 27,
+    "to": {
+     "map": "o_umeda",
+     "x": 37,
+     "y": 23,
+     "facing": "left"
+    }
+   },
+   {
+    "x": 20,
+    "y": 27,
+    "to": {
+     "map": "o_umeda",
+     "x": 37,
+     "y": 23,
+     "facing": "left"
+    }
+   }
+  ],
+  "npcs": [
+   {
+    "id": "ex_teppei",
+    "x": 5,
+    "y": 12,
+    "facing": "down"
+   },
+   {
+    "id": "ex_jun",
+    "x": 11,
+    "y": 12,
+    "facing": "down"
+   },
+   {
+    "id": "ex_nina",
+    "x": 17,
+    "y": 12,
+    "facing": "down"
+   },
+   {
+    "id": "ex_hayakawa",
+    "x": 31,
+    "y": 9,
+    "facing": "down"
+   },
+   {
+    "id": "ex_yuuko",
+    "x": 30,
+    "y": 17,
+    "facing": "up"
+   },
+   {
+    "id": "ex_tsuyoshi2",
+    "x": 23,
+    "y": 12,
+    "facing": "down"
+   },
+   {
+    "id": "ex_fujiwara",
+    "x": 15,
+    "y": 26,
+    "facing": "left"
+   },
+   {
+    "id": "ex_tsukkomi",
+    "x": 17,
+    "y": 7,
+    "facing": "down"
+   },
+   {
+    "id": "ex_akira",
+    "x": 7,
+    "y": 7,
+    "facing": "down"
+   },
+   {
+    "id": "ex_sakata",
+    "x": 24,
+    "y": 26,
+    "facing": "right"
+   }
+  ],
+  "entry": [
+   19,
+   26,
+   "up"
+  ],
+  "people": [
+   [
+    "ex_teppei",
+    "鉄平社長",
+    "Owner of a small metal workshop",
+    "Inhaber einer kleinen Metallwerkstatt"
+   ],
+   [
+    "ex_jun",
+    "純",
+    "Young apprentice in the workshop",
+    "junger Lehrling in der Werkstatt"
+   ],
+   [
+    "ex_nina",
+    "ニナさん",
+    "Technical trainee from Indonesia",
+    "Praktikantin aus Indonesien"
+   ],
+   [
+    "ex_hayakawa",
+    "早川弁護士",
+    "Lawyer for ordinary people",
+    "Anwältin für einfache Leute"
+   ],
+   [
+    "ex_yuuko",
+    "優子さん",
+    "Care worker in the care home",
+    "Altenpflegerin"
+   ],
+   [
+    "ex_tsuyoshi2",
+    "剛先生",
+    "Male nursery-school teacher",
+    "Erzieher im Kindergarten"
+   ],
+   [
+    "ex_fujiwara",
+    "藤原記者",
+    "Newspaper reporter",
+    "Zeitungsreporter"
+   ],
+   [
+    "ex_tsukkomi",
+    "ツッコミの勇気",
+    "Stand-up comedian (manzai straight man)",
+    "Komiker (Manzai, der „Ernste“ im Duo)"
+   ],
+   [
+    "ex_akira",
+    "明さん",
+    "Night-school student of 46",
+    "Abendschüler mit 46"
+   ],
+   [
+    "ex_sakata",
+    "坂田先生",
+    "Old town doctor",
+    "alter Stadtarzt"
+   ]
+  ],
+  "children": []
+ },
+ "tokyo": {
+  "title": [
+   "湾岸と下町の路地",
+   "The bay area and the old lanes",
+   "Das Hafenviertel und die alten Gassen"
+  ],
+  "tiles": [
+   "TT....................................TTTT",
+   "TT....................................TTTT",
+   "TT....................................TTTT",
+   "TT..TT....TT............TTTTTT..TTTTTTTTTT",
+   "TT..TT....TT............TTTTTT..TTTTTTTTTT",
+   "TT................TTTT..TTTTTT..TTTTTTTTTT",
+   "TT................TTTT..TTTTTT..TTTTTTTTTT",
+   "TT................TTTT..TTTTTT..TTTTTTTTTT",
+   "TT................TTTT................TTTT",
+   "TT................TTTT................TTTT",
+   "TT.TTT...................TTTT.........TTTT",
+   "TT.TTT...TTT.............TTTT.........TTTT",
+   "TT.TTT...TTT.............TTTT.........TTTT",
+   "TT.......TTT......TTTT...TTTT.........TTTT",
+   "TT................TTTT................TTTT",
+   "TT................TTTT................TTTT",
+   "TT................TTTT................TTTT",
+   "TT................TTTT................TTTT",
+   "TT....................................TTTT",
+   "TT...TTTT.............................TTTT",
+   "TT...TTTT.............................TTTT",
+   "TT....................................TTTT",
+   "TTTTT.................................TTTT",
+   "TTTTT.................................TTTT",
+   "TTTTT....TTTTT........................TTTT",
+   "TTTTT....TTTTT...TTTTTTTTTTTTTTTTTTTTTTTTT",
+   "TTTTT....TTTTT...TTTTTTTTTTTTTTTTTTTTTTTTT",
+   "TTTTTTTTTTTTTT..TTTTTTTTTTTTTTTTTTTTTTTTTT"
+  ],
+  "objects": [
+   {
+    "id": "ex_tokyo_cowork",
+    "sprite": "bx_ex_tokyo_cowork",
+    "x": 24,
+    "y": 3,
+    "w": 6,
+    "h": 5,
+    "at": [
+     864,
+     256
+    ],
+    "script": "ext2_cowork",
+    "interactAt": [
+     {
+      "x": 26,
+      "y": 8
+     },
+     {
+      "x": 27,
+      "y": 8
+     }
+    ]
+   },
+   {
+    "id": "ex_tokyo_lab",
+    "sprite": "bx_ex_tokyo_lab",
+    "x": 32,
+    "y": 3,
+    "w": 6,
+    "h": 5,
+    "at": [
+     1120,
+     256
+    ],
+    "script": "ext2_lab",
+    "interactAt": [
+     {
+      "x": 34,
+      "y": 8
+     },
+     {
+      "x": 35,
+      "y": 8
+     }
+    ]
+   },
+   {
+    "id": "ex_tokyo_depot",
+    "sprite": "bx_ex_tokyo_depot",
+    "x": 18,
+    "y": 5,
+    "w": 4,
+    "h": 5,
+    "at": [
+     640,
+     320
+    ],
+    "script": "ext2_depot",
+    "interactAt": [
+     {
+      "x": 19,
+      "y": 10
+     },
+     {
+      "x": 20,
+      "y": 10
+     }
+    ]
+   },
+   {
+    "id": "ex_tokyo_fire",
+    "sprite": "bx_ex_tokyo_fire",
+    "x": 25,
+    "y": 10,
+    "w": 4,
+    "h": 4,
+    "at": [
+     864,
+     448
+    ],
+    "script": "ext2_fire",
+    "interactAt": [
+     {
+      "x": 26,
+      "y": 14
+     },
+     {
+      "x": 27,
+      "y": 14
+     }
+    ]
+   },
+   {
+    "id": "ex_tokyo_care",
+    "sprite": "bx_ex_tokyo_care",
+    "x": 18,
+    "y": 13,
+    "w": 4,
+    "h": 5,
+    "at": [
+     640,
+     576
+    ],
+    "script": "ext2_care",
+    "interactAt": [
+     {
+      "x": 19,
+      "y": 18
+     },
+     {
+      "x": 20,
+      "y": 18
+     }
+    ]
+   },
+   {
+    "id": "ex_tokyo_estate",
+    "sprite": "bx_ex_tokyo_estate",
+    "x": 3,
+    "y": 10,
+    "w": 3,
+    "h": 3,
+    "at": [
+     144,
+     416
+    ],
+    "script": "ext2_estate",
+    "interactAt": [
+     {
+      "x": 4,
+      "y": 13
+     }
+    ]
+   },
+   {
+    "id": "ex_tokyo_nursery",
+    "sprite": "bx_ex_tokyo_nursery",
+    "x": 9,
+    "y": 11,
+    "w": 3,
+    "h": 3,
+    "at": [
+     336,
+     448
+    ],
+    "script": "ext2_nursery",
+    "interactAt": [
+     {
+      "x": 10,
+      "y": 14
+     }
+    ]
+   },
+   {
+    "id": "ex_tokyo_salon",
+    "sprite": "bx_ex_tokyo_salon",
+    "x": 5,
+    "y": 19,
+    "w": 4,
+    "h": 2,
+    "at": [
+     224,
+     672
+    ],
+    "script": "ext2_salon",
+    "interactAt": [
+     {
+      "x": 6,
+      "y": 21
+     },
+     {
+      "x": 7,
+      "y": 21
+     }
+    ]
+   },
+   {
+    "id": "ex_tokyo_old1",
+    "sprite": "bx_ex_tokyo_old1",
+    "x": 4,
+    "y": 3,
+    "w": 2,
+    "h": 2,
+    "at": [
+     160,
+     160
+    ],
+    "script": "ext2_old",
+    "interactAt": [
+     {
+      "x": 4,
+      "y": 5
+     }
+    ]
+   },
+   {
+    "id": "ex_tokyo_old2",
+    "sprite": "bx_ex_tokyo_old2",
+    "x": 10,
+    "y": 3,
+    "w": 2,
+    "h": 2,
+    "at": [
+     352,
+     160
+    ],
+    "script": "ext2_old",
+    "interactAt": [
+     {
+      "x": 10,
+      "y": 5
+     }
+    ]
+   }
+  ],
+  "warps": [
+   {
+    "x": 14,
+    "y": 27,
+    "to": {
+     "map": "t_sumida",
+     "x": 37,
+     "y": 3,
+     "facing": "left"
+    }
+   },
+   {
+    "x": 15,
+    "y": 27,
+    "to": {
+     "map": "t_sumida",
+     "x": 37,
+     "y": 3,
+     "facing": "left"
+    }
+   }
+  ],
+  "npcs": [
+   {
+    "id": "ex_mao",
+    "x": 28,
+    "y": 9,
+    "facing": "down"
+   },
+   {
+    "id": "ex_nakajima",
+    "x": 36,
+    "y": 9,
+    "facing": "down"
+   },
+   {
+    "id": "ex_hayato",
+    "x": 29,
+    "y": 14,
+    "facing": "left"
+   },
+   {
+    "id": "ex_hana",
+    "x": 22,
+    "y": 18,
+    "facing": "left"
+   },
+   {
+    "id": "ex_shimizu",
+    "x": 30,
+    "y": 11,
+    "facing": "down"
+   },
+   {
+    "id": "ex_riku",
+    "x": 9,
+    "y": 21,
+    "facing": "down"
+   },
+   {
+    "id": "ex_isamu",
+    "x": 22,
+    "y": 9,
+    "facing": "left"
+   },
+   {
+    "id": "ex_nikaidou",
+    "x": 3,
+    "y": 14,
+    "facing": "up"
+   },
+   {
+    "id": "ex_sophie",
+    "x": 12,
+    "y": 15,
+    "facing": "down"
+   },
+   {
+    "id": "ex_mai",
+    "x": 12,
+    "y": 14,
+    "facing": "right"
+   }
+  ],
+  "entry": [
+   14,
+   26,
+   "up"
+  ],
+  "people": [
+   [
+    "ex_mao",
+    "真央さん",
+    "Start-up founder",
+    "Start-up-Gründerin"
+   ],
+   [
+    "ex_nakajima",
+    "中島博士",
+    "Robotics researcher",
+    "Robotikforscher"
+   ],
+   [
+    "ex_hayato",
+    "隼人さん",
+    "Firefighter",
+    "Feuerwehrmann"
+   ],
+   [
+    "ex_hana",
+    "ハナさん",
+    "Resident of the care home, 91",
+    "Bewohnerin des Pflegeheims, 91"
+   ],
+   [
+    "ex_shimizu",
+    "清水書記官",
+    "Court clerk",
+    "Gerichtsschreiber"
+   ],
+   [
+    "ex_riku",
+    "リク",
+    "Hairdresser",
+    "Friseur"
+   ],
+   [
+    "ex_isamu",
+    "勇さん",
+    "Delivery driver",
+    "Paketfahrer"
+   ],
+   [
+    "ex_nikaidou",
+    "二階堂さん",
+    "Old real-estate agent",
+    "alter Immobilienmakler"
+   ],
+   [
+    "ex_sophie",
+    "ソフィー",
+    "French schoolgirl in Tokyo",
+    "französisches Schulmädchen in Tokio"
+   ],
+   [
+    "ex_mai",
+    "麻衣さん",
+    "Night-nursery teacher",
+    "Erzieherin in der Nachtkita"
+   ]
+  ],
+  "children": [
+   "ex_sophie"
+  ]
+ },
+ "okinawa": {
+  "title": [
+   "南の島のむら",
+   "The southern island village",
+   "Das Dorf auf der Südinsel"
+  ],
+  "tiles": [
+   "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+   "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+   "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+   "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+   "TTTTTTTTTT........................TTTTTTTT",
+   "TTTTTTTTTT.TTTTTTT........TTTT....TTTTTTTT",
+   "TTTTTT.....TTTTTTT........TTTT....TTTTTTTT",
+   "TTTTTT.....TTTTTTT........TTTT....TTTTTTTT",
+   "TTTTTT............................TTTTTTTT",
+   "TTTTTT............................TTTTTTTT",
+   ".....TTTTTTT...............TTTTT..TTTT....",
+   ".....TTTTTTT...............TTTTT..TTTT.TTT",
+   ".....TTTTTTT...............TTTTT..TTTT.TTT",
+   ".......................................TTT",
+   "TTT....TTTT....................TTTTT...TTT",
+   "TTT....TTTT......TTTTTTTTT.....TTTTT...TTT",
+   "TTT..............TTTTTTTTT.............TTT",
+   "TTT..............TTTTTTTTT.............TTT",
+   "TTT....TTTT......TTTTTTTTT......TTTT...TTT",
+   "TTT....TTTT.....................TTTT...TTT",
+   "TTT....................................TTT",
+   "TTT.................................TTTTTT",
+   ".................TTTTT..TTTTTTTTTTTTTTTTTT",
+   ".................TTTTT..TTTTTTTTTTTTTTTTTT",
+   ".................TTTTT..TTTTTTTTTTTTTTTTTT",
+   "TTTTTTTTTTTTTTTTTTTTTT..TTTTTTTTTTTTTTTTTT",
+   "TTTTTTTTTTTTTTTTTTTTTT..TTTTTTTTTTTTTTTTTT",
+   "TTTTTTTTTTTTTTTTTTTTTT..TTTTTTTTTTTTTTTTTT"
+  ],
+  "objects": [
+   {
+    "id": "ex_okinawa_hall",
+    "sprite": "bx_ex_okinawa_hall",
+    "x": 11,
+    "y": 5,
+    "w": 7,
+    "h": 3,
+    "at": [
+     464,
+     256
+    ],
+    "script": "exk2_hall",
+    "interactAt": [
+     {
+      "x": 14,
+      "y": 8
+     },
+     {
+      "x": 15,
+      "y": 8
+     }
+    ]
+   },
+   {
+    "id": "ex_okinawa_clinic",
+    "sprite": "bx_ex_okinawa_clinic",
+    "x": 26,
+    "y": 5,
+    "w": 4,
+    "h": 3,
+    "at": [
+     896,
+     256
+    ],
+    "script": "exk2_clinic",
+    "interactAt": [
+     {
+      "x": 27,
+      "y": 8
+     },
+     {
+      "x": 28,
+      "y": 8
+     }
+    ]
+   },
+   {
+    "id": "ex_okinawa_still",
+    "sprite": "bx_ex_okinawa_still",
+    "x": 5,
+    "y": 10,
+    "w": 7,
+    "h": 3,
+    "at": [
+     272,
+     416
+    ],
+    "script": "exk2_still",
+    "interactAt": [
+     {
+      "x": 8,
+      "y": 13
+     },
+     {
+      "x": 9,
+      "y": 13
+     }
+    ]
+   },
+   {
+    "id": "ex_okinawa_soba",
+    "sprite": "bx_ex_okinawa_soba",
+    "x": 27,
+    "y": 10,
+    "w": 5,
+    "h": 3,
+    "at": [
+     944,
+     416
+    ],
+    "script": "exk2_soba",
+    "interactAt": [
+     {
+      "x": 29,
+      "y": 13
+     },
+     {
+      "x": 30,
+      "y": 13
+     }
+    ]
+   },
+   {
+    "id": "ex_okinawa_house1",
+    "sprite": "bx_ex_okinawa_house1",
+    "x": 34,
+    "y": 10,
+    "w": 4,
+    "h": 3,
+    "at": [
+     1152,
+     416
+    ],
+    "script": "exk2_house",
+    "interactAt": [
+     {
+      "x": 35,
+      "y": 13
+     },
+     {
+      "x": 36,
+      "y": 13
+     }
+    ]
+   },
+   {
+    "id": "ex_okinawa_house2",
+    "sprite": "bx_ex_okinawa_house2",
+    "x": 7,
+    "y": 14,
+    "w": 4,
+    "h": 2,
+    "at": [
+     288,
+     512
+    ],
+    "script": "exk2_house",
+    "interactAt": [
+     {
+      "x": 9,
+      "y": 16
+     }
+    ]
+   },
+   {
+    "id": "ex_okinawa_school",
+    "sprite": "bx_ex_okinawa_school",
+    "x": 17,
+    "y": 15,
+    "w": 9,
+    "h": 4,
+    "at": [
+     688,
+     608
+    ],
+    "script": "exk2_school",
+    "interactAt": [
+     {
+      "x": 21,
+      "y": 19
+     },
+     {
+      "x": 22,
+      "y": 19
+     }
+    ]
+   },
+   {
+    "id": "ex_okinawa_house3",
+    "sprite": "bx_ex_okinawa_house3",
+    "x": 31,
+    "y": 14,
+    "w": 5,
+    "h": 2,
+    "at": [
+     1072,
+     512
+    ],
+    "script": "exk2_house",
+    "interactAt": [
+     {
+      "x": 33,
+      "y": 16
+     }
+    ]
+   },
+   {
+    "id": "ex_okinawa_dive",
+    "sprite": "bx_ex_okinawa_dive",
+    "x": 7,
+    "y": 18,
+    "w": 4,
+    "h": 2,
+    "at": [
+     288,
+     640
+    ],
+    "script": "exk2_dive",
+    "interactAt": [
+     {
+      "x": 8,
+      "y": 20
+     },
+     {
+      "x": 9,
+      "y": 20
+     }
+    ]
+   },
+   {
+    "id": "ex_okinawa_fish",
+    "sprite": "bx_ex_okinawa_fish",
+    "x": 32,
+    "y": 18,
+    "w": 4,
+    "h": 2,
+    "at": [
+     1088,
+     640
+    ],
+    "script": "exk2_fish",
+    "interactAt": [
+     {
+      "x": 33,
+      "y": 20
+     },
+     {
+      "x": 34,
+      "y": 20
+     }
+    ]
+   }
+  ],
+  "warps": [
+   {
+    "x": 22,
+    "y": 26,
+    "to": {
+     "map": "town",
+     "x": 27,
+     "y": 20,
+     "facing": "down"
+    }
+   },
+   {
+    "x": 23,
+    "y": 26,
+    "to": {
+     "map": "town",
+     "x": 27,
+     "y": 20,
+     "facing": "down"
+    }
+   }
+  ],
+  "npcs": [
+   {
+    "id": "ok_seiyu",
+    "x": 7,
+    "y": 13,
+    "facing": "down"
+   },
+   {
+    "id": "ok_umi",
+    "x": 10,
+    "y": 23,
+    "facing": "right"
+   },
+   {
+    "id": "ok_sanshin",
+    "x": 11,
+    "y": 16,
+    "facing": "left"
+   },
+   {
+    "id": "ok_kana",
+    "x": 19,
+    "y": 20,
+    "facing": "right"
+   },
+   {
+    "id": "ok_hirugi",
+    "x": 28,
+    "y": 14,
+    "facing": "down"
+   },
+   {
+    "id": "ok_taiyo",
+    "x": 13,
+    "y": 23,
+    "facing": "down"
+   },
+   {
+    "id": "ok_masako",
+    "x": 30,
+    "y": 8,
+    "facing": "down"
+   },
+   {
+    "id": "ok_kenta",
+    "x": 14,
+    "y": 9,
+    "facing": "down"
+   },
+   {
+    "id": "ok_alex",
+    "x": 25,
+    "y": 20,
+    "facing": "left"
+   },
+   {
+    "id": "ok_nagisa2",
+    "x": 16,
+    "y": 9,
+    "facing": "down"
+   }
+  ],
+  "entry": [
+   22,
+   21,
+   "up"
+  ],
+  "people": [
+   [
+    "ok_seiyu",
+    "清裕じいさん",
+    "Awamori master",
+    "Awamori-Brennmeister"
+   ],
+   [
+    "ok_umi",
+    "海さん",
+    "Dive instructor",
+    "Tauchlehrerin"
+   ],
+   [
+    "ok_sanshin",
+    "三郎先生",
+    "Sanshin teacher",
+    "Sanshin-Lehrer"
+   ],
+   [
+    "ok_kana",
+    "香奈ちゃん",
+    "Girl in the elementary school",
+    "Grundschulmädchen"
+   ],
+   [
+    "ok_hirugi",
+    "比嘉おばあ",
+    "Soba-shop grandmother",
+    "Soba-Oma"
+   ],
+   [
+    "ok_taiyo",
+    "太陽",
+    "Teenage surfer who wants to leave",
+    "jugendlicher Surfer"
+   ],
+   [
+    "ok_masako",
+    "真砂子先生",
+    "Island doctor",
+    "Inselärztin"
+   ],
+   [
+    "ok_kenta",
+    "健太",
+    "Sugar-cane farmer",
+    "Zuckerrohrbauer"
+   ],
+   [
+    "ok_alex",
+    "アレックス",
+    "Foreign volunteer teacher",
+    "ausländischer Freiwilligenlehrer"
+   ],
+   [
+    "ok_nagisa2",
+    "渚さん",
+    "Festival organiser (eisa dance)",
+    "Organisatorin des Eisa-Tanzes"
+   ]
+  ],
+  "children": [
+   "ok_kana"
+  ]
+ },
+ "hokkaido": {
+  "title": [
+   "北の牧場と雪の町",
+   "The northern ranch and snow town",
+   "Die Weidelandschaft und die Schneestadt im Norden"
+  ],
+  "tiles": [
+   "TTTTTTTTTTTTTTTTTT..TTTTTTTTTTTTTTTTTTTTTT",
+   "TTTTTTTTTTTTTTTTTT..TTTTTTTTTTTTTTTTTTTTTT",
+   "TTT...................................TTTT",
+   "TTT.TTTTTTTT..TTT....TTTTTTTT.............",
+   "TTT.TTTTTTTT..TTT....TTTTTTTT.............",
+   "TTT.TTTTTTTT..TTT....TTTTTTTT.............",
+   "TTT.TTTTTTTT..TTT.........................",
+   "TTT.TTTTTTTT..TTT.........................",
+   "TTT.......................................",
+   "TTT..................TTT..TTT.............",
+   "TTT..................TTT..TTT.............",
+   "TTT..................TTT..TTT.............",
+   "TTT.......................................",
+   "TTT.........TTTT..........................",
+   "TTT.........TTTT..........................",
+   "TTT.........TTTT.......TTTT...............",
+   "TTT....................TTTT...............",
+   "TTT.......................................",
+   "TTT.......................................",
+   "TTT.......................................",
+   "TTT..TTTT..TTTT......TTTTTTT..............",
+   "TTT..TTTT..TTTT......TTTTTTT..............",
+   "TTT...................................TTTT",
+   "TTT...................................TTTT",
+   "TTTTTTTTTTTTTTTTT...TTTTTTTTTTTTTTTTTTTTTT",
+   "TTTTTTTTTTTTTTTTT...TTTTTTTTTTTTTTTTTTTTTT",
+   "TTTTTTTTTTTTTTTTT...TTTTTTTTTTTTTTTTTTTTTT",
+   "TTTTTTTTTTTTTTTTT...TTTTTTTTTTTTTTTTTTTTTT"
+  ],
+  "objects": [
+   {
+    "id": "ex_hokkaido_barn",
+    "sprite": "bx_ex_hokkaido_barn",
+    "x": 4,
+    "y": 3,
+    "w": 8,
+    "h": 5,
+    "at": [
+     256,
+     256
+    ],
+    "script": "exh2_barn",
+    "interactAt": [
+     {
+      "x": 7,
+      "y": 8
+     },
+     {
+      "x": 8,
+      "y": 8
+     }
+    ]
+   },
+   {
+    "id": "ex_hokkaido_cheese",
+    "sprite": "bx_ex_hokkaido_cheese",
+    "x": 14,
+    "y": 3,
+    "w": 3,
+    "h": 5,
+    "at": [
+     496,
+     256
+    ],
+    "script": "exh2_cheese",
+    "interactAt": [
+     {
+      "x": 15,
+      "y": 8
+     }
+    ]
+   },
+   {
+    "id": "ex_hokkaido_gym",
+    "sprite": "bx_ex_hokkaido_gym",
+    "x": 21,
+    "y": 3,
+    "w": 8,
+    "h": 3,
+    "at": [
+     800,
+     192
+    ],
+    "script": "exh2_gym",
+    "interactAt": [
+     {
+      "x": 24,
+      "y": 6
+     },
+     {
+      "x": 25,
+      "y": 6
+     }
+    ]
+   },
+   {
+    "id": "ex_hokkaido_ramen",
+    "sprite": "bx_ex_hokkaido_ramen",
+    "x": 21,
+    "y": 9,
+    "w": 3,
+    "h": 3,
+    "at": [
+     720,
+     384
+    ],
+    "script": "exh2_ramen",
+    "interactAt": [
+     {
+      "x": 22,
+      "y": 12
+     }
+    ]
+   },
+   {
+    "id": "ex_hokkaido_bakery",
+    "sprite": "bx_ex_hokkaido_bakery",
+    "x": 26,
+    "y": 9,
+    "w": 3,
+    "h": 3,
+    "at": [
+     880,
+     384
+    ],
+    "script": "exh2_bakery",
+    "interactAt": [
+     {
+      "x": 27,
+      "y": 12
+     }
+    ]
+   },
+   {
+    "id": "ex_hokkaido_library",
+    "sprite": "bx_ex_hokkaido_library",
+    "x": 12,
+    "y": 13,
+    "w": 4,
+    "h": 3,
+    "at": [
+     448,
+     512
+    ],
+    "script": "exh2_library",
+    "interactAt": [
+     {
+      "x": 13,
+      "y": 16
+     },
+     {
+      "x": 14,
+      "y": 16
+     }
+    ]
+   },
+   {
+    "id": "ex_hokkaido_ice",
+    "sprite": "bx_ex_hokkaido_ice",
+    "x": 23,
+    "y": 15,
+    "w": 4,
+    "h": 2,
+    "at": [
+     800,
+     544
+    ],
+    "script": "exh2_ice",
+    "interactAt": [
+     {
+      "x": 24,
+      "y": 17
+     },
+     {
+      "x": 25,
+      "y": 17
+     }
+    ]
+   },
+   {
+    "id": "ex_hokkaido_station",
+    "sprite": "bx_ex_hokkaido_station",
+    "x": 21,
+    "y": 20,
+    "w": 7,
+    "h": 2,
+    "at": [
+     784,
+     704
+    ],
+    "script": "exh2_station",
+    "interactAt": [
+     {
+      "x": 23,
+      "y": 22
+     },
+     {
+      "x": 24,
+      "y": 22
+     }
+    ]
+   },
+   {
+    "id": "ex_hokkaido_farm1",
+    "sprite": "bx_ex_hokkaido_farm1",
+    "x": 5,
+    "y": 20,
+    "w": 4,
+    "h": 2,
+    "at": [
+     224,
+     704
+    ],
+    "script": "exh2_farm",
+    "interactAt": [
+     {
+      "x": 6,
+      "y": 22
+     }
+    ]
+   },
+   {
+    "id": "ex_hokkaido_farm2",
+    "sprite": "bx_ex_hokkaido_farm2",
+    "x": 11,
+    "y": 20,
+    "w": 4,
+    "h": 2,
+    "at": [
+     416,
+     704
+    ],
+    "script": "exh2_farm",
+    "interactAt": [
+     {
+      "x": 12,
+      "y": 22
+     }
+    ]
+   }
+  ],
+  "warps": [
+   {
+    "x": 18,
+    "y": 27,
+    "to": {
+     "map": "town",
+     "x": 27,
+     "y": 20,
+     "facing": "down"
+    }
+   },
+   {
+    "x": 19,
+    "y": 27,
+    "to": {
+     "map": "town",
+     "x": 27,
+     "y": 20,
+     "facing": "down"
+    }
+   }
+  ],
+  "npcs": [
+   {
+    "id": "hk_gorou",
+    "x": 6,
+    "y": 9,
+    "facing": "down"
+   },
+   {
+    "id": "hk_chiaki",
+    "x": 17,
+    "y": 9,
+    "facing": "down"
+   },
+   {
+    "id": "hk_tomoya",
+    "x": 28,
+    "y": 22,
+    "facing": "left"
+   },
+   {
+    "id": "hk_hotaru",
+    "x": 23,
+    "y": 13,
+    "facing": "down"
+   },
+   {
+    "id": "hk_ryo",
+    "x": 23,
+    "y": 7,
+    "facing": "down"
+   },
+   {
+    "id": "hk_utako",
+    "x": 12,
+    "y": 10,
+    "facing": "right"
+   },
+   {
+    "id": "hk_ken2",
+    "x": 33,
+    "y": 12,
+    "facing": "down"
+   },
+   {
+    "id": "hk_mizuho",
+    "x": 11,
+    "y": 16,
+    "facing": "right"
+   },
+   {
+    "id": "hk_pierre",
+    "x": 28,
+    "y": 12,
+    "facing": "down"
+   },
+   {
+    "id": "hk_yukko",
+    "x": 17,
+    "y": 17,
+    "facing": "left"
+   }
+  ],
+  "entry": [
+   18,
+   26,
+   "up"
+  ],
+  "people": [
+   [
+    "hk_gorou",
+    "五郎さん",
+    "Dairy farmer",
+    "Milchbauer"
+   ],
+   [
+    "hk_chiaki",
+    "千秋さん",
+    "Cheese maker",
+    "Käsemacherin"
+   ],
+   [
+    "hk_tomoya",
+    "智也くん",
+    "Station master of a one-man station",
+    "Bahnhofsvorsteher"
+   ],
+   [
+    "hk_hotaru",
+    "蛍さん",
+    "Ramen-shop owner",
+    "Ramen-Wirtin"
+   ],
+   [
+    "hk_ryo",
+    "亮先生",
+    "Gym teacher and ice-hockey coach",
+    "Sportlehrer und Eishockey-Trainer"
+   ],
+   [
+    "hk_utako",
+    "歌子おばあ",
+    "Ainu embroidery craftswoman",
+    "Ainu-Stickerin"
+   ],
+   [
+    "hk_ken2",
+    "健二さん",
+    "Ice-fishing guide",
+    "Eisfischer-Führer"
+   ],
+   [
+    "hk_mizuho",
+    "瑞穂さん",
+    "Librarian",
+    "Bibliothekarin"
+   ],
+   [
+    "hk_pierre",
+    "ピエール",
+    "French baker",
+    "französischer Bäcker"
+   ],
+   [
+    "hk_yukko",
+    "ゆっこ",
+    "Girl who hunts the aurora",
+    "Mädchen, das Polarlichter sucht"
+   ]
+  ],
+  "children": [
+   "hk_yukko"
+  ]
+ },
+ "nara": {
+  "title": [
+   "奈良の鹿と古い寺",
+   "The deer park and the old temple",
+   "Der Hirschpark und der alte Tempel"
+  ],
+  "tiles": [
+   "TTTTTTTTTTTTTTTTTTTTTTTT...TTTTTTTTTTTTTTT",
+   "TTTTTTTTTTTTTTTTTTTTTTTT...TTTTTTTTTTTTTTT",
+   "T........................................T",
+   "T.......TTTTTTTTTTT..............TTTT....T",
+   "T.......TTTTTTTTTTT..............TTTT....T",
+   "T.......TTTTTTTTTTT..............TTTT....T",
+   "T.......TTTTTTTTTTT..............TTTT....T",
+   "T.......TTTTTTTTTTT..............TTTT....T",
+   "TTTTTTTTTTTTTTTTTTTTTTTT...TTTTTTTTTTTTTTT",
+   "TTTTTTTTTTTTTTTTTTTTTTTT...TTTTTTTTTTTTTTT",
+   "T....................T...................T",
+   "T....................T...................T",
+   "T..TTTTT.............TTTTTTTTT...........T",
+   "T..TTTTT.............TTTTTTTTT...........T",
+   "T..TTTTT.............TTTTTTTTT...........T",
+   "T..TTTTT.............TTTTTTTTT...........T",
+   "T........................................T",
+   "T........................................T",
+   "T........................................T",
+   "T........................................T",
+   "T........................................T",
+   "T.......TTTT..TTT..TTTTT.TTTT..TTTT.TTTT.T",
+   "T.......TTTT..TTT..TTTTT.TTTT..TTTT.TTTT.T",
+   "T.......TTTT..TTT..TTTTT.TTTT..TTTT.TTTT.T",
+   "T.....TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",
+   "TTTT..................................TTTT",
+   "TTTT..................................TTTT",
+   "TTTTTTTTTTTTTTTTTTTTTTTT...TTTTTTTTTTTTTTT"
+  ],
+  "objects": [
+   {
+    "id": "ex_nara_hall",
+    "sprite": "bx_ex_nara_hall",
+    "x": 8,
+    "y": 3,
+    "w": 11,
+    "h": 6,
+    "at": [
+     432,
+     288
+    ],
+    "script": "exn_hall",
+    "interactAt": [
+     {
+      "x": 12,
+      "y": 9
+     },
+     {
+      "x": 13,
+      "y": 9
+     }
+    ]
+   },
+   {
+    "id": "ex_nara_pagoda",
+    "sprite": "bx_ex_nara_pagoda",
+    "x": 33,
+    "y": 3,
+    "w": 4,
+    "h": 6,
+    "at": [
+     1120,
+     288
+    ],
+    "script": "exn_pagoda",
+    "interactAt": [
+     {
+      "x": 34,
+      "y": 9
+     },
+     {
+      "x": 35,
+      "y": 9
+     }
+    ]
+   },
+   {
+    "id": "ex_nara_museum",
+    "sprite": "bx_ex_nara_museum",
+    "x": 3,
+    "y": 12,
+    "w": 5,
+    "h": 4,
+    "at": [
+     176,
+     512
+    ],
+    "script": "exn_museum",
+    "interactAt": [
+     {
+      "x": 4,
+      "y": 16
+     },
+     {
+      "x": 5,
+      "y": 16
+     }
+    ]
+   },
+   {
+    "id": "ex_nara_brush",
+    "sprite": "bx_ex_nara_brush",
+    "x": 8,
+    "y": 21,
+    "w": 4,
+    "h": 3,
+    "at": [
+     320,
+     768
+    ],
+    "script": "exn_brush",
+    "interactAt": [
+     {
+      "x": 9,
+      "y": 24
+     },
+     {
+      "x": 10,
+      "y": 24
+     }
+    ]
+   },
+   {
+    "id": "ex_nara_tea",
+    "sprite": "bx_ex_nara_tea",
+    "x": 14,
+    "y": 21,
+    "w": 3,
+    "h": 3,
+    "at": [
+     496,
+     768
+    ],
+    "script": "exn_tea",
+    "interactAt": [
+     {
+      "x": 15,
+      "y": 24
+     }
+    ]
+   },
+   {
+    "id": "ex_nara_inn",
+    "sprite": "bx_ex_nara_inn",
+    "x": 19,
+    "y": 21,
+    "w": 5,
+    "h": 3,
+    "at": [
+     688,
+     768
+    ],
+    "script": "exn_inn",
+    "interactAt": [
+     {
+      "x": 21,
+      "y": 24
+     },
+     {
+      "x": 22,
+      "y": 24
+     }
+    ]
+   },
+   {
+    "id": "ex_nara_toy",
+    "sprite": "bx_ex_nara_toy",
+    "x": 25,
+    "y": 21,
+    "w": 4,
+    "h": 3,
+    "at": [
+     864,
+     768
+    ],
+    "script": "exn_toy",
+    "interactAt": [
+     {
+      "x": 26,
+      "y": 24
+     },
+     {
+      "x": 27,
+      "y": 24
+     }
+    ]
+   },
+   {
+    "id": "ex_nara_cracker",
+    "sprite": "bx_ex_nara_cracker",
+    "x": 31,
+    "y": 21,
+    "w": 4,
+    "h": 3,
+    "at": [
+     1056,
+     768
+    ],
+    "script": "exn_cracker",
+    "interactAt": [
+     {
+      "x": 32,
+      "y": 24
+     },
+     {
+      "x": 33,
+      "y": 24
+     }
+    ]
+   },
+   {
+    "id": "ex_nara_house",
+    "sprite": "bx_ex_nara_house",
+    "x": 36,
+    "y": 21,
+    "w": 4,
+    "h": 3,
+    "at": [
+     1216,
+     768
+    ],
+    "script": "exn_house",
+    "interactAt": [
+     {
+      "x": 37,
+      "y": 24
+     },
+     {
+      "x": 38,
+      "y": 24
+     }
+    ]
+   }
+  ],
+  "warps": [
+   {
+    "x": 24,
+    "y": 27,
+    "to": {
+     "map": "town",
+     "x": 27,
+     "y": 20,
+     "facing": "down"
+    }
+   },
+   {
+    "x": 25,
+    "y": 27,
+    "to": {
+     "map": "town",
+     "x": 27,
+     "y": 20,
+     "facing": "down"
+    }
+   }
+  ],
+  "npcs": [
+   {
+    "id": "nr_kou",
+    "x": 14,
+    "y": 13,
+    "facing": "down"
+   },
+   {
+    "id": "nr_shinkai",
+    "x": 13,
+    "y": 11,
+    "facing": "down"
+   },
+   {
+    "id": "nr_fude",
+    "x": 9,
+    "y": 26,
+    "facing": "up"
+   },
+   {
+    "id": "nr_senbei",
+    "x": 32,
+    "y": 26,
+    "facing": "up"
+   },
+   {
+    "id": "nr_emi",
+    "x": 5,
+    "y": 18,
+    "facing": "down"
+   },
+   {
+    "id": "nr_okami",
+    "x": 21,
+    "y": 26,
+    "facing": "up"
+   },
+   {
+    "id": "nr_daigo",
+    "x": 28,
+    "y": 26,
+    "facing": "up"
+   },
+   {
+    "id": "nr_tsubasa",
+    "x": 30,
+    "y": 16,
+    "facing": "left"
+   },
+   {
+    "id": "nr_lena",
+    "x": 6,
+    "y": 10,
+    "facing": "down"
+   },
+   {
+    "id": "nr_taiko",
+    "x": 25,
+    "y": 11,
+    "facing": "down"
+   }
+  ],
+  "entry": [
+   24,
+   26,
+   "up"
+  ],
+  "people": [
+   [
+    "nr_kou",
+    "光さん",
+    "Deer keeper",
+    "Hirschhüter"
+   ],
+   [
+    "nr_shinkai",
+    "真海和尚",
+    "Temple monk and statue restorer",
+    "Mönch und Statuenrestaurator"
+   ],
+   [
+    "nr_fude",
+    "洋子さん",
+    "Brush maker",
+    "Pinselmacherin"
+   ],
+   [
+    "nr_senbei",
+    "煎餅屋のおじさん",
+    "Deer-cracker seller",
+    "Hirschkeks-Verkäufer"
+   ],
+   [
+    "nr_emi",
+    "恵美さん",
+    "Museum guide",
+    "Museumsführerin"
+   ],
+   [
+    "nr_okami",
+    "静香さん",
+    "Inn proprietress",
+    "Gasthaus-Wirtin"
+   ],
+   [
+    "nr_daigo",
+    "大悟さん",
+    "Tour-bus driver turned guide",
+    "Busfahrer und Stadtführer"
+   ],
+   [
+    "nr_tsubasa",
+    "翼",
+    "Elementary-school boy who draws deer",
+    "Junge, der Hirsche zeichnet"
+   ],
+   [
+    "nr_lena",
+    "レナ",
+    "Exchange student studying Buddhist art",
+    "Austauschstudentin für buddhistische Kunst"
+   ],
+   [
+    "nr_taiko",
+    "源蔵じいさん",
+    "Old temple bell ringer",
+    "alter Tempelglöckner"
+   ]
+  ],
+  "children": [
+   "nr_tsubasa"
+  ]
  }
 };
