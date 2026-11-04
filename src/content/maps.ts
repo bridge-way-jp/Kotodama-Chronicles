@@ -546,7 +546,7 @@ export const MAPS: Record<string, MapDef> = {
   },
   takoladen: {
     id: 'takoladen', name: 'Takoyaki shop', nameJa: 'たこ焼き屋', tiles: ROOMS_GEN.takoladen.tiles, interior: true, image: ROOMS_GEN.takoladen.image, objects: ROOMS_GEN.takoladen.objects,
-    npcs: [{ id: 'okan', x: 10, y: 3, facing: 'left' }],
+    npcs: [{ id: 'okan', x: 10, y: 4, facing: 'left' }],
     warps: [5, 6].map((x) => ({ x, y: 9, to: { map: 'o_dotonbori', x: 7 + x - 5, y: 12, facing: 'down' as const } })),
   },
   okonomi: {
@@ -692,7 +692,7 @@ export const MAPS: Record<string, MapDef> = {
   machiya: {
     id: 'machiya', name: 'Guesthouse Matsuo', nameJa: 'ゲストハウス まつお', tiles: ROOMS_GEN.machiya.tiles, interior: true, image: ROOMS_GEN.machiya.image,
     objects: ROOMS_GEN.machiya.objects,
-    npcs: [{ id: 'matsuo', x: 5, y: 3, facing: 'left' }],
+    npcs: [{ id: 'matsuo', x: 5, y: 4, facing: 'down' }],
     warps: [
       { x: 6, y: 10, to: { map: 'k_gion', x: 33, y: 12, facing: 'down' } },
       { x: 7, y: 10, to: { map: 'k_gion', x: 34, y: 12, facing: 'down' } },
@@ -710,7 +710,7 @@ export const MAPS: Record<string, MapDef> = {
   kimono: {
     id: 'kimono', name: 'Kimono rental', nameJa: '着物レンタル', tiles: ROOMS_GEN.kimono.tiles, interior: true, image: ROOMS_GEN.kimono.image,
     objects: ROOMS_GEN.kimono.objects,
-    npcs: [{ id: 'rin', x: 2, y: 3, facing: 'right' }],
+    npcs: [{ id: 'rin', x: 2, y: 4, facing: 'right' }],
     warps: [{ x: 6, y: 9, to: { map: 'k_gion', x: 7, y: 17, facing: 'down' } }],
   },
   izakaya: {

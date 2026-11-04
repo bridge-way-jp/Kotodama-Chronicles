@@ -107,7 +107,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "npc": {
    "id": "wagashi_ten",
    "x": 6,
-   "y": 2,
+   "y": 4,
    "facing": "down"
   },
   "doors": [
@@ -227,7 +227,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "npc": {
    "id": "teestand_oyaji",
    "x": 5,
-   "y": 2,
+   "y": 4,
    "facing": "down"
   },
   "doors": [
@@ -357,7 +357,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "npc": {
    "id": "kaufhaus_ten",
    "x": 8,
-   "y": 2,
+   "y": 4,
    "facing": "down"
   },
   "doors": [
@@ -477,7 +477,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "npc": {
    "id": "kino_shihainin",
    "x": 5,
-   "y": 2,
+   "y": 4,
    "facing": "down"
   },
   "doors": [
@@ -590,7 +590,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "npc": {
    "id": "museum_gakugei",
    "x": 3,
-   "y": 2,
+   "y": 4,
    "facing": "down"
   },
   "doors": [
@@ -830,7 +830,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "npc": {
    "id": "karaoke_uketsuke",
    "x": 6,
-   "y": 2,
+   "y": 4,
    "facing": "down"
   },
   "doors": [
@@ -1090,7 +1090,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "npc": {
    "id": "souvenir_okami",
    "x": 6,
-   "y": 2,
+   "y": 4,
    "facing": "down"
   },
   "doors": [
@@ -1217,7 +1217,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "npc": {
    "id": "share_resident",
    "x": 8,
-   "y": 2,
+   "y": 4,
    "facing": "down"
   },
   "doors": [
@@ -1337,9 +1337,9 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   ],
   "npc": {
    "id": "deck_staff",
-   "x": 2,
+   "x": 3,
    "y": 4,
-   "facing": "right"
+   "facing": "left"
   },
   "doors": [
    6,
@@ -1468,7 +1468,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "npc": {
    "id": "farm_obaa",
    "x": 5,
-   "y": 2,
+   "y": 4,
    "facing": "down"
   },
   "doors": [
@@ -1589,7 +1589,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "npc": {
    "id": "winery_master",
    "x": 5,
-   "y": 2,
+   "y": 4,
    "facing": "down"
   },
   "doors": [
@@ -1718,7 +1718,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "npc": {
    "id": "diner_okami",
    "x": 6,
-   "y": 2,
+   "y": 4,
    "facing": "down"
   },
   "doors": [
@@ -1835,7 +1835,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "npc": {
    "id": "harbor_chief",
    "x": 6,
-   "y": 2,
+   "y": 4,
    "facing": "down"
   },
   "doors": [
@@ -1965,7 +1965,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "npc": {
    "id": "temple_priest",
    "x": 7,
-   "y": 2,
+   "y": 4,
    "facing": "down"
   },
   "doors": [

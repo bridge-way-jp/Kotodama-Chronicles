@@ -39,7 +39,7 @@ ROOMS = {
     'kyoto_wagashi': dict(
         size=(12, 10), name='Wagashi shop', nameJa='和菓子の店',
         ext=('k_kamo', [(10, 21), (11, 21)], (10, 22, 'down')),
-        npc=('wagashi_ten', 6, 2, 'down'),
+        npc=('wagashi_ten', 6, 4, 'down'),
         furniture=[
             ('table', 0, 4, 6, 3, 1, 3.2, 'wagashi_table'),
             ('basket', 6, 9, 6, 1, 1, 1.0, None),
@@ -52,7 +52,7 @@ ROOMS = {
     'kyoto_fushimi_teestand': dict(
         size=(12, 10), name='Fushimi tea stand', nameJa='伏見の茶屋',
         ext=('k_fushimi', [(12, 19), (13, 19)], (12, 20, 'down')),
-        npc=('teestand_oyaji', 5, 2, 'down'),
+        npc=('teestand_oyaji', 5, 4, 'down'),
         furniture=[
             ('bench', 0, 4, 6, 3, 1, 3.0, 'teestand_bench'),
             ('brazier', 1, 8, 5, 1, 1, 1.1, 'teestand_brazier'),
@@ -66,7 +66,7 @@ ROOMS = {
     'osaka_kaufhaus': dict(
         size=(14, 11), name='Umeda department store', nameJa='梅田のデパート',
         ext=('o_umeda', [(33, 14), (34, 14)], (33, 15, 'down')),
-        npc=('kaufhaus_ten', 8, 2, 'down'),
+        npc=('kaufhaus_ten', 8, 4, 'down'),
         furniture=[
             ('scarves', 8, 5, 5, 3, 1, 3.2, 'kaufhaus_scarves'),
             ('rack', 0, 9, 7, 1, 1, 1.2, None),
@@ -80,7 +80,7 @@ ROOMS = {
     'osaka_kino': dict(
         size=(13, 10), name='Shinsekai cinema', nameJa='新世界の映画館',
         ext=('o_shinsekai', [(11, 15), (12, 15)], (11, 16, 'down')),
-        npc=('kino_shihainin', 5, 2, 'down'),
+        npc=('kino_shihainin', 5, 4, 'down'),
         furniture=[
             ('popcorn', 6, 9, 4, 1, 1, 1.5, 'kino_popcorn'),
             ('sofa', 10, 4, 6, 3, 1, 3.4, 'kino_sofa'),
@@ -93,7 +93,7 @@ ROOMS = {
     'osaka_burg_museum': dict(
         size=(14, 11), name='Castle museum', nameJa='お城の資料館',
         ext=('o_castle', [(20, 10), (21, 10)], (20, 11, 'down')),
-        npc=('museum_gakugei', 3, 2, 'down'),
+        npc=('museum_gakugei', 3, 4, 'down'),
         furniture=[
             ('case', 0, 5, 5, 3, 1, 3.0, 'museum_case'),
             ('armour', 6, 9, 5, 1, 1, 1.3, 'museum_armour'),
@@ -119,7 +119,7 @@ ROOMS = {
     'tokyo_karaoke': dict(
         size=(13, 10), name='Karaoke lobby', nameJa='カラオケのロビー',
         ext=('t_shibuya', [(36, 21), (37, 21)], (36, 22, 'down')),
-        npc=('karaoke_uketsuke', 6, 2, 'down'),
+        npc=('karaoke_uketsuke', 6, 4, 'down'),
         furniture=[
             ('table', 0, 3, 6, 3, 1, 2.6, 'karaoke_table'),
             ('sofa', 4, 7, 6, 4, 1, 3.8, None),
@@ -146,7 +146,7 @@ ROOMS = {
     'tokyo_souvenirladen': dict(
         size=(13, 10), name='Souvenir shop', nameJa='お土産屋',
         ext=('t_asakusa', [(30, 12)], (29, 12, 'left')),
-        npc=('souvenir_okami', 6, 2, 'down'),
+        npc=('souvenir_okami', 6, 4, 'down'),
         furniture=[
             ('cats', 0, 3, 5, 3, 1, 3.0, 'souvenir_cats'),
             ('postcards', 4, 9, 5, 1, 1, 1.0, 'souvenir_postcards'),
@@ -160,7 +160,7 @@ ROOMS = {
     'tokyo_wohnung': dict(
         size=(14, 11), name='Share house common room', nameJa='シェアハウスの居間',
         ext=('t_sumida', [(30, 6), (31, 6)], (30, 7, 'down')),
-        npc=('share_resident', 8, 2, 'down'),
+        npc=('share_resident', 8, 4, 'down'),
         furniture=[
             ('table', 0, 5, 6, 3, 2, 3.4, 'wohnung_table'),
             ('sofa', 4, 9, 6, 2, 1, 2.4, None),
@@ -174,7 +174,7 @@ ROOMS = {
     'tokyo_aussichtsdeck': dict(
         size=(14, 11), name='Observation deck', nameJa='展望台',
         ext=('t_shibuya', [(31, 10), (32, 10)], (31, 11, 'down')),
-        npc=('deck_staff', 2, 4, 'right'),
+        npc=('deck_staff', 3, 4, 'left'),
         furniture=[
             ('telescope', 0, 7, 4, 1, 1, 1.1, 'deck_telescope'),
             ('bench', 4, 5, 8, 3, 1, 3.2, None),
@@ -188,7 +188,7 @@ ROOMS = {
     'tal_bauernhaus': dict(
         size=(14, 11), name='Farmhouse', nameJa='農家の居間',
         ext=('valley', [(5, 4), (6, 4)], (6, 5, 'down')),
-        npc=('farm_obaa', 5, 2, 'down'),
+        npc=('farm_obaa', 5, 4, 'down'),
         furniture=[
             ('table', 0, 5, 6, 3, 1, 3.4, 'farm_table'),
             ('brazier', 4, 3, 5, 1, 1, 1.2, 'farm_brazier'),
@@ -202,7 +202,7 @@ ROOMS = {
     'tal_weingut': dict(
         size=(14, 11), name='Winery tasting room', nameJa='ワイナリーの試飲室',
         ext=('valley', [(23, 12), (24, 12)], (23, 13, 'down')),
-        npc=('winery_master', 5, 2, 'down'),
+        npc=('winery_master', 5, 4, 'down'),
         furniture=[
             ('barrel_table', 16, 5, 6, 3, 1, 3.4, 'winery_barrel_table'),
             ('barrel', 4, 3, 5, 1, 1, 1.1, None),
@@ -215,7 +215,7 @@ ROOMS = {
     'hafen_restaurant': dict(
         size=(13, 10), name='Harbour restaurant', nameJa='海辺の食堂',
         ext=('harbor', [(24, 12)], (23, 12, 'left')),
-        npc=('diner_okami', 6, 2, 'down'),
+        npc=('diner_okami', 6, 4, 'down'),
         furniture=[
             ('table', 0, 3, 6, 3, 1, 3.0, 'diner_table'),
             ('fishtank', 4, 8, 5, 1, 1, 2.0, 'diner_fishtank'),
@@ -229,7 +229,7 @@ ROOMS = {
     'hafen_amt': dict(
         size=(12, 10), name='Harbour office', nameJa='港の事務所',
         ext=('harbor', [(26, 14), (27, 14)], (26, 15, 'down')),
-        npc=('harbor_chief', 6, 2, 'down'),
+        npc=('harbor_chief', 6, 4, 'down'),
         furniture=[
             ('desk', 0, 4, 5, 4, 1, 3.6, 'amt_desk'),
             ('chair', 1, 5, 4, 1, 1, 0.9, None),
@@ -242,7 +242,7 @@ ROOMS = {
     'berg_tempel': dict(
         size=(14, 11), name='Mountain temple hall', nameJa='山のお寺の本堂',
         ext=('mountain', [(20, 3)], (20, 4, 'down')),
-        npc=('temple_priest', 7, 2, 'down'),
+        npc=('temple_priest', 7, 4, 'down'),
         furniture=[
             ('incense', 0, 5, 4, 1, 1, 1.0, 'temple_incense'),
             ('offering', 4, 9, 4, 1, 1, 1.3, 'temple_offering'),
