@@ -147,6 +147,7 @@ export const MAP_MUSIC: Record<string, string> = {
   town: 'town', apartment: 'home', cafe: 'cafe', konbini: 'town', library: 'home', station: 'town', o_station_hall: 'osaka', t_station_hall: 'tokyo', k_station_hall: 'kyoto', forest: 'forest', valley: 'valley', mountain: 'snow', harbor: 'harbor',
   ryokan: 'onsen', werkstatt: 'valley', tsuru: 'snow', klinik: 'snow', kneipe: 'harbor', leuchtturm: 'lighthouse',
   k_station: 'kyoto', k_nishiki: 'kyoto', k_kamo: 'kyoto', k_gion: 'gion', k_fushimi: 'gion',
+  ex_hinomori: 'town', ex_tal: 'valley', ex_yukimi: 'snow', ex_shiomi: 'harbor', ex_kyoto: 'kyoto',
   machiya: 'gion', teehaus: 'gion', kimono: 'kyoto', izakaya: 'kyoto', bahnhofinfo: 'kyoto', nishikiladen: 'kyoto',
   o_umeda: 'osaka', o_nakanoshima: 'osaka', o_dotonbori: 'dotonbori', o_shinsekai: 'dotonbori', o_castle: 'osaka',
   t_station: 'tokyo', t_asakusa: 'tokyo_night', t_shibuya: 'tokyo', t_shinjuku: 'tokyo', t_sumida: 'tokyo_night', kissaten: 'cafe', sento: 'onsen', gamecenter: 'tokyo', yokocho: 'tokyo_night', kuyakusho: 'tokyo', radio: 'tokyo_night',
