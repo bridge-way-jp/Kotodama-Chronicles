@@ -20,7 +20,7 @@ export const EPISODES_EX3: Episode[] = [
         lines: [
           l('ex_yukina', '三年前、{霧|きり|v:n3_0760}の日に、{急激|きゅうげき|v:n3_0737}な{斜面|しゃめん}で{転倒|てんとう}したの。気がついたら、ヘリで{救助|きゅうじょ|v:n3_0739}されてた。', ['Three years ago, on a foggy day, I fell on a sudden steep slope. When I came to, I was being rescued by helicopter.', 'Vor drei Jahren bin ich an einem nebligen Tag an einem plötzlich steilen Hang gestürzt. Als ich zu mir kam, wurde ich mit dem Hubschrauber gerettet.'], 'worried'),
           l('ex_yukina', '{全身|ぜんしん|v:n2_1029}の{骨|ほね}を折って、一年。体は{回復|かいふく|v:kaifuku}したわ。もう{症状|しょうじょう|v:shoujou}もない。', ['I broke bones all over my body, and it took a year. My body has recovered. There are no symptoms any more.', 'Ich hatte mir am ganzen Körper Knochen gebrochen, es dauerte ein Jahr. Mein Körper hat sich erholt. Symptome gibt es keine mehr.']),
-          l('ex_yukina', 'でも、上に立つと、足が{しびれて|しびれて|v:n2_0798}動かないの。これは、{恐怖|きょうふ|v:n3_0753}っていう{現実|げんじつ|v:n3_0860}ね。', ['But when I stand at the top, my legs go numb and won’t move. That’s the reality called fear.', 'Aber wenn ich oben stehe, werden meine Beine taub und bewegen sich nicht. Das ist die Wirklichkeit namens Angst.'], 'worried'),
+          l('ex_yukina', 'でも、上に立つと、足が{しびれて||v:n2_0798}動かないの。これは、{恐怖|きょうふ|v:n3_0753}っていう{現実|げんじつ|v:n3_0860}ね。', ['But when I stand at the top, my legs go numb and won’t move. That’s the reality called fear.', 'Aber wenn ich oben stehe, werden meine Beine taub und bewegen sich nicht. Das ist die Wirklichkeit namens Angst.'], 'worried'),
         ],
         teach: ['v:n3_0760', 'v:n3_0737', 'v:n3_0739', 'v:n2_1029', 'v:kaifuku', 'v:shoujou', 'v:n2_0798', 'v:n3_0753', 'v:n3_0860'],
       },
