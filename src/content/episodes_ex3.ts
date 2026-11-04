@@ -109,7 +109,7 @@ export const EPISODES_EX3: Episode[] = [
     ],
     scenes: [
       {
-        at: 'exy_minshuku',
+        at: 'ex_sachiko',
         goal: ['Call at the guesthouse', 'Schau in der Pension vorbei'],
         lines: [
           l('ex_sachiko', '{ごめんください||v:n2_0677}って、言ってくれたの？……あら、お客さんじゃないのね。', ['Did you call “Is anyone home?” …Oh, you’re not a guest.', 'Haben Sie „Ist jemand da?“ gerufen? … Ach, Sie sind gar kein Gast.']),
@@ -355,7 +355,7 @@ export const EPISODES_EX3: Episode[] = [
     ],
     scenes: [
       {
-        at: 'exy_museum',
+        at: 'ex_fumiko',
         goal: ['Visit the local history museum', 'Besuche das Heimatmuseum'],
         lines: [
           l('ex_fumiko', '{旧|きゅう|v:n3_0732}{役場|やくば}の{倉|くら}から、{奇妙|きみょう|v:n3_0726}な日記が見つかったの。{偶然|ぐうぜん|v:n3_0779}、{床|ゆか}の下からね。', ['A strange diary was found in the storehouse of the old village office. Under the floor, by chance.', 'Im Speicher des alten Gemeindeamts wurde ein seltsames Tagebuch gefunden. Zufällig, unter dem Fußboden.']),

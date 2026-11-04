@@ -71,7 +71,7 @@ export const EPISODES_EX5: Episode[] = [
         teach: ['v:n2_0935', 'v:n2_1301', 'v:n2_1267', 'v:n2_1598', 'v:n3_1255', 'v:n3_1373', 'v:n3_1302', 'v:n3_1361', 'v:n3_1355', 'v:n2_0713'],
       },
       {
-        at: 'exk_library',
+        at: 'ex_haruka',
         goal: ['Look for the professor’s old book in the library', 'Such in der Bibliothek nach dem alten Buch des Professors'],
         lines: [
           nar('図書館の古い{棚|たな}に、四十年前に{刊行|かんこう|v:n3_1249}された本があった。{著者|ちょしゃ|v:n3_1490}は、{若|わか}い宮本先生だ。', ['On an old library shelf is a book published forty years ago. Its author is the young Professor Miyamoto.', 'In einem alten Bibliotheksregal steht ein Buch, das vor vierzig Jahren erschienen ist. Der Autor ist der junge Professor Miyamoto.']),
@@ -244,7 +244,7 @@ export const EPISODES_EX5: Episode[] = [
     ],
     scenes: [
       {
-        at: 'exk_bookshop',
+        at: 'ex_ichirou',
         goal: ['Browse the second-hand bookshop', 'Stöbere im Antiquariat'],
         lines: [
           nar('{古本屋|ふるほんや}の店先。{中古|ちゅうこ|v:n3_1476}の本の{包み|つつみ|v:n3_1518}が、{山|やま}のように{積|つ}まれている。少し{かび||v:n2_0430}の{匂|にお}いがする。', ['The front of the second-hand bookshop. Packages of used books are piled up like a mountain. There’s a faint smell of mould.', 'Vor dem Antiquariat stapeln sich Pakete mit gebrauchten Büchern wie ein Berg. Es riecht leicht nach Schimmel.']),
@@ -345,7 +345,7 @@ export const EPISODES_EX5: Episode[] = [
         teach: ['v:n2_0192', 'v:n2_1187', 'v:n2_1072', 'v:n2_0185'],
       },
       {
-        at: 'exk_library',
+        at: 'ex_haruka',
         goal: ['Search the library records with Haruka', 'Durchsuche mit Haruka die Bibliotheksakten'],
         lines: [
           l('ex_haruka', '一九七五年の{貸し出し|かしだし}カード。……あった。{箇所|かしょ|v:n2_0396}は少し{破|やぶ}れてるけど、「千代」の{括弧|かっこ|v:n2_0417}の中に、{名前|なまえ}が読めます。', ['The lending card from 1975. …Here. It’s a little torn in places, but in the brackets after “Chiyo” you can read a full name.', 'Die Ausleihkarte von 1975. … Hier. An einigen Stellen ist sie etwas zerrissen, aber in der Klammer hinter „Chiyo“ kann man einen Namen lesen.']),

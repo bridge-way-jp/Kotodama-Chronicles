@@ -8,6 +8,7 @@ import { EVERYDAY_SPOTS } from './everyday';
 import { EPISODE_RULES } from './episodes';
 import { EXPANSION_SCRIPTS } from './expansion';
 import { DISCOVERY_SCRIPTS } from './discoveries';
+import { EXROOM_SCRIPTS } from './rooms_ex';
 
 /**
  * All interaction scripts, keyed by NPC id or map-object id.
@@ -2809,6 +2810,7 @@ export const SCRIPTS: Record<string, DialogueRule[]> = {
   ...ROOMS2_SCRIPTS,
   ...EXPANSION_SCRIPTS,
   ...DISCOVERY_SCRIPTS,
+  ...EXROOM_SCRIPTS,
 };
 
 // the first trips to Osaka and Tokyo start in Hinomori (station_building) but the quest also names Kyoto station: the same

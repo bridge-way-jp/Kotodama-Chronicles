@@ -24,7 +24,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "tiles": [
    "WWWWWWWWWWWW",
    "WWWWWWWWWWWW",
-   "WWWWWWfWWWWW",
+   "WWWWWWWWWWWW",
    "WWccccccccWW",
    "WWffffffffWW",
    "WWffffffffWW",
@@ -144,7 +144,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "tiles": [
    "WWWWWWWWWWWW",
    "WWWWWWWWWWWW",
-   "WWWWWfWWWWWW",
+   "WWWWWWWWWWWW",
    "WWccccccccWW",
    "WWffffffffWW",
    "WWffffffffWW",
@@ -264,7 +264,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "tiles": [
    "WWWWWWWWWWWWWW",
    "WWWWWWWWWWWWWW",
-   "WWWWWWWWfWWWWW",
+   "WWWWWWWWWWWWWW",
    "WWccccccccccWW",
    "WWffffffffffWW",
    "WWffffffffffWW",
@@ -394,7 +394,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "tiles": [
    "WWWWWWWWWWWWW",
    "WWWWWWWWWWWWW",
-   "WWWWWfWWWWWWW",
+   "WWWWWWWWWWWWW",
    "WWcccccccccWW",
    "WWfffffffffWW",
    "WWfffffffffWW",
@@ -515,7 +515,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "tiles": [
    "WWWWWWWWWWWWWW",
    "WWWWWWWWWWWWWW",
-   "WWWfWWWWWWWWWW",
+   "WWWWWWWWWWWWWW",
    "WWccccccccccWW",
    "WWffffffffffWW",
    "WWffffffffffWW",
@@ -747,7 +747,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "tiles": [
    "WWWWWWWWWWWWW",
    "WWWWWWWWWWWWW",
-   "WWWWWWfWWWWWW",
+   "WWWWWWWWWWWWW",
    "WWcccccccccWW",
    "WWfffffffffWW",
    "WWfffffffffWW",
@@ -998,7 +998,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "tiles": [
    "WWWWWWWWWWWWW",
    "WWWWWWWWWWWWW",
-   "WWWWWWfWWWWWW",
+   "WWWWWWWWWWWWW",
    "WWcccccccccWW",
    "WWfffffffffWW",
    "WWfffffffffWW",
@@ -1124,7 +1124,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "tiles": [
    "WWWWWWWWWWWWWW",
    "WWWWWWWWWWWWWW",
-   "WWWWWWWWfWWWWW",
+   "WWWWWWWWWWWWWW",
    "WWccccccccccWW",
    "WWffffffffffWW",
    "WWffffffffffWW",
@@ -1375,7 +1375,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "tiles": [
    "WWWWWWWWWWWWWW",
    "WWWWWWWWWWWWWW",
-   "WWWWWfWWWWWWWW",
+   "WWWWWWWWWWWWWW",
    "WWccccccccccWW",
    "WWffffffffffWW",
    "WWffffffffffWW",
@@ -1505,7 +1505,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "tiles": [
    "WWWWWWWWWWWWWW",
    "WWWWWWWWWWWWWW",
-   "WWWWWfWWWWWWWW",
+   "WWWWWWWWWWWWWW",
    "WWccccccccccWW",
    "WWffffffffffWW",
    "WWffffffffffWW",
@@ -1626,7 +1626,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "tiles": [
    "WWWWWWWWWWWWW",
    "WWWWWWWWWWWWW",
-   "WWWWWWfWWWWWW",
+   "WWWWWWWWWWWWW",
    "WWcccccccccWW",
    "WWfffffffffWW",
    "WWfffffffffWW",
@@ -1752,7 +1752,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "tiles": [
    "WWWWWWWWWWWW",
    "WWWWWWWWWWWW",
-   "WWWWWWfWWWWW",
+   "WWWWWWWWWWWW",
    "WWccccccccWW",
    "WWffffffffWW",
    "WWffffffffWW",
@@ -1872,7 +1872,7 @@ export const ROOMS2_GEN: Record<string, Room2> = {
   "tiles": [
    "WWWWWWWWWWWWWW",
    "WWWWWWWWWWWWWW",
-   "WWWWWWWfWWWWWW",
+   "WWWWWWWWWWWWWW",
    "WWccccccccccWW",
    "WWffffffffffWW",
    "WWffffffffffWW",
@@ -1987,6 +1987,1153 @@ export const ROOMS2_GEN: Record<string, Room2> = {
    "stand": {
     "x": 20,
     "y": 4,
+    "facing": "down"
+   }
+  }
+ },
+ "hinomori_baeckerei": {
+  "name": "Misaki's bakery",
+  "nameJa": "美咲のパン屋",
+  "image": "room2_hinomori_baeckerei",
+  "tiles": [
+   "WWWWWWWWWWWW",
+   "WWWWWWWWWWWW",
+   "WWWWWWWWWWWW",
+   "WWccccccccWW",
+   "WWffffffffWW",
+   "WWffffffffWW",
+   "WWffffffffWW",
+   "WWffffffffWW",
+   "WWffffffffWW",
+   "WWWWWDDWWWWW"
+  ],
+  "objects": [
+   {
+    "id": "hinomori_baeckerei_table",
+    "sprite": "fu_hinomori_baeckerei_table",
+    "x": 4,
+    "y": 6,
+    "w": 2,
+    "h": 1,
+    "script": "exr_bakery_table"
+   },
+   {
+    "id": "hinomori_baeckerei_rack",
+    "sprite": "fu_hinomori_baeckerei_rack",
+    "x": 8,
+    "y": 5,
+    "w": 1,
+    "h": 1,
+    "script": "exr_bakery_rack"
+   },
+   {
+    "id": "hinomori_baeckerei_baguettes",
+    "sprite": "fu_hinomori_baeckerei_baguettes",
+    "x": 3,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "hinomori_baeckerei_sacks",
+    "sprite": "fu_hinomori_baeckerei_sacks",
+    "x": 9,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "hinomori_baeckerei_plant",
+    "sprite": "fu_hinomori_baeckerei_plant",
+    "x": 9,
+    "y": 4,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "hinomori_baeckerei_oven",
+    "x": 5,
+    "y": 2,
+    "w": 3,
+    "h": 2,
+    "script": "exr_bakery_oven"
+   },
+   {
+    "id": "hinomori_baeckerei_display",
+    "x": 2,
+    "y": 2,
+    "w": 3,
+    "h": 2,
+    "script": "exr_bakery_display"
+   }
+  ],
+  "npc": {
+   "id": "ex_misaki",
+   "x": 6,
+   "y": 4,
+   "facing": "down"
+  },
+  "doors": [
+   5,
+   6
+  ],
+  "size": [
+   12,
+   10
+  ],
+  "ext": {
+   "map": "ex_hinomori",
+   "tiles": [
+    [
+     12,
+     18
+    ],
+    [
+     13,
+     18
+    ]
+   ],
+   "stand": {
+    "x": 12,
+    "y": 19,
+    "facing": "down"
+   }
+  }
+ },
+ "hinomori_krankenhaus": {
+  "name": "City hospital",
+  "nameJa": "市民病院",
+  "image": "room2_hinomori_krankenhaus",
+  "tiles": [
+   "WWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWW",
+   "WWccccccccccWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWWWWWDDWWWWWW"
+  ],
+  "objects": [
+   {
+    "id": "hinomori_krankenhaus_chairs",
+    "sprite": "fu_hinomori_krankenhaus_chairs",
+    "x": 5,
+    "y": 7,
+    "w": 2,
+    "h": 1,
+    "script": "exr_hosp_chairs"
+   },
+   {
+    "id": "hinomori_krankenhaus_cart",
+    "sprite": "fu_hinomori_krankenhaus_cart",
+    "x": 9,
+    "y": 5,
+    "w": 1,
+    "h": 1,
+    "script": "exr_hosp_cart"
+   },
+   {
+    "id": "hinomori_krankenhaus_drip",
+    "sprite": "fu_hinomori_krankenhaus_drip",
+    "x": 10,
+    "y": 7,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "hinomori_krankenhaus_wheelchair",
+    "sprite": "fu_hinomori_krankenhaus_wheelchair",
+    "x": 4,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "hinomori_krankenhaus_plant",
+    "sprite": "fu_hinomori_krankenhaus_plant",
+    "x": 10,
+    "y": 4,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "hinomori_krankenhaus_water",
+    "sprite": "fu_hinomori_krankenhaus_water",
+    "x": 3,
+    "y": 4,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "hinomori_krankenhaus_desk",
+    "x": 4,
+    "y": 2,
+    "w": 4,
+    "h": 2,
+    "script": "exr_hosp_desk"
+   },
+   {
+    "id": "hinomori_krankenhaus_vending",
+    "x": 11,
+    "y": 2,
+    "w": 2,
+    "h": 2,
+    "script": "exr_hosp_vending"
+   }
+  ],
+  "npc": {
+   "id": "ex_chihiro",
+   "x": 7,
+   "y": 4,
+   "facing": "down"
+  },
+  "doors": [
+   6,
+   7
+  ],
+  "size": [
+   14,
+   11
+  ],
+  "ext": {
+   "map": "ex_hinomori",
+   "tiles": [
+    [
+     9,
+     8
+    ],
+    [
+     10,
+     8
+    ],
+    [
+     11,
+     8
+    ]
+   ],
+   "stand": {
+    "x": 9,
+    "y": 9,
+    "facing": "down"
+   }
+  }
+ },
+ "tal_schulcafe": {
+  "name": "Branch school café",
+  "nameJa": "分校カフェ",
+  "image": "room2_tal_schulcafe",
+  "tiles": [
+   "WWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWW",
+   "WWccccccccccWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWWWWWDDWWWWWW"
+  ],
+  "objects": [
+   {
+    "id": "tal_schulcafe_desk",
+    "sprite": "fu_tal_schulcafe_desk",
+    "x": 4,
+    "y": 6,
+    "w": 2,
+    "h": 1,
+    "script": "exr_cafe_desk"
+   },
+   {
+    "id": "tal_schulcafe_desk2",
+    "sprite": "fu_tal_schulcafe_desk2",
+    "x": 8,
+    "y": 6,
+    "w": 2,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "tal_schulcafe_chair",
+    "sprite": "fu_tal_schulcafe_chair",
+    "x": 3,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "tal_schulcafe_basket",
+    "sprite": "fu_tal_schulcafe_basket",
+    "x": 10,
+    "y": 4,
+    "w": 1,
+    "h": 1,
+    "script": "exr_cafe_basket"
+   },
+   {
+    "id": "tal_schulcafe_coats",
+    "sprite": "fu_tal_schulcafe_coats",
+    "x": 10,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "tal_schulcafe_plant",
+    "sprite": "fu_tal_schulcafe_plant",
+    "x": 3,
+    "y": 4,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "tal_schulcafe_stove",
+    "sprite": "fu_tal_schulcafe_stove",
+    "x": 10,
+    "y": 6,
+    "w": 1,
+    "h": 1,
+    "script": "exr_cafe_stove"
+   },
+   {
+    "id": "tal_schulcafe_board",
+    "x": 6,
+    "y": 2,
+    "w": 3,
+    "h": 2,
+    "script": "exr_cafe_board"
+   },
+   {
+    "id": "tal_schulcafe_display",
+    "x": 2,
+    "y": 2,
+    "w": 2,
+    "h": 2,
+    "script": "exr_cafe_display"
+   }
+  ],
+  "npc": {
+   "id": "ex_risa",
+   "x": 5,
+   "y": 4,
+   "facing": "down"
+  },
+  "doors": [
+   6,
+   7
+  ],
+  "size": [
+   14,
+   11
+  ],
+  "ext": {
+   "map": "ex_tal",
+   "tiles": [
+    [
+     14,
+     7
+    ],
+    [
+     15,
+     7
+    ]
+   ],
+   "stand": {
+    "x": 14,
+    "y": 8,
+    "facing": "down"
+   }
+  }
+ },
+ "tal_sakebrauerei": {
+  "name": "Sake brewery",
+  "nameJa": "酒蔵",
+  "image": "room2_tal_sakebrauerei",
+  "tiles": [
+   "WWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWW",
+   "WWccccccccccWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWWWWWDDWWWWWW"
+  ],
+  "objects": [
+   {
+    "id": "tal_sakebrauerei_barrel",
+    "sprite": "fu_tal_sakebrauerei_barrel",
+    "x": 3,
+    "y": 6,
+    "w": 1,
+    "h": 1,
+    "script": "exr_brew_barrel"
+   },
+   {
+    "id": "tal_sakebrauerei_sacks",
+    "sprite": "fu_tal_sakebrauerei_sacks",
+    "x": 10,
+    "y": 7,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "tal_sakebrauerei_table",
+    "sprite": "fu_tal_sakebrauerei_table",
+    "x": 7,
+    "y": 6,
+    "w": 2,
+    "h": 1,
+    "script": "exr_brew_table"
+   },
+   {
+    "id": "tal_sakebrauerei_paddles",
+    "sprite": "fu_tal_sakebrauerei_paddles",
+    "x": 4,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "tal_sakebrauerei_tanks",
+    "x": 6,
+    "y": 2,
+    "w": 5,
+    "h": 2,
+    "script": "exr_brew_tanks"
+   },
+   {
+    "id": "tal_sakebrauerei_shelf",
+    "x": 4,
+    "y": 2,
+    "w": 2,
+    "h": 2,
+    "script": "exr_brew_shelf"
+   }
+  ],
+  "npc": {
+   "id": "ex_toji",
+   "x": 6,
+   "y": 4,
+   "facing": "down"
+  },
+  "doors": [
+   6,
+   7
+  ],
+  "size": [
+   14,
+   11
+  ],
+  "ext": {
+   "map": "ex_tal",
+   "tiles": [
+    [
+     32,
+     16
+    ]
+   ],
+   "stand": {
+    "x": 32,
+    "y": 15,
+    "facing": "up"
+   }
+  }
+ },
+ "yukimi_pension": {
+  "name": "Minshuku Sachi",
+  "nameJa": "民宿「さち」",
+  "image": "room2_yukimi_pension",
+  "tiles": [
+   "WWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWW",
+   "WWccccccccccWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWWWWWDDWWWWWW"
+  ],
+  "objects": [
+   {
+    "id": "yukimi_pension_table",
+    "sprite": "fu_yukimi_pension_table",
+    "x": 5,
+    "y": 6,
+    "w": 2,
+    "h": 1,
+    "script": "exr_pen_table"
+   },
+   {
+    "id": "yukimi_pension_futons",
+    "sprite": "fu_yukimi_pension_futons",
+    "x": 3,
+    "y": 7,
+    "w": 1,
+    "h": 1,
+    "script": "exr_pen_futons"
+   },
+   {
+    "id": "yukimi_pension_wood",
+    "sprite": "fu_yukimi_pension_wood",
+    "x": 10,
+    "y": 5,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "yukimi_pension_boots",
+    "sprite": "fu_yukimi_pension_boots",
+    "x": 4,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "script": "exr_pen_boots"
+   },
+   {
+    "id": "yukimi_pension_pine",
+    "sprite": "fu_yukimi_pension_pine",
+    "x": 10,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "yukimi_pension_hearth",
+    "x": 7,
+    "y": 2,
+    "w": 2,
+    "h": 2,
+    "script": "exr_pen_hearth"
+   },
+   {
+    "id": "yukimi_pension_stove",
+    "x": 9,
+    "y": 2,
+    "w": 2,
+    "h": 2,
+    "script": "exr_pen_stove"
+   }
+  ],
+  "npc": {
+   "id": "ex_sachiko",
+   "x": 6,
+   "y": 4,
+   "facing": "down"
+  },
+  "doors": [
+   6,
+   7
+  ],
+  "size": [
+   14,
+   11
+  ],
+  "ext": {
+   "map": "ex_yukimi",
+   "tiles": [
+    [
+     24,
+     19
+    ],
+    [
+     25,
+     19
+    ]
+   ],
+   "stand": {
+    "x": 24,
+    "y": 20,
+    "facing": "down"
+   }
+  }
+ },
+ "yukimi_museum": {
+  "name": "Local history museum",
+  "nameJa": "郷土資料館",
+  "image": "room2_yukimi_museum",
+  "tiles": [
+   "WWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWW",
+   "WWccccccccccWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWWWWWDDWWWWWW"
+  ],
+  "objects": [
+   {
+    "id": "yukimi_museum_case",
+    "sprite": "fu_yukimi_museum_case",
+    "x": 4,
+    "y": 6,
+    "w": 2,
+    "h": 1,
+    "script": "exr_mus_case"
+   },
+   {
+    "id": "yukimi_museum_boots",
+    "sprite": "fu_yukimi_museum_boots",
+    "x": 9,
+    "y": 7,
+    "w": 1,
+    "h": 1,
+    "script": "exr_mus_boots"
+   },
+   {
+    "id": "yukimi_museum_bench",
+    "sprite": "fu_yukimi_museum_bench",
+    "x": 3,
+    "y": 8,
+    "w": 2,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "yukimi_museum_info",
+    "sprite": "fu_yukimi_museum_info",
+    "x": 9,
+    "y": 5,
+    "w": 1,
+    "h": 1,
+    "script": "exr_mus_info"
+   },
+   {
+    "id": "yukimi_museum_photo",
+    "x": 6,
+    "y": 1,
+    "w": 4,
+    "h": 2,
+    "script": "exr_mus_photo"
+   },
+   {
+    "id": "yukimi_museum_cases",
+    "x": 4,
+    "y": 2,
+    "w": 6,
+    "h": 2,
+    "script": "exr_mus_cases"
+   }
+  ],
+  "npc": {
+   "id": "ex_fumiko",
+   "x": 6,
+   "y": 4,
+   "facing": "down"
+  },
+  "doors": [
+   6,
+   7
+  ],
+  "size": [
+   14,
+   11
+  ],
+  "ext": {
+   "map": "ex_yukimi",
+   "tiles": [
+    [
+     33,
+     19
+    ],
+    [
+     34,
+     19
+    ]
+   ],
+   "stand": {
+    "x": 33,
+    "y": 20,
+    "facing": "down"
+   }
+  }
+ },
+ "shiomi_werft": {
+  "name": "Boat workshop",
+  "nameJa": "造船所",
+  "image": "room2_shiomi_werft",
+  "tiles": [
+   "WWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWW",
+   "WWccccccccccWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWWWWWDDWWWWWW"
+  ],
+  "objects": [
+   {
+    "id": "shiomi_werft_boat",
+    "sprite": "fu_shiomi_werft_boat",
+    "x": 5,
+    "y": 5,
+    "w": 3,
+    "h": 2,
+    "script": "exr_werft_boat"
+   },
+   {
+    "id": "shiomi_werft_bench",
+    "sprite": "fu_shiomi_werft_bench",
+    "x": 9,
+    "y": 6,
+    "w": 2,
+    "h": 1,
+    "script": "exr_werft_bench"
+   },
+   {
+    "id": "shiomi_werft_rope",
+    "sprite": "fu_shiomi_werft_rope",
+    "x": 3,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "shiomi_werft_tar",
+    "sprite": "fu_shiomi_werft_tar",
+    "x": 10,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "script": "exr_werft_tar"
+   },
+   {
+    "id": "shiomi_werft_planks",
+    "sprite": "fu_shiomi_werft_planks",
+    "x": 3,
+    "y": 4,
+    "w": 2,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "shiomi_werft_horse",
+    "sprite": "fu_shiomi_werft_horse",
+    "x": 8,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "shiomi_werft_tools",
+    "x": 6,
+    "y": 2,
+    "w": 3,
+    "h": 2,
+    "script": "exr_werft_tools"
+   },
+   {
+    "id": "shiomi_werft_helm",
+    "x": 11,
+    "y": 2,
+    "w": 2,
+    "h": 2,
+    "script": "exr_werft_helm"
+   }
+  ],
+  "npc": {
+   "id": "ex_tetsuo",
+   "x": 10,
+   "y": 4,
+   "facing": "down"
+  },
+  "doors": [
+   6,
+   7
+  ],
+  "size": [
+   14,
+   11
+  ],
+  "ext": {
+   "map": "ex_shiomi",
+   "tiles": [
+    [
+     28,
+     19
+    ]
+   ],
+   "stand": {
+    "x": 28,
+    "y": 20,
+    "facing": "down"
+   }
+  }
+ },
+ "shiomi_pension": {
+  "name": "Minshuku Umi",
+  "nameJa": "民宿「うみ」",
+  "image": "room2_shiomi_pension",
+  "tiles": [
+   "WWWWWWWWWWWWW",
+   "WWWWWWWWWWWWW",
+   "WWWWWWWWWWWWW",
+   "WWcccccccccWW",
+   "WWfffffffffWW",
+   "WWfffffffffWW",
+   "WWfffffffffWW",
+   "WWfffffffffWW",
+   "WWfffffffffWW",
+   "WWWWWDDDWWWWW"
+  ],
+  "objects": [
+   {
+    "id": "shiomi_pension_table",
+    "sprite": "fu_shiomi_pension_table",
+    "x": 4,
+    "y": 6,
+    "w": 2,
+    "h": 1,
+    "script": "exr_spen_table"
+   },
+   {
+    "id": "shiomi_pension_oranges",
+    "sprite": "fu_shiomi_pension_oranges",
+    "x": 9,
+    "y": 5,
+    "w": 1,
+    "h": 1,
+    "script": "exr_spen_oranges"
+   },
+   {
+    "id": "shiomi_pension_plant",
+    "sprite": "fu_shiomi_pension_plant",
+    "x": 9,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "shiomi_pension_fan",
+    "sprite": "fu_shiomi_pension_fan",
+    "x": 3,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "script": "exr_spen_fan"
+   },
+   {
+    "id": "shiomi_pension_noren",
+    "x": 6,
+    "y": 2,
+    "w": 2,
+    "h": 2,
+    "script": "exr_spen_noren"
+   },
+   {
+    "id": "shiomi_pension_cooker",
+    "x": 2,
+    "y": 2,
+    "w": 3,
+    "h": 2,
+    "script": "exr_spen_cooker"
+   }
+  ],
+  "npc": {
+   "id": "ex_yumi",
+   "x": 6,
+   "y": 4,
+   "facing": "down"
+  },
+  "doors": [
+   5,
+   6,
+   7
+  ],
+  "size": [
+   13,
+   10
+  ],
+  "ext": {
+   "map": "ex_shiomi",
+   "tiles": [
+    [
+     11,
+     15
+    ]
+   ],
+   "stand": {
+    "x": 11,
+    "y": 16,
+    "facing": "down"
+   }
+  }
+ },
+ "kyoto_antiquariat": {
+  "name": "Second-hand bookshop",
+  "nameJa": "古本屋",
+  "image": "room2_kyoto_antiquariat",
+  "tiles": [
+   "WWWWWWWWWWWW",
+   "WWWWWWWWWWWW",
+   "WWWWWWWWWWWW",
+   "WWccccccccWW",
+   "WWffffffffWW",
+   "WWffffffffWW",
+   "WWffffffffWW",
+   "WWffffffffWW",
+   "WWffffffffWW",
+   "WWWWWDDWWWWW"
+  ],
+  "objects": [
+   {
+    "id": "kyoto_antiquariat_books",
+    "sprite": "fu_kyoto_antiquariat_books",
+    "x": 3,
+    "y": 7,
+    "w": 1,
+    "h": 1,
+    "script": "exr_ant_books"
+   },
+   {
+    "id": "kyoto_antiquariat_shelf",
+    "sprite": "fu_kyoto_antiquariat_shelf",
+    "x": 6,
+    "y": 6,
+    "w": 2,
+    "h": 1,
+    "script": "exr_ant_shelf"
+   },
+   {
+    "id": "kyoto_antiquariat_ladder",
+    "sprite": "fu_kyoto_antiquariat_ladder",
+    "x": 9,
+    "y": 5,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "kyoto_antiquariat_stool",
+    "sprite": "fu_kyoto_antiquariat_stool",
+    "x": 4,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "kyoto_antiquariat_box",
+    "sprite": "fu_kyoto_antiquariat_box",
+    "x": 8,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "script": "exr_ant_box"
+   },
+   {
+    "id": "kyoto_antiquariat_shelves",
+    "x": 4,
+    "y": 2,
+    "w": 5,
+    "h": 2,
+    "script": "exr_ant_shelves"
+   },
+   {
+    "id": "kyoto_antiquariat_cat",
+    "x": 9,
+    "y": 2,
+    "w": 1,
+    "h": 2,
+    "script": "exr_ant_cat"
+   }
+  ],
+  "npc": {
+   "id": "ex_ichirou",
+   "x": 5,
+   "y": 4,
+   "facing": "down"
+  },
+  "doors": [
+   5,
+   6
+  ],
+  "size": [
+   12,
+   10
+  ],
+  "ext": {
+   "map": "ex_kyoto",
+   "tiles": [
+    [
+     4,
+     12
+    ],
+    [
+     5,
+     12
+    ]
+   ],
+   "stand": {
+    "x": 4,
+    "y": 13,
+    "facing": "down"
+   }
+  }
+ },
+ "kyoto_unibibliothek": {
+  "name": "University library",
+  "nameJa": "大学図書館",
+  "image": "room2_kyoto_unibibliothek",
+  "tiles": [
+   "WWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWW",
+   "WWWWWWWWWWWWWW",
+   "WWccccccccccWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWffffffffffWW",
+   "WWWWWWDDWWWWWW"
+  ],
+  "objects": [
+   {
+    "id": "kyoto_unibibliothek_table",
+    "sprite": "fu_kyoto_unibibliothek_table",
+    "x": 5,
+    "y": 6,
+    "w": 3,
+    "h": 1,
+    "script": "exr_lib_table"
+   },
+   {
+    "id": "kyoto_unibibliothek_chair",
+    "sprite": "fu_kyoto_unibibliothek_chair",
+    "x": 5,
+    "y": 7,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "kyoto_unibibliothek_chair2",
+    "sprite": "fu_kyoto_unibibliothek_chair2",
+    "x": 8,
+    "y": 6,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "kyoto_unibibliothek_cart",
+    "sprite": "fu_kyoto_unibibliothek_cart",
+    "x": 9,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "script": "exr_lib_cart"
+   },
+   {
+    "id": "kyoto_unibibliothek_catalog",
+    "sprite": "fu_kyoto_unibibliothek_catalog",
+    "x": 10,
+    "y": 4,
+    "w": 1,
+    "h": 1,
+    "script": "exr_lib_catalog"
+   },
+   {
+    "id": "kyoto_unibibliothek_globe",
+    "sprite": "fu_kyoto_unibibliothek_globe",
+    "x": 3,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "script": "exr_lib_globe"
+   },
+   {
+    "id": "kyoto_unibibliothek_plant",
+    "sprite": "fu_kyoto_unibibliothek_plant",
+    "x": 10,
+    "y": 8,
+    "w": 1,
+    "h": 1,
+    "decor": true
+   },
+   {
+    "id": "kyoto_unibibliothek_clock",
+    "x": 9,
+    "y": 1,
+    "w": 2,
+    "h": 2,
+    "script": "exr_lib_clock"
+   },
+   {
+    "id": "kyoto_unibibliothek_windows",
+    "x": 4,
+    "y": 2,
+    "w": 5,
+    "h": 2,
+    "script": "exr_lib_windows"
+   }
+  ],
+  "npc": {
+   "id": "ex_haruka",
+   "x": 4,
+   "y": 4,
+   "facing": "down"
+  },
+  "doors": [
+   6,
+   7
+  ],
+  "size": [
+   14,
+   11
+  ],
+  "ext": {
+   "map": "ex_kyoto",
+   "tiles": [
+    [
+     7,
+     7
+    ],
+    [
+     8,
+     7
+    ]
+   ],
+   "stand": {
+    "x": 7,
+    "y": 8,
     "facing": "down"
    }
   }
