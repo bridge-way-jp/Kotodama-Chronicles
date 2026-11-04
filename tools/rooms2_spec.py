@@ -106,7 +106,7 @@ ROOMS = {
     'tokyo_koban': dict(
         size=(12, 10), name='Police box', nameJa='交番',
         ext=('t_station', [(36, 13), (37, 13)], (36, 14, 'down')),
-        npc=('koban_omawari', 6, 2, 'down'),
+        npc=('koban_omawari', 7, 4, 'down'),
         furniture=[
             ('desk', 0, 4, 5, 3, 1, 3.0, 'koban_desk'),
             ('chair', 4, 5, 4, 1, 1, 0.9, None),
@@ -132,7 +132,7 @@ ROOMS = {
     'tokyo_buchhandlung': dict(
         size=(14, 11), name='Bookshop', nameJa='本屋',
         ext=('t_shinjuku', [(11, 9), (12, 9)], (11, 10, 'down')),
-        npc=('books_shuijin', 2, 2, 'down'),
+        npc=('books_shuijin', 3, 4, 'down'),
         furniture=[
             ('shelf', 0, 9, 5, 2, 1, 2.2, 'books_shelf'),
             ('table', 2, 5, 7, 3, 1, 3.0, 'books_table'),
