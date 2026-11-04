@@ -2,6 +2,7 @@ import { DE_STORY } from './de_story';
 import type { DialogueRule, Step } from '../core/script';
 import { EXPANSION_GEN } from './expansion.gen';
 import { EX_JOB_NPC, EX_JOBS } from './jobs_ex';
+import { EXPANSION2_SCRIPTS, GREETING_TEXTS, greeting } from './expansion2';
 
 /**
  * The world expansion: one new district in each region (tools/build_expansion.py builds the maps, buildings and people
@@ -20,6 +21,8 @@ export const EXPANSION_SIGNS: Record<string, { map: string; x: number; y: number
   tal: { map: 'valley', x: 38, y: 18, text: '{道|みち}しるべ：「→ {谷|たに}の{分校|ぶんこう}・{棚田|たなだ}」', t: ['Signpost: “→ Valley branch school · Rice terraces”', 'Wegweiser: „→ Talschule · Reisterrassen“'] },
   yukimi: { map: 'mountain', x: 2, y: 12, text: '{道|みち}しるべ：「→ {雪見|ゆきみ}スキー{場|じょう}・{湯|ゆ}の{町|まち}」', t: ['Signpost: “→ Yukimi ski slope · Hot-spring street”', 'Wegweiser: „→ Skihang Yukimi · Onsen-Straße“'] },
   shiomi: { map: 'harbor', x: 40, y: 22, text: '{船着|ふなつ}き{場|ば}の{看板|かんばん}：「{潮見島|しおみじま}{行|ゆ}き{渡|わた}し{船|ぶね}」', t: ['A sign at the landing: “Ferry to Shiomi Island”', 'Schild am Anleger: „Fähre zur Insel Shiomi“'] },
+  osaka: { map: 'o_umeda', x: 38, y: 23, text: '{道|みち}しるべ：「→ {町工場|まちこうば}の{町|まち}」', t: ['Signpost: “→ The town of small factories”', 'Wegweiser: „→ Die Stadt der kleinen Fabriken“'] },
+  tokyo: { map: 't_sumida', x: 38, y: 3, text: '{道|みち}しるべ：「→ {湾岸|わんがん}と{下町|したまち}の{路地|ろじ}」', t: ['Signpost: “→ The bay area and the old lanes”', 'Wegweiser: „→ Hafenviertel und alte Gassen“'] },
   kyoto: { map: 'k_kamo', x: 1, y: 23, text: '{道|みち}しるべ：「→ {大学|だいがく}・{嵐山|あらしやま}」', t: ['Signpost: “→ University · Arashiyama”', 'Wegweiser: „→ Universität · Arashiyama“'] },
 };
 
@@ -150,3 +153,9 @@ for (const [id, [ja, t]] of Object.entries(GREETINGS)) {
   if (job) steps.push({ choice: [{ text: 'バイトする', en: `${de(WORK)}: ${EX_JOBS[job].titleEn}`, then: [{ do: [{ open: `job:${job}` }] }] }, { text: 'やめる', en: de(STAY) }] });
   EXPANSION_SCRIPTS[id] = [{ steps }];
 }
+
+// the people and buildings of Osaka, Tokyo, Okinawa, Hokkaidō and Nara (content/expansion2.ts)
+Object.assign(EXPANSION_SCRIPTS, EXPANSION2_SCRIPTS);
+for (const id of Object.keys(GREETING_TEXTS)) EXPANSION_SCRIPTS[id] = [{ steps: greeting(id)! }];
+/** the way into the three far regions is the station board (ui/Board.tsx); this keeps the walk audit aware of the arrivals */
+EXPANSION_SCRIPTS.exp_arrivals = [{ when: { flag: 'exp_never' }, steps: [{ do: [{ warp: { map: 'ex_okinawa', x: 22, y: 21 } }, { warp: { map: 'ex_hokkaido', x: 18, y: 26 } }, { warp: { map: 'ex_nara', x: 24, y: 26 } }] }] }];
