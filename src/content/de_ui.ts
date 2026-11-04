@@ -157,6 +157,7 @@ export const DE_UI: Record<string, string> = {
   "Readiness": "Bereitschaft",
   "Bag": "Tasche",
   "Secrets": "Geheimnisse",
+  "Discoveries": "Entdeckungen",
   "your first meeting": "eure erste Begegnung",
   "you helped with the regular customer": "du hast beim Stammkunden geholfen",
   "the unsigned letter": "der unsignierte Brief",

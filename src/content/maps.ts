@@ -17,6 +17,7 @@ import { DECORFIX_GEN } from './decorfix.gen';
 import { CITYDECOR_GEN, CITYSWAP_GEN } from './citydecor.gen';
 import { EXPANSION_GEN } from './expansion.gen';
 import { EXPANSION_SIGNS } from './expansion';
+import { DISCOVERY_OBJECTS } from './discoveries';
 import { EDITS_BASE, applyEdits, loadLocalEdits, loadSharedEdits, mergeEdits, walkOverrides } from './edits';
 import type { Dir } from '../core/types';
 
@@ -810,7 +811,7 @@ const EX_MUSIC_BG: Record<string, string> = { hinomori: 'bg_town_sunset.webp', t
 for (const [name, d] of Object.entries(EXPANSION_GEN)) {
   const id = `ex_${name}`;
   MAPS[id] = {
-    id, name: d.title[1], nameJa: d.title[0], tiles: d.tiles, image: `map_${id}`, bg: EX_MUSIC_BG[name], objects: d.objects, warps: d.warps,
+    id, name: d.title[1], nameJa: d.title[0], tiles: d.tiles, image: `map_${id}`, bg: EX_MUSIC_BG[name], objects: [...d.objects, ...(DISCOVERY_OBJECTS[id] ?? [])], warps: d.warps,
     npcs: d.npcs.map((p) => ({ ...p })), snow: name === 'yukimi' || undefined,
   };
   const s = EXPANSION_SIGNS[name];
