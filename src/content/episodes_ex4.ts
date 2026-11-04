@@ -60,7 +60,7 @@ export const EPISODES_EX4: Episode[] = [
     ],
     scenes: [
       {
-        at: 'exs_shipyard',
+        at: 'ex_tetsuo',
         goal: ['Look into the shipyard', 'Schau in die Werft'],
         lines: [
           nar('{造船|ぞうせん|v:n2_1053}{所|じょ}の中。{梯子|はしご|v:n2_1428}の上で、{鉄男|てつお}さんが{のこぎり||v:n2_1400}を引いている。', ['Inside the shipyard. Up on a ladder, Tetsuo is working with a saw.', 'In der Werft. Oben auf einer Leiter sägt Tetsuo.']),
@@ -343,7 +343,7 @@ export const EPISODES_EX4: Episode[] = [
     ],
     scenes: [
       {
-        at: 'exs_guesthouse',
+        at: 'ex_yumi',
         goal: ['Have dinner at the guesthouse', 'Iss in der Pension zu Abend'],
         lines: [
           nar('{宿|やど|v:n3_1095}の夕ごはん。{茹でた|ゆでた|v:n3_1118}{豆|まめ|v:n3_1000}と、{皮|かわ}を{剥いた|むいた|v:n3_1030}{夏|なつ}みかん。{椀|わん|v:n3_1205}の中で、{潮汁|うしおじる}が{匂って|におって|v:n2_1367}いる。', ['Dinner at the inn. Boiled beans and peeled summer oranges. In the bowl, clear fish soup gives off its aroma.', 'Abendessen in der Herberge. Gekochte Bohnen und geschälte Sommerorangen. In der Schale duftet eine klare Fischsuppe.']),

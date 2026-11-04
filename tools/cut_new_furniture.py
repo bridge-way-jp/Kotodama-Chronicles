@@ -18,7 +18,8 @@ from extract_sheets import ROOT, SHEETS, components, load, magenta_mask, rows_of
 
 NEW = ['kyoto_wagashi', 'kyoto_fushimi_teestand', 'osaka_kaufhaus', 'osaka_kino', 'osaka_burg_museum', 'tokyo_koban', 'tokyo_karaoke',
        'tokyo_buchhandlung', 'tokyo_souvenirladen', 'tokyo_wohnung', 'tokyo_aussichtsdeck', 'tal_bauernhaus', 'tal_weingut',
-       'hafen_restaurant', 'hafen_amt', 'berg_tempel', 'hall_kyoto', 'hall_osaka_umeda', 'hall_tokyo']
+       'hafen_restaurant', 'hafen_amt', 'berg_tempel', 'hall_kyoto', 'hall_osaka_umeda', 'hall_tokyo',
+       'hinomori_baeckerei', 'hinomori_krankenhaus', 'tal_schulcafe', 'tal_sakebrauerei', 'yukimi_pension', 'yukimi_museum', 'kyoto_unibibliothek', 'shiomi_werft', 'shiomi_pension', 'kyoto_antiquariat']
 
 
 def defringe(img):

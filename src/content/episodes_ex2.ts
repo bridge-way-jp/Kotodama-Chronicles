@@ -61,7 +61,7 @@ export const EPISODES_EX2: Episode[] = [
     ],
     scenes: [
       {
-        at: 'ext_school',
+        at: 'ex_risa',
         goal: ['Have a cup at the school café', 'Trink etwas im Schulcafé'],
         lines: [
           nar('{分校|ぶんこう}カフェ。コーヒーのいい{香り|かおり|v:n3_0569}がする。{黒板|こくばん}に「本日の{丼|どんぶり|v:n2_1333}」と書いてある。', ['The school café. It smells of good coffee. The blackboard says: “Today’s rice bowl”.', 'Das Schulcafé. Es duftet nach gutem Kaffee. Auf der Tafel steht: „Reisschüssel des Tages“.']),
@@ -83,7 +83,7 @@ export const EPISODES_EX2: Episode[] = [
         teach: ['v:n3_0462', 'v:n3_0376', 'v:n3_0443', 'v:n3_0430', 'v:n3_0460', 'v:n3_0516', 'v:n2_0958'],
       },
       {
-        at: 'ext_school',
+        at: 'ex_risa',
         goal: ['Come to the café on the day of the harvest', 'Komm am Erntetag ins Café'],
         music: 'memory',
         lines: [
@@ -447,7 +447,7 @@ export const EPISODES_EX2: Episode[] = [
     ],
     scenes: [
       {
-        at: 'ext_brewery',
+        at: 'ex_toji',
         goal: ['Look into the sake brewery', 'Schau in die Sake-Brauerei'],
         lines: [
           nar('{酒蔵|さかぐら}の中。{蒸した|むした|v:n2_1565}米の{湯気|ゆげ}が、白い{雲|くも}のように{立ち上って|たちのぼって}いる。', ['Inside the brewery, steam from the steamed rice rises like white clouds.', 'In der Brauerei steigt der Dampf des gedämpften Reises wie weiße Wolken auf.']),

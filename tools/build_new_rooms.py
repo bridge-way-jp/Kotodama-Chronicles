@@ -67,13 +67,15 @@ def main():
             else:
                 o['decor'] = True
             objects.append(o)
-            if script:
+            if script and script in TEXT:
                 scripts[script] = [{'steps': [{'say': TEXT[script][0], 'en': TEXT[script][1]}]}]
         for name, x, y, w, h, script in r['spots']:
             objects.append({'id': f'{rid}_{name}', 'x': x, 'y': y, 'w': w, 'h': h, 'script': script})
-            scripts[script] = [{'steps': [{'say': TEXT[script][0], 'en': TEXT[script][1]}]}]
+            if script in TEXT:
+                scripts[script] = [{'steps': [{'say': TEXT[script][0], 'en': TEXT[script][1]}]}]
         nid, nx, ny, nface = r['npc']
-        scripts[nid] = [{'steps': [{'say': jp, 'who': nid, 'en': en} for jp, en in TEXT[nid]]}]
+        if nid in TEXT:  # (a person of the expansion districts has their words in content/expansion.ts)
+            scripts[nid] = [{'steps': [{'say': jp, 'who': nid, 'en': en} for jp, en in TEXT[nid]]}]
         emap, etiles, (sx, sy, sface) = r['ext']
         out[rid] = {
             'name': r['name'], 'nameJa': r['nameJa'], 'image': f'room2_{rid}', 'tiles': [''.join(row) for row in grid], 'objects': objects,

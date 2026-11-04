@@ -50,21 +50,7 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
      352,
      224
     ],
-    "script": "exh_hospital",
-    "interactAt": [
-     {
-      "x": 9,
-      "y": 8
-     },
-     {
-      "x": 10,
-      "y": 8
-     },
-     {
-      "x": 11,
-      "y": 8
-     }
-    ]
+    "decor": true
    },
    {
     "id": "ex_hinomori_school",
@@ -142,17 +128,7 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
      416,
      576
     ],
-    "script": "exh_bakery",
-    "interactAt": [
-     {
-      "x": 12,
-      "y": 18
-     },
-     {
-      "x": 13,
-      "y": 18
-     }
-    ]
+    "decor": true
    },
    {
     "id": "ex_hinomori_s4",
@@ -361,12 +337,6 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
     "facing": "up"
    },
    {
-    "id": "ex_chihiro",
-    "x": 12,
-    "y": 9,
-    "facing": "down"
-   },
-   {
     "id": "ex_ren",
     "x": 13,
     "y": 9,
@@ -393,12 +363,6 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
    {
     "id": "ex_oono",
     "x": 36,
-    "y": 19,
-    "facing": "up"
-   },
-   {
-    "id": "ex_misaki",
-    "x": 14,
     "y": 19,
     "facing": "up"
    },
@@ -528,17 +492,7 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
      496,
      224
     ],
-    "script": "ext_school",
-    "interactAt": [
-     {
-      "x": 14,
-      "y": 7
-     },
-     {
-      "x": 15,
-      "y": 7
-     }
-    ]
+    "decor": true
    },
    {
     "id": "ex_tal_drum",
@@ -639,13 +593,7 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
      1136,
      544
     ],
-    "script": "ext_brewery",
-    "interactAt": [
-     {
-      "x": 32,
-      "y": 16
-     }
-    ]
+    "decor": true
    },
    {
     "id": "ex_tal_thatch",
@@ -716,12 +664,6 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
     "facing": "right"
    },
    {
-    "id": "ex_risa",
-    "x": 16,
-    "y": 8,
-    "facing": "down"
-   },
-   {
     "id": "ex_uchida",
     "x": 35,
     "y": 6,
@@ -762,12 +704,6 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
     "x": 34,
     "y": 19,
     "facing": "up"
-   },
-   {
-    "id": "ex_toji",
-    "x": 32,
-    "y": 17,
-    "facing": "left"
    }
   ],
   "entry": [
@@ -996,17 +932,7 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
      800,
      608
     ],
-    "script": "exy_minshuku",
-    "interactAt": [
-     {
-      "x": 24,
-      "y": 19
-     },
-     {
-      "x": 25,
-      "y": 19
-     }
-    ]
+    "decor": true
    },
    {
     "id": "ex_yukimi_museum",
@@ -1019,17 +945,7 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
      1088,
      608
     ],
-    "script": "exy_museum",
-    "interactAt": [
-     {
-      "x": 33,
-      "y": 19
-     },
-     {
-      "x": 34,
-      "y": 19
-     }
-    ]
+    "decor": true
    },
    {
     "id": "ex_yukimi_footbath",
@@ -1106,12 +1022,6 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
     "facing": "right"
    },
    {
-    "id": "ex_sachiko",
-    "x": 26,
-    "y": 19,
-    "facing": "up"
-   },
-   {
     "id": "ex_itsuki",
     "x": 16,
     "y": 19,
@@ -1134,12 +1044,6 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
     "x": 22,
     "y": 20,
     "facing": "left"
-   },
-   {
-    "id": "ex_fumiko",
-    "x": 35,
-    "y": 19,
-    "facing": "up"
    },
    {
     "id": "ex_yuzu",
@@ -1251,7 +1155,7 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
    "TTT.........................TTTTTTTTTTTTTT",
    "TTTTTTTTTTTTTTTT...TTTTT....TTTTTTTTTTTTTT",
    "TTTTTTTTTTTTTTTT...TTTTT....TTTTTTTTTTTTTT",
-   "TTTTTTTTTTTTTTTT...TTTTT......TTTTTTTTTTTT",
+   "TTTTTTTTTTTTTTTT...TTTTT.....TTTTTTTTTTTTT",
    "TTTTTT.......................TTTTTTTTTTTTT",
    "TTTTTT.......................TTTTTTTTTTTTT",
    "TTTTTTTTTTTTTTTTTTT.....TTTTTTTTTTTTTTTTTT",
@@ -1353,13 +1257,7 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
      384,
      480
     ],
-    "script": "exs_guesthouse",
-    "interactAt": [
-     {
-      "x": 11,
-      "y": 15
-     }
-    ]
+    "decor": true
    },
    {
     "id": "ex_shiomi_house3",
@@ -1452,13 +1350,7 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
      1008,
      608
     ],
-    "script": "exs_shipyard",
-    "interactAt": [
-     {
-      "x": 28,
-      "y": 19
-     }
-    ]
+    "decor": true
    }
   ],
   "warps": [
@@ -1501,12 +1393,6 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
     "facing": "up"
    },
    {
-    "id": "ex_tetsuo",
-    "x": 29,
-    "y": 19,
-    "facing": "left"
-   },
-   {
     "id": "ex_kouji",
     "x": 13,
     "y": 21,
@@ -1535,12 +1421,6 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
     "x": 27,
     "y": 9,
     "facing": "down"
-   },
-   {
-    "id": "ex_yumi",
-    "x": 12,
-    "y": 15,
-    "facing": "up"
    },
    {
     "id": "ex_sofia",
@@ -1672,17 +1552,7 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
      240,
      224
     ],
-    "script": "exk_library",
-    "interactAt": [
-     {
-      "x": 7,
-      "y": 7
-     },
-     {
-      "x": 8,
-      "y": 7
-     }
-    ]
+    "decor": true
    },
    {
     "id": "ex_kyoto_hall",
@@ -1741,17 +1611,7 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
      160,
      384
     ],
-    "script": "exk_bookshop",
-    "interactAt": [
-     {
-      "x": 4,
-      "y": 12
-     },
-     {
-      "x": 5,
-      "y": 12
-     }
-    ]
+    "decor": true
    },
    {
     "id": "ex_kyoto_bamboo",
@@ -1892,21 +1752,9 @@ export const EXPANSION_GEN: Record<string, { tiles: string[]; objects: MapObject
     "facing": "down"
    },
    {
-    "id": "ex_ichirou",
-    "x": 3,
-    "y": 13,
-    "facing": "up"
-   },
-   {
     "id": "ex_koharu",
     "x": 17,
     "y": 13,
-    "facing": "up"
-   },
-   {
-    "id": "ex_haruka",
-    "x": 10,
-    "y": 8,
     "facing": "up"
    },
    {

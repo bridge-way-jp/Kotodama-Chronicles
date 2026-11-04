@@ -791,6 +791,18 @@ for (const [id, ids] of Object.entries(FLOW_GEN)) for (const o of MAPS[id]?.obje
 // buildings that used to repeat: the new house variants (tools/build_houses.py)
 for (const m of Object.values(MAPS)) for (const o of m.objects) if (HOUSE_SWAPS[o.id]) o.sprite = HOUSE_SWAPS[o.id];
 
+// the expansion districts (tools/build_expansion.py, content/expansion.ts): a map each, reached from a signpost on its region's map
+const EX_MUSIC_BG: Record<string, string> = { hinomori: 'bg_town_sunset.webp', tal: 'bg_valley_orchard.webp', yukimi: 'bg_mountain_village.webp', shiomi: 'bg_harbor_quay.webp', kyoto: 'bg_kyoto_gion.webp' };
+for (const [name, d] of Object.entries(EXPANSION_GEN)) {
+  const id = `ex_${name}`;
+  MAPS[id] = {
+    id, name: d.title[1], nameJa: d.title[0], tiles: d.tiles, image: `map_${id}`, bg: EX_MUSIC_BG[name], objects: [...d.objects, ...(DISCOVERY_OBJECTS[id] ?? [])], warps: d.warps,
+    npcs: d.npcs.map((p) => ({ ...p })), snow: name === 'yukimi' || undefined,
+  };
+  const s = EXPANSION_SIGNS[name];
+  MAPS[s.map]?.objects.push({ id: `exp_sign_${name}`, sprite: 'ob_sign_arrow', x: s.x, y: s.y, w: 1, h: 1, script: `exp_go_${name}`, hint: 'always' });
+}
+
 // shops, halls and houses that were added later (tools/build_new_rooms.py): a room map plus the door tiles in its outdoor map
 for (const [id, r] of Object.entries(ROOMS2_GEN)) {
   const [, H] = r.size;
@@ -804,18 +816,6 @@ for (const [id, r] of Object.entries(ROOMS2_GEN)) {
   outdoor.warps = outdoor.warps.filter((w) => !e.tiles.some(([x, y]) => w.x === x && w.y === y)); // a hall replaces the old door
   const inX = r.doors[Math.floor((r.doors.length - 1) / 2)];
   e.tiles.forEach(([x, y], i) => outdoor.warps.push({ x, y, to: { map: id, x: r.spread ? r.doors[Math.min(i, r.doors.length - 1)] : inX, y: H - 2, facing: 'up' } }));
-}
-
-// the expansion districts (tools/build_expansion.py, content/expansion.ts): a map each, reached from a signpost on its region's map
-const EX_MUSIC_BG: Record<string, string> = { hinomori: 'bg_town_sunset.webp', tal: 'bg_valley_orchard.webp', yukimi: 'bg_mountain_village.webp', shiomi: 'bg_harbor_quay.webp', kyoto: 'bg_kyoto_gion.webp' };
-for (const [name, d] of Object.entries(EXPANSION_GEN)) {
-  const id = `ex_${name}`;
-  MAPS[id] = {
-    id, name: d.title[1], nameJa: d.title[0], tiles: d.tiles, image: `map_${id}`, bg: EX_MUSIC_BG[name], objects: [...d.objects, ...(DISCOVERY_OBJECTS[id] ?? [])], warps: d.warps,
-    npcs: d.npcs.map((p) => ({ ...p })), snow: name === 'yukimi' || undefined,
-  };
-  const s = EXPANSION_SIGNS[name];
-  MAPS[s.map]?.objects.push({ id: `exp_sign_${name}`, sprite: 'ob_sign_arrow', x: s.x, y: s.y, w: 1, h: 1, script: `exp_go_${name}`, hint: 'always' });
 }
 
 /** the doors of a building: exits into a room on its tiles or just below them */

@@ -120,7 +120,7 @@ export const EPISODES_EX1: Episode[] = [
     ],
     scenes: [
       {
-        at: 'exh_hospital',
+        at: 'ex_chihiro',
         goal: ['Visit the city hospital at night', 'Besuche nachts das Stadtkrankenhaus'],
         evening: true,
         lines: [
@@ -341,7 +341,7 @@ export const EPISODES_EX1: Episode[] = [
         teach: ['v:n3_0098', 'v:n3_0147', 'v:n3_0278', 'v:n3_0281', 'v:n3_0263', 'v:n3_0156', 'v:n3_0116', 'v:n3_0133', 'v:n3_0094'],
       },
       {
-        at: 'exh_bakery',
+        at: 'ex_misaki',
         goal: ['Visit the bakery', 'Besuche die Bäckerei'],
         lines: [
           nar('パン屋の{奥|おく}で、{美咲|みさき}さんが小さな{封筒|ふうとう}を見つめている。「{年度|ねんど|v:n2_1394}{末|まつ}の{ボーナス||v:n2_1625}」と書いてある。', ['At the back of the bakery, Misaki is staring at a small envelope. It says: “End-of-year bonus”.', 'Hinten in der Bäckerei starrt Misaki auf einen kleinen Umschlag. Darauf steht: „Bonus zum Jahresende“.']),
@@ -412,7 +412,7 @@ export const EPISODES_EX1: Episode[] = [
     ],
     scenes: [
       {
-        at: 'exh_bakery',
+        at: 'ex_misaki',
         goal: ['Look into the bakery early in the morning', 'Schau frühmorgens in die Bäckerei'],
         lines: [
           nar('まだ暗い朝四時。{エプロン||v:n2_0255}をつけた{美咲|みさき}さんが、パン{生地|きじ}の{塊|かたまり|v:n2_0407}をこねている。', ['Four in the morning, still dark. Misaki, wearing an apron, is kneading a lump of dough.', 'Vier Uhr morgens, noch dunkel. Misaki in Schürze knetet einen Klumpen Brotteig.']),
